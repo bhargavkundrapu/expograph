@@ -1,4 +1,4 @@
-require("./instrument.js");
+
 
 
 
@@ -12,10 +12,7 @@ app.get("/health", (req, res) => {
   res.status(200).send("OK");
 });
 
-const Sentry = require("@sentry/node");
 
-// after ALL routes:
-Sentry.setupExpressErrorHandler(app);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
