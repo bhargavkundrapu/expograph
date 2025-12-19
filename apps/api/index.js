@@ -1,4 +1,6 @@
 
+const Sentry = require("@sentry/node");
+
 
 
 
@@ -11,7 +13,10 @@ const app = express();
 app.get("/health", (req, res) => {
   res.status(200).send("OK");
 });
-
+Sentry.init({ dsn: process.env.SENTRY_DSN });
+app.get("/debug-sentry", (req, res) => {
+  throw new Error("Sentry backend test");
+});
 
 
 const PORT = process.env.PORT || 5000;
