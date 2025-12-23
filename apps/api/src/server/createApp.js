@@ -1,4 +1,6 @@
 // apps/api/src/server/createApp.js
+const { router: adminContentRouter } = require("../modules/content/content.routes.admin");
+const { router: publicContentRouter } = require("../modules/content/content.routes.public");
 const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
@@ -9,6 +11,7 @@ const { errorHandler } = require("../middlewares/error-handler/errorHandler");
 const { requireAuth } = require("../middlewares/auth/requireAuth");
 const { requirePermission } = require("../middlewares/rbac/requirePermission");
 const { router: authRouter } = require("../modules/auth/auth.routes");
+
 
 function createApp() {
   const app = express();
@@ -38,6 +41,8 @@ function createApp() {
 
   // Versioned API
   app.use("/api/v1/auth", authRouter);
+  app.use("/api/v1/admin", adminContentRouter);
+  app.use("/api/v1", publicContentRouter);
 
   // Auth test endpoint
   app.get("/api/v1/me", requireAuth, async (req, res) => {
@@ -50,6 +55,8 @@ function createApp() {
       },
     });
   });
+  
+
 
   // RBAC test endpoint (only users with content:write)
   app.get(

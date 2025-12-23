@@ -2,12 +2,14 @@
 require("dotenv").config();
 
 function must(name, fallback = undefined) {
-  const val = process.env[name] ?? fallback;
+  const raw = process.env[name] ?? fallback;
+  const val = typeof raw === "string" ? raw.trim() : raw;
   if (val === undefined || val === "") {
     throw new Error(`Missing required env: ${name}`);
   }
   return val;
 }
+
 
 const env = {
   NODE_ENV: process.env.NODE_ENV ?? "development",
@@ -23,7 +25,8 @@ const env = {
     .map((s) => s.trim())
     .filter(Boolean),
 
-  DEFAULT_TENANT_SLUG: process.env.DEFAULT_TENANT_SLUG ?? "expograph",
+  DEFAULT_TENANT_SLUG: (process.env.DEFAULT_TENANT_SLUG ?? "expograph").trim(),
+
 };
 
 module.exports = { env };
