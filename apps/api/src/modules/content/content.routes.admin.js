@@ -11,6 +11,7 @@ router.use(requireAuth, requirePermission("content:write"));
 
 router.post("/courses", ctrl.createCourse);
 router.get("/courses", ctrl.listCoursesAdmin);
+router.patch("/courses/:courseId", ctrl.updateCourse);
 router.patch("/courses/:courseId/status", ctrl.setCourseStatus);
 
 router.post("/courses/:courseId/modules", ctrl.createModule);

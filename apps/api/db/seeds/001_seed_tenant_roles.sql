@@ -21,15 +21,30 @@ ON CONFLICT (tenant_id, name) DO NOTHING;
 
 -- 2) Permissions (global, stable keys)
 INSERT INTO permissions (key) VALUES
-('tenant:settings'),
-('user:manage'),
-('content:read'),
-('content:write'),
-('practice:read'),
-('practice:submit'),
-('submissions:review'),
-('featureflags:manage'),
-('audit:read')
+('audit:read'),
+  ('audit:write'),
+  ('content:read'),
+  ('content:write'),
+  ('featureflags:manage'),
+  ('practice:read'),
+  ('practice:submit'),
+  ('submissions:read'),
+  ('submissions:review'),
+  ('tenant:settings'),
+  ('user:manage'),
+  ('progress:read'),
+  ('progress:write'),
+  ('media:token'),
+  ('internships:read'),
+  ('internships:apply'),
+  ('internships:manage'),
+  ('clientlab:read'),
+  ('clientlab:manage'),
+  ('leads:manage'),
+  ('certificates:issue'),
+  ('referrals:manage')
+
+
 ON CONFLICT (key) DO NOTHING;
 
 -- 3) Role -> Permissions mapping (for this tenant's roles)
@@ -48,8 +63,30 @@ SELECT r.id, p.id
 FROM roles r
 JOIN tenants t2 ON t2.id = r.tenant_id
 JOIN permissions p ON p.key IN (
-  'tenant:settings','user:manage','content:read','content:write','audit:read','featureflags:manage'
+  'tenant:settings',
+  'user:manage',
+  'content:read',
+  'content:write',
+  'practice:read',
+  'practice:submit',
+  'progress:read',
+  'progress:write',
+  'submissions:read',
+  'submissions:review',
+  'media:token',
+  'internships:read',
+  'internships:apply',
+  'internships:manage',
+  'clientlab:read',
+  'clientlab:manage',
+  'leads:manage',
+  'certificates:issue',
+  'referrals:manage',
+  'audit:read',
+  'audit:write',
+  'featureflags:manage'
 )
+
 WHERE t2.slug = 'expograph' AND r.name = 'TenantAdmin'
 ON CONFLICT DO NOTHING;
 
@@ -59,8 +96,19 @@ SELECT r.id, p.id
 FROM roles r
 JOIN tenants t2 ON t2.id = r.tenant_id
 JOIN permissions p ON p.key IN (
-  'content:read','practice:read','submissions:review'
+  'content:read',
+  'practice:read',
+  'submissions:review',
+  'submissions:read',
+  'progress:read',
+  'progress:write',
+  'media:token',
+  'internships:read',
+  'internships:manage',
+  'clientlab:read',
+  'clientlab:manage'
 )
+
 WHERE t2.slug = 'expograph' AND r.name = 'Mentor'
 ON CONFLICT DO NOTHING;
 
@@ -70,8 +118,18 @@ SELECT r.id, p.id
 FROM roles r
 JOIN tenants t2 ON t2.id = r.tenant_id
 JOIN permissions p ON p.key IN (
-  'content:read','practice:read','practice:submit'
+  'content:read',
+  'practice:read',
+  'practice:submit',
+  'progress:read',
+  'progress:write',
+  'submissions:read',
+  'media:token',
+  'internships:read',
+  'internships:apply',
+  'clientlab:read'
 )
+
 WHERE t2.slug = 'expograph' AND r.name = 'Student'
 ON CONFLICT DO NOTHING;
 

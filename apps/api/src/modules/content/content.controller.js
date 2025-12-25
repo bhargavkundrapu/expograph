@@ -10,6 +10,12 @@ const CreateCourseSchema = z.object({
   description: z.string().optional(),
   level: z.string().optional(),
 });
+const UpdateCourseSchema = z.object({
+  title: z.string().min(2).optional(),
+  slug: z.string().optional(),        // optional, only if you want to allow editing slug
+  description: z.string().optional(),
+  level: z.string().optional(),
+});
 
 const CreateModuleSchema = z.object({
   title: z.string().min(2),
@@ -66,6 +72,31 @@ const listCoursesAdmin = asyncHandler(async (req, res) => {
   const rows = await svc.listCoursesAdmin({ tenantId: req.tenant.id });
   res.json({ ok: true, data: rows });
 });
+const updateCourse = asyncHandler(async (req, res) => {
+  const parsed = UpdateCourseSchema.safeParse(req.body);
+  if (!parsed.success) throw new HttpError(400, "Invalid input", parsed.error.flatten());
+
+  // at least one field should be present
+  if (
+    parsed.data.title === undefined &&
+    parsed.data.slug === undefined &&
+    parsed.data.description === undefined &&
+    parsed.data.level === undefined
+  ) {
+    throw new HttpError(400, "No fields to update");
+  }
+
+  const updated = await svc.updateCourse({
+    tenantId: req.tenant.id,
+    courseId: req.params.courseId,
+    patch: parsed.data,
+    updatedBy: req.auth.userId,
+  });
+
+  if (!updated) throw new HttpError(404, "Course not found");
+  res.json({ ok: true, data: updated });
+});
+
 
 const setCourseStatus = asyncHandler(async (req, res) => {
   const parsed = StatusSchema.safeParse(req.body);
@@ -216,6 +247,7 @@ module.exports = {
   // admin
   createCourse,
   listCoursesAdmin,
+   updateCourse,
   setCourseStatus,
   createModule,
   setModuleStatus,
@@ -224,6 +256,8 @@ module.exports = {
   addResource,
   addPractice,
   courseTreeAdmin,
+   
+
   // public
   listCoursesPublic,
   courseTreePublicBySlug,
