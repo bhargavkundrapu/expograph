@@ -195,6 +195,44 @@ async function getPublishedLessonBySlugs({ tenantId, courseSlug, moduleSlug, les
 
   return { lesson: row, resources, practice };
 }
+async function updateCourse({ tenantId, courseId, patch, updatedBy }) {
+  const fields = [];
+  const values = [];
+  let i = 1;
+
+  if (patch.title !== undefined) {
+    fields.push(`title=$${i++}`);
+    values.push(patch.title);
+  }
+  if (patch.description !== undefined) {
+    fields.push(`description=$${i++}`);
+    values.push(patch.description);
+  }
+  if (patch.level !== undefined) {
+    fields.push(`level=$${i++}`);
+    values.push(patch.level);
+  }
+
+  if (!fields.length) return null;
+
+  values.push(updatedBy);
+  values.push(tenantId);
+  values.push(courseId);
+
+  const sql = `
+    UPDATE courses
+    SET ${fields.join(", ")},
+        updated_by=$${i++},
+        updated_at=now()
+    WHERE tenant_id=$${i++}
+      AND id=$${i++}
+    RETURNING *
+  `;
+
+  const { rows } = await query(sql, values);
+  return rows[0] || null;
+}
+
 
 module.exports = {
   createCourse,
@@ -210,4 +248,5 @@ module.exports = {
   getCourseTreeAdmin,
   getPublishedCourseTreeBySlug,
   getPublishedLessonBySlugs,
+  updateCourse,
 };

@@ -62,32 +62,9 @@ async function createLessonSmart({ tenantId, moduleId, title, slug, summary, pos
   }
   throw new HttpError(500, "Could not create unique lesson slug");
 }
-const updateCourse = async ({ tenantId, courseId, patch, updatedBy }) => {
-  // build dynamic update query
-  const fields = [];
-  const values = [];
-  let i = 1;
-
-  if (patch.title !== undefined) { fields.push(`title=$${i++}`); values.push(patch.title); }
-  if (patch.description !== undefined) { fields.push(`description=$${i++}`); values.push(patch.description); }
-  if (patch.level !== undefined) { fields.push(`level=$${i++}`); values.push(patch.level); }
-
-  if (fields.length === 0) return null;
-
-  values.push(tenantId);
-  values.push(courseId);
-
-  const sql = `
-    UPDATE courses
-    SET ${fields.join(", ")}, updated_at=now(), updated_by=$${i++}
-    WHERE tenant_id=$${i++} AND id=$${i++}
-    RETURNING *
-  `;
-
-  // note: updated_by column exists? if not, remove updated_by parts.
-  const { rows } = await db.query(sql, [...values.slice(0, values.length - 2), updatedBy, tenantId, courseId]);
-  return rows[0] || null;
-};
+async function updateCourse({ tenantId, courseId, patch, updatedBy }) {
+  return repo.updateCourse({ tenantId, courseId, patch, updatedBy });
+}
 
 
 
