@@ -65,8 +65,20 @@ async function createLessonSmart({ tenantId, moduleId, title, slug, summary, pos
 async function updateCourse({ tenantId, courseId, patch, updatedBy }) {
   return repo.updateCourse({ tenantId, courseId, patch, updatedBy });
 }
+async function updateModule({ tenantId, moduleId, patch, updatedBy }) {
+  return repo.updateModule({ tenantId, moduleId, patch, updatedBy });
+}
 
+async function updateLesson({ tenantId, lessonId, patch, updatedBy }) {
+  return repo.updateLesson({ tenantId, lessonId, patch, updatedBy });
+}
+async function updateResource({ tenantId, resourceId, patch, updatedBy }) {
+  return repo.updateResource({ tenantId, resourceId, patch, updatedBy });
+}
 
+async function updatePractice({ tenantId, practiceId, patch, updatedBy }) {
+  return repo.updatePractice({ tenantId, practiceId, patch, updatedBy });
+}
 
 
 module.exports = {
@@ -74,5 +86,9 @@ module.exports = {
   createModuleSmart,
   createLessonSmart,
   updateCourse,
+  updateModule,
+  updateLesson,
+  updateResource,
+  updatePractice,
   ...repo,
 };

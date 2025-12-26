@@ -232,6 +232,128 @@ async function updateCourse({ tenantId, courseId, patch, updatedBy }) {
   const { rows } = await query(sql, values);
   return rows[0] || null;
 }
+async function updateModule({ tenantId, moduleId, patch, updatedBy }) {
+  const fields = [];
+  const values = [];
+  let i = 1;
+
+  if (patch.title !== undefined) { fields.push(`title=$${i++}`); values.push(patch.title); }
+  if (patch.position !== undefined) { fields.push(`position=$${i++}`); values.push(patch.position); }
+
+  if (!fields.length) return null;
+
+  values.push(updatedBy);
+  values.push(tenantId);
+  values.push(moduleId);
+
+  const sql = `
+    UPDATE course_modules
+    SET ${fields.join(", ")}, updated_by=$${i++}, updated_at=now()
+    WHERE tenant_id=$${i++} AND id=$${i++}
+    RETURNING *
+  `;
+  const { rows } = await query(sql, values);
+  return rows[0] || null;
+}
+async function updateLesson({ tenantId, lessonId, patch, updatedBy }) {
+  const fields = [];
+  const values = [];
+  let i = 1;
+
+  if (patch.title !== undefined) { fields.push(`title=$${i++}`); values.push(patch.title); }
+  if (patch.summary !== undefined) { fields.push(`summary=$${i++}`); values.push(patch.summary); }
+  if (patch.position !== undefined) { fields.push(`position=$${i++}`); values.push(patch.position); }
+
+  if (!fields.length) return null;
+
+  values.push(updatedBy, tenantId, lessonId);
+
+  const sql = `
+    UPDATE lessons
+    SET ${fields.join(", ")}, updated_by=$${i++}, updated_at=now()
+    WHERE tenant_id=$${i++} AND id=$${i++}
+    RETURNING *
+  `;
+  const { rows } = await query(sql, values);
+  return rows[0] || null;
+}
+async function updateResource({ tenantId, resourceId, patch, updatedBy }) {
+  const fields = [];
+  const values = [];
+  let i = 1;
+
+  if (patch.title !== undefined) {
+    fields.push(`title=$${i++}`);
+    values.push(patch.title);
+  }
+  if (patch.url !== undefined) {
+    fields.push(`url=$${i++}`);
+    values.push(patch.url);
+  }
+  if (patch.body !== undefined) {
+    fields.push(`body=$${i++}`);
+    values.push(patch.body);
+  }
+  // NOTE: your column name in DB might be sort_order or sort_order, check it.
+  // You used sortOrder in API, so DB column likely "sort_order".
+  if (patch.sortOrder !== undefined) {
+    fields.push(`sort_order=$${i++}`);
+    values.push(patch.sortOrder);
+  }
+
+  if (!fields.length) return null;
+
+  values.push(updatedBy);  // updated_by
+  values.push(tenantId);   // tenant_id
+  values.push(resourceId); // id
+
+  const sql = `
+    UPDATE resources
+    SET ${fields.join(", ")},
+        updated_by=$${i++},
+        updated_at=now()
+    WHERE tenant_id=$${i++}
+      AND id=$${i++}
+    RETURNING *
+  `;
+
+  const { rows } = await query(sql, values);
+  return rows[0] || null;
+}
+
+async function updatePractice({ tenantId, practiceId, patch, updatedBy }) {
+  const fields = [];
+  const values = [];
+  let i = 1;
+
+  if (patch.title !== undefined) { fields.push(`title=$${i++}`); values.push(patch.title); }
+  if (patch.prompt !== undefined) { fields.push(`prompt=$${i++}`); values.push(patch.prompt); }
+  if (patch.language !== undefined) { fields.push(`language=$${i++}`); values.push(patch.language); }
+  if (patch.starterCode !== undefined) { fields.push(`starter_code=$${i++}`); values.push(patch.starterCode); }
+  if (patch.expectedOutput !== undefined) { fields.push(`expected_output=$${i++}`); values.push(patch.expectedOutput); }
+
+  // DB column usually sort_order
+  if (patch.sortOrder !== undefined) { fields.push(`sort_order=$${i++}`); values.push(patch.sortOrder); }
+
+  if (!fields.length) return null;
+
+  values.push(updatedBy);
+  values.push(tenantId);
+  values.push(practiceId);
+
+  const sql = `
+    UPDATE practice_tasks
+    SET ${fields.join(", ")},
+        updated_by=$${i++},
+        updated_at=now()
+    WHERE tenant_id=$${i++}
+      AND id=$${i++}
+    RETURNING *
+  `;
+
+  const { rows } = await query(sql, values);
+  return rows[0] || null;
+}
 
 
 module.exports = {
@@ -241,6 +363,7 @@ module.exports = {
   updateCourseStatus,
   createModule,
   createLesson,
+  
   updateModuleStatus,
   updateLessonStatus,
   addResource,
@@ -249,4 +372,8 @@ module.exports = {
   getPublishedCourseTreeBySlug,
   getPublishedLessonBySlugs,
   updateCourse,
+  updateModule,
+  updateLesson,
+  updateResource,
+  updatePractice,
 };

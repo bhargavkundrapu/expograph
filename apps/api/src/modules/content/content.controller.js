@@ -22,6 +22,10 @@ const CreateModuleSchema = z.object({
   slug: z.string().optional(),
   position: z.number().int().optional(),
 });
+const UpdateModuleSchema = z.object({
+  title: z.string().min(2).optional(),
+  position: z.number().int().optional(),
+});
 
 const CreateLessonSchema = z.object({
   title: z.string().min(2),
@@ -29,6 +33,12 @@ const CreateLessonSchema = z.object({
   summary: z.string().optional(),
   position: z.number().int().optional(),
 });
+const UpdateLessonSchema = z.object({
+  title: z.string().min(2).optional(),
+  summary: z.string().optional(),
+  position: z.number().int().optional(),
+});
+
 
 const StatusSchema = z.object({
   status: z.enum(["draft", "published"]),
@@ -41,10 +51,24 @@ const AddResourceSchema = z.object({
   body: z.string().optional(),
   sortOrder: z.number().int().optional(),
 });
+const UpdateResourceSchema = z.object({
+  title: z.string().min(1).optional(),
+  url: z.string().url().optional(),
+  body: z.string().optional(),
+  sortOrder: z.number().int().optional(),
+});
 
 const AddPracticeSchema = z.object({
   title: z.string().min(1),
   prompt: z.string().min(1),
+  language: z.string().optional(),
+  starterCode: z.string().optional(),
+  expectedOutput: z.string().optional(),
+  sortOrder: z.number().int().optional(),
+});
+const UpdatePracticeSchema = z.object({
+  title: z.string().min(1).optional(),
+  prompt: z.string().min(1).optional(),
   language: z.string().optional(),
   starterCode: z.string().optional(),
   expectedOutput: z.string().optional(),
@@ -98,6 +122,7 @@ const updateCourse = asyncHandler(async (req, res) => {
 });
 
 
+
 const setCourseStatus = asyncHandler(async (req, res) => {
   const parsed = StatusSchema.safeParse(req.body);
   if (!parsed.success) throw new HttpError(400, "Invalid input", parsed.error.flatten());
@@ -127,6 +152,25 @@ const createModule = asyncHandler(async (req, res) => {
 
   res.status(201).json({ ok: true, data: created });
 });
+const updateModule = asyncHandler(async (req, res) => {
+  const parsed = UpdateModuleSchema.safeParse(req.body);
+  if (!parsed.success) throw new HttpError(400, "Invalid input", parsed.error.flatten());
+
+  if (parsed.data.title === undefined && parsed.data.position === undefined) {
+    throw new HttpError(400, "No fields to update");
+  }
+
+  const updated = await svc.updateModule({
+    tenantId: req.tenant.id,
+    moduleId: req.params.moduleId,
+    patch: parsed.data,
+    updatedBy: req.auth.userId,
+  });
+
+  if (!updated) throw new HttpError(404, "Module not found");
+  res.json({ ok: true, data: updated });
+});
+
 
 const setModuleStatus = asyncHandler(async (req, res) => {
   const parsed = StatusSchema.safeParse(req.body);
@@ -157,6 +201,24 @@ const createLesson = asyncHandler(async (req, res) => {
   });
 
   res.status(201).json({ ok: true, data: created });
+});
+const updateLesson = asyncHandler(async (req, res) => {
+  const parsed = UpdateLessonSchema.safeParse(req.body);
+  if (!parsed.success) throw new HttpError(400, "Invalid input", parsed.error.flatten());
+
+  if (parsed.data.title === undefined && parsed.data.summary === undefined && parsed.data.position === undefined) {
+    throw new HttpError(400, "No fields to update");
+  }
+
+  const updated = await svc.updateLesson({
+    tenantId: req.tenant.id,
+    lessonId: req.params.lessonId,
+    patch: parsed.data,
+    updatedBy: req.auth.userId,
+  });
+
+  if (!updated) throw new HttpError(404, "Lesson not found");
+  res.json({ ok: true, data: updated });
 });
 
 const setLessonStatus = asyncHandler(async (req, res) => {
@@ -194,6 +256,20 @@ const addResource = asyncHandler(async (req, res) => {
 
   res.status(201).json({ ok: true, data: created });
 });
+const updateResource = asyncHandler(async (req, res) => {
+  const parsed = UpdateResourceSchema.safeParse(req.body);
+  if (!parsed.success) throw new HttpError(400, "Invalid input", parsed.error.flatten());
+
+  const updated = await svc.updateResource({
+    tenantId: req.tenant.id,
+    resourceId: req.params.resourceId,
+    patch: parsed.data,
+    updatedBy: req.auth.userId,
+  });
+
+  if (!updated) throw new HttpError(404, "Resource not found");
+  res.json({ ok: true, data: updated });
+});
 
 const addPractice = asyncHandler(async (req, res) => {
   const parsed = AddPracticeSchema.safeParse(req.body);
@@ -212,6 +288,20 @@ const addPractice = asyncHandler(async (req, res) => {
   });
 
   res.status(201).json({ ok: true, data: created });
+});
+const updatePractice = asyncHandler(async (req, res) => {
+  const parsed = UpdatePracticeSchema.safeParse(req.body);
+  if (!parsed.success) throw new HttpError(400, "Invalid input", parsed.error.flatten());
+
+  const updated = await svc.updatePractice({
+    tenantId: req.tenant.id,
+    practiceId: req.params.practiceId,
+    patch: parsed.data,
+    updatedBy: req.auth.userId,
+  });
+
+  if (!updated) throw new HttpError(404, "Practice not found");
+  res.json({ ok: true, data: updated });
 });
 
 const courseTreeAdmin = asyncHandler(async (req, res) => {
@@ -250,11 +340,15 @@ module.exports = {
    updateCourse,
   setCourseStatus,
   createModule,
+  updateModule,
   setModuleStatus,
   createLesson,
+  updateLesson,
   setLessonStatus,
   addResource,
+  updateResource,
   addPractice,
+  updatePractice,
   courseTreeAdmin,
    
 
