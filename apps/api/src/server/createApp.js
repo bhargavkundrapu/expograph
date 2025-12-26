@@ -1,4 +1,5 @@
 // apps/api/src/server/createApp.js
+const { router: progressRouter } = require("../modules/progress/progress.routes");
 const { router: adminContentRouter } = require("../modules/content/content.routes.admin");
 const { router: publicContentRouter } = require("../modules/content/content.routes.public");
 const express = require("express");
@@ -43,6 +44,9 @@ function createApp() {
   app.use("/api/v1/auth", authRouter);
   app.use("/api/v1/admin", adminContentRouter);
   app.use("/api/v1", publicContentRouter);
+  
+
+  app.use("/api/v1/lms", progressRouter);
 
   // Auth test endpoint
   app.get("/api/v1/me", requireAuth, async (req, res) => {
