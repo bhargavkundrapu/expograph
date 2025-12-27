@@ -1,4 +1,6 @@
 // apps/api/src/server/createApp.js
+const { router: lmsSubmissionsRouter } = require("../modules/submissions/submissions.routes.lms");
+const { router: mentorSubmissionsRouter } = require("../modules/submissions/submissions.routes.mentor");
 const { router: progressRouter } = require("../modules/progress/progress.routes");
 const { router: adminContentRouter } = require("../modules/content/content.routes.admin");
 const { router: publicContentRouter } = require("../modules/content/content.routes.public");
@@ -47,6 +49,9 @@ function createApp() {
   
 
   app.use("/api/v1/lms", progressRouter);
+  app.use("/api/v1/lms", lmsSubmissionsRouter);
+  app.use("/api/v1/mentor", mentorSubmissionsRouter);
+
 
   // Auth test endpoint
   app.get("/api/v1/me", requireAuth, async (req, res) => {
