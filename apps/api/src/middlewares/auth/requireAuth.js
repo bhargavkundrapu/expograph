@@ -21,8 +21,14 @@ function requireAuth(req, res, next) {
     // ✅ same secret as auth.service.js
     const payload = jwt.verify(token, env.JWT_SECRET);
 
-    req.auth = payload;
-    return next();
+// ✅ keep original payload + add aliases (safe)
+req.auth = payload;
+req.auth.userId = payload.sub;
+req.auth.tenantId = payload.tid;
+req.auth.membershipId = payload.mid;
+
+return next();
+
   } catch (err) {
     // (optional debug) console.error("JWT VERIFY FAIL:", err.message);
     return res.status(401).json({ ok: false, error: { message: "Invalid or expired token" } });
