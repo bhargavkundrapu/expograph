@@ -8,8 +8,9 @@ const TTL_MS = 60_000;
 
 function requirePermission(permissionKey) {
   return async function (req, res, next) {
-    const userId = req.auth?.userId;
-    const tenantId = req.tenant?.id;
+   const userId = req.user?.id || req.userId || req.auth?.userId;
+const tenantId = req.tenant?.id || req.user?.tenantId || req.auth?.tenantId;
+
 
     if (!userId || !tenantId) throw new HttpError(401, "Unauthorized");
 

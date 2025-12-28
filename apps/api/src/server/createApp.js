@@ -1,4 +1,6 @@
 // apps/api/src/server/createApp.js
+const debugRoutes = require("../modules/debug/debug.routes");
+const mediaRoutes = require("../modules/media/media.routes");
 const { router: lmsSubmissionsRouter } = require("../modules/submissions/submissions.routes.lms");
 const { router: mentorSubmissionsRouter } = require("../modules/submissions/submissions.routes.mentor");
 const { router: progressRouter } = require("../modules/progress/progress.routes");
@@ -23,6 +25,7 @@ function createApp() {
   app.use(helmet());
   app.use(morgan("combined"));
   app.use(express.json({ limit: "1mb" }));
+ 
 
   // CORS
   if (env.CORS_ORIGINS.length > 0) {
@@ -51,7 +54,8 @@ function createApp() {
   app.use("/api/v1/lms", progressRouter);
   app.use("/api/v1/lms", lmsSubmissionsRouter);
   app.use("/api/v1/mentor", mentorSubmissionsRouter);
-
+  app.use("/api/v1/media", mediaRoutes);
+  app.use("/api/v1/debug", debugRoutes);
 
   // Auth test endpoint
   app.get("/api/v1/me", requireAuth, async (req, res) => {

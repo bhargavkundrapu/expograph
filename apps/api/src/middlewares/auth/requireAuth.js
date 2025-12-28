@@ -10,22 +10,22 @@ function requireAuth(req, res, next) {
   if (type !== "Bearer" || !token) throw new HttpError(401, "Missing token");
 
   try {
-    const decoded = jwt.verify(token, env.JWT_SECRET);
+    const payload = jwt.verify(token, env.JWT_SECRET);
+    // payload: { tid, mid, role, iat, exp, sub }
 
-    // decoded: { tid, mid, role, iat, exp, sub }
-    req.auth = {
-      userId: decoded.sub,
-      tenantId: decoded.tid,
-      membershipId: decoded.mid,
-      role: decoded.role,
+    req.user = {
+      id: payload.sub,
+      role: payload.role,
+      tenantId: payload.tid,
+      membershipId: payload.mid,
     };
 
-    // Prevent token from another tenant being used here
-    if (req.tenant?.id && req.auth.tenantId !== req.tenant.id) {
-      throw new HttpError(403, "Tenant mismatch");
+    // fallback: if tenant middleware didn’t set tenant (localhost case)
+    if (!req.tenant) {
+      req.tenant = { id: payload.tid };
     }
 
-    next();
+    return next();
   } catch (e) {
     throw new HttpError(401, "Invalid token");
   }
