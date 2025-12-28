@@ -21,7 +21,7 @@ const { router: authRouter } = require("../modules/auth/auth.routes");
 function createApp() {
   const app = express();
 
-  app.set("trust proxy", true);
+  app.set("trust proxy", 1);
   app.use(helmet());
   app.use(morgan("combined"));
   app.use(express.json({ limit: "1mb" }));

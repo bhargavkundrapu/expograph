@@ -29,10 +29,16 @@ function requirePermission(permKey) {
   // If it looks like factory (permKey) => middleware
   return baseRequirePermission(permKey);
 }
+const ipLimit = rateLimitMemory({
+  windowMs: 10 * 60 * 1000,
+  max: 60,
+  keyFn: (req) => `ip:${req.ip}`,
+});
 
 // Simple in-memory rate limiter
 function rateLimitMemory({ windowMs, max, keyFn }) {
   const hits = new Map();
+
   return (req, res, next) => {
     const key = keyFn(req);
     const now = Date.now();
@@ -47,12 +53,12 @@ function rateLimitMemory({ windowMs, max, keyFn }) {
     if (entry.count > max) {
       const retryAfterSec = Math.ceil((entry.resetAt - now) / 1000);
       res.setHeader("Retry-After", String(retryAfterSec));
-      return res.status(429).json({ message: "Too many token requests. Wait a bit." });
+      return res.status(429).json({ message: "Too many requests. Please wait." });
     }
-
     return next();
   };
 }
+
 
 const router = express.Router();
 
@@ -66,6 +72,7 @@ router.post(
     max: 30,
     keyFn: (req) => `u:${req.user?.id || "anon"}`,
   }),
+  ipLimit,
   controller.playbackToken
 );
 
