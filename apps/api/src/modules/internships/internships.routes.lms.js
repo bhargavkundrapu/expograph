@@ -1,5 +1,6 @@
 const express = require("express");
 const { requireAuth } = require("../../middlewares/auth/requireAuth");
+
 const { requirePermission } = require("../../middlewares/rbac/requirePermission");
 const ctrl = require("./internships.controller");
 

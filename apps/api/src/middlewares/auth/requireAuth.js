@@ -1,64 +1,40 @@
-// apps/api/src/middlewares/auth/requireAuth.js
-const jwt = require("jsonwebtoken");
+// apps/api/src/middlewares/auth.js
 
-function getBearerToken(req) {
-  const header = req.headers.authorization || req.headers.Authorization;
+const jwt = require("jsonwebtoken");
+const { env } = require("../../config/env.js") // ✅ use same env loader as auth.service
+
+function getTokenFromHeader(req) {
+  const header = req.headers.authorization;
   if (!header) return null;
-  const [type, token] = String(header).split(" ");
-  if (type !== "Bearer" || !token) return null;
-  return token.trim();
+
+  // Accept: "Bearer <token>" OR "<token>"
+  const m = header.match(/^Bearer\s+(.+)$/i);
+  if (m) return m[1].trim();
+
+  return header.trim();
 }
 
 function requireAuth(req, res, next) {
   try {
-    const token = getBearerToken(req);
+    const token = getTokenFromHeader(req);
     if (!token) {
-      return res.status(401).json({
-        ok: false,
-        error: { message: "Missing Authorization: Bearer <token>" },
-      });
+      return res.status(401).json({ ok: false, error: { message: "Missing token" } });
     }
 
-    const secret = process.env.JWT_SECRET;
-    if (!secret) {
-      return res.status(500).json({
-        ok: false,
-        error: { message: "JWT_SECRET not configured on server" },
-      });
-    }
+    // ✅ Verify with SAME secret used in signToken()
+    const payload = jwt.verify(token, env.JWT_SECRET);
 
-    const decoded = jwt.verify(token, secret);
-
-    // ✅ STANDARD identity object (use everywhere)
-    // Fallbacks included so old tokens / old code won't break.
-    const userId = decoded.sub || decoded.userId || decoded.id;
-    const tenantId = decoded.tid || decoded.tenantId;
-    const membershipId = decoded.mid || decoded.membershipId;
-
-    if (!userId) {
-      return res.status(401).json({
-        ok: false,
-        error: { message: "Invalid token: user id missing" },
-      });
-    }
-
+    // ✅ Keep original payload + add friendly aliases (won't break existing code)
     req.auth = {
-      userId,
-      tenantId: tenantId || null,
-      membershipId: membershipId || null,
-      role: decoded.role || null,
-      raw: decoded, // keep full decoded for debugging if needed
+      ...payload,
+      userId: payload.sub,        // since you sign with { subject: userId }
+      tenantId: payload.tid,
+      membershipId: payload.mid,
     };
-
-    // ✅ Backward compatibility (if any older code uses req.user)
-    req.user = { id: userId, ...decoded };
 
     return next();
   } catch (err) {
-    return res.status(401).json({
-      ok: false,
-      error: { message: "Invalid or expired token" },
-    });
+    return res.status(401).json({ ok: false, error: { message: "Invalid or expired token" } });
   }
 }
 
