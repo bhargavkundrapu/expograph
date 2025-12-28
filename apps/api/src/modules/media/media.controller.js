@@ -1,4 +1,6 @@
 // apps/api/src/modules/media/media.controller.js
+// path: apps/api/src/modules/media/media.controller.js
+const {deviceSvc} = require("../auth/deviceSessions.service");
 
 const mediaRepo = require("./media.repo");
 const mediaService = require("./media.service");

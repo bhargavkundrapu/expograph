@@ -1,4 +1,4 @@
-const deviceSvc = require("./deviceSessions.service");
+const {deviceSvc }= require("./deviceSessions.service");
 
 const { asyncHandler } = require("../../utils/asyncHandler");
 const authService = require("./auth.service");
