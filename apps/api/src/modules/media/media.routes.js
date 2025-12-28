@@ -1,6 +1,6 @@
 // apps/api/src/modules/media/media.routes.js
 
-
+const attachDevice = require("../../middlewares/device/attachDevice");
 // /mnt/e/ExpoGraph/apps/api/src/modules/media/media.routes.js
 
 const express = require("express");
@@ -65,6 +65,7 @@ const router = express.Router();
 router.post(
   "/playback-token",
   requireAuth,
+  attachDevice,
   // TEMP: use content:read if you haven't seeded media:token yet
   requirePermission("content:read"),
   rateLimitMemory({

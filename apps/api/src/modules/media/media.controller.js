@@ -50,6 +50,18 @@ async function playbackToken(req, res, next) {
     // 6) build URLs
     const urls = mediaService.buildPlaybackUrls({ token });
 
+
+    const enforce = String(process.env.ENFORCE_DEVICE_SESSIONS || "false") === "true";
+const deviceId = req.header("x-device-id") || null;
+
+if (enforce) {
+  if (!deviceId) return res.status(400).json({ message: "x-device-id header required" });
+
+  const ok = await deviceSvc.isDeviceActive({ tenantId, userId, deviceId });
+  if (!ok) return res.status(403).json({ message: "Device not allowed. Please login again." });
+}
+
+
     return res.json({
       lessonId,
       provider: "cloudflare_stream",
