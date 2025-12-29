@@ -158,7 +158,7 @@ async function listApplications({ tenantId, batchId, status }) {
     JOIN micro_project_batches b ON b.id=a.batch_id
     WHERE a.tenant_id=$1
       AND ($2::uuid IS NULL OR a.batch_id=$2)
-      AND ($3::text IS NULL OR a.status=$3)
+      AND ($3::text IS NULL OR a.status::text = $3)
     ORDER BY a.applied_at ASC;
     `,
     [tenantId, batchId ?? null, status ?? null]
