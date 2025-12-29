@@ -44,10 +44,14 @@ INSERT INTO permissions (key) VALUES
   ('clientlab:review'),
   ('leads:manage'),
   ('certificates:issue'),
-  ('referrals:manage')
-
-
-ON CONFLICT (key) DO NOTHING;
+  ('referrals:manage'),
+  ('leads:manage'),
+  ('workshops:manage'),
+  ('certificates:issue'),
+  ('referrals:manage'),
+  ('audit:write'),
+  ('featureflags:manage')
+  ON CONFLICT (key) DO NOTHING;
 
 -- 3) Role -> Permissions mapping (for this tenant's roles)
 -- SuperAdmin = everything
@@ -132,7 +136,7 @@ JOIN permissions p ON p.key IN (
   'internships:read',
   'internships:apply',
   'clientlab:read',
-  'clientlab:update',
+  'clientlab:update'
   
   
 )

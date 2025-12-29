@@ -1,4 +1,17 @@
 // apps/api/src/server/createApp.js
+const { router: leadsPublic } = require("../modules/leads/leads.routes.public");
+const { router: leadsAdmin } = require("../modules/leads/leads.routes.admin");
+
+const { router: workshopsPublic } = require("../modules/workshops/workshops.routes.public");
+const { router: workshopsAdmin } = require("../modules/workshops/workshops.routes.admin");
+
+const { router: certAdmin } = require("../modules/certificates/certificates.routes.admin");
+const { router: certPublic } = require("../modules/certificates/certificates.routes.public");
+
+const { router: featureFlagsAdmin } = require("../modules/featureFlags/featureFlags.routes.admin");
+
+const { router: referralsRoutes } = require("../modules/referrals/referrals.routes");
+
 const { router: adminClientLabRouter } = require("../modules/clientLab/clientLab.routes.admin");
 const { router: lmsClientLabRouter } = require("../modules/clientLab/clientLab.routes.lms");
 const { router: mentorClientLabRouter } = require("../modules/clientLab/clientLab.routes.mentor");
@@ -68,6 +81,19 @@ function createApp() {
   app.use("/api/v1/admin/client-lab", adminClientLabRouter);
   app.use("/api/v1/lms/client-lab", lmsClientLabRouter);
   app.use("/api/v1/mentor/client-lab", mentorClientLabRouter);
+  app.use("/api/v1/public", leadsPublic);
+  app.use("/api/v1/public", workshopsPublic);
+  app.use("/api/v1/public", certPublic);
+
+  app.use("/api/v1/admin", leadsAdmin);
+  app.use("/api/v1/admin", workshopsAdmin);
+  app.use("/api/v1/admin", certAdmin);
+  app.use("/api/v1/admin", featureFlagsAdmin);
+
+  app.use("/api/v1", referralsRoutes);
+
+// last line:
+app.use(errorHandler);
 
 
 
