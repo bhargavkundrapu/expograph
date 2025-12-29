@@ -40,6 +40,8 @@ INSERT INTO permissions (key) VALUES
   ('internships:manage'),
   ('clientlab:read'),
   ('clientlab:manage'),
+  ('clientlab:update'),
+  ('clientlab:review'),
   ('leads:manage'),
   ('certificates:issue'),
   ('referrals:manage')
@@ -79,6 +81,8 @@ JOIN permissions p ON p.key IN (
   'internships:manage',
   'clientlab:read',
   'clientlab:manage',
+  'clientlab:update',
+  'clientlab:review',
   'leads:manage',
   'certificates:issue',
   'referrals:manage',
@@ -106,7 +110,7 @@ JOIN permissions p ON p.key IN (
   'internships:read',
   'internships:manage',
   'clientlab:read',
-  'clientlab:manage'
+  'clientlab:review'
 )
 
 WHERE t2.slug = 'expograph' AND r.name = 'Mentor'
@@ -127,7 +131,10 @@ JOIN permissions p ON p.key IN (
   'media:token',
   'internships:read',
   'internships:apply',
-  'clientlab:read'
+  'clientlab:read',
+  'clientlab:update',
+  
+  
 )
 
 WHERE t2.slug = 'expograph' AND r.name = 'Student'

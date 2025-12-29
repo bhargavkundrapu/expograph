@@ -1,4 +1,8 @@
 // apps/api/src/server/createApp.js
+const { router: adminClientLabRouter } = require("../modules/clientLab/clientLab.routes.admin");
+const { router: lmsClientLabRouter } = require("../modules/clientLab/clientLab.routes.lms");
+const { router: mentorClientLabRouter } = require("../modules/clientLab/clientLab.routes.mentor");
+
 const { router: lmsInternRouter } = require("../modules/internships/internships.routes.lms");
 const { router: mentorInternRouter } = require("../modules/internships/internships.routes.mentor");
 
@@ -61,6 +65,10 @@ function createApp() {
   app.use("/api/v1/debug", debugRoutes);
   app.use("/api/v1/lms/internships", lmsInternRouter);
   app.use("/api/v1/mentor/internships", mentorInternRouter);
+  app.use("/api/v1/admin/client-lab", adminClientLabRouter);
+  app.use("/api/v1/lms/client-lab", lmsClientLabRouter);
+  app.use("/api/v1/mentor/client-lab", mentorClientLabRouter);
+
 
 
   // Auth test endpoint
