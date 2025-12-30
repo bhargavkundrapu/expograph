@@ -1,3 +1,7 @@
+
+const { mediaTokenLimiter } = require("../../middlewares/rate-limit/rateLimiters");
+
+
 // apps/api/src/modules/media/media.routes.js
 
 const attachDevice = require("../../middlewares/device/attachDevice");
@@ -65,6 +69,7 @@ const router = express.Router();
 router.post(
   "/playback-token",
   requireAuth,
+  mediaTokenLimiter,
   attachDevice,
   // TEMP: use content:read if you haven't seeded media:token yet
   requirePermission("content:read"),
