@@ -345,7 +345,9 @@ const courseTreePublicBySlug = asyncHandler(async (req, res) => {
   
   const tree = await svc.getPublishedCourseTreeBySlug({ tenantId: req.tenant.id, courseSlug: req.params.courseSlug });
   
- 
+  const tenantId = req.tenant.id;
+  const courseSlug = req.params.courseSlug;
+
 
   const cacheKey = `pub:tenant:${tenantId}:course:${courseSlug}:tree`;
   const cached = getCache(cacheKey);
