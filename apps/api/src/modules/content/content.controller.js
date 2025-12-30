@@ -1,4 +1,7 @@
 // apps/api/src/modules/content/content.controller.js
+const { getCache, setCache } = require("../../utils/cache");
+const { delByPrefix } = require("../../utils/cache");
+
 const { z } = require("zod");
 const { asyncHandler } = require("../../utils/asyncHandler");
 const svc = require("./content.service");
@@ -88,6 +91,7 @@ const createCourse = asyncHandler(async (req, res) => {
     level: parsed.data.level,
     createdBy: req.auth.userId,
   });
+  delByPrefix(`pub:tenant:${req.tenant.id}:`);
 
   res.status(201).json({ ok: true, data: created });
 });
@@ -134,6 +138,8 @@ const setCourseStatus = asyncHandler(async (req, res) => {
   });
 
   if (!updated) throw new HttpError(404, "Course not found");
+  delByPrefix(`pub:tenant:${req.tenant.id}:`);
+
   res.json({ ok: true, data: updated });
 });
 
@@ -149,6 +155,7 @@ const createModule = asyncHandler(async (req, res) => {
     position: parsed.data.position ?? 0,
     createdBy: req.auth.userId,
   });
+  delByPrefix(`pub:tenant:${req.tenant.id}:`);
 
   res.status(201).json({ ok: true, data: created });
 });
@@ -183,6 +190,8 @@ const setModuleStatus = asyncHandler(async (req, res) => {
   });
 
   if (!updated) throw new HttpError(404, "Module not found");
+  delByPrefix(`pub:tenant:${req.tenant.id}:`);
+
   res.json({ ok: true, data: updated });
 });
 
@@ -199,6 +208,7 @@ const createLesson = asyncHandler(async (req, res) => {
     position: parsed.data.position ?? 0,
     createdBy: req.auth.userId,
   });
+  delByPrefix(`pub:tenant:${req.tenant.id}:`);
 
   res.status(201).json({ ok: true, data: created });
 });
@@ -232,6 +242,8 @@ const setLessonStatus = asyncHandler(async (req, res) => {
   });
 
   if (!updated) throw new HttpError(404, "Lesson not found");
+  delByPrefix(`pub:tenant:${req.tenant.id}:`);
+
   res.json({ ok: true, data: updated });
 });
 
@@ -253,6 +265,7 @@ const addResource = asyncHandler(async (req, res) => {
     sortOrder: parsed.data.sortOrder ?? 0,
     createdBy: req.auth.userId,
   });
+  delByPrefix(`pub:tenant:${req.tenant.id}:`);
 
   res.status(201).json({ ok: true, data: created });
 });
@@ -286,6 +299,7 @@ const addPractice = asyncHandler(async (req, res) => {
     sortOrder: parsed.data.sortOrder ?? 0,
     createdBy: req.auth.userId,
   });
+  delByPrefix(`pub:tenant:${req.tenant.id}:`);
 
   res.status(201).json({ ok: true, data: created });
 });
@@ -312,14 +326,46 @@ const courseTreeAdmin = asyncHandler(async (req, res) => {
 
 // ---------- Public ----------
 const listCoursesPublic = asyncHandler(async (req, res) => {
-  const rows = await svc.listCoursesPublic({ tenantId: req.tenant.id });
-  res.json({ ok: true, data: rows });
+  const tenantId = req.tenant.id;
+const cacheKey = `pub:tenant:${tenantId}:courses:list`;
+
+const cached = getCache(cacheKey);
+if (cached) {
+  return res.json({ ok: true, data: cached, cache: "HIT" });
+}
+
+const rows = await svc.listCoursesPublic({ tenantId });
+setCache(cacheKey, rows, 120); // 2 minutes
+
+return res.json({ ok: true, data: rows, cache: "MISS" });
+
 });
 
 const courseTreePublicBySlug = asyncHandler(async (req, res) => {
+  
   const tree = await svc.getPublishedCourseTreeBySlug({ tenantId: req.tenant.id, courseSlug: req.params.courseSlug });
-  if (!tree) throw new HttpError(404, "Course not found");
-  res.json({ ok: true, data: tree });
+  
+ 
+
+  const cacheKey = `pub:tenant:${tenantId}:course:${courseSlug}:tree`;
+  const cached = getCache(cacheKey);
+
+  if (cached) {
+    return res.json({ ok: true, data: cached, cache: "HIT" });
+  }
+
+  
+
+  if (!tree) {
+    return res.status(404).json({ ok: false, error: "Course not found" });
+  }
+
+  setCache(cacheKey, tree, 120); // 2 minutes
+  return res.json({ ok: true, data: tree, cache: "MISS" });
+
+  
+  
+ 
 });
 
 const lessonPublicBySlugs = asyncHandler(async (req, res) => {
