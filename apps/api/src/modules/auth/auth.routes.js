@@ -1,4 +1,6 @@
 // apps/api/src/modules/auth/auth.routes.js
+
+
 const attachDevice = require("../../middlewares/device/attachDevice");
 
 const express = require("express");
