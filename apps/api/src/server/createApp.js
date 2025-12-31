@@ -1,6 +1,6 @@
 
 
-const cors = require("cors");
+
 
 // apps/api/src/server/createApp.js
 const { router: leadsPublic } = require("../modules/leads/leads.routes.public");
