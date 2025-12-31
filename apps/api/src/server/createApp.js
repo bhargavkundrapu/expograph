@@ -86,7 +86,8 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.options("*", cors(corsOptions));
+app.options(/.*/, cors(corsOptions));
+
 
   // Tenant resolver must run before auth
   app.use(resolveTenant);
