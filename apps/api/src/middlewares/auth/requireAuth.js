@@ -27,6 +27,8 @@ req.auth.userId = payload.sub;
 req.auth.tenantId = payload.tid;
 req.auth.membershipId = payload.mid;
 
+req.user = req.user || { id: payload.sub };
+req.tenant = req.tenant || { id: payload.tid };
 return next();
 
   } catch (err) {

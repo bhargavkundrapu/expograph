@@ -7,11 +7,12 @@ const mediaService = require("./media.service");
 
 async function playbackToken(req, res, next) {
   console.log("MEDIA_DEBUG_IN", {
-  userId: req.user?.id,
+  userId_from_user: req.user?.id,
+  userId_from_auth: req.auth?.userId || req.auth?.sub,
   tenantId: req.tenant?.id,
-  permissionCheck: req.requiredPermission,
   lessonId: req.body?.lessonId,
 });
+
 
   try {
     const { lessonId } = req.body || {};
@@ -20,7 +21,7 @@ async function playbackToken(req, res, next) {
     }
 
     // These should come from your auth + tenant middleware
-    const userId = req.user?.id;
+    const userId = req.user?.id || req.auth?.userId || req.auth?.sub;
     const tenantId = req.tenant?.id;
 
     if (!userId) return res.status(401).json({ message: "Unauthorized" });
