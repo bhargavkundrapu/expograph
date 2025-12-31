@@ -26,6 +26,14 @@ async function createCloudflarePlaybackToken({ videoUid }) {
     });
 
     const data = await res.json().catch(() => ({}));
+    if (!resp.ok) {
+  const text = await resp.text();
+  const e = new Error("Cloudflare API error");
+  e.status = resp.status;
+  e.data = text;
+  throw e;
+}
+
 
     if (!res.ok) {
       const msg = data?.errors?.[0]?.message || `Cloudflare token failed (${res.status})`;

@@ -6,6 +6,13 @@ const mediaRepo = require("./media.repo");
 const mediaService = require("./media.service");
 
 async function playbackToken(req, res, next) {
+  console.log("MEDIA_DEBUG_IN", {
+  userId: req.user?.id,
+  tenantId: req.tenant?.id,
+  permissionCheck: req.requiredPermission,
+  lessonId: req.body?.lessonId,
+});
+
   try {
     const { lessonId } = req.body || {};
     if (!lessonId) {
@@ -30,6 +37,12 @@ async function playbackToken(req, res, next) {
     if (!videoRow) {
       return res.status(404).json({ message: "Lesson not found" });
     }
+    console.log("MEDIA_DEBUG_IN", {
+  userId: req.user?.id,
+  tenantId: req.tenant?.id,
+  permissionCheck: req.requiredPermission,
+  lessonId: req.body?.lessonId,
+});
 
     // 3) only published lessons (student-first rules)
     if (videoRow.lessonStatus !== "published") {
