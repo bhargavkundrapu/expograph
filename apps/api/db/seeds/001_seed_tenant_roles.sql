@@ -21,7 +21,7 @@ ON CONFLICT (tenant_id, name) DO NOTHING;
 
 -- 2) Permissions (global, stable keys)
 INSERT INTO permissions (key) VALUES
-('audit:read'),
+  ('audit:read'),
   ('audit:write'),
   ('content:read'),
   ('content:write'),
@@ -44,13 +44,8 @@ INSERT INTO permissions (key) VALUES
   ('clientlab:review'),
   ('leads:manage'),
   ('certificates:issue'),
-  ('referrals:manage'),
-  ('leads:manage'),
-  ('workshops:manage'),
-  ('certificates:issue'),
-  ('referrals:manage'),
-  ('audit:write'),
-  ('featureflags:manage')
+  ('referrals:manage'), 
+  ('workshops:manage')
   ON CONFLICT (key) DO NOTHING;
 
 -- 3) Role -> Permissions mapping (for this tenant's roles)

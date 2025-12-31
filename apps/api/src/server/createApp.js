@@ -1,6 +1,6 @@
 
 
-
+const cors = require("cors");
 
 // apps/api/src/server/createApp.js
 const { router: leadsPublic } = require("../modules/leads/leads.routes.public");
@@ -47,22 +47,46 @@ function createApp() {
   const app = express();
 
   app.set("trust proxy", 1);
-  app.use(helmet());
+  app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+  })
+);
   app.use(morgan("combined"));
   app.use(express.json({ limit: "1mb" }));
  
 
   // CORS
-  if (env.CORS_ORIGINS.length > 0) {
-    app.use(
-      cors({
-        origin: env.CORS_ORIGINS,
-        credentials: true,
-      })
-    );
-  } else {
-    app.use(cors());
-  }
+ 
+
+const allowlist = new Set([
+  "http://localhost:5173",
+  "http://localhost:4173",
+  "https://expograph.in",
+  "https://www.expograph.in",
+]);
+
+function isAllowed(origin) {
+  if (!origin) return true; // curl/postman
+  if (allowlist.has(origin)) return true;
+  if (origin.endsWith(".vercel.app")) return true; // previews
+  return false;
+}
+
+const corsOptions = {
+  origin: (origin, cb) => {
+    if (isAllowed(origin)) return cb(null, true);
+    return cb(null, false); // IMPORTANT: don't throw, just block
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Device-Id"],
+  maxAge: 86400,
+  optionsSuccessStatus: 204,
+};
+
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 
   // Tenant resolver must run before auth
   app.use(resolveTenant);
