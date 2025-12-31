@@ -1,3 +1,7 @@
+
+
+
+
 // apps/api/src/server/createApp.js
 const { router: leadsPublic } = require("../modules/leads/leads.routes.public");
 const { router: leadsAdmin } = require("../modules/leads/leads.routes.admin");
@@ -30,9 +34,10 @@ const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");
+const crypto = require("crypto");
 const { env } = require("../config/env");
 const { resolveTenant } = require("../middlewares/tenant/resolveTenant");
-const { errorHandler } = require("../middlewares/error-handler/errorHandler");
+const { notFound,errorHandler } = require("../middlewares/error-handler/errorHandler");
 const { requireAuth } = require("../middlewares/auth/requireAuth");
 const { requirePermission } = require("../middlewares/rbac/requirePermission");
 const { router: authRouter } = require("../modules/auth/auth.routes");
@@ -64,6 +69,19 @@ function createApp() {
 
   // Public health
   app.get("/health", (req, res) => res.status(200).send("OK"));
+  
+  
+  app.use((req, res, next) => {
+  req.id = crypto.randomUUID();
+  res.setHeader("x-request-id", req.id);
+  next();
+});
+morgan.token("id", (req) => req.id);
+
+app.use(
+  morgan(":date[iso] id=:id :method :url :status :response-time ms :res[content-length]")
+);
+
 
   // Versioned API
   app.use("/api/v1/auth", authRouter);
@@ -91,8 +109,12 @@ function createApp() {
   app.use("/api/v1/admin", featureFlagsAdmin);
 
   app.use("/api/v1", referralsRoutes);
+ 
+ 
+
 
 // last line:
+ app.use(notFound);
 app.use(errorHandler);
 
 
