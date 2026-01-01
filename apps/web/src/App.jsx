@@ -1,14 +1,11 @@
-import { Routes, Route, Navigate } from "react-router-dom";
-import Academy from "./pages/Academy.jsx";
-import Solutions from "./pages/Solutions.jsx";
+import { RouterProvider } from "react-router-dom";
+import { router } from "./app/router";
+import { AuthProvider } from "./app/providers/AuthProvider";
 
 export default function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Navigate to="/academy" replace />} />
-      <Route path="/academy" element={<Academy />} />
-      <Route path="/solutions" element={<Solutions />} />
-      <Route path="*" element={<div style={{ padding: 20 }}>404 - Page not found</div>} />
-    </Routes>
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
   );
 }
