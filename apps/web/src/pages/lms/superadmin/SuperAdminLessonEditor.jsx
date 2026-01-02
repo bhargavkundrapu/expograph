@@ -11,8 +11,9 @@ function normalizeLesson(l) {
     position: Number.isFinite(l.position) ? l.position : 0,
     status: l.status || "draft",
     // These keys may vary by your backend. We keep flexible.
-    videoKey: l.video_key || l.videoKey || l.video_id || l.videoId || "",
-    description: l.description || "",
+    summary: l.summary || "",
+    videoId: l.video_id || l.videoId || "",
+
   };
 }
 
@@ -30,8 +31,9 @@ export default function SuperAdminLessonEditor() {
   // form fields
   const [title, setTitle] = useState("");
   const [position, setPosition] = useState(1);
-  const [description, setDescription] = useState("");
-  const [videoKey, setVideoKey] = useState("");
+  const [summary, setSummary] = useState("");
+const [videoId, setVideoId] = useState("");
+
 
   const aliveRef = useRef(true);
   useEffect(() => {
@@ -57,8 +59,9 @@ export default function SuperAdminLessonEditor() {
       setLesson(n);
       setTitle(n.title);
       setPosition(n.position || 1);
-      setDescription(n.description || "");
-      setVideoKey(n.videoKey || "");
+      setSummary(n.summary || "");
+      setVideoId(n.videoId || "");
+
     } catch (e) {
       if (!aliveRef.current) return;
 
@@ -93,12 +96,15 @@ export default function SuperAdminLessonEditor() {
         method: "PATCH",
         token,
         body: {
-          title: t,
-          position: Number(position) || 1,
-          description: description.trim() || null,
-          // keep flexible: backend can map video_key/video_id
-          video_key: videoKey.trim() || null,
-        },
+            title: t,
+            position: Number(position) || 1,
+            summary: summary.trim() || null,
+
+            // Cloudflare: store it as provider + id (backend DB already has these columns)
+            video_provider: "cloudflare_stream",
+            video_id: (videoId.trim() || null),
+            },
+
       });
 
       setInfo("Saved ✅");
@@ -243,30 +249,32 @@ export default function SuperAdminLessonEditor() {
           </div>
 
           <div>
-            <label className="text-sm text-slate-300">Description (optional)</label>
-            <textarea
-              className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 outline-none focus:border-slate-500"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              rows={3}
-              placeholder="What student will learn in this lesson…"
-            />
-          </div>
+  <label className="text-sm text-slate-300">Summary (optional)</label>
+  <textarea
+    className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 outline-none focus:border-slate-500"
+    value={summary}
+    onChange={(e) => setSummary(e.target.value)}
+    rows={3}
+    placeholder="What student will learn in this lesson…"
+  />
+</div>
 
-          <div>
-            <label className="text-sm text-slate-300">
-              Video Key (Cloudflare Stream/R2 key)
-            </label>
-            <input
-              className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 outline-none focus:border-slate-500"
-              value={videoKey}
-              onChange={(e) => setVideoKey(e.target.value)}
-              placeholder="e.g. cf_stream_video_id_or_r2_key"
-            />
-            <div className="mt-1 text-xs text-slate-500">
-              Later student player will request a secure token before streaming.
-            </div>
-          </div>
+
+         <div>
+  <label className="text-sm text-slate-300">
+    Video ID (Cloudflare Stream UID)
+  </label>
+  <input
+    className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 outline-none focus:border-slate-500"
+    value={videoId}
+    onChange={(e) => setVideoId(e.target.value)}
+    placeholder="e.g. 1a2b3c4d5e6f..."
+  />
+  <div className="mt-1 text-xs text-slate-500">
+    We store provider = cloudflare_stream and this UID as video_id.
+  </div>
+</div>
+
 
           <div className="flex flex-wrap gap-2">
             <button

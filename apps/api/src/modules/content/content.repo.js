@@ -263,6 +263,10 @@ async function updateLesson({ tenantId, lessonId, patch, updatedBy }) {
   if (patch.title !== undefined) { fields.push(`title=$${i++}`); values.push(patch.title); }
   if (patch.summary !== undefined) { fields.push(`summary=$${i++}`); values.push(patch.summary); }
   if (patch.position !== undefined) { fields.push(`position=$${i++}`); values.push(patch.position); }
+  if (patch.video_provider !== undefined) { fields.push(`video_provider=$${i++}`); values.push(patch.video_provider); }
+  if (patch.video_id !== undefined) { fields.push(`video_id=$${i++}`); values.push(patch.video_id); }
+
+
 
   if (!fields.length) return null;
 

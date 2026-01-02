@@ -40,7 +40,12 @@ const UpdateLessonSchema = z.object({
   title: z.string().min(2).optional(),
   summary: z.string().optional(),
   position: z.number().int().optional(),
+
+  video_provider: z.string().nullable().optional(),
+  video_id: z.string().nullable().optional(),
 });
+
+
 
 
 const StatusSchema = z.object({
@@ -106,13 +111,16 @@ const updateCourse = asyncHandler(async (req, res) => {
 
   // at least one field should be present
   if (
-    parsed.data.title === undefined &&
-    parsed.data.slug === undefined &&
-    parsed.data.description === undefined &&
-    parsed.data.level === undefined
-  ) {
-    throw new HttpError(400, "No fields to update");
-  }
+  parsed.data.title === undefined &&
+  parsed.data.summary === undefined &&
+  parsed.data.position === undefined &&
+  parsed.data.video_provider === undefined &&
+  parsed.data.video_id === undefined
+) {
+  throw new HttpError(400, "No fields to update");
+}
+
+
 
   const updated = await svc.updateCourse({
     tenantId: req.tenant.id,
