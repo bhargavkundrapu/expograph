@@ -42,29 +42,45 @@ export default function SuperAdminLessonResources() {
     return () => (aliveRef.current = false);
   }, []);
 
-  async function load() {
-    setErr("");
-    setInfo("");
-    setLoading(true);
+ async function load() {
+  setErr("");
+  setInfo("");
+  setLoading(true);
 
-    try {
-      const res = await apiFetch(`/api/v1/admin/courses/${courseId}/tree`, { token });
-      const data = res?.data ?? res;
+  try {
+    // 1) Tree for lesson meta (title etc)
+    const treeRes = await apiFetch(`/api/v1/admin/courses/${courseId}/tree`, { token });
+    const treeData = treeRes?.data ?? treeRes;
 
-      const l = findLessonInTree(data, lessonId);
-      if (!l) throw new ApiError("Lesson not found in course tree.", 404, null);
+    const l = findLessonInTree(treeData, lessonId);
+    if (!l) throw new ApiError("Lesson not found in course tree.", 404, null);
 
-      if (!aliveRef.current) return;
-      setTree(data);
-      setLesson(l);
-    } catch (e) {
-      if (!aliveRef.current) return;
-      setErr(e?.message || "Failed to load. Retry.");
-    } finally {
-      if (!aliveRef.current) return;
-      setLoading(false);
-    }
+    // 2) Resources list (real source)
+    const resRes = await apiFetch(`/api/v1/admin/lessons/${lessonId}/resources`, { token });
+    const resourcesData = resRes?.data ?? resRes;
+
+    // 3) Practice list (real source)
+    const pracRes = await apiFetch(`/api/v1/admin/lessons/${lessonId}/practice`, { token });
+    const practiceData = pracRes?.data ?? pracRes;
+
+    if (!aliveRef.current) return;
+
+    setTree(treeData);
+
+    // IMPORTANT: attach resources + practice to lesson object for rendering
+    setLesson({
+      ...l,
+      resources: Array.isArray(resourcesData) ? resourcesData : (resourcesData?.data ?? []),
+      practice: Array.isArray(practiceData) ? practiceData : (practiceData?.data ?? []),
+    });
+  } catch (e) {
+    if (!aliveRef.current) return;
+    setErr(e?.message || "Failed to load. Retry.");
+  } finally {
+    if (!aliveRef.current) return;
+    setLoading(false);
   }
+}
 
   useEffect(() => {
     load();
