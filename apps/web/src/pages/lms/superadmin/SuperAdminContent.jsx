@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { apiFetch, ApiError } from "../../../services/api";
 import { useAuth } from "../../../app/providers/AuthProvider";
+import { Link } from "react-router-dom";
 
 function extractList(res) {
   // tries hard to support different backend response shapes
@@ -276,6 +277,14 @@ export default function SuperAdminContent() {
                         ? "Unpublish"
                         : "Publish"}
                     </button>
+                    <button className="rounded-lg border border-slate-700 px-3 py-2 text-lg hover:bg-slate-900 disabled:opacity-60 ">
+                    <Link
+                    to={`/lms/superadmin/content/${c.id}`}
+                    >
+                    Manage
+                    </Link>
+                    </button>
+
                   </div>
                 </div>
               );

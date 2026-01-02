@@ -14,6 +14,11 @@ import StudentHome from "../pages/lms/student/StudentHome";
 import PublicOnly from "./PublicOnly";
 import PortalLayout from "../layouts/PortalLayout";
 import SuperAdminContent from "../pages/lms/superadmin/SuperAdminContent";
+import SuperAdminCourseBuilder from "../pages/lms/superadmin/SuperAdminCourseBuilder";
+import SuperAdminModuleLessons from "../pages/lms/superadmin/SuperAdminModuleLessons";
+import SuperAdminLessonEditor from "../pages/lms/superadmin/SuperAdminLessonEditor";
+
+
 
 export const router = createBrowserRouter([
   {
@@ -39,7 +44,10 @@ export const router = createBrowserRouter([
       children: [
         { index: true, element: <SuperAdminHome /> },
         { path: "content", element: <SuperAdminContent /> },
-        // next page we will create: content admin
+        { path: "content/:courseId", element: <SuperAdminCourseBuilder /> },
+        { path: "content/:courseId/modules/:moduleId", element: <SuperAdminModuleLessons /> },
+        { path: "content/:courseId/lessons/:lessonId", element: <SuperAdminLessonEditor /> },
+
         // { path: "content", element: <SuperAdminContent /> },
       ],
     },
