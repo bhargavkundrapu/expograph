@@ -81,6 +81,27 @@ async function updateLessonStatus({ tenantId, lessonId, status }) {
   );
   return rows[0] ?? null;
 }
+async function listLessonResourcesAdmin({ tenantId, lessonId }) {
+  const { rows } = await query(
+    `SELECT *
+     FROM resources
+     WHERE tenant_id=$1 AND lesson_id=$2
+     ORDER BY sort_order ASC, created_at ASC`,
+    [tenantId, lessonId]
+  );
+  return rows;
+}
+
+async function listLessonPracticeAdmin({ tenantId, lessonId }) {
+  const { rows } = await query(
+    `SELECT *
+     FROM practice_tasks
+     WHERE tenant_id=$1 AND lesson_id=$2
+     ORDER BY sort_order ASC, created_at ASC`,
+    [tenantId, lessonId]
+  );
+  return rows;
+}
 
 async function addResource({ tenantId, lessonId, type, title, url, body, sortOrder, createdBy }) {
   const { rows } = await query(
@@ -380,4 +401,6 @@ module.exports = {
   updateLesson,
   updateResource,
   updatePractice,
+  listLessonResourcesAdmin,
+  listLessonPracticeAdmin,
 };

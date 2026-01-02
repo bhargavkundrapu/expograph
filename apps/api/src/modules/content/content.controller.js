@@ -238,6 +238,22 @@ const updateLesson = asyncHandler(async (req, res) => {
   if (!updated) throw new HttpError(404, "Lesson not found");
   res.json({ ok: true, data: updated });
 });
+const listLessonResourcesAdmin = asyncHandler(async (req, res) => {
+  const rows = await svc.listLessonResourcesAdmin({
+    tenantId: req.tenant.id,
+    lessonId: req.params.lessonId,
+  });
+  res.json({ ok: true, data: rows });
+});
+
+const listLessonPracticeAdmin = asyncHandler(async (req, res) => {
+  const rows = await svc.listLessonPracticeAdmin({
+    tenantId: req.tenant.id,
+    lessonId: req.params.lessonId,
+  });
+  res.json({ ok: true, data: rows });
+});
+
 
 const setLessonStatus = asyncHandler(async (req, res) => {
   const parsed = StatusSchema.safeParse(req.body);
@@ -406,6 +422,9 @@ module.exports = {
   addPractice,
   updatePractice,
   courseTreeAdmin,
+  listLessonResourcesAdmin,
+  listLessonPracticeAdmin,
+
    
 
   // public

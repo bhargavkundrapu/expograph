@@ -17,6 +17,8 @@ import SuperAdminContent from "../pages/lms/superadmin/SuperAdminContent";
 import SuperAdminCourseBuilder from "../pages/lms/superadmin/SuperAdminCourseBuilder";
 import SuperAdminModuleLessons from "../pages/lms/superadmin/SuperAdminModuleLessons";
 import SuperAdminLessonEditor from "../pages/lms/superadmin/SuperAdminLessonEditor";
+import SuperAdminLessonResources from "../pages/lms/superadmin/SuperAdminLessonResources";
+
 
 
 
@@ -47,6 +49,8 @@ export const router = createBrowserRouter([
         { path: "content/:courseId", element: <SuperAdminCourseBuilder /> },
         { path: "content/:courseId/modules/:moduleId", element: <SuperAdminModuleLessons /> },
         { path: "content/:courseId/lessons/:lessonId", element: <SuperAdminLessonEditor /> },
+        { path: "content/:courseId/lessons/:lessonId/resources", element: <SuperAdminLessonResources /> },
+
 
         // { path: "content", element: <SuperAdminContent /> },
       ],

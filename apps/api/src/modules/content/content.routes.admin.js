@@ -25,6 +25,9 @@ router.patch("/lessons/:lessonId/status", ctrl.setLessonStatus);
 
 router.post("/lessons/:lessonId/resources", ctrl.addResource);
 router.patch("/resources/:resourceId", ctrl.updateResource);
+router.get("/lessons/:lessonId/resources", ctrl.listLessonResourcesAdmin);
+router.get("/lessons/:lessonId/practice", ctrl.listLessonPracticeAdmin);
+
 
 router.post("/lessons/:lessonId/practice", ctrl.addPractice);
 router.patch("/practice/:practiceId", ctrl.updatePractice);
