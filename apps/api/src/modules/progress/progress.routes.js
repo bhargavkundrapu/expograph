@@ -39,7 +39,7 @@ router.get(
 );
 router.get(
   "/courses/:courseSlug/progress",
-  authRequired,
+  requireAuth,
   requirePermission("progress:read"),
   ctrl.courseProgress
 );
