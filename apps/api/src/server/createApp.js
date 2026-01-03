@@ -1,6 +1,6 @@
 
 
-
+const { listPermissionsForUser } = require("../modules/rbac/rbac.repo");
 
 // apps/api/src/server/createApp.js
 const { router: leadsPublic } = require("../modules/leads/leads.routes.public");
@@ -139,23 +139,36 @@ app.use(
 
 
 // last line:
- app.use(notFound);
-app.use(errorHandler);
+
+
 
 
 
   // Auth test endpoint
-  app.get("/api/v1/me", requireAuth, async (req, res) => {
+ 
+
+app.get("/api/v1/me", requireAuth, async (req, res, next) => {
+  try {
+    const userId = req.auth?.userId;
+    const tenantId = req.auth?.tenantId;
+
+    const permissions = await listPermissionsForUser({ tenantId, userId });
+
     res.json({
       ok: true,
       data: {
-        auth: req.auth,
-        tenant: req.tenant,
-        permissions: req.permissions ?? [],
+        userId,
+        tenantId,
+        membershipId: req.auth?.membershipId,
+        role: req.auth?.role,
+        permissions,
       },
     });
-  });
-  
+  } catch (e) {
+    next(e);
+  }
+});
+
 
 
   // RBAC test endpoint (only users with content:write)
@@ -165,7 +178,7 @@ app.use(errorHandler);
     requirePermission("content:write"),
     (req, res) => res.json({ ok: true, data: "admin pong" })
   );
-
+   app.use(notFound);
   app.use(errorHandler);
   return app;
 }

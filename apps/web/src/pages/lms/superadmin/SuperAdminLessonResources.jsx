@@ -3,6 +3,22 @@ import { Link, useParams } from "react-router-dom";
 import { apiFetch, ApiError } from "../../../services/api";
 import { useAuth } from "../../../app/providers/AuthProvider";
 
+
+function normalizeUrl(url) {
+  if (!url) return "";
+  const u = url.trim();
+  if (!u) return "";
+  if (u.startsWith("http://") || u.startsWith("https://")) return u;
+  return "https://" + u; // auto-fix
+}
+
+function toIntOrUndefined(v) {
+  if (v === "" || v === null || v === undefined) return undefined;
+  const n = Number(v);
+  return Number.isFinite(n) ? n : undefined;
+}
+
+
 function findLessonInTree(tree, lessonId) {
   const lessons = tree?.lessons || [];
   return lessons.find((l) => String(l.id) === String(lessonId)) || null;
@@ -66,6 +82,10 @@ export default function SuperAdminLessonResources() {
     if (!aliveRef.current) return;
 
     setTree(treeData);
+
+    resourcesList.sort((a,b) => (a.sort_order ?? 0) - (b.sort_order ?? 0));
+    practiceList.sort((a,b) => (a.sort_order ?? 0) - (b.sort_order ?? 0));
+
 
     // IMPORTANT: attach resources + practice to lesson object for rendering
     setLesson({
