@@ -53,10 +53,14 @@ async function completeLesson({ tenantId, userId, lessonId }) {
 async function summary({ tenantId, userId }) {
   return repo.getSummary({ tenantId, userId });
 }
+async function courseProgress({ tenantId, userId, courseSlug }) {
+  return repo.courseProgressBySlug({ tenantId, userId, courseSlug });
+}
 
 module.exports = {
   startLesson,
   progressUpdate,
   completeLesson,
   summary,
+  courseProgress,
 };

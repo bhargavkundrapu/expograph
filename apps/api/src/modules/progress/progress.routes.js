@@ -37,5 +37,11 @@ router.get(
   requirePermission("progress:read"),
   ctrl.summary
 );
+router.get(
+  "/courses/:courseSlug/progress",
+  authRequired,
+  requirePermission("progress:read"),
+  ctrl.courseProgress
+);
 
 module.exports = { router };

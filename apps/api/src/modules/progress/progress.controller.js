@@ -45,10 +45,19 @@ const summary = asyncHandler(async (req, res) => {
   const data = await svc.summary({ tenantId, userId });
   res.json({ ok: true, data });
 });
+const courseProgress = asyncHandler(async (req, res) => {
+  const tenantId = req.auth.tenantId;
+  const userId = req.auth.userId;
+  const { courseSlug } = req.params;
+
+  const row = await svc.courseProgress({ tenantId, userId, courseSlug });
+  return res.json({ ok: true, data: row });
+});
 
 module.exports = {
   start,
   progress,
   complete,
   summary,
+  courseProgress,
 };

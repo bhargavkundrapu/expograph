@@ -92,11 +92,57 @@ async function getSummary({ tenantId, userId }) {
   );
   return rows[0] || { completed_lessons: 0, in_progress_lessons: 0, total_watch_seconds: 0 };
 }
+async function courseProgressBySlug({ tenantId, userId, courseSlug }) {
+  // total published lessons in this course
+  const totalRow = (await query(
+    `
+    SELECT COUNT(*)::int AS total
+    FROM lessons l
+    JOIN course_modules m
+      ON m.id = l.module_id AND m.tenant_id = l.tenant_id
+    JOIN courses c
+      ON c.id = m.course_id AND c.tenant_id = m.tenant_id
+    WHERE c.tenant_id = $1
+      AND c.slug = $2
+      AND c.status = 'published'
+      AND m.status = 'published'
+      AND l.status = 'published'
+    `,
+    [tenantId, courseSlug]
+  )).rows[0];
 
+  const total = totalRow?.total ?? 0;
+
+  // completed lesson ids for this user (published lessons only)
+  const { rows } = await query(
+    `
+    SELECT lp.lesson_id
+    FROM lesson_progress lp
+    JOIN lessons l
+      ON l.id = lp.lesson_id AND l.tenant_id = lp.tenant_id AND l.status='published'
+    JOIN course_modules m
+      ON m.id = l.module_id AND m.tenant_id = l.tenant_id AND m.status='published'
+    JOIN courses c
+      ON c.id = m.course_id AND c.tenant_id = m.tenant_id AND c.status='published'
+    WHERE lp.tenant_id = $1
+      AND lp.user_id = $2
+      AND c.slug = $3
+      AND lp.completed_at IS NOT NULL
+    `,
+    [tenantId, userId, courseSlug]
+  );
+
+  const completedLessonIds = rows.map(r => r.lesson_id);
+  const completed = completedLessonIds.length;
+  const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+  return { total, completed, percent, completedLessonIds };
+}
 module.exports = {
   assertLessonPublished,
   startLesson,
   updateProgress,
   completeLesson,
   getSummary,
+  courseProgressBySlug,
 };
