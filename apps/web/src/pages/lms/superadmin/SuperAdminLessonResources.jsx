@@ -3,6 +3,16 @@ import { Link, useParams } from "react-router-dom";
 import { apiFetch, ApiError } from "../../../services/api";
 import { useAuth } from "../../../app/providers/AuthProvider";
 
+function unwrapData(json) {
+  // apiFetch returns { ok:true, data: ... }
+  return json?.data ?? json;
+}
+
+function unwrapArray(json) {
+  const d = unwrapData(json);
+  return Array.isArray(d) ? d : [];
+}
+
 
 function normalizeUrl(url) {
   if (!url) return "";
@@ -58,48 +68,52 @@ export default function SuperAdminLessonResources() {
     return () => (aliveRef.current = false);
   }, []);
 
- async function load() {
+async function load() {
   setErr("");
   setInfo("");
   setLoading(true);
 
   try {
-    // 1) Tree for lesson meta (title etc)
-    const treeRes = await apiFetch(`/api/v1/admin/courses/${courseId}/tree`, { token });
-    const treeData = treeRes?.data ?? treeRes;
+    // 1) Course tree (for lesson title/meta)
+    const treeJson = await apiFetch(`/api/v1/admin/courses/${courseId}/tree`, { token });
+    const treeData = unwrapData(treeJson);
 
     const l = findLessonInTree(treeData, lessonId);
     if (!l) throw new ApiError("Lesson not found in course tree.", 404, null);
 
-    // 2) Resources list (real source)
-    const resRes = await apiFetch(`/api/v1/admin/lessons/${lessonId}/resources`, { token });
-    const resourcesData = resRes?.data ?? resRes;
+    // 2) Resources (real source)
+    const resJson = await apiFetch(`/api/v1/admin/lessons/${lessonId}/resources`, { token });
+    const resourcesList = unwrapArray(resJson);
 
-    // 3) Practice list (real source)
-    const pracRes = await apiFetch(`/api/v1/admin/lessons/${lessonId}/practice`, { token });
-    const practiceData = pracRes?.data ?? pracRes;
+    // 3) Practice (real source)
+    const pracJson = await apiFetch(`/api/v1/admin/lessons/${lessonId}/practice`, { token });
+    const practiceList = unwrapArray(pracJson);
+
+    // Sort stable: sort_order then created_at
+    resourcesList.sort((a, b) =>
+      (a.sort_order ?? 0) - (b.sort_order ?? 0) ||
+      new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+    );
+
+    practiceList.sort((a, b) =>
+      (a.sort_order ?? 0) - (b.sort_order ?? 0) ||
+      new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+    );
 
     if (!aliveRef.current) return;
 
     setTree(treeData);
-resourcesList.sort((a, b) =>
-  (a.sort_order ?? 0) - (b.sort_order ?? 0) ||
-  new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
-);
-
-practiceList.sort((a, b) =>
-  (a.sort_order ?? 0) - (b.sort_order ?? 0) ||
-  new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
-);
-
-
-
-    // IMPORTANT: attach resources + practice to lesson object for rendering
     setLesson({
       ...l,
-      resources: Array.isArray(resourcesData) ? resourcesData : (resourcesData?.data ?? []),
-      practice: Array.isArray(practiceData) ? practiceData : (practiceData?.data ?? []),
+      resources: resourcesList,
+      practice: practiceList,
     });
+    // auto next sort defaults (optional)
+const nextResSort = (resourcesList.reduce((m, x) => Math.max(m, x.sort_order ?? 0), 0)) + 1;
+const nextPracSort = (practiceList.reduce((m, x) => Math.max(m, x.sort_order ?? 0), 0)) + 1;
+
+setRSort(nextResSort);
+setPSort(nextPracSort);
   } catch (e) {
     if (!aliveRef.current) return;
     setErr(e?.message || "Failed to load. Retry.");
@@ -108,7 +122,6 @@ practiceList.sort((a, b) =>
     setLoading(false);
   }
 }
-
   useEffect(() => {
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -122,7 +135,7 @@ practiceList.sort((a, b) =>
   const resources = useMemo(() => lesson?.resources || [], [lesson]);
   const practices = useMemo(() => lesson?.practice || [], [lesson]);
 
-  async function addResource() {
+async function addResource() {
   setErr(""); setInfo("");
 
   const title = rTitle.trim();
@@ -131,17 +144,12 @@ practiceList.sort((a, b) =>
   const type = rType;
   const body = rBody.trim();
 
-  // URL must be valid (backend zod .url())
   const url = type === "text" ? "" : normalizeUrl(rUrl);
 
   if (type !== "text" && !url) return setErr("URL required for link/cheatsheet.");
   if (type === "text" && !body) return setErr("Body required for text resource.");
 
-  // sortOrder must be int; keep undefined if empty
-  const sortOrderNum =
-    rSort === "" || rSort === null || rSort === undefined
-      ? undefined
-      : Number.isFinite(Number(rSort)) ? Number(rSort) : undefined;
+  const sortOrderNum = Number.isFinite(Number(rSort)) ? Number(rSort) : 0;
 
   setSavingResource(true);
   try {
@@ -152,13 +160,12 @@ practiceList.sort((a, b) =>
         type,
         title,
         ...(type === "text" ? { body } : { url }),
-        ...(sortOrderNum !== undefined ? { sortOrder: sortOrderNum } : {}),
+        sortOrder: sortOrderNum,
       },
     });
 
     setInfo("Resource added ✅");
     setRTitle(""); setRUrl(""); setRBody(""); setRSort(0);
-
     await load();
   } catch (e) {
     setErr(e?.message || "Failed to add resource.");
