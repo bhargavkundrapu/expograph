@@ -39,27 +39,32 @@ export default function StudentCourseTree() {
     setLoading(true);
     try {
       const json = await apiFetch(`/api/v1/courses/${courseSlug}`, { token, signal });
-      const data = unwrapData(json);
+     const data = unwrapData(json);
 
-      const mods = Array.isArray(data?.modules) ? data.modules : [];
+// backend may return { course: {...} } OR directly course object
+const courseObj = data?.course ?? data;
 
-      // Stable order
-      mods.sort((a, b) =>
-        (a.position ?? 0) - (b.position ?? 0) ||
-        new Date(a.created_at || 0).getTime() - new Date(b.created_at || 0).getTime()
-      );
+// modules might be at courseObj.modules (new) or data.modules (old)
+const mods = Array.isArray(courseObj?.modules) ? courseObj.modules : [];
 
-      mods.forEach((m) => {
-        if (Array.isArray(m.lessons)) {
-          m.lessons.sort((a, b) =>
-            (a.position ?? 0) - (b.position ?? 0) ||
-            new Date(a.created_at || 0).getTime() - new Date(b.created_at || 0).getTime()
-          );
-        }
-      });
+// stable order
+mods.sort((a, b) =>
+  (a.position ?? 0) - (b.position ?? 0) ||
+  new Date(a.created_at || 0).getTime() - new Date(b.created_at || 0).getTime()
+);
 
-      setCourse(data);
-      setModules(mods);
+// and each module lessons stable sort
+mods.forEach((m) => {
+  if (Array.isArray(m.lessons)) {
+    m.lessons.sort((a, b) =>
+      (a.position ?? 0) - (b.position ?? 0) ||
+      new Date(a.created_at || 0).getTime() - new Date(b.created_at || 0).getTime()
+    );
+  }
+});
+
+setCourse(courseObj);
+setModules(mods);
      console.log("MODULE SAMPLE:", mods[0]);
 console.log("LESSON SAMPLE:", mods[0]?.lessons?.[0]);
     } catch (e) {
