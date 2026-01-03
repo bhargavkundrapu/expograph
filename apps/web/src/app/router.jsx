@@ -18,9 +18,9 @@ import SuperAdminCourseBuilder from "../pages/lms/superadmin/SuperAdminCourseBui
 import SuperAdminModuleLessons from "../pages/lms/superadmin/SuperAdminModuleLessons";
 import SuperAdminLessonEditor from "../pages/lms/superadmin/SuperAdminLessonEditor";
 import SuperAdminLessonResources from "../pages/lms/superadmin/SuperAdminLessonResources";
-
-
-
+import StudentCourses from "../pages/lms/student/StudentCourses";
+import StudentCourseTree from "../pages/lms/student/StudentCourseTree";
+import StudentLesson from "../pages/lms/student/StudentLesson";
 
 export const router = createBrowserRouter([
   {
@@ -86,6 +86,9 @@ export const router = createBrowserRouter([
       ),
       children: [
         { index: true, element: <StudentHome /> },
+        { path: "courses", element: <StudentCourses /> },
+        { path: "courses/:courseSlug", element: <StudentCourseTree /> },
+        { path: "courses/:courseSlug/modules/:moduleSlug/lessons/:lessonSlug", element: <StudentLesson /> },
       ],
     },
   ],

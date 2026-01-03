@@ -174,7 +174,23 @@ async function getPublishedCourseTreeBySlug({ tenantId, courseSlug }) {
     )).rows;
   }
 
-  return { course, modules, lessons };
+  // Group lessons by module_id
+  const lessonsByModule = new Map();
+  for (const l of lessons) {
+    if (!lessonsByModule.has(l.module_id)) lessonsByModule.set(l.module_id, []);
+    lessonsByModule.get(l.module_id).push(l);
+  }
+
+  // Attach lessons[] to each module
+  const modulesWithLessons = modules.map((m) => ({
+    ...m,
+    lessons: lessonsByModule.get(m.id) || [],
+  }));
+
+  // Return a single object shape that frontend loves:
+  // data.course contains modules[] and each module has lessons[]
+  return { course: { ...course, modules: modulesWithLessons } };
+
 }
 
 async function getPublishedLessonBySlugs({ tenantId, courseSlug, moduleSlug, lessonSlug }) {
