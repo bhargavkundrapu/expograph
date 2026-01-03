@@ -50,9 +50,11 @@ export async function apiFetch(path, options = {}) {
 
   if (!res.ok) {
     const msg =
-      json?.error?.message ||
-      json?.message ||
-      `Request failed (${res.status})`;
+  json?.error?.message ||
+  json?.error ||                // IMPORTANT (your backend sends error as string)
+  json?.message ||
+  `Request failed (${res.status})`;
+
     throw new ApiError(msg, res.status, json);
   }
 

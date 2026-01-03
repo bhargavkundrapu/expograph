@@ -82,9 +82,16 @@ export default function SuperAdminLessonResources() {
     if (!aliveRef.current) return;
 
     setTree(treeData);
+resourcesList.sort((a, b) =>
+  (a.sort_order ?? 0) - (b.sort_order ?? 0) ||
+  new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+);
 
-    resourcesList.sort((a,b) => (a.sort_order ?? 0) - (b.sort_order ?? 0));
-    practiceList.sort((a,b) => (a.sort_order ?? 0) - (b.sort_order ?? 0));
+practiceList.sort((a, b) =>
+  (a.sort_order ?? 0) - (b.sort_order ?? 0) ||
+  new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+);
+
 
 
     // IMPORTANT: attach resources + practice to lesson object for rendering
@@ -116,42 +123,51 @@ export default function SuperAdminLessonResources() {
   const practices = useMemo(() => lesson?.practice || [], [lesson]);
 
   async function addResource() {
-    setErr(""); setInfo("");
+  setErr(""); setInfo("");
 
-    const title = rTitle.trim();
-    if (!title) return setErr("Resource title required.");
+  const title = rTitle.trim();
+  if (!title) return setErr("Resource title required.");
 
-    const type = rType;
-    const url = rUrl.trim();
-    const body = rBody.trim();
+  const type = rType;
+  const body = rBody.trim();
 
-    if (type !== "text" && !url) return setErr("URL required for link/cheatsheet.");
-    if (type === "text" && !body) return setErr("Body required for text resource.");
+  // URL must be valid (backend zod .url())
+  const url = type === "text" ? "" : normalizeUrl(rUrl);
 
-    setSavingResource(true);
-    try {
-      await apiFetch(`/api/v1/admin/lessons/${lessonId}/resources`, {
-        method: "POST",
-        token,
-        body: {
-          type,
-          title,
-          url: type === "text" ? undefined : url,
-          body: type === "text" ? body : undefined,
-          sortOrder: Number(rSort) || 0,
-        },
-      });
+  if (type !== "text" && !url) return setErr("URL required for link/cheatsheet.");
+  if (type === "text" && !body) return setErr("Body required for text resource.");
 
-      setInfo("Resource added ✅");
-      setRTitle(""); setRUrl(""); setRBody(""); setRSort(0);
-      await load();
-    } catch (e) {
-      setErr(e?.message || "Failed to add resource.");
-    } finally {
-      setSavingResource(false);
-      setTimeout(() => aliveRef.current && setInfo(""), 1200);
-    }
+  // sortOrder must be int; keep undefined if empty
+  const sortOrderNum =
+    rSort === "" || rSort === null || rSort === undefined
+      ? undefined
+      : Number.isFinite(Number(rSort)) ? Number(rSort) : undefined;
+
+  setSavingResource(true);
+  try {
+    await apiFetch(`/api/v1/admin/lessons/${lessonId}/resources`, {
+      method: "POST",
+      token,
+      body: {
+        type,
+        title,
+        ...(type === "text" ? { body } : { url }),
+        ...(sortOrderNum !== undefined ? { sortOrder: sortOrderNum } : {}),
+      },
+    });
+
+    setInfo("Resource added ✅");
+    setRTitle(""); setRUrl(""); setRBody(""); setRSort(0);
+
+    await load();
+  } catch (e) {
+    setErr(e?.message || "Failed to add resource.");
+  } finally {
+    setSavingResource(false);
+    setTimeout(() => aliveRef.current && setInfo(""), 1200);
   }
+}
+
 
   async function addPractice() {
     setErr(""); setInfo("");
