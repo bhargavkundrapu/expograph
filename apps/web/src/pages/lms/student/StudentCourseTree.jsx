@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import Skeleton from "../../../components/ui/Skeleton";
-import ErrorState from "../../../components/common/ErrorState";
+import Skeleton from "../../../Components/ui/Skeleton";
+import ErrorState from "../../../Components/common/ErrorState";
 import { apiFetch } from "../../../services/api";
 import { unwrapData } from "../../../services/apiShape";
 import { useAuth } from "../../../app/providers/AuthProvider";
