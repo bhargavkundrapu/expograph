@@ -5,17 +5,20 @@ import ErrorState from "../../../Components/common/ErrorState";
 import { apiFetch } from "../../../services/api";
 import { unwrapData } from "../../../services/apiShape";
 import { useAuth } from "../../../app/providers/AuthProvider";
+import { FaBook, FaChartLine, FaArrowLeft, FaCheckCircle, FaCircle, FaArrowRight, FaPlay } from "react-icons/fa";
+import { HiSparkles } from "react-icons/hi";
+import Card from "../../../components/ui/Card";
 
 function TreeSkeleton() {
   return (
     <div className="space-y-4">
-      <div className="rounded-2xl border border-slate-800 bg-slate-900/30 p-5">
+      <div className="border-2 border-white bg-black p-6">
         <Skeleton className="h-6 w-56" />
         <Skeleton className="mt-3 h-4 w-full" />
         <Skeleton className="mt-2 h-4 w-5/6" />
       </div>
       {Array.from({ length: 3 }).map((_, i) => (
-        <div key={i} className="rounded-2xl border border-slate-800 bg-slate-900/30 p-5">
+        <div key={i} className="border-2 border-white bg-black p-6">
           <Skeleton className="h-5 w-40" />
           <Skeleton className="mt-3 h-4 w-72" />
           <Skeleton className="mt-2 h-4 w-64" />
@@ -80,53 +83,69 @@ const isCompleted = (lessonId) => completedSet.has(lessonId);
   if (loading) {
   return (
     <div className="space-y-4">
-      <div className="rounded-2xl border border-slate-800 bg-slate-900/30 p-5">
-        <div className="h-6 w-64 animate-pulse rounded bg-slate-800" />
-        <div className="mt-3 h-4 w-full animate-pulse rounded bg-slate-800" />
-        <div className="mt-2 h-4 w-5/6 animate-pulse rounded bg-slate-800" />
+      <div className="border-2 border-white bg-black p-6">
+        <div className="h-6 w-64 animate-pulse bg-white opacity-20" />
+        <div className="mt-3 h-4 w-full animate-pulse bg-white opacity-20" />
+        <div className="mt-2 h-4 w-5/6 animate-pulse bg-white opacity-20" />
       </div>
-      <div className="rounded-2xl border border-slate-800 bg-slate-900/30 p-5">
-        <div className="h-5 w-40 animate-pulse rounded bg-slate-800" />
-        <div className="mt-3 h-20 w-full animate-pulse rounded bg-slate-800" />
+      <div className="border-2 border-white bg-black p-6">
+        <div className="h-5 w-40 animate-pulse bg-white opacity-20" />
+        <div className="mt-3 h-20 w-full animate-pulse bg-white opacity-20" />
       </div>
     </div>
   );
 }
   return (
-    
-    <div className="space-y-6">
-      <div className="rounded-2xl border border-slate-800 bg-slate-900/30 p-5">
-  <div className="flex items-center justify-between">
-    <div className="text-lg font-semibold">Your Progress</div>
-    <div className="text-sm text-slate-300">
-      {progress.completed}/{progress.total} • {progress.percent}%
-    </div>
-  </div>
+    <div className="layout-flex-col gap-lg animate-fadeIn" style={{ width: '100%' }}>
+      <Card variant="gradient" className="p-6" style={{ marginBottom: '1.5rem', width: '100%', boxSizing: 'border-box' }}>
+        <div className="layout-flex items-center justify-between" style={{ marginBottom: '1rem' }}>
+          <div className="layout-flex items-center gap-md">
+            <div className="p-3 rounded-xl bg-gradient-to-br from-cyan-400 to-blue-500 shadow-lg shadow-cyan-500/30">
+              <FaChartLine className="text-white text-xl" />
+            </div>
+            <div>
+              <div className="text-xl font-bold section-title" style={{ margin: 0 }}>Your Progress</div>
+              <div className="text-sm text-gray-400" style={{ marginTop: '0.25rem' }}>Track your learning journey</div>
+            </div>
+          </div>
+          <div className="text-right">
+            <div className="text-2xl font-bold text-white" style={{ margin: 0 }}>{progress.percent}%</div>
+            <div className="text-xs text-gray-400" style={{ margin: 0 }}>{progress.completed}/{progress.total} completed</div>
+          </div>
+        </div>
 
-  <div className="mt-3 h-3 w-full overflow-hidden rounded-full bg-slate-800">
-    <div
-      className="h-full rounded-full bg-white"
-      style={{ width: `${progress.percent || 0}%` }}
-    />
-  </div>
+        <div className="h-3 w-full overflow-hidden rounded-full bg-gray-800 border border-gray-700" style={{ marginTop: '1rem' }}>
+          <div
+            className="h-full bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 rounded-full transition-all duration-1000 ease-out shadow-lg shadow-cyan-500/50"
+            style={{ width: `${progress.percent || 0}%`, height: '100%' }}
+          />
+        </div>
 
-  <div className="mt-2 text-xs text-slate-500">
-    Small daily progress = exponential growth 📈
-  </div>
-</div>
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-bold">{course?.title || "Course"}</h1>
-          <p className="text-sm text-slate-300">
-            Modules & lessons (published only). Next we’ll wire lesson player + progress.
+        <div className="layout-flex items-center gap-2 text-xs text-gray-400" style={{ marginTop: '1rem' }}>
+          <HiSparkles className="text-cyan-400 animate-pulse-slow" />
+          <span>Small daily progress = exponential growth 📈</span>
+        </div>
+      </Card>
+      <div className="layout-flex flex-wrap items-center justify-between gap-lg" style={{ marginBottom: '1.5rem', width: '100%' }}>
+        <div style={{ flex: '1 1 300px', minWidth: '280px' }}>
+          <div className="layout-flex items-center gap-md" style={{ marginBottom: '0.75rem' }}>
+            <div className="p-2 rounded-lg bg-gradient-to-br from-purple-400 to-pink-500">
+              <FaBook className="text-white" />
+            </div>
+            <h1 className="section-hero text-4xl" style={{ margin: 0 }}>{course?.title || "Course"}</h1>
+          </div>
+          <p className="section-body text-gray-300 text-lg" style={{ maxWidth: '42rem', margin: 0 }}>
+            Modules & lessons (published only). Complete lessons to track your progress.
           </p>
         </div>
 
         <Link
           to={backToCourses}
-          className="rounded-xl border border-slate-700 px-3 py-2 text-sm hover:bg-slate-900"
+          className="layout-flex items-center gap-2 border-2 border-gray-700 bg-gray-900 text-white px-5 py-2.5 rounded-lg text-sm font-semibold hover:border-white hover:bg-white hover:text-black transition-all duration-300"
+          style={{ flex: '0 0 auto' }}
         >
-          ← Back to Courses
+          <FaArrowLeft />
+          Back to Courses
         </Link>
       </div>
 
@@ -138,21 +157,29 @@ const isCompleted = (lessonId) => completedSet.has(lessonId);
       {loading ? (
         <TreeSkeleton />
       ) : (
-        <div className="space-y-4">
+        <div className="layout-flex-col gap-md" style={{ width: '100%' }}>
        
   {modules.map((m) => {
     const modSlug = m.slug ?? m.module_slug ?? m.moduleSlug ?? "";
 
     return (
-      <div
+      <Card
         key={m.id}
-        className="rounded-2xl border border-slate-800 bg-slate-900/30 p-5"
+        variant="elevated"
+        className="p-6 group"
+        style={{ width: '100%', boxSizing: 'border-box' }}
       >
-        <div className="text-lg font-semibold">{m.title}</div>
+        <div className="layout-flex items-center gap-md" style={{ marginBottom: '1.5rem' }}>
+          <div className="p-3 rounded-xl bg-gradient-to-br from-purple-400/20 to-pink-500/20 border border-purple-400/30">
+            <FaBook className="text-purple-400 text-xl" />
+          </div>
+          <div className="text-2xl font-bold section-title" style={{ margin: 0 }}>{m.title}</div>
+        </div>
 
-        <div className="mt-3 space-y-2">
-          {(m.lessons || []).map((l) => {
+        <div className="layout-flex-col gap-sm" style={{ width: '100%' }}>
+          {(m.lessons || []).map((l, lessonIdx) => {
             const lesSlug = l.slug ?? l.lesson_slug ?? l.lessonSlug ?? "";
+            const completed = isCompleted(l.id);
 
             const to =
               modSlug && lesSlug
@@ -162,35 +189,48 @@ const isCompleted = (lessonId) => completedSet.has(lessonId);
             return (
               <div
                 key={l.id}
-                className="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-950/40 px-4 py-3"
+                className={`layout-flex items-center justify-between rounded-lg border-2 px-5 py-4 transition-all duration-300 ${
+                  completed
+                    ? "bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border-emerald-500/30"
+                    : "bg-gray-900 border-gray-800 hover:border-cyan-400/50 hover:bg-gray-800"
+                }`}
+                style={{ animationDelay: `${lessonIdx * 0.05}s`, width: '100%', boxSizing: 'border-box' }}
               >
-                <div>
-                  <div className="font-medium flex items-center gap-2">
-  {isCompleted(l.id) ? (
-    <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-300">
-      ✓
-    </span>
-  ) : (
-    <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-slate-800 text-slate-400">
-      •
-    </span>
-  )}
-  {l.title}
-</div>
-                  <div className="text-xs text-slate-500">
-                    {l.status || "published"}
+                <div className="layout-flex items-center gap-lg" style={{ flex: '1 1 auto' }}>
+                  {completed ? (
+                    <div className="p-2 rounded-lg bg-gradient-to-br from-emerald-400 to-teal-500 shadow-lg shadow-emerald-500/30">
+                      <FaCheckCircle className="text-white text-lg" />
+                    </div>
+                  ) : (
+                    <div className="p-2 rounded-lg bg-gray-800 border border-gray-700">
+                      <FaCircle className="text-gray-500 text-sm" />
+                    </div>
+                  )}
+                  <div>
+                    <div className={`font-semibold flex items-center gap-2 ${completed ? 'text-emerald-300' : 'text-white'}`}>
+                      {l.title}
+                    </div>
+                    <div className="text-xs text-gray-500 mt-1">
+                      {l.status || "published"}
+                    </div>
                   </div>
                 </div>
 
                 {to ? (
                   <Link
                     to={to}
-                    className="rounded-lg bg-white px-3 py-2 text-sm font-medium text-slate-900 hover:bg-slate-200"
+                    className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-all duration-300 ${
+                      completed
+                        ? "bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 hover:bg-emerald-500/30"
+                        : "bg-gradient-to-r from-cyan-400 to-blue-500 text-white hover:from-cyan-500 hover:to-blue-600 hover:shadow-lg hover:shadow-cyan-500/30"
+                    } hover:scale-105 active:scale-95`}
                   >
-                    Open →
+                    <FaPlay className="text-xs" />
+                    Open
+                    <FaArrowRight className="text-xs" />
                   </Link>
                 ) : (
-                  <span className="rounded-lg border border-slate-700 px-3 py-2 text-xs text-slate-400">
+                  <span className="px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 text-gray-500 text-xs">
                     Missing slug
                   </span>
                 )}
@@ -198,7 +238,7 @@ const isCompleted = (lessonId) => completedSet.has(lessonId);
             );
           })}
         </div>
-      </div>
+      </Card>
     );
   })}
 </div>

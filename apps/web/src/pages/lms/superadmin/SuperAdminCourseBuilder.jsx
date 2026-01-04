@@ -123,8 +123,8 @@ export default function SuperAdminCourseBuilder() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold">Course Builder</h1>
-          <p className="text-sm text-slate-300">
+          <h1 className="text-3xl font-bold">Course Builder</h1>
+          <p className="text-sm text-white">
             Manage modules for this course (admin).
           </p>
         </div>
@@ -132,14 +132,14 @@ export default function SuperAdminCourseBuilder() {
         <div className="flex gap-2">
           <button
             onClick={loadTree}
-            className="rounded-lg border border-slate-700 px-3 py-2 text-sm hover:bg-slate-900"
+            className=" border-2 border-white px-3 py-2 text-sm hover:bg-white hover:text-black"
             type="button"
           >
             Refresh
           </button>
           <Link
             to="/lms/superadmin/content"
-            className="rounded-lg border border-slate-700 px-3 py-2 text-sm hover:bg-slate-900"
+            className=" border-2 border-white px-3 py-2 text-sm hover:bg-white hover:text-black"
           >
             ← Back
           </Link>
@@ -147,7 +147,7 @@ export default function SuperAdminCourseBuilder() {
       </div>
 
       {err ? (
-        <div className="rounded-xl border border-red-900/60 bg-red-950/40 px-4 py-3 text-sm text-red-200">
+        <div className=" border border-2 border-white bg-black px-4 py-3 text-sm text-white">
           {err}{" "}
           <button
             onClick={loadTree}
@@ -160,39 +160,39 @@ export default function SuperAdminCourseBuilder() {
       ) : null}
 
       {loading ? (
-        <div className="text-sm text-slate-300">Loading course…</div>
+        <div className="text-sm text-white">Loading course…</div>
       ) : (
         <>
-          <div className="rounded-2xl border border-slate-800 bg-slate-900/30 p-5">
-            <div className="text-sm text-slate-400">Course</div>
+          <div className=" border-2 border-white bg-black p-5">
+            <div className="text-sm text-white opacity-80">Course</div>
             <div className="mt-1 text-xl font-semibold">
               {course?.title || "Untitled course"}
             </div>
-            <div className="mt-1 text-xs text-slate-500">
+            <div className="mt-1 text-xs text-white opacity-80">
               ID: {courseId} {course?.slug ? `• slug: ${course.slug}` : ""}
             </div>
           </div>
 
           <form
             onSubmit={createModule}
-            className="rounded-2xl border border-slate-800 bg-slate-900/30 p-5"
+            className=" border-2 border-white bg-black p-5"
           >
             <div className="mb-3 font-semibold">Create Module</div>
 
             <div className="grid gap-3 md:grid-cols-3">
               <div className="md:col-span-2">
-                <label className="text-sm text-slate-300">Title</label>
+                <label className="text-sm text-white">Title</label>
                 <input
-                  className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 outline-none focus:border-slate-500"
+                  className="mt-1 w-full  border-2 border-white bg-black px-3 py-2 text-slate-100 outline-none focus:border-slate-500"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="JSX + Components"
                 />
               </div>
               <div>
-                <label className="text-sm text-slate-300">Position</label>
+                <label className="text-sm text-white">Position</label>
                 <input
-                  className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 outline-none focus:border-slate-500"
+                  className="mt-1 w-full  border-2 border-white bg-black px-3 py-2 text-slate-100 outline-none focus:border-slate-500"
                   value={position}
                   onChange={(e) => setPosition(e.target.value)}
                   type="number"
@@ -204,7 +204,7 @@ export default function SuperAdminCourseBuilder() {
             <div className="mt-4">
               <button
                 disabled={saving}
-                className="rounded-lg bg-white px-4 py-2 text-sm font-medium text-slate-900 hover:bg-slate-200 disabled:opacity-60"
+                className=" border-2 border-white bg-white text-black px-4 py-2 text-sm font-semibold hover:bg-black hover:text-white transition-all disabled:opacity-60"
                 type="submit"
               >
                 {saving ? "Creating…" : "Create Module"}
@@ -212,17 +212,17 @@ export default function SuperAdminCourseBuilder() {
             </div>
           </form>
 
-          <div className="rounded-2xl border border-slate-800 bg-slate-900/20">
-            <div className="border-b border-slate-800 px-5 py-3 font-semibold">
+          <div className=" border-2 border-white bg-black">
+            <div className="border-b-2 border-white px-5 py-3 font-semibold">
               Modules
             </div>
 
             {sortedModules.length === 0 ? (
-              <div className="px-5 py-6 text-sm text-slate-300">
+              <div className="px-5 py-6 text-sm text-white">
                 No modules yet. Create one above.
               </div>
             ) : (
-              <div className="divide-y divide-slate-800">
+              <div className="divide-y divide-y-2 divide-white">
                 {sortedModules.map((m) => (
                   <div
                     key={m.id}
@@ -232,14 +232,14 @@ export default function SuperAdminCourseBuilder() {
                       <div className="font-semibold">
                         {m.position}. {m.title}
                       </div>
-                      <div className="mt-1 text-xs text-slate-500">
+                      <div className="mt-1 text-xs text-white opacity-80">
                         Module ID: {m.id} {m.slug ? `• slug: ${m.slug}` : ""}
                       </div>
                     </div>
 
                     <Link
                       to={`/lms/superadmin/content/${courseId}/modules/${m.id}`}
-                      className="rounded-lg border border-slate-700 px-3 py-2 text-sm hover:bg-slate-900"
+                      className=" border-2 border-white px-3 py-2 text-sm hover:bg-white hover:text-black"
                     >
                       Manage Lessons →
                     </Link>
@@ -249,7 +249,7 @@ export default function SuperAdminCourseBuilder() {
             )}
           </div>
 
-          <div className="text-xs text-slate-500">
+          <div className="text-xs text-white opacity-80">
             Note: This page loads from <code>/courses/:courseId/tree</code> (your backend standard),
             so refresh/back will never “lose” data again.
           </div>

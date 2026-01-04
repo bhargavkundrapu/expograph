@@ -1,12 +1,47 @@
 import { NavLink, Outlet } from "react-router-dom";
 import { useAuth } from "../app/providers/AuthProvider";
 import { homePathForRole } from "../app/roles";
+import { 
+  FaHome, 
+  FaBook, 
+  FaChartBar, 
+  FaFileAlt, 
+  FaCog, 
+  FaClipboardList,
+  FaUser,
+  FaEnvelope
+} from "react-icons/fa";
 
-function linkClass({ isActive }) {
-  return [
-    "block rounded-lg px-3 py-2 text-sm",
-    isActive ? "bg-slate-800 text-white" : "text-slate-300 hover:bg-slate-900 hover:text-white",
-  ].join(" ");
+const iconMap = {
+  "Dashboard": FaHome,
+  "Content Admin": FaBook,
+  "Courses": FaBook,
+  "Progress": FaChartBar,
+  "My Submissions": FaFileAlt,
+  "Submissions Queue": FaClipboardList,
+  "Tenant Settings": FaCog,
+};
+
+function LinkWithIcon({ to, label, icon: Icon, end }) {
+  return (
+    <NavLink 
+      to={to} 
+      className={({ isActive }) => [
+        "flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-all duration-300 group",
+        isActive 
+          ? "bg-gradient-to-r from-white to-gray-200 text-black shadow-lg shadow-white/20" 
+          : "text-gray-300 border border-transparent hover:border-gray-700 hover:bg-gray-900 hover:text-white",
+      ].join(" ")}
+      end={end}
+    >
+      {({ isActive }) => (
+        <>
+          <Icon className={`transition-transform duration-300 ${isActive ? 'scale-110' : 'group-hover:scale-110'}`} />
+          <span>{label}</span>
+        </>
+      )}
+    </NavLink>
+  );
 }
 
 export default function PortalLayout() {
@@ -43,29 +78,42 @@ export default function PortalLayout() {
   })();
 
   return (
-    <div className="min-h-[calc(100vh-56px)]">
-      <div className="mx-auto grid max-w-6xl gap-6 px-4 py-8 md:grid-cols-[240px_1fr]">
-        <aside className="rounded-2xl border border-slate-800 bg-slate-900/30 p-4">
-          <div className="mb-4">
-            <div className="text-sm text-slate-400">Logged in as</div>
-            <div className="font-semibold">{role}</div>
-            <div className="mt-1 text-xs text-slate-400">{user?.email}</div>
+    <div className="min-h-[calc(100vh-56px)] bg-gradient-to-br from-black via-gray-900 to-black position-relative">
+      <div className="container layout-grid gap-lg" style={{ paddingTop: '2rem', paddingBottom: '2rem', gridTemplateColumns: 'minmax(280px, 300px) 1fr' }}>
+        <aside className="rounded-xl bg-gray-900 border border-gray-800 p-6 shadow-glow animate-slideIn position-sticky" style={{ top: '100px', height: 'fit-content', maxHeight: 'calc(100vh - 120px)' }}>
+          <div className="margin-section-sm" style={{ paddingBottom: '1.5rem', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>
+            <div className="layout-flex items-center gap-2 margin-section-sm">
+              <div className="p-2 rounded-lg bg-gradient-to-br from-cyan-400 to-blue-500 shadow-lg">
+                <FaUser className="text-white text-sm" />
+              </div>
+              <div>
+                <div className="text-xs text-gray-400 mb-1 uppercase tracking-wide font-semibold">Logged in as</div>
+                <div className="font-bold text-lg text-white section-title">{role}</div>
+              </div>
+            </div>
+            <div className="layout-flex items-center gap-2 text-xs text-gray-400">
+              <FaEnvelope className="text-cyan-400" />
+              <span className="truncate">{user?.email}</span>
+            </div>
           </div>
 
-          <nav className="space-y-1">
-            {navItems.map((i) => (
-              <NavLink key={i.to} to={i.to} className={linkClass} end>
-                {i.label}
-              </NavLink>
-            ))}
+          <nav className="layout-flex-col gap-sm">
+            {navItems.map((i) => {
+              const Icon = iconMap[i.label] || FaHome;
+              return (
+                <LinkWithIcon 
+                  key={i.to} 
+                  to={i.to} 
+                  label={i.label} 
+                  icon={Icon}
+                  end
+                />
+              );
+            })}
           </nav>
-
-          <div className="mt-6 text-xs text-slate-500">
-            Basic UI now. Later we’ll make it 🔥.
-          </div>
         </aside>
 
-        <section className="rounded-2xl border border-slate-800 bg-slate-900/20 p-6">
+        <section className="rounded-xl bg-gray-900/50 border border-gray-800 p-8 shadow-glow animate-fadeIn overflow-auto">
           <Outlet />
         </section>
       </div>

@@ -249,8 +249,8 @@ async function addResource() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold">Lesson Resources + Practice</h1>
-          <p className="text-sm text-slate-300">
+          <h1 className="text-3xl font-bold">Lesson Resources + Practice</h1>
+          <p className="text-sm text-white">
             Cheatsheets / links / text resources + practice tasks for this lesson.
           </p>
         </div>
@@ -258,7 +258,7 @@ async function addResource() {
         <div className="flex gap-2">
           <button
             onClick={load}
-            className="rounded-lg border border-slate-700 px-3 py-2 text-sm hover:bg-slate-900"
+            className=" border-2 border-white px-3 py-2 text-sm hover:bg-white hover:text-black transition-all"
             type="button"
           >
             Refresh
@@ -266,7 +266,7 @@ async function addResource() {
 
           <Link
             to={backToLessonEditor}
-            className="rounded-lg border border-slate-700 px-3 py-2 text-sm hover:bg-slate-900"
+            className=" border-2 border-white px-3 py-2 text-sm hover:bg-white hover:text-black transition-all"
           >
             ← Back to Lesson
           </Link>
@@ -274,7 +274,7 @@ async function addResource() {
       </div>
 
       {err ? (
-        <div className="rounded-xl border border-red-900/60 bg-red-950/40 px-4 py-3 text-sm text-red-200">
+        <div className=" border border-2 border-white bg-black px-4 py-3 text-sm text-white">
           {err}{" "}
           <button onClick={load} className="ml-2 underline underline-offset-2" type="button">
             Retry
@@ -283,32 +283,32 @@ async function addResource() {
       ) : null}
 
       {info ? (
-        <div className="rounded-xl border border-emerald-900/50 bg-emerald-950/30 px-4 py-3 text-sm text-emerald-200">
+        <div className=" border border-2 border-white bg-white text-black px-4 py-3 text-sm">
           {info}
         </div>
       ) : null}
 
       {loading ? (
-        <div className="text-sm text-slate-300">Loading…</div>
+        <div className="text-sm text-white">Loading…</div>
       ) : (
         <>
-          <div className="rounded-2xl border border-slate-800 bg-slate-900/30 p-5">
-            <div className="text-sm text-slate-400">Lesson</div>
+          <div className=" border-2 border-white bg-black p-5">
+            <div className="text-sm text-white opacity-80">Lesson</div>
             <div className="mt-1 text-lg font-semibold">{lesson?.title}</div>
-            <div className="mt-1 text-xs text-slate-500">
+            <div className="mt-1 text-xs text-white opacity-80">
               Lesson ID: {lessonId}
             </div>
           </div>
 
           {/* ADD RESOURCE */}
-          <div className="rounded-2xl border border-slate-800 bg-slate-900/30 p-5 space-y-3">
+          <div className=" border-2 border-white bg-black p-5 space-y-3">
             <h2 className="text-lg font-semibold">Add Resource</h2>
 
             <div className="grid gap-3 md:grid-cols-4">
               <div>
-                <label className="text-sm text-slate-300">Type</label>
+                <label className="text-sm text-white">Type</label>
                 <select
-                  className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2"
+                  className="mt-1 w-full  border-2 border-white bg-black px-3 py-2"
                   value={rType}
                   onChange={(e) => setRType(e.target.value)}
                 >
@@ -319,9 +319,9 @@ async function addResource() {
               </div>
 
               <div className="md:col-span-3">
-                <label className="text-sm text-slate-300">Title</label>
+                <label className="text-sm text-white">Title</label>
                 <input
-                  className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2"
+                  className="mt-1 w-full  border-2 border-white bg-black px-3 py-2"
                   value={rTitle}
                   onChange={(e) => setRTitle(e.target.value)}
                   placeholder="JSX Quick Cheatsheet"
@@ -331,22 +331,22 @@ async function addResource() {
 
             {rType !== "text" ? (
               <div>
-                <label className="text-sm text-slate-300">URL</label>
+                <label className="text-sm text-white">URL</label>
                 <input
-                  className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2"
+                  className="mt-1 w-full  border-2 border-white bg-black px-3 py-2"
                   value={rUrl}
                   onChange={(e) => setRUrl(e.target.value)}
                   placeholder="https://..."
                 />
-                <div className="mt-1 text-xs text-slate-500">
+                <div className="mt-1 text-xs text-white opacity-80">
                   Phase-1: URL. Later we’ll add file upload to Cloudflare R2.
                 </div>
               </div>
             ) : (
               <div>
-                <label className="text-sm text-slate-300">Body</label>
+                <label className="text-sm text-white">Body</label>
                 <textarea
-                  className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2"
+                  className="mt-1 w-full  border-2 border-white bg-black px-3 py-2"
                   rows={4}
                   value={rBody}
                   onChange={(e) => setRBody(e.target.value)}
@@ -357,9 +357,9 @@ async function addResource() {
 
             <div className="flex flex-wrap items-center gap-2">
               <div className="w-32">
-                <label className="text-sm text-slate-300">Sort</label>
+                <label className="text-sm text-white">Sort</label>
                 <input
-                  className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2"
+                  className="mt-1 w-full  border-2 border-white bg-black px-3 py-2"
                   type="number"
                   value={rSort}
                   onChange={(e) => setRSort(e.target.value)}
@@ -369,7 +369,7 @@ async function addResource() {
               <button
                 onClick={addResource}
                 disabled={savingResource}
-                className="mt-6 rounded-lg bg-white px-4 py-2 text-sm font-medium text-slate-900 hover:bg-slate-200 disabled:opacity-60"
+                className="mt-6  border-2 border-white bg-white text-black px-4 py-2 text-sm font-semibold hover:bg-black hover:text-white transition-all disabled:opacity-60"
                 type="button"
               >
                 {savingResource ? "Adding…" : "Add Resource"}
@@ -378,31 +378,31 @@ async function addResource() {
           </div>
 
           {/* RESOURCE LIST */}
-          <div className="rounded-2xl border border-slate-800 bg-slate-900/30 p-5 space-y-3">
+          <div className=" border-2 border-white bg-black p-5 space-y-3">
             <h2 className="text-lg font-semibold">Resources</h2>
 
             {resources.length === 0 ? (
-              <div className="text-sm text-slate-400">No resources yet.</div>
+              <div className="text-sm text-white opacity-80">No resources yet.</div>
             ) : (
               <div className="space-y-2">
                 {resources
                   .slice()
                   .sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
                   .map((r) => (
-                    <div key={r.id} className="rounded-xl border border-slate-800 bg-slate-950/40 p-4">
+                    <div key={r.id} className=" border border-slate-800 bg-black/40 p-4">
                       <div className="flex flex-wrap items-start justify-between gap-2">
                         <div>
-                          <div className="text-xs text-slate-500">{r.type}</div>
+                          <div className="text-xs text-white opacity-80">{r.type}</div>
                           <div className="font-semibold">{r.title}</div>
                           {r.url ? (
-                            <a className="text-sm text-slate-300 underline" href={r.url} target="_blank" rel="noreferrer">
+                            <a className="text-sm text-white underline" href={r.url} target="_blank" rel="noreferrer">
                               Open resource
                             </a>
                           ) : null}
                         </div>
 
                         <button
-                          className="rounded-lg border border-slate-700 px-3 py-2 text-sm hover:bg-slate-900"
+                          className=" border-2 border-white px-3 py-2 text-sm hover:bg-white hover:text-black transition-all"
                           type="button"
                           onClick={() =>
                             updateResource(r.id, { sortOrder: (r.sort_order ?? 0) + 1 })
@@ -413,7 +413,7 @@ async function addResource() {
                       </div>
 
                       {r.body ? (
-                        <pre className="mt-3 whitespace-pre-wrap text-sm text-slate-300">
+                        <pre className="mt-3 whitespace-pre-wrap text-sm text-white">
                           {r.body}
                         </pre>
                       ) : null}
@@ -424,23 +424,23 @@ async function addResource() {
           </div>
 
           {/* ADD PRACTICE */}
-          <div className="rounded-2xl border border-slate-800 bg-slate-900/30 p-5 space-y-3">
+          <div className=" border-2 border-white bg-black p-5 space-y-3">
             <h2 className="text-lg font-semibold">Add Practice</h2>
 
             <div className="grid gap-3 md:grid-cols-3">
               <div className="md:col-span-2">
-                <label className="text-sm text-slate-300">Title</label>
+                <label className="text-sm text-white">Title</label>
                 <input
-                  className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2"
+                  className="mt-1 w-full  border-2 border-white bg-black px-3 py-2"
                   value={pTitle}
                   onChange={(e) => setPTitle(e.target.value)}
                   placeholder="Practice: Build a JSX Card"
                 />
               </div>
               <div>
-                <label className="text-sm text-slate-300">Language</label>
+                <label className="text-sm text-white">Language</label>
                 <input
-                  className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2"
+                  className="mt-1 w-full  border-2 border-white bg-black px-3 py-2"
                   value={pLang}
                   onChange={(e) => setPLang(e.target.value)}
                   placeholder="js"
@@ -449,9 +449,9 @@ async function addResource() {
             </div>
 
             <div>
-              <label className="text-sm text-slate-300">Prompt</label>
+              <label className="text-sm text-white">Prompt</label>
               <textarea
-                className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2"
+                className="mt-1 w-full  border-2 border-white bg-black px-3 py-2"
                 rows={4}
                 value={pPrompt}
                 onChange={(e) => setPPrompt(e.target.value)}
@@ -460,9 +460,9 @@ async function addResource() {
             </div>
 
             <div>
-              <label className="text-sm text-slate-300">Starter Code (optional)</label>
+              <label className="text-sm text-white">Starter Code (optional)</label>
               <textarea
-                className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 font-mono"
+                className="mt-1 w-full  border-2 border-white bg-black px-3 py-2 font-mono"
                 rows={4}
                 value={pStarter}
                 onChange={(e) => setPStarter(e.target.value)}
@@ -470,9 +470,9 @@ async function addResource() {
             </div>
 
             <div>
-              <label className="text-sm text-slate-300">Expected Output (optional)</label>
+              <label className="text-sm text-white">Expected Output (optional)</label>
               <input
-                className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2"
+                className="mt-1 w-full  border-2 border-white bg-black px-3 py-2"
                 value={pExpected}
                 onChange={(e) => setPExpected(e.target.value)}
                 placeholder="What should happen / output…"
@@ -481,9 +481,9 @@ async function addResource() {
 
             <div className="flex flex-wrap items-center gap-2">
               <div className="w-32">
-                <label className="text-sm text-slate-300">Sort</label>
+                <label className="text-sm text-white">Sort</label>
                 <input
-                  className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2"
+                  className="mt-1 w-full  border-2 border-white bg-black px-3 py-2"
                   type="number"
                   value={pSort}
                   onChange={(e) => setPSort(e.target.value)}
@@ -493,7 +493,7 @@ async function addResource() {
               <button
                 onClick={addPractice}
                 disabled={savingPractice}
-                className="mt-6 rounded-lg bg-white px-4 py-2 text-sm font-medium text-slate-900 hover:bg-slate-200 disabled:opacity-60"
+                className="mt-6  border-2 border-white bg-white text-black px-4 py-2 text-sm font-semibold hover:bg-black hover:text-white transition-all disabled:opacity-60"
                 type="button"
               >
                 {savingPractice ? "Adding…" : "Add Practice"}
@@ -502,26 +502,26 @@ async function addResource() {
           </div>
 
           {/* PRACTICE LIST */}
-          <div className="rounded-2xl border border-slate-800 bg-slate-900/30 p-5 space-y-3">
+          <div className=" border-2 border-white bg-black p-5 space-y-3">
             <h2 className="text-lg font-semibold">Practice Tasks</h2>
 
             {practices.length === 0 ? (
-              <div className="text-sm text-slate-400">No practice tasks yet.</div>
+              <div className="text-sm text-white opacity-80">No practice tasks yet.</div>
             ) : (
               <div className="space-y-2">
                 {practices
                   .slice()
                   .sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
                   .map((p) => (
-                    <div key={p.id} className="rounded-xl border border-slate-800 bg-slate-950/40 p-4">
+                    <div key={p.id} className=" border border-slate-800 bg-black/40 p-4">
                       <div className="flex flex-wrap items-start justify-between gap-2">
                         <div>
-                          <div className="text-xs text-slate-500">{p.language || "lang"}</div>
+                          <div className="text-xs text-white opacity-80">{p.language || "lang"}</div>
                           <div className="font-semibold">{p.title}</div>
                         </div>
 
                         <button
-                          className="rounded-lg border border-slate-700 px-3 py-2 text-sm hover:bg-slate-900"
+                          className=" border-2 border-white px-3 py-2 text-sm hover:bg-white hover:text-black transition-all"
                           type="button"
                           onClick={() =>
                             updatePractice(p.id, { sortOrder: (p.sort_order ?? 0) + 1 })
@@ -531,12 +531,12 @@ async function addResource() {
                         </button>
                       </div>
 
-                      <div className="mt-2 text-sm text-slate-300 whitespace-pre-wrap">
+                      <div className="mt-2 text-sm text-white whitespace-pre-wrap">
                         {p.prompt}
                       </div>
 
                       {p.starter_code ? (
-                        <pre className="mt-3 rounded-lg border border-slate-800 bg-slate-950 p-3 text-xs text-slate-300 overflow-auto">
+                        <pre className="mt-3  border border-slate-800 bg-black p-3 text-xs text-white overflow-auto">
                           {p.starter_code}
                         </pre>
                       ) : null}

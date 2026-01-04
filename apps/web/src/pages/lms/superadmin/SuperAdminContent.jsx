@@ -2,6 +2,9 @@ import { useEffect, useMemo, useState } from "react";
 import { apiFetch, ApiError } from "../../../services/api";
 import { useAuth } from "../../../app/providers/AuthProvider";
 import { Link } from "react-router-dom";
+import { FaBook, FaPlus, FaSync, FaEye, FaEyeSlash, FaCog, FaCheckCircle, FaCircle } from "react-icons/fa";
+import Card, { CardContent, CardTitle, CardDescription } from "../../../components/ui/Card";
+import Button from "../../../components/ui/Button";
 
 function extractList(res) {
   // tries hard to support different backend response shapes
@@ -152,123 +155,185 @@ export default function SuperAdminContent() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-bold">Content Admin</h1>
-          <p className="text-sm text-slate-300">
-            Create courses, then publish them (published courses appear for students).
-          </p>
-        </div>
+    <div className="space-y-8 animate-fadeIn">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900 via-black to-gray-900 border border-gray-800 p-8 shadow-glow">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"></div>
+        <div className="relative z-10 flex flex-wrap items-center justify-between gap-6">
+          <div>
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-3 rounded-xl bg-gradient-to-br from-blue-400 to-cyan-500 shadow-lg shadow-blue-500/30">
+                <FaBook className="text-white text-xl" />
+              </div>
+              <div>
+                <h1 className="section-hero text-4xl mb-2">Content Admin</h1>
+                <p className="section-body text-gray-300 text-lg">
+                  Create courses, then publish them (published courses appear for students).
+                </p>
+              </div>
+            </div>
+          </div>
 
-        <button
-          onClick={loadCourses}
-          className="rounded-lg border border-slate-700 px-3 py-2 text-sm hover:bg-slate-900"
-          type="button"
-        >
-          Refresh
-        </button>
+          <Button
+            variant="outline"
+            size="md"
+            icon={FaSync}
+            onClick={loadCourses}
+            type="button"
+          >
+            Refresh
+          </Button>
+        </div>
       </div>
 
       {err ? (
-        <div className="rounded-xl border border-red-900/60 bg-red-950/40 px-4 py-3 text-sm text-red-200">
-          {err}{" "}
-          <button
+        <Card variant="elevated" className="p-6 border-red-500/30 bg-red-500/5">
+          <div className="text-red-300 mb-4">{err}</div>
+          <Button
+            variant="gradient"
+            size="sm"
+            icon={FaSync}
             onClick={loadCourses}
-            className="ml-2 underline underline-offset-2"
             type="button"
           >
             Retry
-          </button>
-        </div>
+          </Button>
+        </Card>
       ) : null}
 
       {/* Create Course */}
-      <form
-        onSubmit={createCourse}
-        className="rounded-2xl border border-slate-800 bg-slate-900/30 p-5"
-      >
-        <div className="mb-3 font-semibold">Create Course</div>
-
-        <div className="grid gap-3 md:grid-cols-2">
-          <div>
-            <label className="text-sm text-slate-300">Title</label>
-            <input
-              className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 outline-none focus:border-slate-500"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="React Basics"
-            />
+      <Card variant="elevated" className="p-8">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="p-3 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 shadow-lg shadow-emerald-500/30">
+            <FaPlus className="text-white text-xl" />
           </div>
-
-          <div>
-            <label className="text-sm text-slate-300">Description</label>
-            <input
-              className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 outline-none focus:border-slate-500"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="Start from zero"
-            />
-          </div>
+          <CardTitle className="text-2xl">Create Course</CardTitle>
         </div>
 
-        <div className="mt-4">
-          <button
-            disabled={saving}
-            className="rounded-lg bg-yellow px-4 py-2 text-sm font-medium text-slate-900 hover:bg-slate-200 disabled:opacity-60"
-            type="submit"
-          >
-            {saving ? "Creating..." : "Create"}
-          </button>
-        </div>
-      </form>
+        <form onSubmit={createCourse} className="space-y-6">
+          <div className="grid gap-6 md:grid-cols-2">
+            <div>
+              <label className="flex items-center gap-2 text-sm font-semibold text-white mb-3">
+                <FaBook className="text-cyan-400" />
+                Title
+              </label>
+              <input
+                className="w-full border-2 border-gray-700 bg-gray-900 text-white px-4 py-3 rounded-lg focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="React Basics"
+              />
+            </div>
+
+            <div>
+              <label className="flex items-center gap-2 text-sm font-semibold text-white mb-3">
+                <FaBook className="text-cyan-400" />
+                Description
+              </label>
+              <input
+                className="w-full border-2 border-gray-700 bg-gray-900 text-white px-4 py-3 rounded-lg focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Start from zero"
+              />
+            </div>
+          </div>
+
+          <div className="pt-4 border-t border-gray-800">
+            <Button
+              variant="gradient"
+              size="lg"
+              icon={FaPlus}
+              disabled={saving}
+              type="submit"
+            >
+              {saving ? "Creating..." : "Create Course"}
+            </Button>
+          </div>
+        </form>
+      </Card>
 
       {/* Courses List */}
-      <div className="rounded-2xl border border-slate-800 bg-slate-900/20">
-        <div className="border-b border-slate-800 px-5 py-3 font-semibold">
-          Courses
+      <Card variant="elevated" className="p-0 overflow-hidden">
+        <div className="border-b border-gray-800 px-8 py-6 bg-gradient-to-r from-gray-900 to-black">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-gradient-to-br from-blue-400/20 to-cyan-500/20 border border-blue-400/30">
+              <FaBook className="text-blue-400" />
+            </div>
+            <CardTitle className="text-2xl">Courses</CardTitle>
+            <span className="ml-auto px-4 py-1.5 rounded-full bg-gray-800 border border-gray-700 text-sm text-gray-400">
+              {sorted.length} total
+            </span>
+          </div>
         </div>
 
         {loading ? (
-          <div className="px-5 py-6 text-sm text-slate-300">Loading courses…</div>
+          <div className="px-8 py-12 text-center text-gray-500">
+            <div className="inline-block p-4 rounded-full bg-gray-900 border border-gray-800 mb-4 animate-pulse-slow">
+              <FaBook className="text-2xl text-gray-600" />
+            </div>
+            <p>Loading courses…</p>
+          </div>
         ) : sorted.length === 0 ? (
-          <div className="px-5 py-6 text-sm text-slate-300">
-            No courses yet. Create one above.
+          <div className="px-8 py-12 text-center text-gray-500">
+            <div className="inline-block p-4 rounded-full bg-gray-900 border border-gray-800 mb-4">
+              <FaBook className="text-2xl text-gray-600" />
+            </div>
+            <p>No courses yet. Create one above.</p>
           </div>
         ) : (
-          <div className="divide-y divide-slate-800">
-            {sorted.map((c) => {
+          <div className="divide-y divide-gray-800">
+            {sorted.map((c, idx) => {
               const busy = busyIds.has(c.id);
               const isPublished = c.status === "published";
 
               return (
                 <div
                   key={c.id}
-                  className="flex flex-wrap items-center justify-between gap-3 px-5 py-4"
+                  className="flex flex-wrap items-center justify-between gap-4 px-8 py-6 hover:bg-gray-900/50 transition-colors animate-fadeIn"
+                  style={{ animationDelay: `${idx * 0.05}s` }}
                 >
-                  <div>
-                    <div className="font-semibold">{c.title}</div>
-                    <div className="mt-1 text-xs text-slate-400">
-                      id: {c.id} {c.slug ? `• slug: ${c.slug}` : ""}
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-2">
+                      {isPublished ? (
+                        <div className="p-2 rounded-lg bg-gradient-to-br from-emerald-400/20 to-teal-500/20 border border-emerald-400/30">
+                          <FaCheckCircle className="text-emerald-400" />
+                        </div>
+                      ) : (
+                        <div className="p-2 rounded-lg bg-gray-800 border border-gray-700">
+                          <FaCircle className="text-gray-600 text-xs" />
+                        </div>
+                      )}
+                      <div className="font-bold text-white text-lg">{c.title}</div>
+                    </div>
+                    <div className="text-xs text-gray-500 ml-11">
+                      id: <span className="text-gray-400 font-mono">{c.id}</span>
+                      {c.slug && (
+                        <>
+                          <span className="mx-2">•</span>
+                          slug: <span className="text-gray-400 font-mono">{c.slug}</span>
+                        </>
+                      )}
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-3">
                     <span
-                      className={[
-                        "rounded-full border px-2.5 py-1 text-xs",
+                      className={`inline-flex items-center gap-2 border-2 px-3 py-1.5 rounded-lg text-xs font-semibold ${
                         isPublished
-                          ? "border-green-900/60 bg-green-950/30 text-green-200"
-                          : "border-slate-700 bg-slate-950/30 text-slate-300",
-                      ].join(" ")}
+                          ? "border-emerald-500 bg-emerald-500/10 text-emerald-300"
+                          : "border-gray-700 bg-gray-900 text-gray-400"
+                      }`}
                     >
+                      {isPublished ? <FaEye /> : <FaEyeSlash />}
                       {c.status}
                     </span>
 
-                    <button
+                    <Button
+                      variant={isPublished ? "outline" : "gradient"}
+                      size="sm"
+                      icon={isPublished ? FaEyeSlash : FaEye}
                       disabled={busy}
                       onClick={() => togglePublish(c)}
-                      className="rounded-lg border border-slate-700 px-3 py-2 text-lg hover:bg-slate-900 disabled:opacity-60"
                       type="button"
                     >
                       {busy
@@ -276,25 +341,24 @@ export default function SuperAdminContent() {
                         : isPublished
                         ? "Unpublish"
                         : "Publish"}
-                    </button>
-                    <button className="rounded-lg border border-slate-700 px-3 py-2 text-lg hover:bg-slate-900 disabled:opacity-60 ">
+                    </Button>
                     <Link
-                    to={`/lms/superadmin/content/${c.id}`}
+                      to={`/lms/superadmin/content/${c.id}`}
+                      className="inline-flex items-center gap-2 border-2 border-gray-700 bg-gray-900 text-white px-5 py-2.5 rounded-lg text-sm font-semibold hover:border-white hover:bg-white hover:text-black transition-all duration-300"
                     >
-                    Manage
+                      <FaCog />
+                      Manage
                     </Link>
-                    </button>
-
                   </div>
                 </div>
               );
             })}
           </div>
         )}
-      </div>
+      </Card>
 
-      <div className="text-xs text-slate-500">
-        Note: If your backend returns different course fields, tell me the JSON shape and I’ll adapt instantly.
+      <div className="text-xs text-white opacity-80">
+        Note: If your backend returns different course fields, tell me the JSON shape and I'll adapt instantly.
       </div>
     </div>
   );

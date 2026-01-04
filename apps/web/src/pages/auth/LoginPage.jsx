@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../app/providers/AuthProvider";
+import { FaSignInAlt, FaEnvelope, FaLock, FaUserShield } from "react-icons/fa";
+import { HiSparkles } from "react-icons/hi";
+import Card from "../../components/ui/Card";
+import Button from "../../components/ui/Button";
 
 function routeForRole(role) {
   if (role === "SuperAdmin") return "/lms/superadmin";
@@ -34,18 +38,26 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="mx-auto max-w-md space-y-6">
-      <div className="rounded-2xl border border-slate-800 bg-slate-900/40 p-6">
-        <h1 className="text-2xl font-bold">Login</h1>
-        <p className="mt-1 text-sm text-slate-300">
-          Use your ExpoGraph account credentials.
-        </p>
+    <div className="mx-auto max-w-md space-y-6 animate-fadeIn">
+      <Card variant="elevated" className="p-10">
+        <div className="text-center mb-8">
+          <div className="inline-flex p-4 rounded-2xl bg-gradient-to-br from-cyan-400 to-blue-500 shadow-lg shadow-cyan-500/30 mb-4">
+            <FaSignInAlt className="text-white text-3xl" />
+          </div>
+          <h1 className="section-hero text-4xl mb-3">Welcome Back</h1>
+          <p className="text-gray-400">
+            Use your ExpoGraph account credentials to continue
+          </p>
+        </div>
 
-        <form className="mt-5 space-y-3" onSubmit={onSubmit}>
+        <form className="space-y-6" onSubmit={onSubmit}>
           <div>
-            <label className="text-sm text-slate-300">Email</label>
+            <label className="flex items-center gap-2 text-sm font-semibold text-white mb-3">
+              <FaEnvelope className="text-cyan-400" />
+              Email Address
+            </label>
             <input
-              className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 outline-none focus:border-slate-500"
+              className="w-full border-2 border-gray-700 bg-gray-900 text-white px-4 py-3 rounded-lg focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@expograph.in"
@@ -55,9 +67,12 @@ export default function LoginPage() {
           </div>
 
           <div>
-            <label className="text-sm text-slate-300">Password</label>
+            <label className="flex items-center gap-2 text-sm font-semibold text-white mb-3">
+              <FaLock className="text-cyan-400" />
+              Password
+            </label>
             <input
-              className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 outline-none focus:border-slate-500"
+              className="w-full border-2 border-gray-700 bg-gray-900 text-white px-4 py-3 rounded-lg focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               type="password"
@@ -68,24 +83,30 @@ export default function LoginPage() {
           </div>
 
           {err ? (
-            <div className="rounded-lg border border-red-900/60 bg-red-950/40 px-3 py-2 text-sm text-red-200">
+            <div className="p-4 rounded-lg bg-red-500/10 border border-red-500/30 text-red-300 text-sm flex items-center gap-2 animate-slideIn">
+              <span className="text-red-400">⚠</span>
               {err}
             </div>
           ) : null}
 
-          <button
-            className="w-full rounded-lg bg-white px-4 py-2 font-medium text-slate-900 hover:bg-slate-200 disabled:opacity-60"
+          <Button
+            variant="gradient"
+            size="lg"
+            icon={FaSignInAlt}
+            className="w-full"
             disabled={loading}
             type="submit"
           >
-            {loading ? "Logging in..." : "Login"}
-          </button>
+            {loading ? "Logging in..." : "Sign In"}
+          </Button>
         </form>
 
-        <div className="mt-5 text-xs text-slate-400">
-          Role redirects automatically after login (SuperAdmin/TenantAdmin/Mentor/Student).
+        <div className="mt-8 pt-6 border-t border-gray-800 flex items-center justify-center gap-2 text-xs text-gray-500">
+          <FaUserShield className="text-cyan-400" />
+          <span>Role redirects automatically after login</span>
+          <HiSparkles className="text-cyan-400 animate-pulse-slow" />
         </div>
-      </div>
+      </Card>
     </div>
   );
 }

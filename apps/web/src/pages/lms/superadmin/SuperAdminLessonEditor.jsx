@@ -151,8 +151,8 @@ const [videoId, setVideoId] = useState("");
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold">Lesson Editor</h1>
-          <p className="text-sm text-slate-300">
+          <h1 className="text-3xl font-bold">Lesson Editor</h1>
+          <p className="text-sm text-white">
             Edit lesson details + attach video key (Cloudflare).
           </p>
         </div>
@@ -160,7 +160,7 @@ const [videoId, setVideoId] = useState("");
         <div className="flex gap-2">
           <button
             onClick={loadLessonFromTree}
-            className="rounded-lg border border-slate-700 px-3 py-2 text-sm hover:bg-slate-900"
+            className=" border-2 border-white px-3 py-2 text-sm hover:bg-white hover:text-black transition-all"
             type="button"
           >
             Refresh
@@ -168,7 +168,7 @@ const [videoId, setVideoId] = useState("");
 
           <Link
             to={backUrl}
-            className="rounded-lg border border-slate-700 px-3 py-2 text-sm hover:bg-slate-900"
+            className=" border-2 border-white px-3 py-2 text-sm hover:bg-white hover:text-black transition-all"
           >
             ← Back
           </Link>
@@ -176,7 +176,7 @@ const [videoId, setVideoId] = useState("");
       </div>
 
       {err ? (
-        <div className="rounded-xl border border-red-900/60 bg-red-950/40 px-4 py-3 text-sm text-red-200">
+        <div className=" border border-2 border-white bg-black px-4 py-3 text-sm text-white">
           {err}{" "}
           <button
             onClick={loadLessonFromTree}
@@ -189,26 +189,26 @@ const [videoId, setVideoId] = useState("");
       ) : null}
 
       {info ? (
-        <div className="rounded-xl border border-emerald-900/50 bg-emerald-950/30 px-4 py-3 text-sm text-emerald-200">
+        <div className=" border border-2 border-white bg-white text-black px-4 py-3 text-sm">
           {info}
         </div>
       ) : null}
 
       {loading ? (
-        <div className="text-sm text-slate-300">Loading…</div>
+        <div className="text-sm text-white">Loading…</div>
       ) : (
-        <div className="rounded-2xl border border-slate-800 bg-slate-900/30 p-5 space-y-4">
+        <div className=" border-2 border-white bg-black p-5 space-y-4">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <div className="text-xs text-slate-500">Lesson ID: {lessonId}</div>
+              <div className="text-xs text-white opacity-80">Lesson ID: {lessonId}</div>
               <div className="mt-1 font-semibold">
                 Status:{" "}
                 <span
                   className={[
-                    "rounded-full border px-2 py-1 text-xs",
+                    " border px-2 py-1 text-xs",
                     lesson?.status === "published"
-                      ? "border-green-900/60 bg-green-950/30 text-green-200"
-                      : "border-slate-700 bg-slate-950/30 text-slate-300",
+                      ? "border-2 border-white bg-white text-black"
+                      : "border-slate-700 bg-black/30 text-white",
                   ].join(" ")}
                 >
                   {lesson?.status || "draft"}
@@ -218,7 +218,7 @@ const [videoId, setVideoId] = useState("");
 
             <button
               onClick={togglePublish}
-              className="rounded-lg border border-slate-700 px-3 py-2 text-sm hover:bg-slate-900"
+              className=" border-2 border-white px-3 py-2 text-sm hover:bg-white hover:text-black transition-all"
               type="button"
             >
               {lesson?.status === "published" ? "Unpublish" : "Publish"}
@@ -227,9 +227,9 @@ const [videoId, setVideoId] = useState("");
 
           <div className="grid gap-3 md:grid-cols-3">
             <div className="md:col-span-2">
-              <label className="text-sm text-slate-300">Title</label>
+              <label className="text-sm text-white">Title</label>
               <input
-                className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 outline-none focus:border-slate-500"
+                className="mt-1 w-full  border-2 border-white bg-black px-3 py-2 text-slate-100 outline-none focus:border-slate-500"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Hooks Deep Dive"
@@ -237,9 +237,9 @@ const [videoId, setVideoId] = useState("");
             </div>
 
             <div>
-              <label className="text-sm text-slate-300">Position</label>
+              <label className="text-sm text-white">Position</label>
               <input
-                className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 outline-none focus:border-slate-500"
+                className="mt-1 w-full  border-2 border-white bg-black px-3 py-2 text-slate-100 outline-none focus:border-slate-500"
                 value={position}
                 onChange={(e) => setPosition(e.target.value)}
                 type="number"
@@ -249,9 +249,9 @@ const [videoId, setVideoId] = useState("");
           </div>
 
           <div>
-  <label className="text-sm text-slate-300">Summary (optional)</label>
+  <label className="text-sm text-white">Summary (optional)</label>
   <textarea
-    className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 outline-none focus:border-slate-500"
+    className="mt-1 w-full  border-2 border-white bg-black px-3 py-2 text-slate-100 outline-none focus:border-slate-500"
     value={summary}
     onChange={(e) => setSummary(e.target.value)}
     rows={3}
@@ -261,16 +261,16 @@ const [videoId, setVideoId] = useState("");
 
 
          <div>
-  <label className="text-sm text-slate-300">
+  <label className="text-sm text-white">
     Video ID (Cloudflare Stream UID)
   </label>
   <input
-    className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 outline-none focus:border-slate-500"
+    className="mt-1 w-full  border-2 border-white bg-black px-3 py-2 text-slate-100 outline-none focus:border-slate-500"
     value={videoId}
     onChange={(e) => setVideoId(e.target.value)}
     placeholder="e.g. 1a2b3c4d5e6f..."
   />
-  <div className="mt-1 text-xs text-slate-500">
+  <div className="mt-1 text-xs text-white opacity-80">
     We store provider = cloudflare_stream and this UID as video_id.
   </div>
 </div>
@@ -280,7 +280,7 @@ const [videoId, setVideoId] = useState("");
             <button
               onClick={saveLesson}
               disabled={saving}
-              className="rounded-lg bg-white px-4 py-2 text-sm font-medium text-slate-900 hover:bg-slate-200 disabled:opacity-60"
+              className=" border-2 border-white bg-white text-black px-4 py-2 text-sm font-semibold hover:bg-black hover:text-white transition-all disabled:opacity-60"
               type="button"
             >
               {saving ? "Saving…" : "Save"}
@@ -288,7 +288,7 @@ const [videoId, setVideoId] = useState("");
 
             <Link
               to={`/lms/superadmin/content/${courseId}/lessons/${lessonId}/resources`}
-              className="rounded-lg border border-slate-700 px-4 py-2 text-sm hover:bg-slate-900"
+              className=" border-2 border-white px-4 py-2 text-sm hover:bg-white hover:text-black transition-all"
             >
               Next: Resources + Practice →
             </Link>

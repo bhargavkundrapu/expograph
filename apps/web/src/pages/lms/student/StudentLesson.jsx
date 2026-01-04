@@ -3,6 +3,10 @@ import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { apiFetch } from "../../../services/api";
 import { startLesson, updateLessonProgress, completeLesson } from "../../../features/progress/progressApi";
+import { FaPlay, FaArrowLeft, FaFileAlt, FaCheckCircle, FaExternalLinkAlt, FaCode, FaPaperPlane, FaVideo, FaBook, FaClipboardList } from "react-icons/fa";
+import Card, { CardContent, CardTitle, CardDescription } from "../../../components/ui/Card";
+import Button from "../../../components/ui/Button";
+import Skeleton from "../../../Components/ui/Skeleton";
 // tiny helper: unwrap {ok,data}
 function progressKey(lessonId) {
   return `expograph_progress_${lessonId}`;
@@ -33,24 +37,26 @@ function unwrap(res) {
 
 function SkeletonCard() {
   return (
-    <div className="rounded-2xl border border-slate-800 bg-slate-900/30 p-5 space-y-3">
-      <div className="h-6 w-64 animate-pulse rounded bg-slate-800" />
-      <div className="h-4 w-full animate-pulse rounded bg-slate-800" />
-      <div className="h-4 w-2/3 animate-pulse rounded bg-slate-800" />
-    </div>
+    <Card variant="elevated" className="p-6 space-y-4">
+      <Skeleton className="h-8 w-64 mb-4" />
+      <Skeleton className="h-4 w-full mb-2" />
+      <Skeleton className="h-4 w-2/3" />
+    </Card>
   );
 }
 
 function Badge({ status }) {
   const map = {
-    submitted: { label: "Submitted ✅", cls: "border-slate-700 bg-slate-900/40" },
-    in_review: { label: "In Review 🔍", cls: "border-blue-700/40 bg-blue-900/20" },
-    approved: { label: "Approved ✅✅", cls: "border-emerald-700/40 bg-emerald-900/20" },
-    changes_requested: { label: "Changes Requested ⚠️", cls: "border-amber-700/40 bg-amber-900/20" },
+    submitted: { label: "Submitted", icon: FaCheckCircle, cls: "border-emerald-500/30 bg-emerald-500/10 text-emerald-300" },
+    in_review: { label: "In Review", icon: FaCode, cls: "border-cyan-500/30 bg-cyan-500/10 text-cyan-300" },
+    approved: { label: "Approved", icon: FaCheckCircle, cls: "border-emerald-500 bg-emerald-500 text-white" },
+    changes_requested: { label: "Changes Requested", icon: FaCode, cls: "border-amber-500/30 bg-amber-500/10 text-amber-300" },
   };
-  const x = map[status] || { label: status || "—", cls: "border-slate-700 bg-slate-900/40" };
+  const x = map[status] || { label: status || "—", icon: null, cls: "border-gray-700 bg-gray-900 text-gray-400" };
+  const Icon = x.icon;
   return (
-    <span className={`rounded-full border px-3 py-1 text-xs text-slate-100 ${x.cls}`}>
+    <span className={`inline-flex items-center gap-2 border-2 px-3 py-1.5 rounded-lg text-xs font-semibold ${x.cls}`}>
+      {Icon && <Icon className="text-xs" />}
       {x.label}
     </span>
   );
@@ -301,10 +307,10 @@ export default function StudentLesson(props) {
 
   if (err) {
     return (
-      <div className="rounded-2xl border border-slate-800 bg-slate-900/30 p-5">
-        <div className="text-red-300">{err}</div>
+      <div className="border-2 border-white bg-black p-6">
+        <div className="text-white mb-4">{err}</div>
         <button
-          className="mt-3 rounded-xl border border-slate-700 px-4 py-2"
+          className="border-2 border-white bg-white text-black px-4 py-2 font-semibold hover:bg-black hover:text-white transition-all"
           onClick={() => navigate(0)}
         >
           Retry
@@ -315,71 +321,97 @@ export default function StudentLesson(props) {
 
   if (!lessonPack) {
     return (
-      <div className="rounded-2xl border border-slate-800 bg-slate-900/30 p-5 text-slate-200">
+      <div className="border-2 border-white bg-black p-6 text-white">
         Lesson not found.
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <div className="layout-flex-col gap-xl animate-fadeIn" style={{ width: '100%' }}>
       {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <div className="text-2xl font-semibold">{getLessonTitle()}</div>
-          {getLessonSummary() ? (
-            <div className="mt-1 text-sm text-slate-400">{getLessonSummary()}</div>
-          ) : null}
-        </div>
+      <div className="position-relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900 via-black to-gray-900 border border-gray-800 p-8 shadow-glow" style={{ marginBottom: '2rem' }}>
+        <div className="position-absolute" style={{ top: 0, right: 0, width: '24rem', height: '24rem', background: 'rgba(6, 182, 212, 0.1)', borderRadius: '50%', filter: 'blur(3rem)', zIndex: 0 }}></div>
+        <div className="position-relative" style={{ zIndex: 10 }}>
+          <div className="layout-flex flex-wrap items-start justify-between gap-lg" style={{ marginBottom: '1.5rem' }}>
+            <div style={{ flex: '1 1 300px', minWidth: '280px' }}>
+              <div className="layout-flex items-center gap-md" style={{ marginBottom: '1rem' }}>
+                <div className="p-3 rounded-xl bg-gradient-to-br from-cyan-400 to-blue-500 shadow-lg shadow-cyan-500/30">
+                  <FaBook className="text-white text-xl" />
+                </div>
+                <div className="section-hero text-4xl" style={{ margin: 0 }}>{getLessonTitle()}</div>
+              </div>
+              {getLessonSummary() ? (
+                <p className="section-body text-lg text-gray-300 leading-relaxed" style={{ maxWidth: '48rem', margin: 0 }}>{getLessonSummary()}</p>
+              ) : null}
+            </div>
 
-        <div className="flex items-center gap-2">
-          <Link
-            to={`/lms/student/courses/${courseSlug}`}
-            className="rounded-xl border border-slate-700 px-4 py-2 text-sm"
-          >
-            ← Back to Course
-          </Link>
-          <Link
-            to={`/lms/student/submissions`}
-            className="rounded-xl border border-slate-700 px-4 py-2 text-sm"
-          >
-            My Submissions
-          </Link>
-          <button
-  className="rounded-xl border border-slate-700 px-4 py-2 text-sm hover:border-slate-500"
-  onClick={async () => {
-    const lessonId = lesson?.lesson_id || lesson?.id;
-    if (!lessonId) return;
-    try {
-      await completeLesson({ token, lessonId });
-      alert("Marked complete ✅");
-    } catch (e) {
-      alert(e?.message || "Failed to mark complete.");
-    }
-  }}
->
-  Mark Complete
-</button>
+            <div className="layout-flex flex-wrap items-center gap-md" style={{ flex: '0 0 auto' }}>
+              <Link
+                to={`/lms/student/courses/${courseSlug}`}
+                className="inline-flex items-center gap-2 border-2 border-gray-700 bg-gray-900 text-white px-5 py-2.5 rounded-lg text-sm font-semibold hover:border-white hover:bg-white hover:text-black transition-all duration-300"
+              >
+                <FaArrowLeft />
+                Back
+              </Link>
+              <Link
+                to={`/lms/student/submissions`}
+                className="inline-flex items-center gap-2 border-2 border-gray-700 bg-gray-900 text-white px-5 py-2.5 rounded-lg text-sm font-semibold hover:border-white hover:bg-white hover:text-black transition-all duration-300"
+              >
+                <FaClipboardList />
+                Submissions
+              </Link>
+              <Button
+                variant="gradient"
+                size="sm"
+                icon={FaCheckCircle}
+                onClick={async () => {
+                  const lessonId = lesson?.lesson_id || lesson?.id;
+                  if (!lessonId) return;
+                  try {
+                    await completeLesson({ token, lessonId });
+                    alert("Marked complete ✅");
+                  } catch (e) {
+                    alert(e?.message || "Failed to mark complete.");
+                  }
+                }}
+              >
+                Mark Complete
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Video Player */}
       {lesson?.video_provider === "cloudflare_stream" && lesson?.video_id ? (
-        <div className="rounded-2xl border border-slate-800 bg-slate-900/30 p-5">
-          <div className="text-lg font-semibold mb-3">Video Lesson</div>
+        <Card variant="elevated" className="p-6" style={{ width: '100%', boxSizing: 'border-box' }}>
+          <div className="layout-flex items-center gap-md" style={{ marginBottom: '1.5rem' }}>
+            <div className="p-3 rounded-xl bg-gradient-to-br from-red-400 to-pink-500 shadow-lg shadow-red-500/30">
+              <FaVideo className="text-white text-xl" />
+            </div>
+            <CardTitle className="text-2xl">Video Lesson</CardTitle>
+          </div>
           {videoTokenError ? (
-            <div className="text-red-300 text-sm">
+            <div className="p-4 rounded-lg bg-red-500/10 border border-red-500/30 text-red-300 text-sm mb-4">
               {videoTokenError}
             </div>
           ) : !videoToken ? (
-            <div className="text-slate-400 text-sm">Loading video...</div>
+            <div className="flex items-center justify-center p-12">
+              <div className="text-center">
+                <div className="inline-block p-4 rounded-full bg-gray-800 border border-gray-700 mb-4 animate-pulse-slow">
+                  <FaPlay className="text-cyan-400 text-2xl" />
+                </div>
+                <p className="text-gray-400">Loading video...</p>
+              </div>
+            </div>
           ) : (
-            <div className="relative w-full" style={{ aspectRatio: "16/9" }}>
+            <div className="relative w-full rounded-xl overflow-hidden border-2 border-gray-800 shadow-2xl" style={{ aspectRatio: "16/9" }}>
               <iframe
                 src={videoToken}
                 allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
                 allowFullScreen
-                className="w-full h-full rounded-xl border-0"
+                className="w-full h-full border-0"
                 onLoad={() => setVideoReady(true)}
                 onError={(e) => {
                   console.error("Video iframe error:", e);
@@ -390,113 +422,144 @@ export default function StudentLesson(props) {
             </div>
           )}
           {resumePosition > 0 && videoToken && (
-            <div className="mt-2 text-xs text-slate-400">
+            <div className="mt-4 flex items-center gap-2 text-sm text-cyan-400 bg-cyan-500/10 border border-cyan-500/30 px-4 py-2 rounded-lg">
+              <FaPlay className="text-xs" />
               Resuming from {Math.floor(resumePosition / 60)}:{(resumePosition % 60).toFixed(0).padStart(2, "0")}
             </div>
           )}
-        </div>
+        </Card>
       ) : lesson?.video_id ? (
-        <div className="rounded-2xl border border-slate-800 bg-slate-900/30 p-5">
-          <div className="text-slate-400">
+        <Card variant="elevated" className="p-6">
+          <div className="text-gray-400">
             Video format not supported yet. (Provider: {lesson.video_provider || "unknown"})
           </div>
-        </div>
+        </Card>
       ) : null}
 
       {/* Resources */}
-      <div className="rounded-2xl border border-slate-800 bg-slate-900/30 p-5">
-        <div className="text-lg font-semibold">Resources</div>
-        <div className="text-sm text-slate-400">
-          Cheatsheets / links / notes. (Later: upload PDFs to Cloudflare R2.)
+      <Card variant="elevated" className="p-6" style={{ width: '100%', boxSizing: 'border-box' }}>
+        <div className="layout-flex items-center gap-md" style={{ marginBottom: '1.5rem' }}>
+          <div className="p-3 rounded-xl bg-gradient-to-br from-purple-400 to-pink-500 shadow-lg shadow-purple-500/30">
+            <FaFileAlt className="text-white text-xl" />
+          </div>
+          <div>
+            <CardTitle className="text-2xl" style={{ marginBottom: '0.25rem' }}>Resources</CardTitle>
+            <CardDescription style={{ margin: 0 }}>Cheatsheets / links / notes. (Later: upload PDFs to Cloudflare R2.)</CardDescription>
+          </div>
         </div>
 
-        <div className="mt-4 space-y-3">
+        <div className="layout-flex-col gap-sm">
           {resources.length === 0 ? (
-            <div className="text-slate-400">No resources yet.</div>
+            <div className="text-center py-12 text-gray-500">
+              <FaFileAlt className="text-4xl mx-auto mb-4 opacity-50" />
+              <p>No resources yet.</p>
+            </div>
           ) : (
-            resources.map((r) => (
-              <div
+            resources.map((r, idx) => (
+              <Card
                 key={r.id}
-                className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-800 bg-slate-950/30 p-4"
+                variant="outlined"
+                className="p-5 animate-fadeIn"
+                style={{ animationDelay: `${idx * 0.05}s` }}
               >
-                <div>
-                  <div className="font-medium">{r.title}</div>
-                  <div className="text-xs text-slate-500">{r.type}</div>
-                </div>
+                <div className="flex flex-wrap items-center justify-between gap-4">
+                  <div className="flex-1">
+                    <div className="font-semibold text-white text-lg mb-1">{r.title}</div>
+                    <div className="text-xs text-gray-500 uppercase tracking-wide">{r.type}</div>
+                  </div>
 
-                <div className="flex items-center gap-2">
-                  {r.url ? (
-                    <a
-                      href={r.url}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="rounded-xl border border-slate-700 px-4 py-2 text-sm"
-                    >
-                      Open
-                    </a>
-                  ) : null}
-                  {r.body ? (
-                    <button
-                      className="rounded-xl border border-slate-700 px-4 py-2 text-sm"
-                      onClick={() => alert(r.body)}
-                    >
-                      View Text
-                    </button>
-                  ) : null}
+                  <div className="flex items-center gap-3">
+                    {r.url ? (
+                      <a
+                        href={r.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-2 border-2 border-white bg-white text-black px-5 py-2.5 rounded-lg text-sm font-semibold hover:bg-black hover:text-white transition-all duration-300"
+                      >
+                        <FaExternalLinkAlt />
+                        Open
+                      </a>
+                    ) : null}
+                    {r.body ? (
+                      <button
+                        className="inline-flex items-center gap-2 border-2 border-gray-700 bg-gray-900 text-white px-5 py-2.5 rounded-lg text-sm font-semibold hover:border-white hover:bg-white hover:text-black transition-all duration-300"
+                        onClick={() => alert(r.body)}
+                      >
+                        <FaFileAlt />
+                        View Text
+                      </button>
+                    ) : null}
+                  </div>
                 </div>
-              </div>
+              </Card>
             ))
           )}
         </div>
-      </div>
+      </Card>
 
       {/* Practice */}
-      <div className="rounded-2xl border border-slate-800 bg-slate-900/30 p-5">
-        <div className="text-lg font-semibold">Practice</div>
-        <div className="text-sm text-slate-400">
-          Submit your work here — mentor will review.
+      <Card variant="elevated" className="p-6" style={{ width: '100%', boxSizing: 'border-box' }}>
+        <div className="layout-flex items-center gap-md" style={{ marginBottom: '1.5rem' }}>
+          <div className="p-3 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 shadow-lg shadow-emerald-500/30">
+            <FaCode className="text-white text-xl" />
+          </div>
+          <div>
+            <CardTitle className="text-2xl" style={{ marginBottom: '0.25rem' }}>Practice</CardTitle>
+            <CardDescription style={{ margin: 0 }}>Submit your work here — mentor will review.</CardDescription>
+          </div>
         </div>
 
-        <div className="mt-4 space-y-4">
+        <div className="layout-flex-col gap-lg">
           {practiceSorted.length === 0 ? (
-            <div className="text-slate-400">No practice tasks yet.</div>
+            <div className="text-center py-12 text-gray-500">
+              <FaCode className="text-4xl mx-auto mb-4 opacity-50" />
+              <p>No practice tasks yet.</p>
+            </div>
           ) : (
-            practiceSorted.map((t) => {
+            practiceSorted.map((t, idx) => {
               const st = statusMap?.[t.id]?.status || null;
               const locked = Boolean(st);
               const isSubmitting = submittingTaskId === t.id;
 
               return (
-                <div
+                <Card
                   key={t.id}
-                  className="rounded-2xl border border-slate-800 bg-slate-950/30 p-5 space-y-3"
+                  variant={locked ? "outlined" : "elevated"}
+                  className="p-6 space-y-5 animate-fadeIn"
+                  style={{ animationDelay: `${idx * 0.1}s` }}
                 >
-                  <div className="flex flex-wrap items-center justify-between gap-3">
-                    <div>
-                      <div className="text-base font-semibold">{t.title}</div>
-                      <div className="text-xs text-slate-500">
-                        Language: {t.language || "—"}
+                  <div className="flex flex-wrap items-center justify-between gap-4">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className={`p-2 rounded-lg ${locked ? 'bg-emerald-500/20 border border-emerald-500/30' : 'bg-cyan-500/20 border border-cyan-500/30'}`}>
+                          <FaCode className={locked ? 'text-emerald-400' : 'text-cyan-400'} />
+                        </div>
+                        <div className="text-xl font-bold text-white">{t.title}</div>
+                      </div>
+                      <div className="text-xs text-gray-500 ml-11">
+                        Language: <span className="text-cyan-400 font-semibold">{t.language || "—"}</span>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-3">
                       {st ? <Badge status={st} /> : null}
                       {st ? (
                         <Link
                           to="/lms/student/submissions"
-                          className="rounded-xl border border-slate-700 px-4 py-2 text-sm"
+                          className="inline-flex items-center gap-2 border-2 border-gray-700 bg-gray-900 text-white px-5 py-2.5 rounded-lg text-sm font-semibold hover:border-white hover:bg-white hover:text-black transition-all duration-300"
                         >
+                          <FaClipboardList />
                           View
                         </Link>
                       ) : null}
                     </div>
                   </div>
 
-                  <div className="text-sm text-slate-200 whitespace-pre-wrap">
+                  <div className="p-4 rounded-lg bg-gray-900 border border-gray-800 text-sm text-gray-300 whitespace-pre-wrap leading-relaxed">
                     {t.prompt}
                   </div>
 
                   <textarea
-                    className="w-full min-h-[120px] rounded-xl border border-slate-800 bg-slate-950/40 p-3 text-sm outline-none focus:border-slate-600"
+                    className="w-full min-h-[150px] border-2 border-gray-700 bg-gray-900 text-white p-4 text-sm rounded-lg focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all font-mono"
                     placeholder={locked ? "Already submitted ✅ (v1 locks resubmission)" : "Paste your code / answer here..."}
                     value={submitText[t.id] || ""}
                     onChange={(e) =>
@@ -505,31 +568,37 @@ export default function StudentLesson(props) {
                     disabled={locked || isSubmitting}
                   />
 
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="text-xs text-slate-500">
-                      {locked
-                        ? "Locked after submit (v1). Later we can allow versioned resubmissions."
-                        : "Tip: keep it clean + readable. Mentor loves that."}
+                  <div className="flex items-center justify-between gap-4 pt-4 border-t border-gray-800">
+                    <div className="text-xs text-gray-500 flex items-center gap-2">
+                      {locked ? (
+                        <>
+                          <FaCheckCircle className="text-emerald-400" />
+                          <span>Locked after submit (v1). Later we can allow versioned resubmissions.</span>
+                        </>
+                      ) : (
+                        <>
+                          <FaCode className="text-cyan-400" />
+                          <span>Tip: keep it clean + readable. Mentor loves that.</span>
+                        </>
+                      )}
                     </div>
 
-                    <button
-                      className={`rounded-xl px-4 py-2 text-sm border ${
-                        locked
-                          ? "border-slate-800 text-slate-500 cursor-not-allowed"
-                          : "border-slate-700 hover:border-slate-500"
-                      }`}
+                    <Button
+                      variant={locked ? "outline" : "gradient"}
+                      size="sm"
+                      icon={locked ? FaCheckCircle : FaPaperPlane}
                       onClick={() => submitTask(t)}
                       disabled={locked || isSubmitting}
                     >
                       {isSubmitting ? "Submitting..." : locked ? "Submitted" : "Submit"}
-                    </button>
+                    </Button>
                   </div>
-                </div>
+                </Card>
               );
             })
           )}
         </div>
-      </div>
+      </Card>
     </div>
   );
 }

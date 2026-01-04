@@ -1,18 +1,25 @@
 import { Link } from "react-router-dom";
+import { FaInbox } from "react-icons/fa";
+import Card, { CardContent, CardTitle, CardDescription } from "../ui/Card";
+import Button from "../ui/Button";
 
 export default function EmptyState({ title = "Nothing here yet", message, ctaText, ctaTo }) {
   return (
-    <div className="rounded-2xl border border-slate-800 bg-slate-900/30 p-6">
-      <div className="text-lg font-semibold">{title}</div>
-      {message ? <div className="mt-1 text-sm text-slate-300">{message}</div> : null}
+    <Card variant="elevated" className="p-12 text-center animate-fadeIn">
+      <div className="inline-block p-6 rounded-full bg-gray-900 border border-gray-800 mb-6">
+        <FaInbox className="text-4xl text-gray-600" />
+      </div>
+      <CardTitle className="text-2xl mb-3">{title}</CardTitle>
+      {message ? <CardDescription className="text-lg max-w-md mx-auto">{message}</CardDescription> : null}
       {ctaText && ctaTo ? (
-        <Link
-          to={ctaTo}
-          className="mt-4 inline-block rounded-lg bg-white px-4 py-2 text-sm font-medium text-slate-900 hover:bg-slate-200"
-        >
-          {ctaText}
-        </Link>
+        <div className="mt-8">
+          <Link to={ctaTo}>
+            <Button variant="gradient" size="lg">
+              {ctaText}
+            </Button>
+          </Link>
+        </div>
       ) : null}
-    </div>
+    </Card>
   );
 }

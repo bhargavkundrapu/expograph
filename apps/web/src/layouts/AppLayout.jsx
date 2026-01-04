@@ -1,5 +1,7 @@
 import { Outlet, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../app/providers/AuthProvider";
+import { FaSignOutAlt, FaUser, FaChartLine } from "react-icons/fa";
+import Button from "../components/ui/Button";
 
 export default function AppLayout() {
   const { user, role, logout } = useAuth();
@@ -11,28 +13,41 @@ export default function AppLayout() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100">
-      <div className="border-b border-slate-800">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-          <Link to="/academy" className="font-semibold">
-            ExpoGraph LMS
+    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white position-relative overflow-hidden">
+      <div className="position-sticky top-0 z-50 border-b border-gray-800 bg-black/80 backdrop-blur-md shadow-glow">
+        <div className="container layout-flex items-center justify-between" style={{ paddingTop: '1rem', paddingBottom: '1rem' }}>
+          <Link 
+            to="/academy" 
+            className="section-hero text-xl font-bold hover:scale-105 transition-transform duration-300 layout-flex items-center gap-2 group"
+          >
+            <FaChartLine className="text-cyan-400 group-hover:rotate-12 transition-transform duration-300" />
+            <span className="bg-gradient-to-r from-white via-gray-200 to-white bg-clip-text text-transparent">
+              ExpoGraph LMS
+            </span>
           </Link>
 
-          <div className="flex items-center gap-3 text-sm">
-            <span className="text-slate-300">
-              {user?.email || "user"} • {role || "role"}
-            </span>
-            <button
+          <div className="layout-flex items-center gap-4">
+            <div className="layout-flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-900 border border-gray-800">
+              <FaUser className="text-cyan-400" />
+              <span className="text-sm text-gray-300">
+                <span className="text-white font-semibold">{user?.email || "user"}</span>
+                <span className="mx-2 text-gray-600">•</span>
+                <span className="text-cyan-400">{role || "role"}</span>
+              </span>
+            </div>
+            <Button
+              variant="secondary"
+              size="sm"
+              icon={FaSignOutAlt}
               onClick={onLogout}
-              className="rounded-lg border border-slate-700 px-3 py-1.5 hover:bg-slate-900"
             >
               Logout
-            </button>
+            </Button>
           </div>
         </div>
       </div>
 
-      <main className="mx-auto max-w-6xl px-4 py-10">
+      <main className="container margin-section animate-fadeIn" style={{ minHeight: 'calc(100vh - 150px)' }}>
         <Outlet />
       </main>
     </div>

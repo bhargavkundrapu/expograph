@@ -1,17 +1,30 @@
+import { FaExclamationTriangle, FaRedo } from "react-icons/fa";
+import Card, { CardContent, CardTitle, CardDescription } from "../ui/Card";
+import Button from "../ui/Button";
+
 export default function ErrorState({ title = "Something went wrong", message, onRetry }) {
   return (
-    <div className="rounded-2xl border border-red-900/60 bg-red-950/30 p-5">
-      <div className="text-lg font-semibold text-red-200">{title}</div>
-      {message ? <div className="mt-1 text-sm text-red-200/80">{message}</div> : null}
+    <Card variant="elevated" className="p-8 animate-fadeIn">
+      <div className="flex items-start gap-4 mb-6">
+        <div className="p-3 rounded-xl bg-gradient-to-br from-red-400 to-pink-500 shadow-lg shadow-red-500/30 flex-shrink-0">
+          <FaExclamationTriangle className="text-white text-xl" />
+        </div>
+        <div className="flex-1">
+          <CardTitle className="text-2xl mb-2 text-red-300">{title}</CardTitle>
+          {message ? <CardDescription className="text-red-200/80">{message}</CardDescription> : null}
+        </div>
+      </div>
       {onRetry ? (
-        <button
+        <Button
+          variant="gradient"
+          size="md"
+          icon={FaRedo}
           onClick={onRetry}
-          className="mt-4 rounded-lg bg-white px-4 py-2 text-sm font-medium text-slate-900 hover:bg-slate-200"
           type="button"
         >
           Retry
-        </button>
+        </Button>
       ) : null}
-    </div>
+    </Card>
   );
 }

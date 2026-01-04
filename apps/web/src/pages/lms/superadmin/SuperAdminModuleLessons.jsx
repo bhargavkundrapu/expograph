@@ -165,8 +165,8 @@ export default function SuperAdminModuleLessons() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold">Lessons Manager</h1>
-          <p className="text-sm text-slate-300">
+          <h1 className="text-3xl font-bold">Lessons Manager</h1>
+          <p className="text-sm text-white">
             Course → Module → Lessons (draft/publish).
           </p>
         </div>
@@ -174,14 +174,14 @@ export default function SuperAdminModuleLessons() {
         <div className="flex gap-2">
           <button
             onClick={loadTree}
-            className="rounded-lg border border-slate-700 px-3 py-2 text-sm hover:bg-slate-900"
+            className=" border-2 border-white px-3 py-2 text-sm hover:bg-white hover:text-black transition-all"
             type="button"
           >
             Refresh
           </button>
           <Link
             to={`/lms/superadmin/content/${courseId}`}
-            className="rounded-lg border border-slate-700 px-3 py-2 text-sm hover:bg-slate-900"
+            className=" border-2 border-white px-3 py-2 text-sm hover:bg-white hover:text-black transition-all"
           >
             ← Back to Modules
           </Link>
@@ -189,7 +189,7 @@ export default function SuperAdminModuleLessons() {
       </div>
 
       {err ? (
-        <div className="rounded-xl border border-red-900/60 bg-red-950/40 px-4 py-3 text-sm text-red-200">
+        <div className=" border border-2 border-white bg-black px-4 py-3 text-sm text-white">
           {err}{" "}
           <button onClick={loadTree} className="ml-2 underline underline-offset-2" type="button">
             Retry
@@ -198,29 +198,29 @@ export default function SuperAdminModuleLessons() {
       ) : null}
 
       {loading ? (
-        <div className="text-sm text-slate-300">Loading…</div>
+        <div className="text-sm text-white">Loading…</div>
       ) : (
         <>
-          <div className="rounded-2xl border border-slate-800 bg-slate-900/30 p-5">
-            <div className="text-sm text-slate-400">Course</div>
+          <div className=" border-2 border-white bg-black p-5">
+            <div className="text-sm text-white opacity-80">Course</div>
             <div className="mt-1 font-semibold">{course?.title || "Course"}</div>
 
-            <div className="mt-4 text-sm text-slate-400">Module</div>
+            <div className="mt-4 text-sm text-white opacity-80">Module</div>
             <div className="mt-1 text-lg font-semibold">
               {module ? `${module.position}. ${module.title}` : "Module not found"}
             </div>
-            <div className="mt-1 text-xs text-slate-500">Module ID: {moduleId}</div>
+            <div className="mt-1 text-xs text-white opacity-80">Module ID: {moduleId}</div>
           </div>
 
           {/* Create lesson */}
-          <form onSubmit={createLesson} className="rounded-2xl border border-slate-800 bg-slate-900/30 p-5">
+          <form onSubmit={createLesson} className=" border-2 border-white bg-black p-5">
             <div className="mb-3 font-semibold">Create Lesson</div>
 
             <div className="grid gap-3 md:grid-cols-3">
               <div className="md:col-span-2">
-                <label className="text-sm text-slate-300">Title</label>
+                <label className="text-sm text-white">Title</label>
                 <input
-                  className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 outline-none focus:border-slate-500"
+                  className="mt-1 w-full  border-2 border-white bg-black px-3 py-2 text-slate-100 outline-none focus:border-slate-500"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="Props + State"
@@ -228,9 +228,9 @@ export default function SuperAdminModuleLessons() {
               </div>
 
               <div>
-                <label className="text-sm text-slate-300">Position</label>
+                <label className="text-sm text-white">Position</label>
                 <input
-                  className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 outline-none focus:border-slate-500"
+                  className="mt-1 w-full  border-2 border-white bg-black px-3 py-2 text-slate-100 outline-none focus:border-slate-500"
                   value={position}
                   onChange={(e) => setPosition(e.target.value)}
                   type="number"
@@ -242,7 +242,7 @@ export default function SuperAdminModuleLessons() {
             <div className="mt-4">
               <button
                 disabled={saving}
-                className="rounded-lg bg-white px-4 py-2 text-sm font-medium text-slate-900 hover:bg-slate-200 disabled:opacity-60"
+                className=" border-2 border-white bg-white text-black px-4 py-2 text-sm font-semibold hover:bg-black hover:text-white transition-all disabled:opacity-60"
                 type="submit"
               >
                 {saving ? "Creating…" : "Create Lesson"}
@@ -251,17 +251,17 @@ export default function SuperAdminModuleLessons() {
           </form>
 
           {/* Lessons list */}
-          <div className="rounded-2xl border border-slate-800 bg-slate-900/20">
-            <div className="border-b border-slate-800 px-5 py-3 font-semibold">
+          <div className=" border-2 border-white bg-black">
+            <div className="border-b-2 border-white px-5 py-3 font-semibold">
               Lessons
             </div>
 
             {sortedLessons.length === 0 ? (
-              <div className="px-5 py-6 text-sm text-slate-300">
+              <div className="px-5 py-6 text-sm text-white">
                 No lessons yet. Create one above.
               </div>
             ) : (
-              <div className="divide-y divide-slate-800">
+              <div className="divide-y divide-y-2 divide-white">
                 {sortedLessons.map((l) => {
                   const busy = busyIds.has(l.id);
                   const isPublished = l.status === "published";
@@ -272,16 +272,16 @@ export default function SuperAdminModuleLessons() {
                         <div className="font-semibold">
                           {l.position}. {l.title}
                         </div>
-                        <div className="mt-1 text-xs text-slate-500">Lesson ID: {l.id}</div>
+                        <div className="mt-1 text-xs text-white opacity-80">Lesson ID: {l.id}</div>
                       </div>
 
                       <div className="flex items-center gap-2">
                         <span
                           className={[
-                            "rounded-full border px-2.5 py-1 text-xs",
+                            " border px-2.5 py-1 text-xs",
                             isPublished
-                              ? "border-green-900/60 bg-green-950/30 text-green-200"
-                              : "border-slate-700 bg-slate-950/30 text-slate-300",
+                              ? "border-2 border-white bg-white text-black"
+                              : "border-slate-700 bg-black/30 text-white",
                           ].join(" ")}
                         >
                           {l.status}
@@ -290,7 +290,7 @@ export default function SuperAdminModuleLessons() {
                         <button
                           disabled={busy}
                           onClick={() => toggleLessonStatus(l)}
-                          className="rounded-lg border border-slate-700 px-3 py-2 text-sm hover:bg-slate-900 disabled:opacity-60"
+                          className=" border-2 border-white px-3 py-2 text-sm hover:bg-white hover:text-black transition-all disabled:opacity-60"
                           type="button"
                         >
                           {busy ? "Saving…" : isPublished ? "Unpublish" : "Publish"}
@@ -298,7 +298,7 @@ export default function SuperAdminModuleLessons() {
 
                         {/* next step: resources & practice */}
                         <button   
-                          className="rounded-lg border border-slate-700 px-3 py-2 text-sm hover:bg-slate-900 disabled:opacity-60"
+                          className=" border-2 border-white px-3 py-2 text-sm hover:bg-white hover:text-black transition-all disabled:opacity-60"
                           type="button"
                           title="Next step: resources + practice editor"
                         >
@@ -318,7 +318,7 @@ export default function SuperAdminModuleLessons() {
             )}
           </div>
 
-          <div className="text-xs text-slate-500">
+          <div className="text-xs text-white opacity-80">
             Premium note: We always reload canonical data from <code>/courses/:courseId/tree</code> so refresh/back never loses state.
           </div>
         </>
