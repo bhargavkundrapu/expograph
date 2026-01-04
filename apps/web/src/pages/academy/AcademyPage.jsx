@@ -2,7 +2,6 @@ import { Link } from "react-router-dom";
 import { FaGraduationCap, FaRocket, FaCode, FaChartLine, FaSignInAlt, FaArrowRight } from "react-icons/fa";
 import { HiSparkles } from "react-icons/hi";
 import Card, { CardContent, CardTitle, CardDescription } from "../../components/ui/Card";
-import Button from "../../components/ui/Button";
 
 export default function AcademyPage() {
   const features = [
