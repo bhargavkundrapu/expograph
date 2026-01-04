@@ -1,5 +1,5 @@
 import { FaLaptopCode, FaCloud, FaServer, FaLightbulb, FaCode } from "react-icons/fa";
-import Card, { CardContent, CardTitle, CardDescription } from "../../components/ui/Card";
+import Card, { CardContent, CardTitle, CardDescription } from "../../Components/ui/Card";
 
 export default function SolutionsPage() {
   const services = [

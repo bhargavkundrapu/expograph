@@ -4,8 +4,8 @@ import { unwrapData } from "../../../services/apiShape";
 import { useAuth } from "../../../app/providers/AuthProvider";
 import { Link } from "react-router-dom";
 import { FaFileAlt, FaCheckCircle, FaCode, FaClock, FaExternalLinkAlt, FaClipboardList } from "react-icons/fa";
-import Card, { CardContent, CardTitle, CardDescription } from "../../../components/ui/Card";
-import Button from "../../../components/ui/Button";
+import Card, { CardContent, CardTitle, CardDescription } from "../../../Components/ui/Card";
+import Button from "../../../Components/ui/Button";
 import Skeleton from "../../../Components/ui/Skeleton";
 
 function Badge({ status }) {

@@ -1,7 +1,7 @@
 import { Outlet, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../app/providers/AuthProvider";
 import { FaSignOutAlt, FaUser, FaChartLine } from "react-icons/fa";
-import Button from "../components/ui/Button";
+import Button from "../Components/ui/Button";
 
 export default function AppLayout() {
   const { user, role, logout } = useAuth();

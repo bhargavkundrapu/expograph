@@ -3,8 +3,8 @@ import { apiFetch, ApiError } from "../../../services/api";
 import { useAuth } from "../../../app/providers/AuthProvider";
 import { Link } from "react-router-dom";
 import { FaBook, FaPlus, FaSync, FaEye, FaEyeSlash, FaCog, FaCheckCircle, FaCircle } from "react-icons/fa";
-import Card, { CardContent, CardTitle, CardDescription } from "../../../components/ui/Card";
-import Button from "../../../components/ui/Button";
+import Card, { CardContent, CardTitle, CardDescription } from "../../../Components/ui/Card";
+import Button from "../../../Components/ui/Button";
 
 function extractList(res) {
   // tries hard to support different backend response shapes

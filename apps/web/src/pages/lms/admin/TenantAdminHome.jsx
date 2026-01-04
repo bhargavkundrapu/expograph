@@ -1,5 +1,5 @@
 import { FaBuilding, FaCog, FaUsers } from "react-icons/fa";
-import Card, { CardContent, CardTitle, CardDescription } from "../../../components/ui/Card";
+import Card, { CardContent, CardTitle, CardDescription } from "../../../Components/ui/Card";
 
 export default function TenantAdminHome() {
   return (

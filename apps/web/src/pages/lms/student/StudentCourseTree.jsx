@@ -7,7 +7,7 @@ import { unwrapData } from "../../../services/apiShape";
 import { useAuth } from "../../../app/providers/AuthProvider";
 import { FaBook, FaChartLine, FaArrowLeft, FaCheckCircle, FaCircle, FaArrowRight, FaPlay } from "react-icons/fa";
 import { HiSparkles } from "react-icons/hi";
-import Card from "../../../components/ui/Card";
+import Card from "../../../Components/ui/Card";
 
 function TreeSkeleton() {
   return (

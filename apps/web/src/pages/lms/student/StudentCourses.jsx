@@ -7,7 +7,7 @@ import { apiFetch } from "../../../services/api";
 import { unwrapArray } from "../../../services/apiShape";
 import { useAuth } from "../../../app/providers/AuthProvider";
 import { FaBook, FaSearch, FaArrowRight, FaGraduationCap } from "react-icons/fa";
-import Card, { CardContent, CardTitle, CardDescription } from "../../../components/ui/Card";
+import Card, { CardContent, CardTitle, CardDescription } from "../../../Components/ui/Card";
 
 function CourseCardSkeleton() {
   return (

@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../app/providers/AuthProvider";
 import { FaSignInAlt, FaEnvelope, FaLock, FaUserShield } from "react-icons/fa";
 import { HiSparkles } from "react-icons/hi";
-import Card from "../../components/ui/Card";
-import Button from "../../components/ui/Button";
+import Card from "../../Components/ui/Card";
+import Button from "../../Components/ui/Button";
 
 function routeForRole(role) {
   if (role === "SuperAdmin") return "/lms/superadmin";

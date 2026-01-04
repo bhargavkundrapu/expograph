@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { FaBook, FaChartLine, FaFileAlt, FaRocket } from "react-icons/fa";
-import Card, { CardContent, CardTitle, CardDescription } from "../../../components/ui/Card";
+import Card, { CardContent, CardTitle, CardDescription } from "../../../Components/ui/Card";
 
 export default function StudentHome() {
   const quickLinks = [

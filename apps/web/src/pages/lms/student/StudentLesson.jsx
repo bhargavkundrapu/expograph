@@ -4,8 +4,8 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { apiFetch } from "../../../services/api";
 import { startLesson, updateLessonProgress, completeLesson } from "../../../features/progress/progressApi";
 import { FaPlay, FaArrowLeft, FaFileAlt, FaCheckCircle, FaExternalLinkAlt, FaCode, FaPaperPlane, FaVideo, FaBook, FaClipboardList } from "react-icons/fa";
-import Card, { CardContent, CardTitle, CardDescription } from "../../../components/ui/Card";
-import Button from "../../../components/ui/Button";
+import Card, { CardContent, CardTitle, CardDescription } from "../../../Components/ui/Card";
+import Button from "../../../Components/ui/Button";
 import Skeleton from "../../../Components/ui/Skeleton";
 // tiny helper: unwrap {ok,data}
 function progressKey(lessonId) {
