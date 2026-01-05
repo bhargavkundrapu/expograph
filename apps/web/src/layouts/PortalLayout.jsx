@@ -9,7 +9,12 @@ import {
   FaCog, 
   FaClipboardList,
   FaUser,
-  FaEnvelope
+  FaEnvelope,
+  FaGraduationCap,
+  FaCertificate,
+  FaBriefcase,
+  FaLaptopCode,
+  FaFlag
 } from "react-icons/fa";
 
 const iconMap = {
@@ -20,6 +25,13 @@ const iconMap = {
   "My Submissions": FaFileAlt,
   "Submissions Queue": FaClipboardList,
   "Tenant Settings": FaCog,
+  "Analytics": FaChartBar,
+  "Leads": FaEnvelope,
+  "Workshops": FaGraduationCap,
+  "Certificates": FaCertificate,
+  "Internships": FaBriefcase,
+  "Client Lab": FaLaptopCode,
+  "Feature Flags": FaFlag,
 };
 
 function LinkWithIcon({ to, label, icon: Icon, end }) {
@@ -55,6 +67,13 @@ export default function PortalLayout() {
       return [
         { to: `${base}`, label: "Dashboard" },
         { to: `${base}/content`, label: "Content Admin" },
+        { to: `${base}/analytics`, label: "Analytics" },
+        { to: `${base}/leads`, label: "Leads" },
+        { to: `${base}/workshops`, label: "Workshops" },
+        { to: `${base}/certificates`, label: "Certificates" },
+        { to: `${base}/internships`, label: "Internships" },
+        { to: `${base}/client-lab`, label: "Client Lab" },
+        { to: `${base}/feature-flags`, label: "Feature Flags" },
       ];
     }
     if (role === "TenantAdmin") {

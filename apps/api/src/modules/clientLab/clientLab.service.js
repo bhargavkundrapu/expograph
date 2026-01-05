@@ -162,6 +162,14 @@ async function addMentorFeedback({ tenantId, userId, taskId, data }) {
   });
 }
 
+async function listAllClients({ tenantId }) {
+  return repo.listAllClients({ tenantId });
+}
+
+async function listAllProjects({ tenantId }) {
+  return repo.listAllProjects({ tenantId });
+}
+
 module.exports = {
   createClient,
   createProject,
@@ -173,4 +181,6 @@ module.exports = {
   studentUpdateTask,
   reviewQueue,
   addMentorFeedback,
+  listAllClients,
+  listAllProjects,
 };

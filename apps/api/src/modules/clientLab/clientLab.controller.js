@@ -126,6 +126,18 @@ const mentorFeedback = asyncHandler(async (req, res) => {
   res.status(201).json({ ok: true, data });
 });
 
+// Admin: List all clients
+const listAllClients = asyncHandler(async (req, res) => {
+  const data = await svc.listAllClients({ tenantId: req.tenant.id });
+  res.json({ ok: true, data });
+});
+
+// Admin: List all projects
+const listAllProjects = asyncHandler(async (req, res) => {
+  const data = await svc.listAllProjects({ tenantId: req.tenant.id });
+  res.json({ ok: true, data });
+});
+
 module.exports = {
   createClient,
   createProject,
@@ -137,4 +149,6 @@ module.exports = {
   studentUpdateTask,
   reviewQueue,
   mentorFeedback,
+  listAllClients,
+  listAllProjects,
 };

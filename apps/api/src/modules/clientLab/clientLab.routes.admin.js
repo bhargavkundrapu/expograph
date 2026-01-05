@@ -7,7 +7,9 @@ const router = express.Router();
 
 router.use(requireAuth, requirePermission("clientlab:manage"));
 
+router.get("/clients", ctrl.listAllClients);
 router.post("/clients", ctrl.createClient);
+router.get("/projects", ctrl.listAllProjects);
 router.post("/projects", ctrl.createProject);
 router.post("/projects/:projectId/members", ctrl.addMember);
 router.post("/projects/:projectId/tasks", ctrl.createTask);

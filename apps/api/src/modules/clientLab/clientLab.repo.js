@@ -145,6 +145,28 @@ async function addFeedback({ tenantId, projectId, taskId, authorUserId, authorRo
   return rows[0];
 }
 
+async function listAllClients({ tenantId }) {
+  const { rows } = await query(
+    `SELECT * FROM clients
+     WHERE tenant_id=$1
+     ORDER BY created_at DESC`,
+    [tenantId]
+  );
+  return rows;
+}
+
+async function listAllProjects({ tenantId }) {
+  const { rows } = await query(
+    `SELECT p.*, c.name AS client_name
+     FROM client_projects p
+     LEFT JOIN clients c ON c.id = p.client_id AND c.tenant_id = p.tenant_id
+     WHERE p.tenant_id=$1
+     ORDER BY p.created_at DESC`,
+    [tenantId]
+  );
+  return rows;
+}
+
 module.exports = {
   createClient,
   createProject,
@@ -159,4 +181,6 @@ module.exports = {
   updateTaskStudentFields,
   listReviewQueue,
   addFeedback,
+  listAllClients,
+  listAllProjects,
 };

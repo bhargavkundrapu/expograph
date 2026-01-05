@@ -18,6 +18,13 @@ import SuperAdminCourseBuilder from "../pages/lms/superadmin/SuperAdminCourseBui
 import SuperAdminModuleLessons from "../pages/lms/superadmin/SuperAdminModuleLessons";
 import SuperAdminLessonEditor from "../pages/lms/superadmin/SuperAdminLessonEditor";
 import SuperAdminLessonResources from "../pages/lms/superadmin/SuperAdminLessonResources";
+import SuperAdminLeads from "../pages/lms/superadmin/SuperAdminLeads";
+import SuperAdminWorkshops from "../pages/lms/superadmin/SuperAdminWorkshops";
+import SuperAdminCertificates from "../pages/lms/superadmin/SuperAdminCertificates";
+import SuperAdminFeatureFlags from "../pages/lms/superadmin/SuperAdminFeatureFlags";
+import SuperAdminClientLab from "../pages/lms/superadmin/SuperAdminClientLab";
+import SuperAdminInternships from "../pages/lms/superadmin/SuperAdminInternships";
+import SuperAdminAnalytics from "../pages/lms/superadmin/SuperAdminAnalytics";
 import StudentCourses from "../pages/lms/student/StudentCourses";
 import StudentCourseTree from "../pages/lms/student/StudentCourseTree";
 import StudentLesson from "../pages/lms/student/StudentLesson";
@@ -57,9 +64,13 @@ export const router = createBrowserRouter([
         { path: "content/:courseId/modules/:moduleId", element: <SuperAdminModuleLessons /> },
         { path: "content/:courseId/lessons/:lessonId", element: <SuperAdminLessonEditor /> },
         { path: "content/:courseId/lessons/:lessonId/resources", element: <SuperAdminLessonResources /> },
-
-
-        // { path: "content", element: <SuperAdminContent /> },
+        { path: "analytics", element: <SuperAdminAnalytics /> },
+        { path: "leads", element: <SuperAdminLeads /> },
+        { path: "workshops", element: <SuperAdminWorkshops /> },
+        { path: "certificates", element: <SuperAdminCertificates /> },
+        { path: "internships", element: <SuperAdminInternships /> },
+        { path: "client-lab", element: <SuperAdminClientLab /> },
+        { path: "feature-flags", element: <SuperAdminFeatureFlags /> },
       ],
     },
     {
