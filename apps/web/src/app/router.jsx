@@ -22,6 +22,12 @@ import StudentCourses from "../pages/lms/student/StudentCourses";
 import StudentCourseTree from "../pages/lms/student/StudentCourseTree";
 import StudentLesson from "../pages/lms/student/StudentLesson";
 import StudentSubmissions from "../pages/lms/student/StudentSubmissions";
+import StudentProgress from "../pages/lms/student/StudentProgress";
+import StudentCertificates from "../pages/lms/student/StudentCertificates";
+import StudentInternships from "../pages/lms/student/StudentInternships";
+import StudentClientLab from "../pages/lms/student/StudentClientLab";
+import StudentWorkshops from "../pages/lms/student/StudentWorkshops";
+import StudentReferrals from "../pages/lms/student/StudentReferrals";
 
 export const router = createBrowserRouter([
   {
@@ -87,10 +93,17 @@ export const router = createBrowserRouter([
       ),
       children: [
         { index: true, element: <StudentHome /> },
-        { path: "courses", element: <StudentCourses /> },
-        { path: "courses/:courseSlug", element: <StudentCourseTree /> },
         { path: "courses/:courseSlug/modules/:moduleSlug/lessons/:lessonSlug", element: <StudentLesson /> },
+        { path: "courses/:courseSlug", element: <StudentCourseTree /> },
+        { path: "courses", element: <StudentCourses /> },
+        { path: "client-lab/:projectId", element: <StudentClientLab /> },
+        { path: "client-lab", element: <StudentClientLab /> },
+        { path: "progress", element: <StudentProgress /> },
         { path: "submissions", element: <StudentSubmissions /> },
+        { path: "certificates", element: <StudentCertificates /> },
+        { path: "internships", element: <StudentInternships /> },
+        { path: "workshops", element: <StudentWorkshops /> },
+        { path: "referrals", element: <StudentReferrals /> },
       ],
     },
   ],
