@@ -134,7 +134,7 @@ app.use(
   app.use("/api/v1/admin", certAdmin);
   app.use("/api/v1/admin", featureFlagsAdmin);
 
-  app.use("/api/v1", referralsRoutes);
+  app.use("/api/v1/referrals", referralsRoutes);
  
  
 
