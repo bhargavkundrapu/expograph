@@ -135,11 +135,22 @@ async function listReviewQueue({ tenantId, projectId }) {
       u.full_name as user_name,
       u.email as student_email,
       p.title as project_title,
-      p.name as project_name
+      p.title as project_name,
+      t.submit_notes as submission_content,
+      t.due_at as due_date,
+      t.updated_at as completed_at,
+      (
+        SELECT cf.message 
+        FROM client_feedback cf 
+        WHERE cf.task_id = t.id 
+        AND cf.tenant_id = t.tenant_id
+        ORDER BY cf.created_at DESC 
+        LIMIT 1
+      ) as mentor_feedback
     FROM client_tasks t
     LEFT JOIN users u ON u.id = t.assignee_user_id
     LEFT JOIN client_projects p ON p.id = t.project_id AND p.tenant_id = t.tenant_id
-    WHERE t.tenant_id=$1 AND t.project_id=$2 AND (t.status='review' OR t.status='in_progress')
+    WHERE t.tenant_id=$1 AND t.project_id=$2 AND (t.status='review' OR t.status='doing')
     ORDER BY t.updated_at ASC`,
     [tenantId, projectId]
   );
