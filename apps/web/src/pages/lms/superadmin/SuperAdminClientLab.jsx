@@ -500,6 +500,72 @@ export default function SuperAdminClientLab() {
         </Card>
       )}
 
+      {/* Clients List */}
+      <div>
+        <div className="layout-flex items-center gap-md mb-6">
+          <div className="p-3 rounded-xl bg-gradient-to-br from-pink-400/20 to-rose-500/20 border border-pink-400/30">
+            <FaUser className="text-pink-400 text-xl" />
+          </div>
+          <h2 className="section-title text-3xl" style={{ margin: 0 }}>Clients ({clients.length})</h2>
+        </div>
+
+        {clients.length === 0 ? (
+          <EmptyState
+            title="No Clients"
+            message="Create your first client to get started with client lab projects!"
+          />
+        ) : (
+          <div className="layout-grid-2 gap-lg mb-8" style={{ width: '100%' }}>
+            {clients.map((client, idx) => (
+              <Card
+                key={client.id}
+                variant="elevated"
+                className="animate-fadeIn"
+                style={{ animationDelay: `${idx * 0.1}s`, width: '100%', boxSizing: 'border-box' }}
+              >
+                <div className="layout-flex items-start justify-between gap-md mb-4">
+                  <div style={{ flex: 1 }}>
+                    <div className="layout-flex items-center gap-3 mb-2">
+                      <div className="p-2 rounded-lg bg-gradient-to-br from-pink-400/20 to-rose-500/20 border border-pink-400/30">
+                        <FaUser className="text-pink-400" />
+                      </div>
+                      <CardTitle className="text-xl" style={{ margin: 0 }}>{client.name}</CardTitle>
+                    </div>
+                    {client.industry && (
+                      <div className="text-sm text-gray-400 mb-2">Industry: {client.industry}</div>
+                    )}
+                    {client.contact_name && (
+                      <div className="text-sm text-gray-400 mb-1">
+                        Contact: {client.contact_name}
+                        {client.contact_email && ` (${client.contact_email})`}
+                      </div>
+                    )}
+                    {client.nda_status && (
+                      <span className="inline-block px-3 py-1.5 rounded-lg text-xs font-semibold mt-2 bg-emerald-500/10 border border-emerald-500/30 text-emerald-300">
+                        NDA Signed
+                      </span>
+                    )}
+                    {client.notes && (
+                      <CardDescription className="text-gray-400 mt-3 line-clamp-2">
+                        {client.notes}
+                      </CardDescription>
+                    )}
+                    <div className="layout-flex items-center gap-4 mt-3 text-xs text-gray-500">
+                      {client.created_at && (
+                        <div className="layout-flex items-center gap-1">
+                          <FaCalendar className="text-pink-400" />
+                          <span>Created: {formatDate(client.created_at)}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
+        )}
+      </div>
+
       {/* Projects List */}
       <div>
         <div className="layout-flex items-center gap-md mb-6">
