@@ -85,6 +85,8 @@ export default function SuperAdminClientLab() {
         
         if (clientsList.length === 0) {
           console.warn("⚠️ No clients found in response. Response was:", clientsRes);
+        } else {
+          console.log("✅ Successfully loaded", clientsList.length, "clients. They should be visible in the Clients List section.");
         }
         
         setClients(clientsList);
@@ -254,17 +256,16 @@ export default function SuperAdminClientLab() {
   return (
     <div className="layout-flex-col gap-xl animate-fadeIn" style={{ width: '100%' }}>
       {/* Header */}
-      <div className="position-relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900 via-black to-gray-900 border border-gray-800 p-10 shadow-glow" style={{ marginBottom: '2rem' }}>
-        <div className="position-absolute" style={{ top: 0, right: 0, width: '24rem', height: '24rem', background: 'rgba(236, 72, 153, 0.1)', borderRadius: '50%', filter: 'blur(3rem)', zIndex: 0 }}></div>
+      <div className="position-relative overflow-hidden rounded-xl sm:rounded-2xl bg-green-50 border border-green-200 p-6 sm:p-10 shadow-soft" style={{ marginBottom: '1rem sm:2rem' }}>
         <div className="position-relative" style={{ zIndex: 10 }}>
-          <div className="layout-flex items-center justify-between gap-md" style={{ marginBottom: '1.5rem' }}>
-            <div className="layout-flex items-center gap-md">
-              <div className="p-4 rounded-xl bg-gradient-to-br from-pink-400 to-rose-500 shadow-lg shadow-pink-500/30">
-                <FaLaptopCode className="text-white text-2xl" />
+          <div className="layout-flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-md" style={{ marginBottom: '1rem sm:1.5rem' }}>
+            <div className="layout-flex items-center gap-3 sm:gap-md">
+              <div className="p-3 sm:p-4 rounded-xl bg-green-600 shadow-medium">
+                <FaLaptopCode className="text-white text-xl sm:text-2xl" />
               </div>
               <div>
-                <h1 className="section-hero text-4xl" style={{ marginBottom: '0.5rem', marginTop: 0 }}>Client Lab Management</h1>
-                <p className="text-gray-300 text-lg" style={{ margin: 0 }}>Manage clients and projects</p>
+                <h1 className="section-hero text-2xl sm:text-4xl text-gray-900" style={{ marginBottom: '0.5rem', marginTop: 0 }}>Client Lab Management</h1>
+                <p className="text-gray-600 text-base sm:text-lg" style={{ margin: 0 }}>Manage clients and projects</p>
               </div>
             </div>
             <div className="layout-flex gap-md">
@@ -385,23 +386,23 @@ export default function SuperAdminClientLab() {
       {/* Create Project Form */}
       {showProjectForm && (
         <Card variant="elevated" className="p-8" style={{ width: '100%', boxSizing: 'border-box' }}>
-          <CardTitle className="text-2xl mb-6">Create New Project</CardTitle>
+          <CardTitle className="text-2xl mb-6 text-gray-900">Create New Project</CardTitle>
           {clients.length === 0 && (
-            <div className="mb-6 p-4 rounded-lg bg-amber-500/10 border border-amber-500/30">
-              <p className="text-sm text-amber-300">
+            <div className="mb-6 p-4 rounded-lg bg-amber-50 border border-amber-200">
+              <p className="text-sm text-amber-700">
                 ⚠️ No clients found. Please create a client first before creating a project.
               </p>
             </div>
           )}
           <div className="layout-grid-2 gap-md mb-6">
             <div>
-              <label className="text-sm font-semibold text-white mb-2 block">
+              <label className="text-sm font-semibold text-gray-900 mb-2 block">
                 Client * {clients.length > 0 && <span className="text-gray-500">({clients.length} available)</span>}
               </label>
               <select
                 value={projectFormData.clientId}
                 onChange={(e) => setProjectFormData({ ...projectFormData, clientId: e.target.value })}
-                className="w-full border-2 border-gray-700 bg-gray-900 text-white px-4 py-2 rounded-lg focus:outline-none focus:border-pink-400"
+                className="w-full border-2 border-green-200 bg-white text-gray-900 px-4 py-2 rounded-lg focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20"
                 required
                 disabled={clients.length === 0}
               >
@@ -429,31 +430,31 @@ export default function SuperAdminClientLab() {
               )}
             </div>
             <div>
-              <label className="text-sm font-semibold text-white mb-2 block">Project Title *</label>
+              <label className="text-sm font-semibold text-gray-900 mb-2 block">Project Title *</label>
               <input
                 type="text"
                 value={projectFormData.title}
                 onChange={(e) => setProjectFormData({ ...projectFormData, title: e.target.value })}
-                className="w-full border-2 border-gray-700 bg-gray-900 text-white px-4 py-2 rounded-lg focus:outline-none focus:border-pink-400"
+                className="w-full border-2 border-green-200 bg-white text-gray-900 px-4 py-2 rounded-lg focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20"
                 required
               />
             </div>
             <div>
-              <label className="text-sm font-semibold text-white mb-2 block">Slug</label>
+              <label className="text-sm font-semibold text-gray-900 mb-2 block">Slug</label>
               <input
                 type="text"
                 value={projectFormData.slug}
                 onChange={(e) => setProjectFormData({ ...projectFormData, slug: e.target.value })}
-                className="w-full border-2 border-gray-700 bg-gray-900 text-white px-4 py-2 rounded-lg focus:outline-none focus:border-pink-400"
+                className="w-full border-2 border-green-200 bg-white text-gray-900 px-4 py-2 rounded-lg focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20"
                 placeholder="project-slug (auto-generated if empty)"
               />
             </div>
             <div>
-              <label className="text-sm font-semibold text-white mb-2 block">Status</label>
+              <label className="text-sm font-semibold text-gray-900 mb-2 block">Status</label>
               <select
                 value={projectFormData.status}
                 onChange={(e) => setProjectFormData({ ...projectFormData, status: e.target.value })}
-                className="w-full border-2 border-gray-700 bg-gray-900 text-white px-4 py-2 rounded-lg focus:outline-none focus:border-pink-400"
+                className="w-full border-2 border-green-200 bg-white text-gray-900 px-4 py-2 rounded-lg focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20"
               >
                 <option value="active">Active</option>
                 <option value="paused">Paused</option>
@@ -461,29 +462,29 @@ export default function SuperAdminClientLab() {
               </select>
             </div>
             <div>
-              <label className="text-sm font-semibold text-white mb-2 block">Start Date</label>
+              <label className="text-sm font-semibold text-gray-900 mb-2 block">Start Date</label>
               <input
                 type="date"
                 value={projectFormData.startDate}
                 onChange={(e) => setProjectFormData({ ...projectFormData, startDate: e.target.value })}
-                className="w-full border-2 border-gray-700 bg-gray-900 text-white px-4 py-2 rounded-lg focus:outline-none focus:border-pink-400"
+                className="w-full border-2 border-green-200 bg-white text-gray-900 px-4 py-2 rounded-lg focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20"
               />
             </div>
             <div>
-              <label className="text-sm font-semibold text-white mb-2 block">End Date</label>
+              <label className="text-sm font-semibold text-gray-900 mb-2 block">End Date</label>
               <input
                 type="date"
                 value={projectFormData.endDate}
                 onChange={(e) => setProjectFormData({ ...projectFormData, endDate: e.target.value })}
-                className="w-full border-2 border-gray-700 bg-gray-900 text-white px-4 py-2 rounded-lg focus:outline-none focus:border-pink-400"
+                className="w-full border-2 border-green-200 bg-white text-gray-900 px-4 py-2 rounded-lg focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20"
               />
             </div>
             <div className="col-span-2">
-              <label className="text-sm font-semibold text-white mb-2 block">Scope</label>
+              <label className="text-sm font-semibold text-gray-900 mb-2 block">Scope</label>
               <textarea
                 value={projectFormData.scope}
                 onChange={(e) => setProjectFormData({ ...projectFormData, scope: e.target.value })}
-                className="w-full border-2 border-gray-700 bg-gray-900 text-white px-4 py-2 rounded-lg focus:outline-none focus:border-pink-400"
+                className="w-full border-2 border-green-200 bg-white text-gray-900 px-4 py-2 rounded-lg focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20"
                 rows={4}
                 placeholder="Project scope and description"
               />
@@ -500,20 +501,22 @@ export default function SuperAdminClientLab() {
         </Card>
       )}
 
-      {/* Clients List */}
-      <div>
+      {/* Clients List - Always visible */}
+      <div style={{ width: '100%', marginBottom: '2rem' }}>
         <div className="layout-flex items-center gap-md mb-6">
-          <div className="p-3 rounded-xl bg-gradient-to-br from-pink-400/20 to-rose-500/20 border border-pink-400/30">
-            <FaUser className="text-pink-400 text-xl" />
+          <div className="p-3 rounded-xl bg-green-50 border border-green-200">
+            <FaUser className="text-green-600 text-xl" />
           </div>
-          <h2 className="section-title text-3xl" style={{ margin: 0 }}>Clients ({clients.length})</h2>
+          <h2 className="section-title text-3xl text-gray-900" style={{ margin: 0 }}>Clients ({clients.length})</h2>
         </div>
 
         {clients.length === 0 ? (
-          <EmptyState
-            title="No Clients"
-            message="Create your first client to get started with client lab projects!"
-          />
+          <Card variant="elevated" className="p-8" style={{ width: '100%', boxSizing: 'border-box' }}>
+            <EmptyState
+              title="No Clients"
+              message="Create your first client to get started with client lab projects!"
+            />
+          </Card>
         ) : (
           <div className="layout-grid-2 gap-lg mb-8" style={{ width: '100%' }}>
             {clients.map((client, idx) => (
@@ -526,34 +529,34 @@ export default function SuperAdminClientLab() {
                 <div className="layout-flex items-start justify-between gap-md mb-4">
                   <div style={{ flex: 1 }}>
                     <div className="layout-flex items-center gap-3 mb-2">
-                      <div className="p-2 rounded-lg bg-gradient-to-br from-pink-400/20 to-rose-500/20 border border-pink-400/30">
-                        <FaUser className="text-pink-400" />
+                      <div className="p-2 rounded-lg bg-green-50 border border-green-200">
+                        <FaUser className="text-green-600" />
                       </div>
-                      <CardTitle className="text-xl" style={{ margin: 0 }}>{client.name}</CardTitle>
+                      <CardTitle className="text-xl text-gray-900" style={{ margin: 0 }}>{client.name}</CardTitle>
                     </div>
                     {client.industry && (
-                      <div className="text-sm text-gray-400 mb-2">Industry: {client.industry}</div>
+                      <div className="text-sm text-gray-600 mb-2">Industry: {client.industry}</div>
                     )}
                     {client.contact_name && (
-                      <div className="text-sm text-gray-400 mb-1">
+                      <div className="text-sm text-gray-600 mb-1">
                         Contact: {client.contact_name}
                         {client.contact_email && ` (${client.contact_email})`}
                       </div>
                     )}
                     {client.nda_status && (
-                      <span className="inline-block px-3 py-1.5 rounded-lg text-xs font-semibold mt-2 bg-emerald-500/10 border border-emerald-500/30 text-emerald-300">
+                      <span className="inline-block px-3 py-1.5 rounded-lg text-xs font-semibold mt-2 bg-green-100 border border-green-200 text-green-700">
                         NDA Signed
                       </span>
                     )}
                     {client.notes && (
-                      <CardDescription className="text-gray-400 mt-3 line-clamp-2">
+                      <CardDescription className="text-gray-600 mt-3 line-clamp-2">
                         {client.notes}
                       </CardDescription>
                     )}
                     <div className="layout-flex items-center gap-4 mt-3 text-xs text-gray-500">
                       {client.created_at && (
                         <div className="layout-flex items-center gap-1">
-                          <FaCalendar className="text-pink-400" />
+                          <FaCalendar className="text-green-600" />
                           <span>Created: {formatDate(client.created_at)}</span>
                         </div>
                       )}
