@@ -164,6 +164,18 @@ async function listAllClients({ tenantId }) {
   return rows;
 }
 
+async function getProjectById({ tenantId, projectId }) {
+  const { rows } = await query(
+    `SELECT p.*, c.name AS client_name
+     FROM client_projects p
+     LEFT JOIN clients c ON c.id = p.client_id AND c.tenant_id = p.tenant_id
+     WHERE p.tenant_id=$1 AND p.id=$2
+     LIMIT 1`,
+    [tenantId, projectId]
+  );
+  return rows[0] ?? null;
+}
+
 async function listAllProjects({ tenantId }) {
   const { rows } = await query(
     `SELECT p.*, c.name AS client_name
