@@ -126,9 +126,18 @@ async function updateTaskStudentFields({ tenantId, taskId, status, repoUrl, depl
 
 async function listReviewQueue({ tenantId, projectId }) {
   const { rows } = await query(
-    `SELECT * FROM client_tasks
-     WHERE tenant_id=$1 AND project_id=$2 AND status='review'
-     ORDER BY updated_at ASC`,
+    `SELECT 
+      t.*,
+      u.email as user_email,
+      u.full_name as user_name,
+      u.email as student_email,
+      p.title as project_title,
+      p.name as project_name
+    FROM client_tasks t
+    LEFT JOIN users u ON u.id = t.assignee_user_id
+    LEFT JOIN client_projects p ON p.id = t.project_id AND p.tenant_id = t.tenant_id
+    WHERE t.tenant_id=$1 AND t.project_id=$2 AND (t.status='review' OR t.status='in_progress')
+    ORDER BY t.updated_at ASC`,
     [tenantId, projectId]
   );
   return rows;
@@ -182,5 +191,6 @@ module.exports = {
   listReviewQueue,
   addFeedback,
   listAllClients,
+  getProjectById,
   listAllProjects,
 };

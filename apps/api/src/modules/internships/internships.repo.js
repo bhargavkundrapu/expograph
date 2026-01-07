@@ -261,7 +261,7 @@ async function listMentorDeliverables({ tenantId, mentorId }) {
       d.demo_url,
       d.notes,
       d.status,
-      d.created_at as submitted_at,
+      d.submitted_at,
       d.updated_at,
       ma.user_id as student_id,
       u.email as student_email,
@@ -278,7 +278,7 @@ async function listMentorDeliverables({ tenantId, mentorId }) {
     JOIN micro_projects p ON p.id = ma.project_id AND p.tenant_id = ma.tenant_id
     LEFT JOIN micro_project_batches b ON b.id = ma.batch_id AND b.tenant_id = ma.tenant_id
     WHERE d.tenant_id = $1 AND ma.mentor_id = $2
-    ORDER BY d.created_at DESC
+    ORDER BY d.submitted_at DESC
     `,
     [tenantId, mentorId]
   );

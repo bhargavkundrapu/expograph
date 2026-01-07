@@ -101,9 +101,12 @@ export const router = createBrowserRouter([
       children: [
         { index: true, element: <MentorHome /> },
         { path: "submissions", element: <MentorSubmissions /> },
+        { path: "submissions/:submissionId/review", element: <MentorSubmissions /> },
         { path: "client-lab/:projectId", element: <MentorClientLab /> },
         { path: "client-lab", element: <MentorClientLab /> },
+        { path: "client-lab/:projectId/tasks/:taskId/review", element: <MentorClientLab /> },
         { path: "internships", element: <MentorInternships /> },
+        { path: "internships/deliverables/:deliverableId/review", element: <MentorInternships /> },
       ],
     },
     {

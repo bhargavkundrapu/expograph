@@ -127,7 +127,13 @@ async function reviewQueue({ tenantId, projectId, userId }) {
   const role = await mustBeProjectMember({ tenantId, projectId, userId });
   if (role !== "mentor" && role !== "admin") throw new HttpError(403, "Only mentor/admin can review");
 
-  return repo.listReviewQueue({ tenantId, projectId });
+  const tasks = await repo.listReviewQueue({ tenantId, projectId });
+  const project = await repo.getProjectById({ tenantId, projectId });
+  
+  return {
+    project: project || null,
+    tasks: tasks || [],
+  };
 }
 
 async function addMentorFeedback({ tenantId, userId, taskId, data }) {

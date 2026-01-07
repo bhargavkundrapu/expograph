@@ -139,6 +139,7 @@ export default function MentorClientLab() {
     alive.current = true;
     const ac = new AbortController();
     setLoading(true);
+    setErr(""); // Clear error on mount/change
     loadReviewQueue(ac.signal);
     return () => {
       alive.current = false;

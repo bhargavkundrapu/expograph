@@ -98,12 +98,19 @@ export function useFeatureFlags() {
 
     return () => {
       alive.current = false;
-      ac.abort();
+      // Don't abort immediately - let ongoing requests complete
+      // The signal will be checked in loadFlags to prevent state updates
       if (pollingInterval.current) {
         clearInterval(pollingInterval.current);
       }
       window.removeEventListener('feature-flags-updated', handleFlagUpdate);
       window.removeEventListener('storage', handleStorageChange);
+      // Abort after a short delay to allow cleanup
+      setTimeout(() => {
+        if (!alive.current) {
+          ac.abort();
+        }
+      }, 100);
     };
   }, [loadFlags]);
 
