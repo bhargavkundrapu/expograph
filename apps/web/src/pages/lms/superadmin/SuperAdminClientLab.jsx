@@ -55,6 +55,8 @@ export default function SuperAdminClientLab() {
     userId: "",
     role: "student",
   });
+  const [users, setUsers] = useState([]);
+  const [loadingUsers, setLoadingUsers] = useState(false);
   const [creating, setCreating] = useState(false);
   const alive = useRef(true);
 
@@ -194,9 +196,23 @@ export default function SuperAdminClientLab() {
     }
   }
 
+  async function loadUsers() {
+    setLoadingUsers(true);
+    try {
+      const json = await apiFetch("/api/v1/admin/users", { token });
+      const usersList = unwrapArray(json);
+      setUsers(usersList);
+    } catch (e) {
+      console.error("Failed to load users:", e);
+      // Don't show alert, just fall back to manual UUID input
+    } finally {
+      setLoadingUsers(false);
+    }
+  }
+
   async function addMember(projectId) {
     if (!memberFormData.userId) {
-      alert("User ID is required");
+      alert("Please select a user");
       return;
     }
     setCreating(true);
@@ -207,7 +223,12 @@ export default function SuperAdminClientLab() {
         body: memberFormData,
       });
       console.log("Member added:", result);
-      alert(`✅ Member added successfully!\n\nThe student can now see this project in their Client Lab section.`);
+      const roleMessage = memberFormData.role === "mentor" 
+        ? "The mentor can now see this project in their Mentor Portal Client Lab section."
+        : memberFormData.role === "admin"
+        ? "The admin now has full control over this project."
+        : "The student can now see this project in their Student Portal Client Lab section.";
+      alert(`✅ Member added successfully!\n\n${roleMessage}`);
       setShowAddMemberForm(null);
       setMemberFormData({ userId: "", role: "student" });
       const ac = new AbortController();
@@ -641,9 +662,10 @@ export default function SuperAdminClientLab() {
                     onClick={() => {
                       setShowAddMemberForm(project.id);
                       setMemberFormData({ userId: "", role: "student" });
+                      loadUsers(); // Load users when form opens
                     }}
                   >
-                    Add Student to Project
+                    Add Member to Project
                   </Button>
                 </div>
               </Card>
@@ -658,37 +680,67 @@ export default function SuperAdminClientLab() {
           <div className="mb-6 p-4 rounded-lg bg-blue-500/10 border border-blue-500/30">
             <p className="text-sm text-blue-300 font-semibold mb-1">ℹ️ Important Information</p>
             <p className="text-xs text-gray-400">
-              Students can only see projects they are members of. After adding a student here, they will see this project in their Client Lab section.
+              Users can only see projects they are members of. After adding a user here with the appropriate role (Student, Mentor, or Admin), they will see this project in their Client Lab section.
+            </p>
+            <p className="text-xs text-amber-300 mt-2 font-semibold">
+              💡 Tip: Select "Mentor" role to add mentors who can review tasks. Mentors will see projects in their Mentor Portal.
             </p>
           </div>
-          <CardTitle className="text-2xl mb-6">Add Student to Project</CardTitle>
+          <CardTitle className="text-2xl mb-6">Add Member to Project</CardTitle>
           <div className="layout-flex-col gap-md mb-6">
             <div>
               <label className="text-sm font-semibold text-white mb-2 block">
                 <FaUser className="inline mr-2 text-pink-400" />
-                Student User ID (UUID) *
+                Select User *
               </label>
-              <input
-                type="text"
-                value={memberFormData.userId}
-                onChange={(e) => setMemberFormData({ ...memberFormData, userId: e.target.value })}
-                className="w-full border-2 border-gray-700 bg-gray-900 text-white px-4 py-3 rounded-lg focus:outline-none focus:border-pink-400 font-mono text-sm"
-                placeholder="00000000-0000-0000-0000-000000000000"
-                required
-              />
-              <p className="text-xs text-gray-500 mt-1">Enter the UUID of the student user to add to this project</p>
+              {loadingUsers ? (
+                <div className="w-full border-2 border-gray-700 bg-gray-900 text-white px-4 py-3 rounded-lg">
+                  Loading users...
+                </div>
+              ) : users.length > 0 ? (
+                <select
+                  value={memberFormData.userId}
+                  onChange={(e) => setMemberFormData({ ...memberFormData, userId: e.target.value })}
+                  className="w-full border-2 border-gray-700 bg-gray-900 text-white px-4 py-3 rounded-lg focus:outline-none focus:border-pink-400"
+                  required
+                >
+                  <option value="">Select a user...</option>
+                  {users.map((user) => (
+                    <option key={user.id} value={user.id}>
+                      {user.full_name || user.email} {user.role_name && `(${user.role_name})`} {!user.is_active && "(Inactive)"}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <div className="layout-flex-col gap-2">
+                  <input
+                    type="text"
+                    value={memberFormData.userId}
+                    onChange={(e) => setMemberFormData({ ...memberFormData, userId: e.target.value })}
+                    className="w-full border-2 border-gray-700 bg-gray-900 text-white px-4 py-3 rounded-lg focus:outline-none focus:border-pink-400 font-mono text-sm"
+                    placeholder="00000000-0000-0000-0000-000000000000"
+                    required
+                  />
+                  <p className="text-xs text-gray-500">Enter the UUID of the user to add to this project</p>
+                </div>
+              )}
             </div>
             <div>
-              <label className="text-sm font-semibold text-white mb-2 block">Role</label>
+              <label className="text-sm font-semibold text-white mb-2 block">Role *</label>
               <select
                 value={memberFormData.role}
                 onChange={(e) => setMemberFormData({ ...memberFormData, role: e.target.value })}
                 className="w-full border-2 border-gray-700 bg-gray-900 text-white px-4 py-3 rounded-lg focus:outline-none focus:border-pink-400"
               >
-                <option value="student">Student</option>
-                <option value="mentor">Mentor</option>
-                <option value="admin">Admin</option>
+                <option value="student">Student - Can view and work on assigned tasks</option>
+                <option value="mentor">Mentor - Can review tasks and provide feedback</option>
+                <option value="admin">Admin - Can manage project, tasks, and members</option>
               </select>
+              <p className="text-xs text-gray-500 mt-1">
+                {memberFormData.role === "mentor" && "Mentors will see this project in their Mentor Portal Client Lab section."}
+                {memberFormData.role === "student" && "Students will see this project in their Student Portal Client Lab section."}
+                {memberFormData.role === "admin" && "Admins have full control over the project."}
+              </p>
             </div>
           </div>
           <div className="layout-flex gap-md">

@@ -224,10 +224,25 @@ export default function MentorClientLab() {
         </div>
 
         {projects.length === 0 ? (
-          <EmptyState
-            title="No Projects Available"
-            message="You are not assigned to any client lab projects yet. Contact your administrator to be added to a project."
-          />
+          <Card variant="elevated" className="p-8">
+            <EmptyState
+              title="No Projects Available"
+              message={
+                <div>
+                  <p className="mb-4">You are not assigned to any client lab projects yet.</p>
+                  <div className="p-4 rounded-lg bg-amber-500/10 border border-amber-500/30">
+                    <p className="text-sm text-amber-300 font-semibold mb-2">How to get access:</p>
+                    <ol className="text-xs text-gray-400 list-decimal list-inside space-y-1">
+                      <li>Contact your SuperAdmin or Tenant Admin</li>
+                      <li>Ask them to add you to a client lab project</li>
+                      <li>They need to: Go to Client Lab → Select a project → Click "Add Member" → Select your user → Choose "Mentor" role</li>
+                      <li>Once added, you'll see the project here and can review tasks</li>
+                    </ol>
+                  </div>
+                </div>
+              }
+            />
+          </Card>
         ) : (
           <div className="layout-grid-2 gap-lg" style={{ width: '100%' }}>
             {projects.map((proj, idx) => (
