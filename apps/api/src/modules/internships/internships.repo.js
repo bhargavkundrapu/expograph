@@ -250,6 +250,7 @@ async function rejectApplication({ tenantId, applicationId }) {
 
 async function listMentorDeliverables({ tenantId, mentorId }) {
   // List all deliverables for assignments where mentor_id matches
+  // NOTE: Using submitted_at (not created_at) - matches micro_deliverables table schema
   const { rows } = await query(
     `
     SELECT 
