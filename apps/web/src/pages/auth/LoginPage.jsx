@@ -39,25 +39,25 @@ export default function LoginPage() {
 
   return (
     <div className="mx-auto max-w-md space-y-6 animate-fadeIn">
-      <Card variant="elevated" className="p-10">
-        <div className="text-center mb-8">
-          <div className="inline-flex p-4 rounded-2xl bg-gradient-to-br from-cyan-400 to-blue-500 shadow-lg shadow-cyan-500/30 mb-4">
-            <FaSignInAlt className="text-white text-3xl" />
+      <Card variant="elevated" className="p-6 sm:p-10">
+        <div className="text-center mb-6 sm:mb-8">
+          <div className="inline-flex p-3 sm:p-4 rounded-2xl bg-green-600 shadow-medium mb-4">
+            <FaSignInAlt className="text-white text-2xl sm:text-3xl" />
           </div>
-          <h1 className="section-hero text-4xl mb-3">Welcome Back</h1>
-          <p className="text-gray-400">
+          <h1 className="section-hero text-3xl sm:text-4xl mb-3">Welcome Back</h1>
+          <p className="text-gray-600 text-sm sm:text-base">
             Use your ExpoGraph account credentials to continue
           </p>
         </div>
 
-        <form className="space-y-6" onSubmit={onSubmit}>
+        <form className="space-y-4 sm:space-y-6" onSubmit={onSubmit}>
           <div>
-            <label className="flex items-center gap-2 text-sm font-semibold text-white mb-3">
-              <FaEnvelope className="text-cyan-400" />
+            <label className="flex items-center gap-2 text-sm font-semibold text-gray-900 mb-2 sm:mb-3">
+              <FaEnvelope className="text-green-600" />
               Email Address
             </label>
             <input
-              className="w-full border-2 border-gray-700 bg-gray-900 text-white px-4 py-3 rounded-lg focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all"
+              className="w-full border-2 border-green-200 bg-white text-gray-900 px-3 sm:px-4 py-2 sm:py-3 rounded-lg focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@expograph.in"
@@ -67,12 +67,12 @@ export default function LoginPage() {
           </div>
 
           <div>
-            <label className="flex items-center gap-2 text-sm font-semibold text-white mb-3">
-              <FaLock className="text-cyan-400" />
+            <label className="flex items-center gap-2 text-sm font-semibold text-gray-900 mb-2 sm:mb-3">
+              <FaLock className="text-green-600" />
               Password
             </label>
             <input
-              className="w-full border-2 border-gray-700 bg-gray-900 text-white px-4 py-3 rounded-lg focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all"
+              className="w-full border-2 border-green-200 bg-white text-gray-900 px-3 sm:px-4 py-2 sm:py-3 rounded-lg focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               type="password"
@@ -83,8 +83,8 @@ export default function LoginPage() {
           </div>
 
           {err ? (
-            <div className="p-4 rounded-lg bg-red-500/10 border border-red-500/30 text-red-300 text-sm flex items-center gap-2 animate-slideIn">
-              <span className="text-red-400">⚠</span>
+            <div className="p-3 sm:p-4 rounded-lg bg-red-50 border border-red-300 text-red-700 text-sm flex items-center gap-2 animate-slideIn">
+              <span className="text-red-600">⚠</span>
               {err}
             </div>
           ) : null}
@@ -101,10 +101,11 @@ export default function LoginPage() {
           </Button>
         </form>
 
-        <div className="mt-8 pt-6 border-t border-gray-800 flex items-center justify-center gap-2 text-xs text-gray-500">
-          <FaUserShield className="text-cyan-400" />
-          <span>Role redirects automatically after login</span>
-          <HiSparkles className="text-cyan-400 animate-pulse-slow" />
+        <div className="mt-6 pt-6 border-t border-green-200">
+          <div className="flex items-center justify-center gap-2 text-xs sm:text-sm text-gray-600">
+            <FaUserShield className="text-green-600" />
+            <span>Secure authentication powered by ExpoGraph</span>
+          </div>
         </div>
       </Card>
     </div>

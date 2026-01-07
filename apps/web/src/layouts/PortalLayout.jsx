@@ -41,19 +41,16 @@ function LinkWithIcon({ to, label, icon: Icon, end }) {
     <NavLink 
       to={to} 
       className={({ isActive }) => [
-        "flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-all duration-300 group",
+        "flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium rounded-lg",
         isActive 
-          ? "bg-gradient-to-r from-white to-gray-200 text-black shadow-lg shadow-white/20" 
-          : "text-gray-300 border border-transparent hover:border-gray-700 hover:bg-gray-900 hover:text-white",
+          ? "bg-green-600 text-white shadow-medium" 
+          : "text-gray-700 bg-white border border-green-200",
       ].join(" ")}
       end={end}
     >
-      {({ isActive }) => (
-        <>
-          <Icon className={`transition-transform duration-300 ${isActive ? 'scale-110' : 'group-hover:scale-110'}`} />
-          <span>{label}</span>
-        </>
-      )}
+      <Icon className="text-sm sm:text-base" />
+      <span className="hidden sm:inline">{label}</span>
+      <span className="sm:hidden">{label.split(' ')[0]}</span>
     </NavLink>
   );
 }
@@ -162,26 +159,27 @@ export default function PortalLayout() {
   })();
 
   return (
-    <div className="min-h-[calc(100vh-56px)] bg-gradient-to-br from-black via-gray-900 to-black position-relative">
-      <div className="container layout-grid gap-lg" style={{ paddingTop: '2rem', paddingBottom: '2rem', gridTemplateColumns: 'minmax(280px, 300px) 1fr' }}>
-        <aside className="rounded-xl bg-gray-900 border border-gray-800 p-6 shadow-glow animate-slideIn position-sticky" style={{ top: '100px', height: 'fit-content', maxHeight: 'calc(100vh - 120px)' }}>
-          <div className="margin-section-sm" style={{ paddingBottom: '1.5rem', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>
+    <div className="min-h-[calc(100vh-56px)] bg-white position-relative">
+      <div className="container layout-grid gap-4 sm:gap-lg" style={{ paddingTop: '1rem', paddingBottom: '2rem', gridTemplateColumns: '1fr' }}>
+        {/* Mobile: Sidebar becomes horizontal nav */}
+        <aside className="rounded-xl bg-green-50 border border-green-200 p-4 sm:p-6 shadow-soft animate-slideIn sm:position-sticky sm:top-20" style={{ maxHeight: 'fit-content', sm: { maxHeight: 'calc(100vh - 120px)' } }}>
+          <div className="margin-section-sm" style={{ paddingBottom: '1rem', borderBottom: '1px solid rgba(34, 197, 94, 0.2)' }}>
             <div className="layout-flex items-center gap-2 margin-section-sm">
-              <div className="p-2 rounded-lg bg-gradient-to-br from-cyan-400 to-blue-500 shadow-lg">
+              <div className="p-2 rounded-lg bg-green-600 shadow-medium">
                 <FaUser className="text-white text-sm" />
               </div>
               <div>
-                <div className="text-xs text-gray-400 mb-1 uppercase tracking-wide font-semibold">Logged in as</div>
-                <div className="font-bold text-lg text-white section-title">{role}</div>
+                <div className="text-xs text-gray-600 mb-1 uppercase tracking-wide font-semibold">Logged in as</div>
+                <div className="font-bold text-base sm:text-lg text-green-700 section-title">{role}</div>
               </div>
             </div>
-            <div className="layout-flex items-center gap-2 text-xs text-gray-400">
-              <FaEnvelope className="text-cyan-400" />
+            <div className="layout-flex items-center gap-2 text-xs text-gray-600">
+              <FaEnvelope className="text-green-600" />
               <span className="truncate">{user?.email}</span>
             </div>
           </div>
 
-          <nav className="layout-flex-col gap-sm">
+          <nav className="layout-flex flex-wrap sm:flex-col gap-2 sm:gap-sm">
             {navItems.map((i) => {
               const Icon = iconMap[i.label] || FaHome;
               return (
@@ -197,7 +195,7 @@ export default function PortalLayout() {
           </nav>
         </aside>
 
-        <section className="rounded-xl bg-gray-900/50 border border-gray-800 p-8 shadow-glow animate-fadeIn overflow-auto">
+        <section className="rounded-xl bg-white border border-green-200 p-4 sm:p-8 shadow-soft animate-fadeIn overflow-auto">
           <Outlet />
         </section>
       </div>

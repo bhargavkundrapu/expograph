@@ -13,35 +13,37 @@ export default function AppLayout() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white position-relative overflow-hidden">
-      <div className="position-sticky top-0 z-50 border-b border-gray-800 bg-black/80 backdrop-blur-md shadow-glow">
-        <div className="container layout-flex items-center justify-between" style={{ paddingTop: '1rem', paddingBottom: '1rem' }}>
+    <div className="min-h-screen bg-white text-gray-900 position-relative overflow-hidden">
+      <div className="position-sticky top-0 z-50 border-b border-green-200 bg-white shadow-soft">
+        <div className="container layout-flex flex-col sm:flex-row items-center justify-between gap-4" style={{ paddingTop: '1rem', paddingBottom: '1rem' }}>
           <Link 
             to="/academy" 
-            className="section-hero text-xl font-bold hover:scale-105 transition-transform duration-300 layout-flex items-center gap-2 group"
+            className="section-hero text-lg sm:text-xl font-bold layout-flex items-center gap-2"
           >
-            <FaChartLine className="text-cyan-400 group-hover:rotate-12 transition-transform duration-300" />
-            <span className="bg-gradient-to-r from-white via-gray-200 to-white bg-clip-text text-transparent">
+            <FaChartLine className="text-green-600" />
+            <span className="text-green-700">
               ExpoGraph LMS
             </span>
           </Link>
 
-          <div className="layout-flex items-center gap-4">
-            <div className="layout-flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-900 border border-gray-800">
-              <FaUser className="text-cyan-400" />
-              <span className="text-sm text-gray-300">
-                <span className="text-white font-semibold">{user?.email || "user"}</span>
-                <span className="mx-2 text-gray-600">•</span>
-                <span className="text-cyan-400">{role || "role"}</span>
-              </span>
+          <div className="layout-flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 w-full sm:w-auto">
+            <div className="layout-flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg bg-green-50 border border-green-200">
+              <FaUser className="text-green-600" />
+              <div className="layout-flex flex-col sm:flex-row items-start sm:items-center gap-1 sm:gap-2 text-xs sm:text-sm text-gray-700">
+                <span className="font-semibold text-gray-900">{user?.email || "user"}</span>
+                <span className="hidden sm:inline text-gray-400">•</span>
+                <span className="text-green-700">{role || "role"}</span>
+              </div>
             </div>
             <Button
               variant="secondary"
               size="sm"
               icon={FaSignOutAlt}
               onClick={onLogout}
+              className="w-full sm:w-auto"
             >
-              Logout
+              <span className="hidden sm:inline">Logout</span>
+              <span className="sm:hidden">Logout</span>
             </Button>
           </div>
         </div>
