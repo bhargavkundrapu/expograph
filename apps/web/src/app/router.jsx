@@ -36,6 +36,8 @@ import StudentClientLab from "../pages/lms/student/StudentClientLab";
 import StudentWorkshops from "../pages/lms/student/StudentWorkshops";
 import StudentReferrals from "../pages/lms/student/StudentReferrals";
 import MentorSubmissions from "../pages/lms/mentor/MentorSubmissions";
+import MentorClientLab from "../pages/lms/mentor/MentorClientLab";
+import MentorInternships from "../pages/lms/mentor/MentorInternships";
 import TenantAdminSettings from "../pages/lms/admin/TenantAdminSettings";
 
 export const router = createBrowserRouter([
@@ -97,6 +99,9 @@ export const router = createBrowserRouter([
       children: [
         { index: true, element: <MentorHome /> },
         { path: "submissions", element: <MentorSubmissions /> },
+        { path: "client-lab/:projectId", element: <MentorClientLab /> },
+        { path: "client-lab", element: <MentorClientLab /> },
+        { path: "internships", element: <MentorInternships /> },
       ],
     },
     {
