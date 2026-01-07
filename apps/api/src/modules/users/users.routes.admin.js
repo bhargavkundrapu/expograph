@@ -1,13 +1,13 @@
 // apps/api/src/modules/users/users.routes.admin.js
 const express = require("express");
 const { requireAuth } = require("../../middlewares/auth/requireAuth");
-const { requirePermission } = require("../../middlewares/rbac/requirePermission");
+const { requireRole } = require("../../middlewares/rbac/requireRole");
 const ctrl = require("./users.controller");
 
 const router = express.Router();
 
-// Tenant Admin routes - require tenant admin permissions
-router.use(requireAuth, requirePermission("users:manage"));
+// Tenant Admin routes - require TenantAdmin or SuperAdmin role
+router.use(requireAuth, requireRole(["TenantAdmin", "SuperAdmin"]));
 
 router.get("/users", ctrl.listTenantUsers);
 router.get("/users/:userId", ctrl.getTenantUser);
