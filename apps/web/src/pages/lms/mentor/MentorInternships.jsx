@@ -28,9 +28,9 @@ function formatDate(dateString) {
 
 function getStatusBadge(status) {
   const badges = {
-    submitted: { bg: "bg-cyan-500/10", border: "border-cyan-500/30", text: "text-cyan-300", label: "Submitted" },
-    approved: { bg: "bg-emerald-500/10", border: "border-emerald-500/30", text: "text-emerald-300", label: "Approved" },
-    changes_requested: { bg: "bg-orange-500/10", border: "border-orange-500/30", text: "text-orange-300", label: "Changes Requested" },
+    submitted: { bg: "bg-yellow-500/10", border: "border-yellow-500/30", text: "text-yellow-700", label: "Submitted" },
+    approved: { bg: "bg-green-500/10", border: "border-green-500/30", text: "text-green-700", label: "Approved" },
+    changes_requested: { bg: "bg-orange-500/10", border: "border-orange-500/30", text: "text-orange-700", label: "Changes Requested" },
   };
   return badges[status] || badges.submitted;
 }
@@ -66,19 +66,9 @@ export default function MentorInternships() {
 
   async function loadDeliverables(signal) {
     try {
-      // Note: This endpoint might need to be created
-      // For now, we'll use the applications endpoint to get assignments
-      const json = await apiFetch("/api/v1/mentor/internships/applications", { token, signal });
+      const json = await apiFetch("/api/v1/mentor/internships/deliverables", { token, signal });
       const list = unwrapArray(json);
-      
-      // Filter for approved applications (which have deliverables)
-      const approved = list.filter(app => app.status === "approved");
-      
-      // TODO: Fetch actual deliverables when endpoint is available
-      // For now, show a message
-      if (alive.current) {
-        setDeliverables([]); // Empty until endpoint is ready
-      }
+      if (alive.current) setDeliverables(list);
     } catch (e) {
       if (signal?.aborted) return;
       console.error("Failed to load deliverables:", e);
@@ -154,30 +144,29 @@ export default function MentorInternships() {
   return (
     <div className="layout-flex-col gap-xl animate-fadeIn" style={{ width: '100%' }}>
       {/* Header */}
-      <div className="position-relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900 via-black to-gray-900 border border-gray-800 p-10 shadow-glow" style={{ marginBottom: '2rem' }}>
-        <div className="position-absolute" style={{ top: 0, right: 0, width: '24rem', height: '24rem', background: 'rgba(99, 102, 241, 0.1)', borderRadius: '50%', filter: 'blur(3rem)', zIndex: 0 }}></div>
+      <div className="position-relative overflow-hidden rounded-xl sm:rounded-2xl bg-green-50 border border-green-200 p-6 sm:p-10 shadow-soft" style={{ marginBottom: '1rem sm:2rem' }}>
         <div className="position-relative" style={{ zIndex: 10 }}>
-          <div className="layout-flex items-center gap-md" style={{ marginBottom: '1.5rem' }}>
-            <div className="p-4 rounded-xl bg-gradient-to-br from-indigo-400 to-purple-500 shadow-lg shadow-indigo-500/30">
-              <FaBriefcase className="text-white text-2xl" />
+          <div className="layout-flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-md" style={{ marginBottom: '1rem sm:1.5rem' }}>
+            <div className="p-3 sm:p-4 rounded-xl bg-green-600 shadow-medium">
+              <FaBriefcase className="text-white text-xl sm:text-2xl" />
             </div>
             <div>
-              <h1 className="section-hero text-4xl" style={{ marginBottom: '0.5rem', marginTop: 0 }}>Internship Reviews</h1>
-              <p className="text-gray-300 text-lg" style={{ margin: 0 }}>Review internship project deliverables</p>
+              <h1 className="section-hero text-2xl sm:text-4xl" style={{ marginBottom: '0.5rem', marginTop: 0 }}>Internship Reviews</h1>
+              <p className="text-gray-600 text-base sm:text-lg" style={{ margin: 0 }}>Review internship project deliverables</p>
             </div>
           </div>
-          <div className="layout-flex gap-md">
-            <div className="px-4 py-2 rounded-lg bg-cyan-500/10 border border-cyan-500/30">
-              <div className="text-2xl font-bold text-cyan-400">{deliverables.filter(d => d.status === "submitted").length}</div>
-              <div className="text-sm text-gray-400">Pending Review</div>
+          <div className="layout-flex flex-wrap gap-3 sm:gap-md">
+            <div className="px-3 sm:px-4 py-2 rounded-lg bg-yellow-50 border border-yellow-200">
+              <div className="text-xl sm:text-2xl font-bold text-yellow-700">{deliverables.filter(d => d.status === "submitted").length}</div>
+              <div className="text-xs sm:text-sm text-gray-600">Pending Review</div>
             </div>
-            <div className="px-4 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/30">
-              <div className="text-2xl font-bold text-emerald-400">{deliverables.filter(d => d.status === "approved").length}</div>
-              <div className="text-sm text-gray-400">Approved</div>
+            <div className="px-3 sm:px-4 py-2 rounded-lg bg-green-50 border border-green-200">
+              <div className="text-xl sm:text-2xl font-bold text-green-700">{deliverables.filter(d => d.status === "approved").length}</div>
+              <div className="text-xs sm:text-sm text-gray-600">Approved</div>
             </div>
-            <div className="px-4 py-2 rounded-lg bg-gray-500/10 border border-gray-500/30">
-              <div className="text-2xl font-bold text-gray-400">{deliverables.length}</div>
-              <div className="text-sm text-gray-400">Total</div>
+            <div className="px-3 sm:px-4 py-2 rounded-lg bg-gray-50 border border-gray-200">
+              <div className="text-xl sm:text-2xl font-bold text-gray-700">{deliverables.length}</div>
+              <div className="text-xs sm:text-sm text-gray-600">Total</div>
             </div>
           </div>
         </div>
@@ -209,24 +198,29 @@ export default function MentorInternships() {
                         <CardTitle className="text-lg" style={{ margin: 0 }}>
                           {deliverable.project_title || "Internship Project"}
                         </CardTitle>
-                        <div className="layout-flex items-center gap-4 text-xs text-gray-400 mt-1">
+                        <div className="layout-flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-600 mt-1">
                           <div className="layout-flex items-center gap-1">
                             <FaUser className="text-xs" />
-                            <span>Student: {deliverable.student_email || deliverable.user_email || "—"}</span>
+                            <span>Student: {deliverable.student_email || deliverable.student_name || "—"}</span>
                           </div>
                           <div className="layout-flex items-center gap-1">
                             <FaCalendar className="text-xs" />
                             <span>Submitted: {formatDate(deliverable.submitted_at)}</span>
                           </div>
+                          {deliverable.version_no && (
+                            <div className="layout-flex items-center gap-1">
+                              <span>Version: {deliverable.version_no}</span>
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
 
                     {deliverable.repo_url && (
-                      <div className="p-3 rounded-lg bg-gray-800 border border-gray-700 mb-2">
+                      <div className="p-3 rounded-lg bg-green-50 border border-green-200 mb-2">
                         <div className="layout-flex items-center gap-2 text-sm">
-                          <FaCodeBranch className="text-gray-400" />
-                          <a href={deliverable.repo_url} target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:text-cyan-300">
+                          <FaCodeBranch className="text-green-600" />
+                          <a href={deliverable.repo_url} target="_blank" rel="noopener noreferrer" className="text-green-700">
                             Repository
                           </a>
                         </div>
@@ -234,20 +228,31 @@ export default function MentorInternships() {
                     )}
 
                     {deliverable.deploy_url && (
-                      <div className="p-3 rounded-lg bg-gray-800 border border-gray-700 mb-2">
+                      <div className="p-3 rounded-lg bg-green-50 border border-green-200 mb-2">
                         <div className="layout-flex items-center gap-2 text-sm">
-                          <FaCheckCircle className="text-gray-400" />
-                          <a href={deliverable.deploy_url} target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:text-cyan-300">
+                          <FaCheckCircle className="text-green-600" />
+                          <a href={deliverable.deploy_url} target="_blank" rel="noopener noreferrer" className="text-green-700">
                             Deployed URL
                           </a>
                         </div>
                       </div>
                     )}
 
+                    {deliverable.demo_url && (
+                      <div className="p-3 rounded-lg bg-green-50 border border-green-200 mb-2">
+                        <div className="layout-flex items-center gap-2 text-sm">
+                          <FaCheckCircle className="text-green-600" />
+                          <a href={deliverable.demo_url} target="_blank" rel="noopener noreferrer" className="text-green-700">
+                            Demo URL
+                          </a>
+                        </div>
+                      </div>
+                    )}
+
                     {deliverable.notes && (
-                      <div className="p-3 rounded-lg bg-gray-800 border border-gray-700 mb-4">
-                        <div className="text-sm font-semibold text-gray-300 mb-1">Student Notes:</div>
-                        <div className="text-sm text-gray-400">{deliverable.notes}</div>
+                      <div className="p-3 rounded-lg bg-green-50 border border-green-200 mb-4">
+                        <div className="text-sm font-semibold text-gray-900 mb-1">Student Notes:</div>
+                        <div className="text-sm text-gray-700 whitespace-pre-wrap">{deliverable.notes}</div>
                       </div>
                     )}
                   </div>
@@ -289,11 +294,11 @@ export default function MentorInternships() {
 
             <div className="layout-flex-col gap-md mb-6">
               <div>
-                <label className="text-sm font-semibold text-white mb-2 block">Status *</label>
+                <label className="text-sm font-semibold text-gray-900 mb-2 block">Status *</label>
                 <select
                   value={reviewForm.status}
                   onChange={(e) => setReviewForm({ ...reviewForm, status: e.target.value })}
-                  className="w-full border-2 border-gray-700 bg-gray-900 text-white px-4 py-2 rounded-lg focus:outline-none focus:border-indigo-400"
+                  className="w-full border-2 border-green-200 bg-white text-gray-900 px-3 sm:px-4 py-2 sm:py-3 rounded-lg focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20"
                 >
                   <option value="approved">Approved</option>
                   <option value="changes_requested">Changes Requested</option>
@@ -301,23 +306,25 @@ export default function MentorInternships() {
               </div>
 
               <div>
-                <label className="text-sm font-semibold text-white mb-2 block">Notes</label>
+                <label className="text-sm font-semibold text-gray-900 mb-2 block">Notes</label>
                 <textarea
                   value={reviewForm.notes}
                   onChange={(e) => setReviewForm({ ...reviewForm, notes: e.target.value })}
-                  className="w-full border-2 border-gray-700 bg-gray-900 text-white px-4 py-2 rounded-lg focus:outline-none focus:border-indigo-400"
+                  className="w-full border-2 border-green-200 bg-white text-gray-900 px-3 sm:px-4 py-2 sm:py-3 rounded-lg focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20"
                   rows={6}
                   placeholder="Provide feedback and notes..."
                 />
               </div>
             </div>
 
-            <div className="layout-flex gap-md">
+            <div className="layout-flex flex-col sm:flex-row gap-3 sm:gap-md items-stretch sm:items-center">
               <Button
                 variant="gradient"
                 size="md"
                 onClick={() => submitReview(selectedDeliverable.id)}
                 disabled={submitting || (reviewForm.status === "changes_requested" && !reviewForm.notes.trim())}
+                fullWidth
+                className="sm:w-auto"
               >
                 {submitting ? "Submitting..." : "Submit Review"}
               </Button>
@@ -328,6 +335,8 @@ export default function MentorInternships() {
                   setSelectedDeliverable(null);
                   setReviewForm({ status: "approved", notes: "" });
                 }}
+                fullWidth
+                className="sm:w-auto"
               >
                 Cancel
               </Button>

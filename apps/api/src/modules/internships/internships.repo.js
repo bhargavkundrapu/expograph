@@ -248,6 +248,43 @@ async function rejectApplication({ tenantId, applicationId }) {
   return rows[0] ?? null;
 }
 
+async function listMentorDeliverables({ tenantId, mentorId }) {
+  // List all deliverables for assignments where mentor_id matches
+  const { rows } = await query(
+    `
+    SELECT 
+      d.id,
+      d.assignment_id,
+      d.version_no,
+      d.repo_url,
+      d.deploy_url,
+      d.demo_url,
+      d.notes,
+      d.status,
+      d.created_at as submitted_at,
+      d.updated_at,
+      ma.user_id as student_id,
+      u.email as student_email,
+      u.full_name as student_name,
+      p.id as project_id,
+      p.title as project_title,
+      p.slug as project_slug,
+      b.batch_name,
+      ma.due_at,
+      ma.status as assignment_status
+    FROM micro_deliverables d
+    JOIN micro_assignments ma ON ma.id = d.assignment_id AND ma.tenant_id = d.tenant_id
+    JOIN users u ON u.id = ma.user_id
+    JOIN micro_projects p ON p.id = ma.project_id AND p.tenant_id = ma.tenant_id
+    LEFT JOIN micro_project_batches b ON b.id = ma.batch_id AND b.tenant_id = ma.tenant_id
+    WHERE d.tenant_id = $1 AND ma.mentor_id = $2
+    ORDER BY d.created_at DESC
+    `,
+    [tenantId, mentorId]
+  );
+  return rows;
+}
+
 async function reviewDeliverable({ tenantId, deliverableId, mentorId, status, notes }) {
   // status: approved | changes_requested
   const { rows } = await query(
@@ -255,9 +292,15 @@ async function reviewDeliverable({ tenantId, deliverableId, mentorId, status, no
     UPDATE micro_deliverables
     SET status=$1, notes=COALESCE(notes,'') || E'\\n\\n[MENTOR] ' || $2, updated_at=now()
     WHERE tenant_id=$3 AND id=$4
+      AND EXISTS (
+        SELECT 1 FROM micro_assignments ma
+        WHERE ma.id = micro_deliverables.assignment_id
+          AND ma.mentor_id = $5
+          AND ma.tenant_id = $3
+      )
     RETURNING *;
     `,
-    [status, notes ?? "", tenantId, deliverableId]
+    [status, notes ?? "", tenantId, deliverableId, mentorId]
   );
   return rows[0] ?? null;
 }
@@ -278,5 +321,6 @@ module.exports = {
   listApplications,
   approveApplicationCreateAssignment,
   rejectApplication,
+  listMentorDeliverables,
   reviewDeliverable,
 };

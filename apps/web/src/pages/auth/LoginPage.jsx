@@ -93,7 +93,7 @@ export default function LoginPage() {
             variant="gradient"
             size="lg"
             icon={FaSignInAlt}
-            className="w-full"
+            fullWidth
             disabled={loading}
             type="submit"
           >

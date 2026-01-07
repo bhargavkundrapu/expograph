@@ -7,23 +7,26 @@ const Button = forwardRef(({
   icon: Icon,
   iconPosition = "left",
   className = "",
+  disabled = false,
+  fullWidth = false,
   ...props 
 }, ref) => {
-  const baseStyles = "inline-flex items-center justify-center gap-2 font-semibold transition-all duration-300 relative overflow-hidden group";
+  const baseStyles = "inline-flex items-center justify-center gap-2 font-semibold relative overflow-hidden transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed";
   
   const variants = {
-    primary: "bg-white text-black hover:bg-gray-200 hover:shadow-lg hover:shadow-white/20 active:scale-95",
-    secondary: "bg-transparent border-2 border-white text-white hover:bg-white hover:text-black hover:shadow-lg hover:shadow-white/20 active:scale-95",
-    outline: "bg-black border-2 border-gray-600 text-white hover:border-white hover:bg-gray-900 active:scale-95",
-    ghost: "bg-transparent text-white hover:bg-white/10 active:scale-95",
-    gradient: "bg-gradient-to-r from-white via-gray-200 to-white text-black hover:from-gray-200 hover:via-white hover:to-gray-200 hover:shadow-xl hover:shadow-white/30 active:scale-95",
+    primary: "bg-green-600 text-white shadow-md hover:shadow-lg focus:ring-green-500 active:scale-[0.98] border border-green-700",
+    secondary: "bg-transparent border-2 border-green-600 text-green-700 shadow-sm hover:bg-green-50 focus:ring-green-500 active:scale-[0.98]",
+    outline: "bg-white border-2 border-green-500 text-green-700 shadow-sm hover:bg-green-50 focus:ring-green-500 active:scale-[0.98]",
+    ghost: "bg-transparent text-green-700 hover:bg-green-50 focus:ring-green-500 active:scale-[0.98] border border-transparent",
+    gradient: "bg-gradient-to-r from-green-500 via-green-600 to-green-700 text-white shadow-md hover:shadow-lg focus:ring-green-500 active:scale-[0.98] border border-green-800",
+    destructive: "bg-red-500 text-white shadow-md hover:shadow-lg hover:bg-red-600 focus:ring-red-500 active:scale-[0.98] border border-red-600",
   };
   
   const sizes = {
-    sm: "px-4 py-2 text-sm",
-    md: "px-6 py-3 text-base",
-    lg: "px-8 py-4 text-lg",
-    xl: "px-10 py-5 text-xl",
+    sm: "px-3 py-1.5 text-sm min-h-[32px]",
+    md: "px-5 py-2.5 text-base min-h-[40px]",
+    lg: "px-6 py-3 text-lg min-h-[48px]",
+    xl: "px-8 py-4 text-xl min-h-[56px]",
   };
   
   const iconSizes = {
@@ -33,20 +36,24 @@ const Button = forwardRef(({
     xl: "w-7 h-7",
   };
   
+  const widthClass = fullWidth ? "w-full" : "";
+  
   return (
     <button
       ref={ref}
-      className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`}
+      disabled={disabled}
+      className={`${baseStyles} ${variants[variant]} ${sizes[size]} rounded-lg ${widthClass} ${className}`}
       {...props}
     >
       {Icon && iconPosition === "left" && (
-        <Icon className={`${iconSizes[size]} transition-transform group-hover:scale-110`} />
+        <Icon className={`${iconSizes[size]} flex-shrink-0`} />
       )}
-      <span className="relative z-10">{children}</span>
+      {children && (
+        <span className="relative z-10 whitespace-nowrap">{children}</span>
+      )}
       {Icon && iconPosition === "right" && (
-        <Icon className={`${iconSizes[size]} transition-transform group-hover:scale-110`} />
+        <Icon className={`${iconSizes[size]} flex-shrink-0`} />
       )}
-      <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></span>
     </button>
   );
 });
@@ -54,4 +61,3 @@ const Button = forwardRef(({
 Button.displayName = "Button";
 
 export default Button;
-

@@ -455,12 +455,14 @@ export default function MentorClientLab() {
               </div>
             </div>
 
-            <div className="layout-flex gap-md">
+            <div className="layout-flex flex-col sm:flex-row gap-3 sm:gap-md items-stretch sm:items-center">
               <Button
                 variant="gradient"
                 size="md"
                 onClick={() => submitFeedback(selectedTask.id)}
                 disabled={submitting || !feedbackForm.feedback.trim()}
+                fullWidth
+                className="sm:w-auto"
               >
                 {submitting ? "Submitting..." : "Submit Feedback"}
               </Button>
@@ -471,6 +473,8 @@ export default function MentorClientLab() {
                   setSelectedTask(null);
                   setFeedbackForm({ feedback: "", status: "review" });
                 }}
+                fullWidth
+                className="sm:w-auto"
               >
                 Cancel
               </Button>

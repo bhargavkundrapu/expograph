@@ -185,6 +185,14 @@ const reject = asyncHandler(async (req, res) => {
   res.json({ ok: true, data: updated });
 });
 
+const listMentorDeliverables = asyncHandler(async (req, res) => {
+  const rows = await svc.listMentorDeliverables({
+    tenantId: req.tenant.id,
+    mentorId: req.auth.userId,
+  });
+  res.json({ ok: true, data: rows });
+});
+
 const reviewDeliverable = asyncHandler(async (req, res) => {
   const parsed = ReviewDeliverableSchema.safeParse(req.body);
   if (!parsed.success) throw new HttpError(400, "Invalid input", parsed.error.flatten());
@@ -217,5 +225,6 @@ module.exports = {
   listApplications,
   approve,
   reject,
+  listMentorDeliverables,
   reviewDeliverable,
 };

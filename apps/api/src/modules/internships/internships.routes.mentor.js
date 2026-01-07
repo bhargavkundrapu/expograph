@@ -19,6 +19,7 @@ router.post("/applications/:applicationId/approve", ctrl.approve);
 router.post("/applications/:applicationId/reject", ctrl.reject);
 
 // review
+router.get("/deliverables", ctrl.listMentorDeliverables);
 router.post("/deliverables/:deliverableId/review", ctrl.reviewDeliverable);
 
 module.exports = { router };

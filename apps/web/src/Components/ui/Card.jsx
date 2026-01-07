@@ -3,27 +3,23 @@ import { Children } from "react";
 export default function Card({ 
   children, 
   variant = "default",
-  hover = true,
+  hover = false,
   className = "",
   ...props 
 }) {
-  const baseStyles = "rounded-xl transition-all duration-300 position-relative overflow-hidden";
+  const baseStyles = "rounded-xl position-relative overflow-hidden";
   
   const variants = {
-    default: "bg-gray-900 border-2 border-gray-800 p-6",
-    elevated: "bg-gray-900 border-2 border-gray-700 p-6 shadow-lg shadow-black/50",
-    glass: "glass-effect p-6",
-    gradient: "bg-gradient-to-br from-gray-900 via-black to-gray-900 border-2 border-gray-700 p-6",
-    outlined: "bg-black border-2 border-white p-6",
+    default: "bg-white border-2 border-green-200 p-4 sm:p-6 shadow-soft",
+    elevated: "bg-white border-2 border-green-300 p-4 sm:p-6 shadow-medium",
+    glass: "bg-white/80 backdrop-blur-sm border-2 border-green-200 p-4 sm:p-6 shadow-soft",
+    gradient: "bg-gradient-to-br from-green-50 to-white border-2 border-green-300 p-4 sm:p-6 shadow-medium",
+    outlined: "bg-white border-2 border-green-600 p-4 sm:p-6 shadow-soft",
   };
-  
-  const hoverStyles = hover 
-    ? "card-hover cursor-pointer" 
-    : "";
   
   return (
     <div 
-      className={`${baseStyles} ${variants[variant]} ${hoverStyles} ${className}`}
+      className={`${baseStyles} ${variants[variant]} ${className}`}
       style={{ boxSizing: 'border-box' }}
       {...props}
     >
@@ -42,7 +38,7 @@ export function CardHeader({ children, className = "" }) {
 
 export function CardTitle({ children, className = "" }) {
   return (
-    <h3 className={`text-xl font-bold text-white mb-2 ${className}`}>
+    <h3 className={`text-lg sm:text-xl font-bold text-green-700 mb-2 ${className}`}>
       {children}
     </h3>
   );
@@ -50,7 +46,7 @@ export function CardTitle({ children, className = "" }) {
 
 export function CardDescription({ children, className = "" }) {
   return (
-    <p className={`text-sm text-gray-400 ${className}`}>
+    <p className={`text-sm sm:text-base text-gray-600 ${className}`}>
       {children}
     </p>
   );
@@ -66,7 +62,7 @@ export function CardContent({ children, className = "" }) {
 
 export function CardFooter({ children, className = "" }) {
   return (
-    <div className={`mt-4 pt-4 border-t border-gray-800 ${className}`}>
+    <div className={`mt-4 pt-4 border-t border-green-200 ${className}`}>
       {children}
     </div>
   );

@@ -21,6 +21,8 @@ const { router: adminClientLabRouter } = require("../modules/clientLab/clientLab
 const { router: lmsClientLabRouter } = require("../modules/clientLab/clientLab.routes.lms");
 const { router: mentorClientLabRouter } = require("../modules/clientLab/clientLab.routes.mentor");
 
+const { router: usersAdminRouter } = require("../modules/users/users.routes.admin");
+
 const { router: lmsInternRouter } = require("../modules/internships/internships.routes.lms");
 const { router: mentorInternRouter } = require("../modules/internships/internships.routes.mentor");
 
@@ -135,6 +137,7 @@ app.use(
   app.use("/api/v1/admin", workshopsAdmin);
   app.use("/api/v1/admin", certAdmin);
   app.use("/api/v1/admin", featureFlagsAdmin);
+  app.use("/api/v1/admin", usersAdminRouter);
 
   app.use("/api/v1/referrals", referralsRoutes);
  

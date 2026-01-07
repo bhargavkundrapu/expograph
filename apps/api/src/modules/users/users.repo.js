@@ -54,10 +54,96 @@ async function getMembershipWithRole({ tenantId, userId }) {
   return rows[0] ?? null;
 }
 
+// Tenant Admin: List all users in tenant
+async function listTenantUsers({ tenantId }) {
+  const { rows } = await query(
+    `SELECT 
+       u.id,
+       u.email,
+       u.full_name,
+       u.phone,
+       u.is_active,
+       u.created_at,
+       m.id AS membership_id,
+       r.id AS role_id,
+       r.name AS role_name
+     FROM users u
+     JOIN memberships m ON m.user_id = u.id AND m.tenant_id = $1
+     JOIN roles r ON r.id = m.role_id
+     ORDER BY u.created_at DESC`,
+    [tenantId]
+  );
+  return rows;
+}
+
+// Tenant Admin: Get user details
+async function getTenantUser({ tenantId, userId }) {
+  const { rows } = await query(
+    `SELECT 
+       u.id,
+       u.email,
+       u.full_name,
+       u.phone,
+       u.is_active,
+       u.created_at,
+       m.id AS membership_id,
+       r.id AS role_id,
+       r.name AS role_name
+     FROM users u
+     JOIN memberships m ON m.user_id = u.id AND m.tenant_id = $1
+     JOIN roles r ON r.id = m.role_id
+     WHERE u.id = $2
+     LIMIT 1`,
+    [tenantId, userId]
+  );
+  return rows[0] ?? null;
+}
+
+// Tenant Admin: Update user role
+async function updateUserRole({ tenantId, userId, roleId }) {
+  const { rows } = await query(
+    `UPDATE memberships
+     SET role_id = $3, updated_at = now()
+     WHERE tenant_id = $1 AND user_id = $2
+     RETURNING id, tenant_id, user_id, role_id`,
+    [tenantId, userId, roleId]
+  );
+  return rows[0] ?? null;
+}
+
+// Tenant Admin: Update user status
+async function updateUserStatus({ userId, isActive }) {
+  const { rows } = await query(
+    `UPDATE users
+     SET is_active = $2, updated_at = now()
+     WHERE id = $1
+     RETURNING id, email, full_name, is_active`,
+    [userId, isActive]
+  );
+  return rows[0] ?? null;
+}
+
+// Tenant Admin: Get all available roles for tenant
+async function listTenantRoles({ tenantId }) {
+  const { rows } = await query(
+    `SELECT id, name, description
+     FROM roles
+     WHERE tenant_id = $1
+     ORDER BY name`,
+    [tenantId]
+  );
+  return rows;
+}
+
 module.exports = {
   findUserByEmail,
   createUser,
   findRoleIdForTenant,
   upsertMembership,
   getMembershipWithRole,
+  listTenantUsers,
+  getTenantUser,
+  updateUserRole,
+  updateUserStatus,
+  listTenantRoles,
 };

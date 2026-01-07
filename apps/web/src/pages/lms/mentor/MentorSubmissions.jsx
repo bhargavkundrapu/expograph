@@ -381,12 +381,14 @@ export default function MentorSubmissions() {
               </div>
             </div>
 
-            <div className="layout-flex gap-md">
+            <div className="layout-flex flex-col sm:flex-row gap-3 sm:gap-md items-stretch sm:items-center">
               <Button
                 variant="gradient"
                 size="md"
                 onClick={() => submitReview(selectedSubmission.id)}
                 disabled={submitting || !reviewForm.feedback.trim()}
+                fullWidth
+                className="sm:w-auto"
               >
                 {submitting ? "Submitting..." : "Submit Review"}
               </Button>
@@ -397,6 +399,8 @@ export default function MentorSubmissions() {
                   setSelectedSubmission(null);
                   setReviewForm({ score: "", feedback: "", decision: "in_review" });
                 }}
+                fullWidth
+                className="sm:w-auto"
               >
                 Cancel
               </Button>

@@ -39,6 +39,7 @@ import MentorSubmissions from "../pages/lms/mentor/MentorSubmissions";
 import MentorClientLab from "../pages/lms/mentor/MentorClientLab";
 import MentorInternships from "../pages/lms/mentor/MentorInternships";
 import TenantAdminSettings from "../pages/lms/admin/TenantAdminSettings";
+import TenantAdminUsers from "../pages/lms/admin/TenantAdminUsers";
 
 export const router = createBrowserRouter([
   {
@@ -87,6 +88,7 @@ export const router = createBrowserRouter([
       children: [
         { index: true, element: <TenantAdminHome /> },
         { path: "settings", element: <TenantAdminSettings /> },
+        { path: "users", element: <TenantAdminUsers /> },
       ],
     },
     {
