@@ -86,9 +86,12 @@ async function getTaskById({ tenantId, taskId }) {
 
 async function listMyProjects({ tenantId, userId }) {
   const { rows } = await query(
-    `SELECT p.*
+    `SELECT 
+      p.*,
+      c.name AS client_name
      FROM client_projects p
      JOIN project_members pm ON pm.project_id = p.id AND pm.tenant_id = p.tenant_id
+     LEFT JOIN clients c ON c.id = p.client_id AND c.tenant_id = p.tenant_id
      WHERE p.tenant_id=$1 AND pm.user_id=$2
      ORDER BY p.created_at DESC`,
     [tenantId, userId]

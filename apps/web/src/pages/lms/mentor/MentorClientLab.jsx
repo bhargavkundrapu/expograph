@@ -71,14 +71,23 @@ export default function MentorClientLab() {
 
   async function loadProjects(signal) {
     try {
+      setLoading(true);
+      setErr("");
       // Use mentor endpoint to get projects where mentor is a member
       const json = await apiFetch("/api/v1/mentor/client-lab/projects", { token, signal });
       const list = unwrapArray(json);
-      if (alive.current) setProjects(list);
+      console.log("✅ Loaded projects for mentor:", list.length, list);
+      if (alive.current) {
+        setProjects(list);
+        setLoading(false);
+      }
     } catch (e) {
       if (signal?.aborted) return;
-      console.error("Failed to load projects:", e);
-      if (alive.current) setErr(e?.message || "Failed to load projects");
+      console.error("❌ Failed to load projects:", e);
+      if (alive.current) {
+        setErr(e?.message || "Failed to load projects");
+        setLoading(false);
+      }
     }
   }
 
@@ -90,18 +99,22 @@ export default function MentorClientLab() {
     }
 
     try {
+      setLoading(true);
+      setErr("");
       const json = await apiFetch(`/api/v1/mentor/client-lab/projects/${projectId}/review-queue`, { token, signal });
       const data = unwrapData(json);
       if (alive.current) {
         setTasks(data.tasks || []);
         setProject(data.project || null);
+        setLoading(false);
       }
     } catch (e) {
       if (signal?.aborted) return;
       console.error("Failed to load review queue:", e);
-      if (alive.current) setErr(e?.message || "Failed to load review queue");
-    } finally {
-      if (!signal?.aborted && alive.current) setLoading(false);
+      if (alive.current) {
+        setErr(e?.message || "Failed to load review queue");
+        setLoading(false);
+      }
     }
   }
 
