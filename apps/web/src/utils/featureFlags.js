@@ -34,9 +34,12 @@ export const FEATURE_FLAGS = {
 
   // Mentor Portal Features
   MENTOR_SUBMISSIONS: "mentor_submissions",
+  MENTOR_CLIENT_LAB: "mentor_client_lab",
+  MENTOR_INTERNSHIPS: "mentor_internships",
 
   // TenantAdmin Portal Features
   TENANT_ADMIN_SETTINGS: "tenant_admin_settings",
+  TENANT_ADMIN_USERS: "tenant_admin_users",
 };
 
 /**
@@ -135,9 +138,12 @@ export function getAllFeatureFlags() {
 
     // Mentor Portal
     { key: FEATURE_FLAGS.MENTOR_SUBMISSIONS, description: "Mentor: Review student submissions", category: "Mentor Portal" },
+    { key: FEATURE_FLAGS.MENTOR_CLIENT_LAB, description: "Mentor: Review client lab project tasks", category: "Mentor Portal" },
+    { key: FEATURE_FLAGS.MENTOR_INTERNSHIPS, description: "Mentor: Review internship deliverables", category: "Mentor Portal" },
 
     // TenantAdmin Portal
     { key: FEATURE_FLAGS.TENANT_ADMIN_SETTINGS, description: "TenantAdmin: Tenant settings and configuration", category: "TenantAdmin Portal" },
+    { key: FEATURE_FLAGS.TENANT_ADMIN_USERS, description: "TenantAdmin: User management and permissions", category: "TenantAdmin Portal" },
   ];
 }
 

@@ -106,6 +106,9 @@ export default function PortalLayout() {
       if (checkFeatureFlag(isEnabled, FEATURE_FLAGS.TENANT_ADMIN_SETTINGS)) {
         items.push({ to: `${base}/settings`, label: "Tenant Settings", flag: FEATURE_FLAGS.TENANT_ADMIN_SETTINGS });
       }
+      if (checkFeatureFlag(isEnabled, FEATURE_FLAGS.TENANT_ADMIN_USERS)) {
+        items.push({ to: `${base}/users`, label: "User Management", flag: FEATURE_FLAGS.TENANT_ADMIN_USERS });
+      }
       return items;
     }
     
@@ -115,6 +118,12 @@ export default function PortalLayout() {
       ];
       if (checkFeatureFlag(isEnabled, FEATURE_FLAGS.MENTOR_SUBMISSIONS)) {
         items.push({ to: `${base}/submissions`, label: "Submissions Queue", flag: FEATURE_FLAGS.MENTOR_SUBMISSIONS });
+      }
+      if (checkFeatureFlag(isEnabled, FEATURE_FLAGS.MENTOR_CLIENT_LAB)) {
+        items.push({ to: `${base}/client-lab`, label: "Client Lab", flag: FEATURE_FLAGS.MENTOR_CLIENT_LAB });
+      }
+      if (checkFeatureFlag(isEnabled, FEATURE_FLAGS.MENTOR_INTERNSHIPS)) {
+        items.push({ to: `${base}/internships`, label: "Internships", flag: FEATURE_FLAGS.MENTOR_INTERNSHIPS });
       }
       return items;
     }
