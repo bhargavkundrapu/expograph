@@ -66,4 +66,13 @@ const verifyPublic = asyncHandler(async (req, res) => {
   });
 });
 
-module.exports = { issueAdmin, verifyPublic };
+// STUDENT: GET /api/v1/lms/certificates/mine
+const listMyCertificates = asyncHandler(async (req, res) => {
+  const data = await repo.listMyCertificates({
+    tenantId: req.tenant.id,
+    userId: req.auth.userId,
+  });
+  res.json({ ok: true, data });
+});
+
+module.exports = { issueAdmin, verifyPublic, listMyCertificates };

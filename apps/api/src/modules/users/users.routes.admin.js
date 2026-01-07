@@ -13,7 +13,7 @@ router.get("/users", ctrl.listTenantUsers);
 router.get("/users/:userId", ctrl.getTenantUser);
 router.patch("/users/:userId/role", ctrl.updateUserRole);
 router.patch("/users/:userId/status", ctrl.updateUserStatus);
-router.get("/roles", ctrl.listTenantRoles);
+router.get("/users/roles", ctrl.listTenantRoles);
 
 module.exports = { router };
 

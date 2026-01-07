@@ -7,6 +7,7 @@ const router = express.Router();
 
 router.use(requireAuth, requirePermission("clientlab:review"));
 
+router.get("/projects", ctrl.myProjects); // List projects for mentor
 router.get("/projects/:projectId/review-queue", ctrl.reviewQueue);
 router.post("/tasks/:taskId/feedback", ctrl.mentorFeedback);
 

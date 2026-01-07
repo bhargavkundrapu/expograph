@@ -71,8 +71,8 @@ export default function MentorClientLab() {
 
   async function loadProjects(signal) {
     try {
-      // Use LMS endpoint to get projects where mentor is a member
-      const json = await apiFetch("/api/v1/lms/client-lab/projects", { token, signal });
+      // Use mentor endpoint to get projects where mentor is a member
+      const json = await apiFetch("/api/v1/mentor/client-lab/projects", { token, signal });
       const list = unwrapArray(json);
       if (alive.current) setProjects(list);
     } catch (e) {
@@ -420,13 +420,65 @@ export default function MentorClientLab() {
         <div className="position-fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setSelectedTask(null)}>
           <Card
             variant="elevated"
-            className="p-8 max-w-2xl w-full max-h-[90vh] overflow-auto"
+            className="p-8 max-w-3xl w-full max-h-[90vh] overflow-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <CardTitle className="text-2xl mb-4">Provide Feedback</CardTitle>
-            <CardDescription className="mb-6">
-              {selectedTask.title || "Task"}
-            </CardDescription>
+            
+            {/* Task Details Section */}
+            <div className="mb-6 p-6 rounded-lg bg-gray-800 border border-gray-700">
+              <div className="layout-flex items-center gap-md mb-4">
+                <div className={`p-2 rounded-lg ${getStatusBadge(selectedTask.status).bg} border ${getStatusBadge(selectedTask.status).border}`}>
+                  <FaTasks className={getStatusBadge(selectedTask.status).text} />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div className="text-lg font-bold text-white mb-2">
+                    {selectedTask.title || "Untitled Task"}
+                  </div>
+                  <div className="layout-flex flex-wrap items-center gap-4 text-sm text-gray-400">
+                    <div className="layout-flex items-center gap-1">
+                      <FaUser className="text-xs" />
+                      <span>Student: {selectedTask.student_email || selectedTask.user_email || "—"}</span>
+                    </div>
+                    {selectedTask.due_date && (
+                      <div className="layout-flex items-center gap-1">
+                        <FaCalendar className="text-xs" />
+                        <span>Due: {formatDate(selectedTask.due_date)}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {selectedTask.description && (
+                <div className="mt-4 p-4 rounded-lg bg-gray-900 border border-gray-800">
+                  <div className="text-sm font-semibold text-gray-300 mb-2">Task Description:</div>
+                  <div className="text-sm text-gray-400 whitespace-pre-wrap max-h-48 overflow-y-auto">
+                    {selectedTask.description}
+                  </div>
+                </div>
+              )}
+
+              {selectedTask.submission_content && (
+                <div className="mt-4 p-4 rounded-lg bg-gray-900 border border-gray-800">
+                  <div className="text-sm font-semibold text-gray-300 mb-2">Student Submission:</div>
+                  <div className="text-sm text-gray-400 whitespace-pre-wrap max-h-48 overflow-y-auto">
+                    {selectedTask.submission_content}
+                  </div>
+                </div>
+              )}
+
+              {selectedTask.mentor_feedback && (
+                <div className="mt-4 p-3 rounded-lg bg-blue-500/10 border border-blue-500/30">
+                  <div className="text-xs text-blue-300 mb-1">Previous Feedback:</div>
+                  <div className="text-sm text-gray-300">{selectedTask.mentor_feedback}</div>
+                </div>
+              )}
+            </div>
+
+            <div className="border-t border-gray-700 pt-6 mb-6">
+              <CardDescription className="mb-4 text-lg font-semibold">Provide Your Feedback</CardDescription>
+            </div>
 
             <div className="layout-flex-col gap-md mb-6">
               <div>

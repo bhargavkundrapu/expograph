@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { FaCertificate, FaCheckCircle, FaSearch, FaCopy, FaExternalLinkAlt } from "react-icons/fa";
 import { HiSparkles } from "react-icons/hi";
 import Card, { CardContent, CardTitle, CardDescription } from "../../../Components/ui/Card";
 import { apiFetch } from "../../../services/api";
-import { unwrapData } from "../../../services/apiShape";
+import { unwrapData, unwrapArray } from "../../../services/apiShape";
 import { useAuth } from "../../../app/providers/AuthProvider";
 import Button from "../../../Components/ui/Button";
+import Skeleton from "../../../Components/ui/Skeleton";
+import EmptyState from "../../../Components/common/EmptyState";
 
 function formatDate(dateString) {
   if (!dateString) return "—";
@@ -25,6 +27,9 @@ export default function StudentCertificates() {
   const [verifying, setVerifying] = useState(false);
   const [certificate, setCertificate] = useState(null);
   const [error, setError] = useState("");
+  const [myCertificates, setMyCertificates] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const alive = useRef(true);
 
   async function handleVerify() {
     if (!verifyCode.trim()) {
@@ -55,6 +60,29 @@ export default function StudentCertificates() {
       alert("Verification URL copied to clipboard!");
     }
   }
+
+  async function loadMyCertificates(signal) {
+    try {
+      const json = await apiFetch("/api/v1/lms/certificates/mine", { token, signal });
+      const list = unwrapArray(json);
+      if (alive.current) setMyCertificates(list);
+    } catch (e) {
+      if (signal?.aborted) return;
+      console.error("Failed to load my certificates:", e);
+    } finally {
+      if (!signal?.aborted && alive.current) setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    alive.current = true;
+    const ac = new AbortController();
+    loadMyCertificates(ac.signal);
+    return () => {
+      alive.current = false;
+      ac.abort();
+    };
+  }, [token]);
 
   return (
     <div className="layout-flex-col gap-xl animate-fadeIn" style={{ width: '100%' }}>
@@ -177,6 +205,75 @@ export default function StudentCertificates() {
           </div>
         </Card>
       )}
+
+      {/* My Certificates */}
+      <Card variant="elevated" className="p-8" style={{ width: '100%', boxSizing: 'border-box' }}>
+        <div className="layout-flex items-center gap-md mb-6">
+          <div className="p-3 rounded-xl bg-gradient-to-br from-green-400/20 to-emerald-500/20 border border-green-400/30">
+            <FaCertificate className="text-green-400 text-xl" />
+          </div>
+          <div>
+            <CardTitle className="text-2xl" style={{ margin: 0 }}>My Certificates</CardTitle>
+            <CardDescription style={{ marginTop: '0.5rem' }}>View all certificates issued to you</CardDescription>
+          </div>
+        </div>
+
+        {loading ? (
+          <div className="layout-flex-col gap-md">
+            <Skeleton className="h-24 w-full" />
+            <Skeleton className="h-24 w-full" />
+          </div>
+        ) : myCertificates.length === 0 ? (
+          <EmptyState
+            title="No Certificates Yet"
+            message="You haven't received any certificates yet. Complete courses to earn certificates!"
+          />
+        ) : (
+          <div className="layout-flex-col gap-md">
+            {myCertificates.map((cert) => (
+              <Card key={cert.id} variant="elevated" className="p-6 border-green-500/30">
+                <div className="layout-flex items-start justify-between gap-md">
+                  <div style={{ flex: 1 }}>
+                    <div className="layout-flex items-center gap-3 mb-2">
+                      <div className="p-2 rounded-lg bg-gradient-to-br from-green-400/20 to-emerald-500/20 border border-green-400/30">
+                        <FaCertificate className="text-green-400" />
+                      </div>
+                      <CardTitle className="text-xl" style={{ margin: 0 }}>{cert.title}</CardTitle>
+                    </div>
+                    {cert.course_title && (
+                      <CardDescription className="mb-3">Course: {cert.course_title}</CardDescription>
+                    )}
+                    <div className="layout-grid-2 gap-md text-sm">
+                      <div>
+                        <div className="text-gray-500 mb-1">Issued Date</div>
+                        <div className="text-white font-semibold">{formatDate(cert.issued_at)}</div>
+                      </div>
+                      <div>
+                        <div className="text-gray-500 mb-1">Verification Code</div>
+                        <div className="layout-flex items-center gap-2">
+                          <code className="flex-1 px-2 py-1 rounded bg-gray-800 border border-gray-700 text-green-300 font-mono text-xs">
+                            {cert.verify_code}
+                          </code>
+                          <button
+                            onClick={() => {
+                              navigator.clipboard.writeText(cert.verify_code);
+                              alert("Code copied!");
+                            }}
+                            className="p-1.5 rounded bg-gray-800 border border-gray-700 text-gray-400"
+                            title="Copy code"
+                          >
+                            <FaCopy className="text-xs" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
+        )}
+      </Card>
 
       {/* Info Card */}
       <Card variant="elevated" className="p-6" style={{ width: '100%', boxSizing: 'border-box' }}>

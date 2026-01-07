@@ -11,6 +11,7 @@ const { router: workshopsAdmin } = require("../modules/workshops/workshops.route
 
 const { router: certAdmin } = require("../modules/certificates/certificates.routes.admin");
 const { router: certPublic } = require("../modules/certificates/certificates.routes.public");
+const { router: certLms } = require("../modules/certificates/certificates.routes.lms");
 
 const { router: featureFlagsAdmin } = require("../modules/featureFlags/featureFlags.routes.admin");
 const { router: featureFlagsPublic } = require("../modules/featureFlags/featureFlags.routes.public");
@@ -120,6 +121,7 @@ app.use(
 
   app.use("/api/v1/lms", progressRouter);
   app.use("/api/v1/lms", lmsSubmissionsRouter);
+  app.use("/api/v1/lms", certLms);
   app.use("/api/v1/mentor", mentorSubmissionsRouter);
   app.use("/api/v1/media", mediaRoutes);
   app.use("/api/v1/debug", debugRoutes);

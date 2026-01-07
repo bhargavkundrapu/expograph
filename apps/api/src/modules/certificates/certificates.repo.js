@@ -23,4 +23,16 @@ async function findByVerifyCode({ verifyCode }) {
   return rows[0] ?? null;
 }
 
-module.exports = { issueCertificate, findByVerifyCode };
+async function listMyCertificates({ tenantId, userId }) {
+  const { rows } = await query(
+    `SELECT c.id, c.title, c.issued_at, c.verify_code, c.course_id, co.title AS course_title
+     FROM certificates c
+     LEFT JOIN courses co ON co.id = c.course_id AND co.tenant_id = c.tenant_id
+     WHERE c.tenant_id = $1 AND c.user_id = $2
+     ORDER BY c.issued_at DESC`,
+    [tenantId, userId]
+  );
+  return rows;
+}
+
+module.exports = { issueCertificate, findByVerifyCode, listMyCertificates };

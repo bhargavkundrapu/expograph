@@ -103,7 +103,7 @@ export default function TenantAdminUsers() {
 
   async function loadRoles(signal) {
     try {
-      const json = await apiFetch("/api/v1/admin/roles", { token, signal });
+      const json = await apiFetch("/api/v1/admin/users/roles", { token, signal });
       const list = unwrapArray(json);
       if (alive.current) setRoles(list);
     } catch (e) {

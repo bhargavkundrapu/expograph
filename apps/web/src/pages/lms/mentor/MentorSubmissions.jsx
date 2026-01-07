@@ -333,13 +333,74 @@ export default function MentorSubmissions() {
         <div className="position-fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setSelectedSubmission(null)}>
           <Card
             variant="elevated"
-            className="p-8 max-w-2xl w-full max-h-[90vh] overflow-auto"
+            className="p-8 max-w-3xl w-full max-h-[90vh] overflow-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <CardTitle className="text-2xl mb-4">Review Submission</CardTitle>
-            <CardDescription className="mb-6">
-              {selectedSubmission.lesson_title || selectedSubmission.task_title || "Submission"}
-            </CardDescription>
+            
+            {/* Submission Details Section */}
+            <div className="mb-6 p-6 rounded-lg bg-gray-800 border border-gray-700">
+              <div className="layout-flex items-center gap-md mb-4">
+                <div className={`p-2 rounded-lg ${getStatusBadge(selectedSubmission.status).bg} border ${getStatusBadge(selectedSubmission.status).border}`}>
+                  <FaClock className={getStatusBadge(selectedSubmission.status).text} />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div className="text-lg font-bold text-white mb-2">
+                    {selectedSubmission.lesson_title || selectedSubmission.task_title || "Submission"}
+                  </div>
+                  <div className="layout-flex flex-wrap items-center gap-4 text-sm text-gray-400">
+                    <div className="layout-flex items-center gap-1">
+                      <FaUser className="text-xs" />
+                      <span>Student: {selectedSubmission.student_email || selectedSubmission.user_email || "—"}</span>
+                    </div>
+                    <div className="layout-flex items-center gap-1">
+                      <FaCalendar className="text-xs" />
+                      <span>Submitted: {formatDate(selectedSubmission.submitted_at)}</span>
+                    </div>
+                    {selectedSubmission.attempt_no && (
+                      <span>Attempt #{selectedSubmission.attempt_no}</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {selectedSubmission.content && (
+                <div className="mt-4 p-4 rounded-lg bg-gray-900 border border-gray-800">
+                  <div className="text-sm font-semibold text-gray-300 mb-2">Submission Content:</div>
+                  <div className="text-sm text-gray-400 whitespace-pre-wrap max-h-48 overflow-y-auto">
+                    {selectedSubmission.content}
+                  </div>
+                </div>
+              )}
+
+              {selectedSubmission.reviews && selectedSubmission.reviews.length > 0 && (
+                <div className="mt-4">
+                  <div className="text-sm font-semibold text-gray-300 mb-2">Previous Reviews:</div>
+                  <div className="layout-flex-col gap-2 max-h-48 overflow-y-auto">
+                    {selectedSubmission.reviews.map((review, rIdx) => (
+                      <div key={rIdx} className="p-3 rounded-lg bg-gray-900 border border-gray-800">
+                        <div className="layout-flex items-center justify-between mb-2">
+                          <div className="text-xs text-gray-400">
+                            {formatDate(review.created_at)}
+                          </div>
+                          {review.score !== null && (
+                            <div className="layout-flex items-center gap-1">
+                              <FaStar className="text-yellow-400 text-xs" />
+                              <span className="text-xs text-yellow-400">{review.score}/100</span>
+                            </div>
+                          )}
+                        </div>
+                        <div className="text-sm text-gray-300">{review.feedback}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="border-t border-gray-700 pt-6 mb-6">
+              <CardDescription className="mb-4 text-lg font-semibold">Provide Your Review</CardDescription>
+            </div>
 
             <div className="layout-flex-col gap-md mb-6">
               <div>

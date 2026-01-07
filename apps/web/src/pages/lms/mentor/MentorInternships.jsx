@@ -284,13 +284,86 @@ export default function MentorInternships() {
         <div className="position-fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setSelectedDeliverable(null)}>
           <Card
             variant="elevated"
-            className="p-8 max-w-2xl w-full max-h-[90vh] overflow-auto"
+            className="p-8 max-w-3xl w-full max-h-[90vh] overflow-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <CardTitle className="text-2xl mb-4">Review Deliverable</CardTitle>
-            <CardDescription className="mb-6">
-              {selectedDeliverable.project_title || "Internship Project"}
-            </CardDescription>
+            
+            {/* Deliverable Details Section */}
+            <div className="mb-6 p-6 rounded-lg bg-green-50 border border-green-200">
+              <div className="layout-flex items-center gap-md mb-4">
+                <div className={`p-2 rounded-lg ${getStatusBadge(selectedDeliverable.status).bg} border ${getStatusBadge(selectedDeliverable.status).border}`}>
+                  <FaBriefcase className={getStatusBadge(selectedDeliverable.status).text} />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div className="text-lg font-bold text-gray-900 mb-2">
+                    {selectedDeliverable.project_title || "Internship Project"}
+                  </div>
+                  <div className="layout-flex flex-wrap items-center gap-4 text-sm text-gray-600">
+                    <div className="layout-flex items-center gap-1">
+                      <FaUser className="text-xs" />
+                      <span>Student: {selectedDeliverable.student_email || selectedDeliverable.student_name || "—"}</span>
+                    </div>
+                    <div className="layout-flex items-center gap-1">
+                      <FaCalendar className="text-xs" />
+                      <span>Submitted: {formatDate(selectedDeliverable.submitted_at)}</span>
+                    </div>
+                    {selectedDeliverable.version_no && (
+                      <span>Version: {selectedDeliverable.version_no}</span>
+                    )}
+                    {selectedDeliverable.batch_name && (
+                      <span>Batch: {selectedDeliverable.batch_name}</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {selectedDeliverable.repo_url && (
+                <div className="mt-3 p-3 rounded-lg bg-green-100 border border-green-300">
+                  <div className="layout-flex items-center gap-2 text-sm">
+                    <FaCodeBranch className="text-green-700" />
+                    <a href={selectedDeliverable.repo_url} target="_blank" rel="noopener noreferrer" className="text-green-700">
+                      Repository: {selectedDeliverable.repo_url}
+                    </a>
+                  </div>
+                </div>
+              )}
+
+              {selectedDeliverable.deploy_url && (
+                <div className="mt-3 p-3 rounded-lg bg-green-100 border border-green-300">
+                  <div className="layout-flex items-center gap-2 text-sm">
+                    <FaCheckCircle className="text-green-700" />
+                    <a href={selectedDeliverable.deploy_url} target="_blank" rel="noopener noreferrer" className="text-green-700">
+                      Deployed URL: {selectedDeliverable.deploy_url}
+                    </a>
+                  </div>
+                </div>
+              )}
+
+              {selectedDeliverable.demo_url && (
+                <div className="mt-3 p-3 rounded-lg bg-green-100 border border-green-300">
+                  <div className="layout-flex items-center gap-2 text-sm">
+                    <FaCheckCircle className="text-green-700" />
+                    <a href={selectedDeliverable.demo_url} target="_blank" rel="noopener noreferrer" className="text-green-700">
+                      Demo URL: {selectedDeliverable.demo_url}
+                    </a>
+                  </div>
+                </div>
+              )}
+
+              {selectedDeliverable.notes && (
+                <div className="mt-4 p-4 rounded-lg bg-green-100 border border-green-300">
+                  <div className="text-sm font-semibold text-gray-900 mb-2">Student Notes:</div>
+                  <div className="text-sm text-gray-700 whitespace-pre-wrap max-h-48 overflow-y-auto">
+                    {selectedDeliverable.notes}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="border-t border-green-200 pt-6 mb-6">
+              <CardDescription className="mb-4 text-lg font-semibold">Provide Your Review</CardDescription>
+            </div>
 
             <div className="layout-flex-col gap-md mb-6">
               <div>
