@@ -13,66 +13,93 @@ import {
   FaRocket
 } from "react-icons/fa";
 import Card, { CardContent, CardTitle, CardDescription } from "../../../Components/ui/Card";
+import { useFeatureFlags } from "../../../hooks/useFeatureFlags";
+import { FEATURE_FLAGS, checkFeatureFlag } from "../../../utils/featureFlags";
 
 export default function SuperAdminHome() {
-  const quickActions = [
-    {
+  const { isEnabled } = useFeatureFlags();
+  
+  // Build quick actions - all controlled by feature flags
+  const quickActions = [];
+  
+  if (checkFeatureFlag(isEnabled, FEATURE_FLAGS.SUPERADMIN_CONTENT)) {
+    quickActions.push({
       icon: FaBook,
       title: "Content Admin",
       desc: "Manage courses and content",
       to: "/lms/superadmin/content",
       color: "from-blue-400 to-cyan-500",
-    },
-    {
+    });
+  }
+  
+  if (checkFeatureFlag(isEnabled, FEATURE_FLAGS.SUPERADMIN_ANALYTICS)) {
+    quickActions.push({
       icon: FaChartLine,
       title: "Analytics",
       desc: "View platform statistics",
       to: "/lms/superadmin/analytics",
       color: "from-purple-400 to-pink-500",
-    },
-    {
+    });
+  }
+  
+  if (checkFeatureFlag(isEnabled, FEATURE_FLAGS.SUPERADMIN_LEADS)) {
+    quickActions.push({
       icon: FaEnvelope,
       title: "Leads Management",
       desc: "Manage and track leads",
       to: "/lms/superadmin/leads",
       color: "from-cyan-400 to-blue-500",
-    },
-    {
+    });
+  }
+  
+  if (checkFeatureFlag(isEnabled, FEATURE_FLAGS.SUPERADMIN_WORKSHOPS)) {
+    quickActions.push({
       icon: FaGraduationCap,
       title: "Workshops",
       desc: "Create and manage workshops",
       to: "/lms/superadmin/workshops",
       color: "from-teal-400 to-cyan-500",
-    },
-    {
+    });
+  }
+  
+  if (checkFeatureFlag(isEnabled, FEATURE_FLAGS.SUPERADMIN_CERTIFICATES)) {
+    quickActions.push({
       icon: FaCertificate,
       title: "Certificates",
       desc: "Issue certificates to students",
       to: "/lms/superadmin/certificates",
       color: "from-amber-400 to-orange-500",
-    },
-    {
+    });
+  }
+  
+  if (checkFeatureFlag(isEnabled, FEATURE_FLAGS.SUPERADMIN_INTERNSHIPS, "micro_internships", "internships", "micro_internship")) {
+    quickActions.push({
       icon: FaBriefcase,
       title: "Internships",
       desc: "Manage micro-internship projects",
       to: "/lms/superadmin/internships",
       color: "from-indigo-400 to-purple-500",
-    },
-    {
+    });
+  }
+  
+  if (checkFeatureFlag(isEnabled, FEATURE_FLAGS.SUPERADMIN_CLIENT_LAB)) {
+    quickActions.push({
       icon: FaLaptopCode,
       title: "Client Lab",
       desc: "Manage client lab projects",
       to: "/lms/superadmin/client-lab",
       color: "from-pink-400 to-rose-500",
-    },
-    {
-      icon: FaFlag,
-      title: "Feature Flags",
-      desc: "Manage platform features",
-      to: "/lms/superadmin/feature-flags",
-      color: "from-purple-400 to-pink-500",
-    },
-  ];
+    });
+  }
+  
+  // Feature Flags always visible for SuperAdmin
+  quickActions.push({
+    icon: FaFlag,
+    title: "Feature Flags",
+    desc: "Manage platform features",
+    to: "/lms/superadmin/feature-flags",
+    color: "from-purple-400 to-pink-500",
+  });
 
   return (
     <div className="layout-flex-col gap-xl animate-fadeIn" style={{ width: '100%' }}>

@@ -109,6 +109,11 @@ const drop = asyncHandler(async (req, res) => {
 });
 
 // ---- Mentor/Admin ----
+const listAllProjects = asyncHandler(async (req, res) => {
+  const rows = await svc.listAllProjects({ tenantId: req.tenant.id });
+  res.json({ ok: true, data: rows });
+});
+
 const createProject = asyncHandler(async (req, res) => {
   const parsed = CreateProjectSchema.safeParse(req.body);
   if (!parsed.success) throw new HttpError(400, "Invalid input", parsed.error.flatten());
@@ -205,6 +210,7 @@ module.exports = {
   submitDeliverable,
   drop,
   // mentor/admin
+  listAllProjects,
   createProject,
   setProjectStatus,
   createBatch,

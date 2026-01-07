@@ -36,4 +36,10 @@ const setOne = asyncHandler(async (req, res) => {
   res.json({ ok: true, data: updated });
 });
 
-module.exports = { list, setOne };
+// Public read-only endpoint (no auth required, just tenant)
+const listPublic = asyncHandler(async (req, res) => {
+  const flags = await repo.listFlags({ tenantId: req.tenant.id });
+  res.json({ ok: true, data: flags });
+});
+
+module.exports = { list, setOne, listPublic };

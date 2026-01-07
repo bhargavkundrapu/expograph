@@ -8,6 +8,7 @@ const router = express.Router();
 router.use(requireAuth, requirePermission("internships:manage"));
 
 // create/manage
+router.get("/projects", ctrl.listAllProjects);
 router.post("/projects", ctrl.createProject);
 router.patch("/projects/:projectId/status", ctrl.setProjectStatus);
 router.post("/projects/:projectId/batches", ctrl.createBatch);

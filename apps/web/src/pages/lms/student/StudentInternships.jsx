@@ -1,8 +1,9 @@
 import { useEffect, useState, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { useAuth } from "../../../app/providers/AuthProvider";
 import { apiFetch } from "../../../services/api";
 import { unwrapArray, unwrapData } from "../../../services/apiShape";
+import { useFeatureFlags } from "../../../hooks/useFeatureFlags";
 import { 
   FaBriefcase, 
   FaCalendar, 
@@ -26,6 +27,7 @@ function formatDate(dateString) {
 
 export default function StudentInternships() {
   const { token } = useAuth();
+  const { isEnabled, loading: flagsLoading, flags } = useFeatureFlags();
   const [projects, setProjects] = useState([]);
   const [applications, setApplications] = useState([]);
   const [assignments, setAssignments] = useState([]);
@@ -33,6 +35,16 @@ export default function StudentInternships() {
   const [err, setErr] = useState("");
   const [activeTab, setActiveTab] = useState("projects"); // projects, applications, assignments
   const alive = useRef(true);
+
+  // Check if internships feature is enabled
+  // Default to enabled (fail-open approach) - only redirect if explicitly disabled
+  const internshipsEnabled = isEnabled("micro_internships") || isEnabled("internships") || isEnabled("micro_internship");
+
+  // Only redirect if flags have loaded AND feature is explicitly disabled
+  // If flags are still loading or failed to load, allow access (default to enabled)
+  if (!flagsLoading && Object.keys(flags).length > 0 && !internshipsEnabled) {
+    return <Navigate to="/lms/student" replace />;
+  }
 
   async function loadProjects(signal) {
     try {

@@ -13,6 +13,7 @@ const { router: certAdmin } = require("../modules/certificates/certificates.rout
 const { router: certPublic } = require("../modules/certificates/certificates.routes.public");
 
 const { router: featureFlagsAdmin } = require("../modules/featureFlags/featureFlags.routes.admin");
+const { router: featureFlagsPublic } = require("../modules/featureFlags/featureFlags.routes.public");
 
 const { router: referralsRoutes } = require("../modules/referrals/referrals.routes");
 
@@ -128,6 +129,7 @@ app.use(
   app.use("/api/v1/public", leadsPublic);
   app.use("/api/v1/public", workshopsPublic);
   app.use("/api/v1/public", certPublic);
+  app.use("/api/v1/public", featureFlagsPublic);
 
   app.use("/api/v1/admin", leadsAdmin);
   app.use("/api/v1/admin", workshopsAdmin);

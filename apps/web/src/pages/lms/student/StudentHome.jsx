@@ -4,6 +4,8 @@ import { useAuth } from "../../../app/providers/AuthProvider";
 import { getProgressSummary } from "../../../features/progress/progressApi";
 import { apiFetch } from "../../../services/api";
 import { unwrapData } from "../../../services/apiShape";
+import { useFeatureFlags } from "../../../hooks/useFeatureFlags";
+import { FEATURE_FLAGS, checkFeatureFlag } from "../../../utils/featureFlags";
 import { 
   FaBook, 
   FaChartLine, 
@@ -37,10 +39,20 @@ function formatWatchTime(seconds) {
 
 export default function StudentHome() {
   const { token } = useAuth();
+  const { isEnabled, flags, loading: flagsLoading } = useFeatureFlags();
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
   const alive = useRef(true);
+
+  // Debug: Log feature flags
+  useEffect(() => {
+    if (!flagsLoading) {
+      console.log("🔍 Feature Flags:", flags);
+      console.log("🔍 micro_internships enabled:", isEnabled("micro_internships"));
+      console.log("🔍 internships enabled:", isEnabled("internships"));
+    }
+  }, [flags, flagsLoading, isEnabled]);
 
   async function loadSummary(signal) {
     try {
@@ -64,64 +76,88 @@ export default function StudentHome() {
     };
   }, [token]);
 
-  const quickLinks = [
-    {
+  // Build quick links - all controlled by feature flags
+  const quickLinks = [];
+  
+  if (checkFeatureFlag(isEnabled, FEATURE_FLAGS.STUDENT_COURSES)) {
+    quickLinks.push({
       icon: FaBook,
       title: "Browse Courses",
       desc: "Explore all available courses",
       to: "/lms/student/courses",
       color: "from-cyan-400 to-blue-500",
-    },
-    {
+    });
+  }
+  
+  if (checkFeatureFlag(isEnabled, FEATURE_FLAGS.STUDENT_PROGRESS)) {
+    quickLinks.push({
       icon: FaChartLine,
       title: "View Progress",
       desc: "Track your learning journey",
       to: "/lms/student/progress",
       color: "from-purple-400 to-pink-500",
-    },
-    {
+    });
+  }
+  
+  if (checkFeatureFlag(isEnabled, FEATURE_FLAGS.STUDENT_SUBMISSIONS)) {
+    quickLinks.push({
       icon: FaFileAlt,
       title: "My Submissions",
       desc: "Check mentor feedback",
       to: "/lms/student/submissions",
       color: "from-emerald-400 to-teal-500",
-    },
-    {
+    });
+  }
+  
+  if (checkFeatureFlag(isEnabled, FEATURE_FLAGS.STUDENT_CERTIFICATES)) {
+    quickLinks.push({
       icon: FaCertificate,
       title: "Certificates",
       desc: "View and verify certificates",
       to: "/lms/student/certificates",
       color: "from-amber-400 to-orange-500",
-    },
-    {
+    });
+  }
+  
+  if (checkFeatureFlag(isEnabled, FEATURE_FLAGS.STUDENT_INTERNSHIPS, "micro_internships", "internships", "micro_internship")) {
+    quickLinks.push({
       icon: FaBriefcase,
       title: "Internships",
       desc: "Browse micro-internship projects",
       to: "/lms/student/internships",
       color: "from-indigo-400 to-purple-500",
-    },
-    {
+    });
+  }
+  
+  if (checkFeatureFlag(isEnabled, FEATURE_FLAGS.STUDENT_CLIENT_LAB)) {
+    quickLinks.push({
       icon: FaLaptopCode,
       title: "Client Lab",
       desc: "Real-world project experience",
       to: "/lms/student/client-lab",
       color: "from-pink-400 to-rose-500",
-    },
-    {
+    });
+  }
+  
+  if (checkFeatureFlag(isEnabled, FEATURE_FLAGS.STUDENT_WORKSHOPS)) {
+    quickLinks.push({
       icon: FaGraduationCap,
       title: "Workshops",
       desc: "Register for workshops",
       to: "/lms/student/workshops",
       color: "from-teal-400 to-cyan-500",
-    },
-    {
+    });
+  }
+  
+  if (checkFeatureFlag(isEnabled, FEATURE_FLAGS.STUDENT_REFERRALS)) {
+    quickLinks.push({
       icon: FaGift,
       title: "Referrals",
       desc: "Share and earn rewards",
       to: "/lms/student/referrals",
       color: "from-yellow-400 to-amber-500",
-    },
-  ];
+    });
+  }
 
   if (loading) {
     return (

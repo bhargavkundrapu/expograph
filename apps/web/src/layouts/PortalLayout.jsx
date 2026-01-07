@@ -1,6 +1,8 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, Navigate } from "react-router-dom";
 import { useAuth } from "../app/providers/AuthProvider";
 import { homePathForRole } from "../app/roles";
+import { useFeatureFlags } from "../hooks/useFeatureFlags";
+import { FEATURE_FLAGS, checkFeatureFlag } from "../utils/featureFlags";
 import { 
   FaHome, 
   FaBook, 
@@ -58,42 +60,96 @@ function LinkWithIcon({ to, label, icon: Icon, end }) {
 
 export default function PortalLayout() {
   const { role, user } = useAuth();
+  const { isEnabled, loading: flagsLoading } = useFeatureFlags();
 
   const base = homePathForRole(role);
 
-  // Basic nav per role (we expand later)
+  // Basic nav per role - all controlled by feature flags
   const navItems = (() => {
     if (role === "SuperAdmin") {
-      return [
-        { to: `${base}`, label: "Dashboard" },
-        { to: `${base}/content`, label: "Content Admin" },
-        { to: `${base}/analytics`, label: "Analytics" },
-        { to: `${base}/leads`, label: "Leads" },
-        { to: `${base}/workshops`, label: "Workshops" },
-        { to: `${base}/certificates`, label: "Certificates" },
-        { to: `${base}/internships`, label: "Internships" },
-        { to: `${base}/client-lab`, label: "Client Lab" },
-        { to: `${base}/feature-flags`, label: "Feature Flags" },
+      const items = [
+        { to: `${base}`, label: "Dashboard", flag: null }, // Dashboard always visible
       ];
+      
+      // All SuperAdmin features controlled by feature flags
+      if (checkFeatureFlag(isEnabled, FEATURE_FLAGS.SUPERADMIN_CONTENT)) {
+        items.push({ to: `${base}/content`, label: "Content Admin", flag: FEATURE_FLAGS.SUPERADMIN_CONTENT });
+      }
+      if (checkFeatureFlag(isEnabled, FEATURE_FLAGS.SUPERADMIN_ANALYTICS)) {
+        items.push({ to: `${base}/analytics`, label: "Analytics", flag: FEATURE_FLAGS.SUPERADMIN_ANALYTICS });
+      }
+      if (checkFeatureFlag(isEnabled, FEATURE_FLAGS.SUPERADMIN_LEADS)) {
+        items.push({ to: `${base}/leads`, label: "Leads", flag: FEATURE_FLAGS.SUPERADMIN_LEADS });
+      }
+      if (checkFeatureFlag(isEnabled, FEATURE_FLAGS.SUPERADMIN_WORKSHOPS)) {
+        items.push({ to: `${base}/workshops`, label: "Workshops", flag: FEATURE_FLAGS.SUPERADMIN_WORKSHOPS });
+      }
+      if (checkFeatureFlag(isEnabled, FEATURE_FLAGS.SUPERADMIN_CERTIFICATES)) {
+        items.push({ to: `${base}/certificates`, label: "Certificates", flag: FEATURE_FLAGS.SUPERADMIN_CERTIFICATES });
+      }
+      if (checkFeatureFlag(isEnabled, FEATURE_FLAGS.SUPERADMIN_INTERNSHIPS, "micro_internships", "internships", "micro_internship")) {
+        items.push({ to: `${base}/internships`, label: "Internships", flag: FEATURE_FLAGS.SUPERADMIN_INTERNSHIPS });
+      }
+      if (checkFeatureFlag(isEnabled, FEATURE_FLAGS.SUPERADMIN_CLIENT_LAB)) {
+        items.push({ to: `${base}/client-lab`, label: "Client Lab", flag: FEATURE_FLAGS.SUPERADMIN_CLIENT_LAB });
+      }
+      // Feature Flags always visible for SuperAdmin
+      items.push({ to: `${base}/feature-flags`, label: "Feature Flags", flag: null });
+      
+      return items;
     }
+    
     if (role === "TenantAdmin") {
-      return [
-        { to: `${base}`, label: "Dashboard" },
-        { to: `${base}/settings`, label: "Tenant Settings" },
+      const items = [
+        { to: `${base}`, label: "Dashboard", flag: null },
       ];
+      if (checkFeatureFlag(isEnabled, FEATURE_FLAGS.TENANT_ADMIN_SETTINGS)) {
+        items.push({ to: `${base}/settings`, label: "Tenant Settings", flag: FEATURE_FLAGS.TENANT_ADMIN_SETTINGS });
+      }
+      return items;
     }
+    
     if (role === "Mentor") {
-      return [
-        { to: `${base}`, label: "Dashboard" },
-        { to: `${base}/submissions`, label: "Submissions Queue" },
+      const items = [
+        { to: `${base}`, label: "Dashboard", flag: null },
       ];
+      if (checkFeatureFlag(isEnabled, FEATURE_FLAGS.MENTOR_SUBMISSIONS)) {
+        items.push({ to: `${base}/submissions`, label: "Submissions Queue", flag: FEATURE_FLAGS.MENTOR_SUBMISSIONS });
+      }
+      return items;
     }
-    return [
-      { to: `${base}`, label: "Dashboard" },
-      { to: `${base}/courses`, label: "Courses" },
-      { to: `${base}/progress`, label: "Progress" },
-      { to: `${base}/submissions`, label: "My Submissions" },
+    
+    // Student navigation - all controlled by feature flags
+    const studentNav = [
+      { to: `${base}`, label: "Dashboard", flag: null }, // Dashboard always visible
     ];
+    
+    if (checkFeatureFlag(isEnabled, FEATURE_FLAGS.STUDENT_COURSES)) {
+      studentNav.push({ to: `${base}/courses`, label: "Courses", flag: FEATURE_FLAGS.STUDENT_COURSES });
+    }
+    if (checkFeatureFlag(isEnabled, FEATURE_FLAGS.STUDENT_PROGRESS)) {
+      studentNav.push({ to: `${base}/progress`, label: "Progress", flag: FEATURE_FLAGS.STUDENT_PROGRESS });
+    }
+    if (checkFeatureFlag(isEnabled, FEATURE_FLAGS.STUDENT_SUBMISSIONS)) {
+      studentNav.push({ to: `${base}/submissions`, label: "My Submissions", flag: FEATURE_FLAGS.STUDENT_SUBMISSIONS });
+    }
+    if (checkFeatureFlag(isEnabled, FEATURE_FLAGS.STUDENT_CERTIFICATES)) {
+      studentNav.push({ to: `${base}/certificates`, label: "Certificates", flag: FEATURE_FLAGS.STUDENT_CERTIFICATES });
+    }
+    if (checkFeatureFlag(isEnabled, FEATURE_FLAGS.STUDENT_INTERNSHIPS, "micro_internships", "internships", "micro_internship")) {
+      studentNav.push({ to: `${base}/internships`, label: "Internships", flag: FEATURE_FLAGS.STUDENT_INTERNSHIPS });
+    }
+    if (checkFeatureFlag(isEnabled, FEATURE_FLAGS.STUDENT_CLIENT_LAB)) {
+      studentNav.push({ to: `${base}/client-lab`, label: "Client Lab", flag: FEATURE_FLAGS.STUDENT_CLIENT_LAB });
+    }
+    if (checkFeatureFlag(isEnabled, FEATURE_FLAGS.STUDENT_WORKSHOPS)) {
+      studentNav.push({ to: `${base}/workshops`, label: "Workshops", flag: FEATURE_FLAGS.STUDENT_WORKSHOPS });
+    }
+    if (checkFeatureFlag(isEnabled, FEATURE_FLAGS.STUDENT_REFERRALS)) {
+      studentNav.push({ to: `${base}/referrals`, label: "Referrals", flag: FEATURE_FLAGS.STUDENT_REFERRALS });
+    }
+    
+    return studentNav;
   })();
 
   return (

@@ -54,9 +54,9 @@ export default function SuperAdminInternships() {
 
   async function loadProjects(signal) {
     try {
-      // Note: This endpoint might need to be created or use a different approach
-      // For now, we'll show the form to create projects
-      if (alive.current) setProjects([]);
+      const json = await apiFetch("/api/v1/mentor/internships/projects", { token, signal });
+      const list = unwrapArray(json);
+      if (alive.current) setProjects(list);
     } catch (e) {
       if (signal?.aborted) return;
       console.error("Failed to load projects:", e);
@@ -410,9 +410,126 @@ export default function SuperAdminInternships() {
           ) : (
             <div className="layout-grid-2 gap-lg" style={{ width: '100%' }}>
               {projects.map((project, idx) => (
-                <Card key={project.id} variant="elevated" className="animate-fadeIn" style={{ animationDelay: `${idx * 0.1}s` }}>
-                  <CardTitle>{project.title}</CardTitle>
-                  <CardDescription>{project.brief}</CardDescription>
+                <Card
+                  key={`${project.project_id}-${project.batch_id || idx}`}
+                  variant="elevated"
+                  className="animate-fadeIn"
+                  style={{ animationDelay: `${idx * 0.1}s`, width: '100%', boxSizing: 'border-box' }}
+                >
+                  <div className="layout-flex items-start justify-between gap-md mb-4">
+                    <div style={{ flex: 1 }}>
+                      <CardTitle className="text-xl mb-2">{project.title || "Untitled Project"}</CardTitle>
+                      {project.track && (
+                        <div className="layout-flex items-center gap-2 mb-2">
+                          <FaTag className="text-gray-400 text-sm" />
+                          <span className="text-sm text-gray-400">{project.track}</span>
+                        </div>
+                      )}
+                      {project.difficulty && (
+                        <span className={`px-2 py-1 rounded text-xs font-semibold ${
+                          project.difficulty === 'beginner' ? 'bg-green-500/20 text-green-300 border border-green-500/30' :
+                          project.difficulty === 'intermediate' ? 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/30' :
+                          'bg-red-500/20 text-red-300 border border-red-500/30'
+                        }`}>
+                          {project.difficulty}
+                        </span>
+                      )}
+                    </div>
+                    <span className={`px-3 py-1 rounded-lg text-xs font-semibold ${
+                      project.project_status === 'published' ? 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-300' :
+                      project.project_status === 'archived' ? 'bg-gray-500/10 border border-gray-500/30 text-gray-400' :
+                      'bg-yellow-500/10 border border-yellow-500/30 text-yellow-300'
+                    }`}>
+                      {project.project_status || 'draft'}
+                    </span>
+                  </div>
+                  <CardDescription className="mb-4">{project.brief || "No description"}</CardDescription>
+                  {project.batch_id && (
+                    <div className="layout-flex-col gap-2 p-4 rounded-lg bg-gray-800 border border-gray-700">
+                      <div className="layout-flex items-center justify-between">
+                        <div className="layout-flex items-center gap-2">
+                          <FaUsers className="text-gray-400 text-sm" />
+                          <span className="text-sm font-semibold text-white">{project.batch_name}</span>
+                        </div>
+                        <span className={`px-2 py-1 rounded text-xs ${
+                          project.batch_status === 'open' ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30' :
+                          'bg-gray-500/20 text-gray-400 border border-gray-500/30'
+                        }`}>
+                          {project.batch_status || 'closed'}
+                        </span>
+                      </div>
+                      <div className="layout-flex items-center gap-4 text-xs text-gray-400">
+                        {project.start_at && (
+                          <div className="layout-flex items-center gap-1">
+                            <FaCalendar className="text-xs" />
+                            <span>Start: {formatDate(project.start_at)}</span>
+                          </div>
+                        )}
+                        {project.end_at && (
+                          <div className="layout-flex items-center gap-1">
+                            <FaCalendar className="text-xs" />
+                            <span>End: {formatDate(project.end_at)}</span>
+                          </div>
+                        )}
+                      </div>
+                      <div className="layout-flex items-center gap-4 text-xs text-gray-400">
+                        {project.max_seats && (
+                          <span>Max Seats: {project.max_seats}</span>
+                        )}
+                        {project.applied_count !== undefined && (
+                          <span>Applied: {project.applied_count}</span>
+                        )}
+                        {project.approved_count !== undefined && (
+                          <span>Approved: {project.approved_count}</span>
+                        )}
+                        {project.assigned_count !== undefined && (
+                          <span>Assigned: {project.assigned_count}</span>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                  {!project.batch_id && (
+                    <div className="p-4 rounded-lg bg-gray-800 border border-gray-700 text-sm text-gray-400 mb-4">
+                      No batches created yet. Create a batch to make this project available to students.
+                    </div>
+                  )}
+                  <div className="layout-flex gap-md">
+                    {!project.batch_id && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        icon={FaPlus}
+                        onClick={() => {
+                          setSelectedProject(project.project_id);
+                          setShowBatchForm(true);
+                          setShowProjectForm(false);
+                        }}
+                      >
+                        Create Batch
+                      </Button>
+                    )}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      icon={FaEdit}
+                      onClick={() => {
+                        setFormData({
+                          title: project.title,
+                          slug: project.slug,
+                          track: project.track || "",
+                          difficulty: project.difficulty || "",
+                          brief: project.brief,
+                          skills: Array.isArray(project.skills) ? project.skills.join(", ") : (project.skills || ""),
+                          status: project.project_status || "draft",
+                        });
+                        setSelectedProject(project.project_id);
+                        setShowProjectForm(true);
+                        setShowBatchForm(false);
+                      }}
+                    >
+                      Edit
+                    </Button>
+                  </div>
                 </Card>
               ))}
             </div>

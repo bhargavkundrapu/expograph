@@ -115,6 +115,31 @@ async function dropAssignment({ tenantId, assignmentId, userId }) {
 }
 
 // ---------- Mentor/Admin ----------
+async function listAllProjects({ tenantId }) {
+  // List ALL projects with their batches (for SuperAdmin/Mentor view)
+  // Returns projects in all statuses (draft, published, archived)
+  const { rows } = await query(
+    `
+    SELECT
+      p.id as project_id, p.title, p.slug, p.track, p.difficulty, p.brief, p.skills, p.status as project_status, p.created_at,
+      b.id as batch_id, b.batch_name, b.start_at, b.end_at, b.max_seats, b.status as batch_status,
+      COUNT(DISTINCT a.id) FILTER (WHERE a.status = 'applied') as applied_count,
+      COUNT(DISTINCT a.id) FILTER (WHERE a.status = 'approved') as approved_count,
+      COUNT(DISTINCT ma.id) FILTER (WHERE ma.status NOT IN ('dropped','expired')) as assigned_count
+    FROM micro_projects p
+    LEFT JOIN micro_project_batches b ON b.project_id = p.id AND b.tenant_id = p.tenant_id
+    LEFT JOIN micro_applications a ON a.batch_id = b.id AND a.tenant_id = p.tenant_id
+    LEFT JOIN micro_assignments ma ON ma.batch_id = b.id AND ma.tenant_id = p.tenant_id
+    WHERE p.tenant_id = $1
+    GROUP BY p.id, p.title, p.slug, p.track, p.difficulty, p.brief, p.skills, p.status, p.created_at,
+             b.id, b.batch_name, b.start_at, b.end_at, b.max_seats, b.status
+    ORDER BY p.created_at DESC, b.start_at ASC
+    `,
+    [tenantId]
+  );
+  return rows;
+}
+
 async function createProject({ tenantId, title, slug, track, difficulty, brief, skills, createdBy }) {
   const { rows } = await query(
     `
@@ -246,6 +271,7 @@ module.exports = {
   submitDeliverable,
   dropAssignment,
   // mentor/admin
+  listAllProjects,
   createProject,
   setProjectStatus,
   createBatch,

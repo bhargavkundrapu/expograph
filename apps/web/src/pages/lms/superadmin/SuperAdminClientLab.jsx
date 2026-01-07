@@ -161,20 +161,31 @@ export default function SuperAdminClientLab() {
     }
     setCreating(true);
     try {
-      await apiFetch("/api/v1/admin/client-lab/projects", {
+      const result = await apiFetch("/api/v1/admin/client-lab/projects", {
         method: "POST",
         token,
         body: projectFormData,
       });
-      alert("Project created successfully! ✅");
+      const createdProject = unwrapData(result);
+      console.log("Project created:", createdProject);
+      alert("Project created successfully! ✅\n\n⚠️ IMPORTANT: Students won't see this project until you add them as members.\n\nClick 'Add Student' on the project card to add students.");
       setShowProjectForm(false);
       setProjectFormData({
         clientId: "", title: "", slug: "", scope: "", status: "active",
         startDate: "", endDate: "",
       });
       const ac = new AbortController();
-      loadData(ac.signal);
+      await loadData(ac.signal);
+      
+      // Optionally auto-open add member form for the newly created project
+      if (createdProject?.id) {
+        setTimeout(() => {
+          setShowAddMemberForm(createdProject.id);
+          setMemberFormData({ userId: "", role: "student" });
+        }, 500);
+      }
     } catch (e) {
+      console.error("Error creating project:", e);
       alert(e?.message || "Failed to create project");
     } finally {
       setCreating(false);
@@ -188,18 +199,20 @@ export default function SuperAdminClientLab() {
     }
     setCreating(true);
     try {
-      await apiFetch(`/api/v1/admin/client-lab/projects/${projectId}/members`, {
+      const result = await apiFetch(`/api/v1/admin/client-lab/projects/${projectId}/members`, {
         method: "POST",
         token,
         body: memberFormData,
       });
-      alert("Member added successfully! ✅");
+      console.log("Member added:", result);
+      alert(`✅ Member added successfully!\n\nThe student can now see this project in their Client Lab section.`);
       setShowAddMemberForm(null);
       setMemberFormData({ userId: "", role: "student" });
       const ac = new AbortController();
-      loadData(ac.signal);
+      await loadData(ac.signal);
     } catch (e) {
-      alert(e?.message || "Failed to add member");
+      console.error("Error adding member:", e);
+      alert(e?.message || "Failed to add member. Make sure the User ID is correct and the user exists.");
     } finally {
       setCreating(false);
     }
@@ -545,9 +558,15 @@ export default function SuperAdminClientLab() {
                     </div>
                   </div>
                 </div>
-                <div className="layout-flex gap-md">
+                <div className="layout-flex-col gap-md">
+                  <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/30">
+                    <p className="text-xs text-amber-300 font-semibold mb-1">⚠️ Action Required</p>
+                    <p className="text-xs text-gray-400">
+                      Add students as members so they can see this project in their Client Lab.
+                    </p>
+                  </div>
                   <Button
-                    variant="outline"
+                    variant="gradient"
                     size="sm"
                     icon={FaUsers}
                     onClick={() => {
@@ -555,7 +574,7 @@ export default function SuperAdminClientLab() {
                       setMemberFormData({ userId: "", role: "student" });
                     }}
                   >
-                    Add Student
+                    Add Student to Project
                   </Button>
                 </div>
               </Card>
@@ -567,6 +586,12 @@ export default function SuperAdminClientLab() {
       {/* Add Member Form */}
       {showAddMemberForm && (
         <Card variant="elevated" className="p-8 border-pink-500/30" style={{ width: '100%', boxSizing: 'border-box' }}>
+          <div className="mb-6 p-4 rounded-lg bg-blue-500/10 border border-blue-500/30">
+            <p className="text-sm text-blue-300 font-semibold mb-1">ℹ️ Important Information</p>
+            <p className="text-xs text-gray-400">
+              Students can only see projects they are members of. After adding a student here, they will see this project in their Client Lab section.
+            </p>
+          </div>
           <CardTitle className="text-2xl mb-6">Add Student to Project</CardTitle>
           <div className="layout-flex-col gap-md mb-6">
             <div>
