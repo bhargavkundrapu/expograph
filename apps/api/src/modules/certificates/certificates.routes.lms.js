@@ -6,9 +6,16 @@ const ctrl = require("./certificates.controller");
 
 const router = express.Router();
 
-router.use(requireAuth, requirePermission("certificates:read"));
-
-router.get("/certificates/mine", ctrl.listMyCertificates);
+// IMPORTANT:
+// This router is mounted at "/api/v1/lms" in createApp.js.
+// Do NOT apply certificates permission checks globally here, otherwise it will
+// block other LMS routes like internships and client-lab.
+router.get(
+  "/certificates/mine",
+  requireAuth,
+  requirePermission("certificates:read"),
+  ctrl.listMyCertificates
+);
 
 module.exports = { router };
 
