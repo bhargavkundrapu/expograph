@@ -28,7 +28,11 @@ req.auth.tenantId = payload.tid;
 req.auth.membershipId = payload.mid;
 
 req.user = req.user || { id: payload.sub };
-req.tenant = req.tenant || { id: payload.tid };
+// IMPORTANT:
+// If tenant was resolved earlier (host-based), it can conflict with the tenant in the JWT.
+// For authenticated requests, the JWT is the source of truth for tenant context.
+// Keep any existing tenant fields (slug/name) but always align the id to the JWT tenant id.
+req.tenant = { ...(req.tenant || {}), id: payload.tid };
 return next();
 
   } catch (err) {

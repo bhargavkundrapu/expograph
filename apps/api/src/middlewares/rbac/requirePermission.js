@@ -9,7 +9,9 @@ const TTL_MS = 10_000; // Reduced from 60s to 10s to ensure fresh permissions
 function requirePermission(permissionKey) {
   return async function (req, res, next) {
    const userId = req.user?.id || req.userId || req.auth?.userId;
-const tenantId = req.tenant?.id || req.user?.tenantId || req.auth?.tenantId;
+   // For authenticated requests, the JWT tenantId should be the source of truth.
+   // This prevents mismatches if tenant was resolved from host/default slug.
+   const tenantId = req.auth?.tenantId || req.tenant?.id || req.user?.tenantId;
 
 
     if (!userId || !tenantId) throw new HttpError(401, "Unauthorized");
