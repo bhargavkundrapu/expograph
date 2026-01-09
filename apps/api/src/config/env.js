@@ -15,9 +15,27 @@ const env = {
   NODE_ENV: process.env.NODE_ENV ?? "development",
   PORT: Number(process.env.PORT ?? 4000),
 
-  DATABASE_URL: must("DATABASE_URL"),
+  DATABASE_URL: (() => {
+    const url = process.env.DATABASE_URL;
+    if (!url || url.trim() === "" || url.includes("your_database_url") || url.includes("username:password") || url.includes("localhost:5432/database_name")) {
+      console.error("\n\n🚨 ERROR: DATABASE_URL is missing or contains placeholder values!");
+      console.error("Please create apps/api/.env file with a valid PostgreSQL connection string.");
+      console.error("Example: DATABASE_URL=postgresql://username:password@localhost:5432/expograph\n\n");
+      throw new Error("DATABASE_URL is missing or invalid. Please update apps/api/.env file.");
+    }
+    return url.trim();
+  })(),
 
-  JWT_SECRET: must("JWT_SECRET"),
+  JWT_SECRET: (() => {
+    const secret = process.env.JWT_SECRET;
+    if (!secret || secret.trim() === "" || secret.includes("your-secret-key") || secret.includes("change-this")) {
+      console.error("\n\n🚨 ERROR: JWT_SECRET is missing or contains placeholder values!");
+      console.error("Please create apps/api/.env file with a secure JWT_SECRET.");
+      console.error("Generate one using: openssl rand -base64 32\n\n");
+      throw new Error("JWT_SECRET is missing or invalid. Please update apps/api/.env file.");
+    }
+    return secret.trim();
+  })(),
   JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN ?? "7d",
 
   CORS_ORIGINS: (process.env.CORS_ORIGINS ?? "")

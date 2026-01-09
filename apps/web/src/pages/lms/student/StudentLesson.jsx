@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { apiFetch } from "../../../services/api";
 import { startLesson, updateLessonProgress, completeLesson } from "../../../features/progress/progressApi";
-import { FaPlay, FaArrowLeft, FaFileAlt, FaCheckCircle, FaExternalLinkAlt, FaCode, FaPaperPlane, FaVideo, FaBook, FaClipboardList, FaCrown, FaStar } from "react-icons/fa";
+import { FaPlay, FaArrowLeft, FaFileAlt, FaCheckCircle, FaExternalLinkAlt, FaCode, FaPaperPlane, FaVideo, FaBook, FaClipboardList } from "react-icons/fa";
 import Card, { CardContent, CardTitle, CardDescription } from "../../../Components/ui/Card";
 import Button from "../../../Components/ui/Button";
 import Skeleton from "../../../Components/ui/Skeleton";
@@ -383,101 +383,50 @@ export default function StudentLesson(props) {
         </div>
       </div>
 
-      {/* Video Player - Premium */}
+      {/* Video Player */}
       {lesson?.video_provider === "cloudflare_stream" && lesson?.video_id ? (
-        <Card 
-          variant="elevated" 
-          className="p-6 md:p-8 relative overflow-hidden border-2 border-amber-500/30 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900"
-          style={{ 
-            width: '100%', 
-            boxSizing: 'border-box',
-            boxShadow: '0 10px 40px rgba(251, 146, 60, 0.2), 0 0 20px rgba(236, 72, 153, 0.1)'
-          }}
-        >
-          {/* Premium Badge */}
-          <div className="absolute top-4 right-4 z-10">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 text-gray-900 text-xs font-bold shadow-lg shadow-amber-500/50 animate-pulse-slow">
-              <FaCrown className="text-[10px]" />
-              <span>PREMIUM</span>
+        <Card variant="elevated" className="p-6" style={{ width: '100%', boxSizing: 'border-box' }}>
+          <div className="layout-flex items-center gap-md" style={{ marginBottom: '1.5rem' }}>
+            <div className="p-3 rounded-xl bg-gradient-to-br from-cyan-400 to-blue-500 shadow-lg shadow-cyan-500/30">
+              <FaVideo className="text-white text-xl" />
+            </div>
+            <div>
+              <CardTitle className="text-2xl" style={{ marginBottom: '0.25rem' }}>Video Lesson</CardTitle>
+              <CardDescription style={{ margin: 0 }}>Watch and learn</CardDescription>
             </div>
           </div>
 
-          {/* Header */}
-          <div className="layout-flex items-center gap-4 mb-6">
-            <div className="p-4 rounded-xl bg-gradient-to-br from-amber-400 via-yellow-400 to-amber-500 shadow-lg shadow-amber-500/40 transform hover:scale-105 transition-transform">
-              <FaVideo className="text-gray-900 text-2xl" />
-            </div>
-            <div className="flex-1">
-              <CardTitle className="text-2xl md:text-3xl mb-1 bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-300 bg-clip-text text-transparent">
-                Premium Video Lesson
-              </CardTitle>
-              <CardDescription className="text-gray-400 text-sm">
-                High-quality video content with advanced features
-              </CardDescription>
-            </div>
-          </div>
-
-          {/* Error State */}
           {videoTokenError ? (
-            <div className="p-4 rounded-lg bg-red-500/10 border-2 border-red-500/30 text-red-300 text-sm mb-4 backdrop-blur-sm">
-              <div className="flex items-center gap-2">
-                <FaStar className="text-red-400" />
-                <span>{videoTokenError}</span>
-              </div>
+            <div className="p-4 rounded-lg bg-red-500/10 border border-red-500/30 text-red-300 text-sm">
+              {videoTokenError}
             </div>
           ) : !videoToken ? (
-            <div className="flex items-center justify-center p-16">
-              <div className="text-center">
-                <div className="inline-block p-6 rounded-full bg-gradient-to-br from-amber-500/20 to-yellow-500/20 border-2 border-amber-500/30 mb-4 animate-pulse-slow">
-                  <FaPlay className="text-amber-400 text-3xl" />
-                </div>
-                <p className="text-gray-400 font-medium">Loading premium video...</p>
-              </div>
+            <div className="flex items-center justify-center p-8">
+              <div className="text-gray-400">Loading video...</div>
             </div>
           ) : (
-            <div className="w-full max-w-6xl mx-auto">
-              {/* Video Container - Centered and Responsive */}
-              <div 
-                className="relative w-full mx-auto rounded-2xl overflow-hidden border-4 border-amber-500/50 shadow-2xl"
-                style={{ 
-                  aspectRatio: "16/9",
-                  background: 'linear-gradient(135deg, rgba(251, 146, 60, 0.1), rgba(236, 72, 153, 0.1))',
-                  boxShadow: '0 20px 60px rgba(251, 146, 60, 0.3), 0 0 40px rgba(236, 72, 153, 0.2)'
+            <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden' }}>
+              <iframe
+                src={videoToken}
+                allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+                allowFullScreen
+                style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0 }}
+                onLoad={() => setVideoReady(true)}
+                onError={(e) => {
+                  console.error("Video iframe error:", e);
+                  setVideoReady(false);
+                  setVideoTokenError("Failed to load video player");
                 }}
-              >
-                <iframe
-                  src={videoToken}
-                  allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
-                  allowFullScreen
-                  className="w-full h-full border-0 rounded-xl"
-                  style={{ borderRadius: '0.75rem' }}
-                  onLoad={() => setVideoReady(true)}
-                  onError={(e) => {
-                    console.error("Video iframe error:", e);
-                    setVideoReady(false);
-                    setVideoTokenError("Failed to load video player");
-                  }}
-                />
-                {/* Premium Overlay Glow Effect */}
-                {videoReady && (
-                  <div className="absolute inset-0 pointer-events-none rounded-xl" style={{
-                    background: 'radial-gradient(circle at center, transparent 0%, transparent 70%, rgba(251, 146, 60, 0.05) 100%)',
-                    boxShadow: 'inset 0 0 60px rgba(251, 146, 60, 0.1)'
-                  }} />
-                )}
-              </div>
+              />
             </div>
           )}
 
-          {/* Resume Indicator */}
           {resumePosition > 0 && videoToken && (
-            <div className="mt-6 flex items-center justify-center gap-3 text-sm">
-              <div className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border-2 border-cyan-500/40 text-cyan-300 shadow-lg shadow-cyan-500/20 backdrop-blur-sm">
-                <FaPlay className="text-xs text-cyan-400" />
-                <span className="font-semibold">
-                  Resuming from {Math.floor(resumePosition / 60)}:{(resumePosition % 60).toFixed(0).padStart(2, "0")}
-                </span>
-              </div>
+            <div className="mt-4 flex items-center gap-2 text-sm text-cyan-400">
+              <FaPlay className="text-xs" />
+              <span>
+                Resuming from {Math.floor(resumePosition / 60)}:{(resumePosition % 60).toFixed(0).padStart(2, "0")}
+              </span>
             </div>
           )}
         </Card>
