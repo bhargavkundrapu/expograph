@@ -38,7 +38,7 @@ export default function StudentClientLab() {
   // Check permissions - ensure permissions is an array
   // Wait for permissions to finish loading before checking
   const permissionsArray = Array.isArray(permissions) ? permissions : [];
-  const hasReadPermission = !permissionsLoading && hasPermission(permissionsArray, "clientlab:read");
+  const hasReadPermission = hasPermission(permissionsArray, "clientlab:read");
 
   async function loadProjects(signal) {
     const clientLabEnabled = checkFeatureFlag(isEnabled, FEATURE_FLAGS.STUDENT_CLIENT_LAB);
@@ -49,16 +49,10 @@ export default function StudentClientLab() {
       return;
     }
     
-    // Wait for permissions to finish loading before checking
-    // If permissions are still loading, try the API call anyway (server will tell us)
-    // Only block if permissions have loaded and are explicitly missing
-    if (!permissionsLoading && !hasReadPermission) {
-      if (alive.current) {
-        setErr(getPermissionErrorMessage("clientlab:read"));
-        setLoading(false);
-      }
-      return;
-    }
+    // Always try the API call - the server is the source of truth for permissions
+    // The server will return 403 if permissions are missing, which we handle gracefully
+    // Only show error message if we're certain permissions are missing (not just loading)
+    // This prevents false negatives when permissions are still being fetched
     
     setLoading(true);
     try {
@@ -73,6 +67,18 @@ export default function StudentClientLab() {
       // Handle 403 errors - user needs clientlab:read permission
       if (e?.status === 403) {
         if (alive.current) {
+          // Only show error if permissions have finished loading
+          // If still loading, wait a bit and retry (permissions might be updating)
+          if (permissionsLoading) {
+            // Permissions are still loading, wait and retry once
+            setTimeout(() => {
+              if (alive.current && !permissionsLoading) {
+                const retryAc = new AbortController();
+                loadProjects(retryAc.signal);
+              }
+            }, 1000);
+            return;
+          }
           setErr(getPermissionErrorMessage("clientlab:read"));
         }
       } else {

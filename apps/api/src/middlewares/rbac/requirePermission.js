@@ -4,7 +4,7 @@ const { listPermissionsForUser } = require("../../modules/rbac/rbac.repo");
 
 // small cache: key -> { perms, expiresAt }
 const cache = new Map();
-const TTL_MS = 60_000;
+const TTL_MS = 10_000; // Reduced from 60s to 10s to ensure fresh permissions
 
 function requirePermission(permissionKey) {
   return async function (req, res, next) {
@@ -27,6 +27,15 @@ const tenantId = req.tenant?.id || req.user?.tenantId || req.auth?.tenantId;
     }
 
     req.permissions = perms;
+
+    // Debug logging in development
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`[requirePermission] User ${userId} in tenant ${tenantId}:`, {
+        permission: permissionKey,
+        hasPermission: perms.includes(permissionKey),
+        allPermissions: perms
+      });
+    }
 
     if (!perms.includes(permissionKey)) {
       throw new HttpError(403, "Forbidden: missing permission");

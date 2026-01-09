@@ -44,10 +44,9 @@ export default function StudentInternships() {
   }, [isEnabled, flags]);
 
   // Check permissions - ensure permissions is an array
-  // Wait for permissions to finish loading before checking
   const permissionsArray = Array.isArray(permissions) ? permissions : [];
-  const hasReadPermission = !permissionsLoading && hasPermission(permissionsArray, "internships:read");
-  const hasApplyPermission = !permissionsLoading && hasPermission(permissionsArray, "internships:apply");
+  const hasReadPermission = hasPermission(permissionsArray, "internships:read");
+  const hasApplyPermission = hasPermission(permissionsArray, "internships:apply");
 
   // Only redirect if flags have loaded AND feature is explicitly disabled
   // If flags are still loading or failed to load, allow access (default to enabled)
@@ -61,16 +60,8 @@ export default function StudentInternships() {
       return;
     }
     
-    // Wait for permissions to finish loading before checking
-    // If permissions are still loading, try the API call anyway (server will tell us)
-    // Only block if permissions have loaded and are explicitly missing
-    if (!permissionsLoading && !hasReadPermission) {
-      if (alive.current) {
-        setErr(getPermissionErrorMessage("internships:read"));
-        setLoading(false);
-      }
-      return;
-    }
+    // Always try the API call - the server is the source of truth for permissions
+    // The server will return 403 if permissions are missing, which we handle gracefully
     
     try {
       const json = await apiFetch("/api/v1/lms/internships/projects", { token, signal });
@@ -84,6 +75,18 @@ export default function StudentInternships() {
       // Handle 403 errors - user needs internships:read permission
       if (e?.status === 403) {
         if (alive.current) {
+          // Only show error if permissions have finished loading
+          // If still loading, wait a bit and retry (permissions might be updating)
+          if (permissionsLoading) {
+            // Permissions are still loading, wait and retry once
+            setTimeout(() => {
+              if (alive.current && !permissionsLoading) {
+                const retryAc = new AbortController();
+                loadProjects(retryAc.signal);
+              }
+            }, 1000);
+            return;
+          }
           setErr(getPermissionErrorMessage("internships:read"));
         }
       } else {
