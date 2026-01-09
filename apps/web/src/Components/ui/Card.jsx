@@ -1,4 +1,4 @@
-﻿import { forwardRef, useState, useRef } from "react";
+import { forwardRef, useState, useRef } from "react";
 
 const Card = forwardRef(({ 
   children, 
@@ -105,7 +105,7 @@ export function StatsCard({ icon: Icon, value, label, trend, trendValue, classNa
         <div className="flex-1 min-w-0">
           <div className="flex items-baseline gap-2">
             <span className="text-2xl sm:text-3xl font-bold text-gray-900">{value}</span>
-            {trend && <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${trendColors[trend]}`}>{trend === 'up' ? 'â†‘' : trend === 'down' ? 'â†“' : 'â†’'} {trendValue}</span>}
+            {trend && <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${trendColors[trend]}`}>{trend === 'up' ? '↑' : trend === 'down' ? '↓' : '→'} {trendValue}</span>}
           </div>
           <span className="text-sm text-gray-500">{label}</span>
         </div>

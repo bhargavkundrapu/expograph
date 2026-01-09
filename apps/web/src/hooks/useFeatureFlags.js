@@ -12,44 +12,70 @@ import { unwrapArray } from "../services/apiShape";
  * - Every 30 seconds (polling)
  * - When 'feature-flags-updated' event is fired (cross-tab/window sync)
  */
+// Global flag to track if we've logged the initial load (prevents duplicate logs)
+let hasLoggedInitialLoad = false;
+
 export function useFeatureFlags() {
   const { token } = useAuth();
   const [flags, setFlags] = useState({});
   const [loading, setLoading] = useState(true);
   const alive = useRef(true);
   const pollingInterval = useRef(null);
+  const lastLoadTime = useRef(0);
 
-  const loadFlags = useCallback(async (signal) => {
+  const loadFlags = useCallback(async (signal, force = false) => {
+    // Prevent rapid successive loads (debounce) - allow at most one load per 2 seconds
+    const now = Date.now();
+    if (!force && now - lastLoadTime.current < 2000) {
+      return;
+    }
+    lastLoadTime.current = now;
+
     try {
       // Try public endpoint first (works for all users, no auth required)
       // Fallback to admin endpoint if public doesn't work (for admins)
       const json = await apiFetch("/api/v1/public/feature-flags", { signal }).catch((err) => {
-        console.warn("Public feature flags endpoint failed, trying admin endpoint:", err);
+        // Only log warnings in dev mode
+        if (import.meta.env.DEV) {
+          console.warn("Public feature flags endpoint failed, trying admin endpoint:", err);
+        }
         // Fallback to admin endpoint if public doesn't work (requires token)
         if (token) {
           return apiFetch("/api/v1/admin/feature-flags", { token, signal }).catch((adminErr) => {
-            console.warn("Admin feature flags endpoint also failed:", adminErr);
+            if (import.meta.env.DEV) {
+              console.warn("Admin feature flags endpoint also failed:", adminErr);
+            }
             return { ok: true, data: [] };
           });
         }
         return { ok: true, data: [] };
       });
       const list = unwrapArray(json);
-      console.log("📋 Loaded feature flags:", list);
       const flagsMap = {};
       list.forEach(flag => {
         flagsMap[flag.key] = flag.enabled;
-        console.log(`  ✓ ${flag.key}: ${flag.enabled ? 'ENABLED' : 'DISABLED'}`);
       });
       if (alive.current && !signal?.aborted) {
-        setFlags(flagsMap);
-        console.log("✅ Feature flags state updated:", flagsMap);
+        setFlags(prevFlags => {
+          // Only log if flags actually changed and it's the first load or a significant change
+          const flagsChanged = JSON.stringify(flagsMap) !== JSON.stringify(prevFlags);
+          if (flagsChanged && import.meta.env.DEV) {
+            // Only log initial load once, or if flags actually changed significantly
+            if (!hasLoggedInitialLoad || Object.keys(prevFlags).length === 0) {
+              console.log("✅ Feature flags loaded:", Object.keys(flagsMap).length, "flags");
+              hasLoggedInitialLoad = true;
+            }
+          }
+          return flagsMap;
+        });
         // Store timestamp in localStorage for cross-tab sync
         localStorage.setItem('feature-flags-last-updated', Date.now().toString());
       }
     } catch (e) {
       if (signal?.aborted) return;
-      console.warn("Failed to load feature flags:", e);
+      if (import.meta.env.DEV) {
+        console.warn("Failed to load feature flags:", e);
+      }
       // Default to empty object if flags can't be loaded
       if (alive.current) setFlags({});
     } finally {
@@ -66,20 +92,22 @@ export function useFeatureFlags() {
     // Initial load
     loadFlags(ac.signal);
 
-    // Set up polling: refetch every 30 seconds
+    // Set up polling: refetch every 60 seconds (reduced frequency)
     pollingInterval.current = setInterval(() => {
       if (alive.current) {
         const pollAc = new AbortController();
         loadFlags(pollAc.signal);
       }
-    }, 30000); // 30 seconds
+    }, 60000); // 60 seconds
 
     // Listen for custom event (fired when flags are updated in SuperAdmin)
     const handleFlagUpdate = () => {
-      console.log("🔄 Feature flags update event received, refetching...");
+      if (import.meta.env.DEV) {
+        console.log("🔄 Feature flags update event received, refetching...");
+      }
       if (alive.current) {
         const eventAc = new AbortController();
-        loadFlags(eventAc.signal);
+        loadFlags(eventAc.signal, true); // Force reload on manual update
       }
     };
     window.addEventListener('feature-flags-updated', handleFlagUpdate);
@@ -87,10 +115,12 @@ export function useFeatureFlags() {
     // Listen for storage events (cross-tab sync)
     const handleStorageChange = (e) => {
       if (e.key === 'feature-flags-last-updated') {
-        console.log("🔄 Feature flags updated in another tab, refetching...");
+        if (import.meta.env.DEV) {
+          console.log("🔄 Feature flags updated in another tab, refetching...");
+        }
         if (alive.current) {
           const storageAc = new AbortController();
-          loadFlags(storageAc.signal);
+          loadFlags(storageAc.signal, true); // Force reload on cross-tab update
         }
       }
     };
@@ -139,7 +169,7 @@ export function useFeatureFlags() {
     if (alive.current) {
       const ac = new AbortController();
       setLoading(true);
-      loadFlags(ac.signal);
+      loadFlags(ac.signal, true); // Force reload on manual refetch
     }
   }, [loadFlags]);
 

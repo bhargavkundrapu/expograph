@@ -10,7 +10,23 @@ import {
   saveSession,
 } from "../../services/session";
 
-const AuthCtx = createContext(null);
+// Provide default values to prevent "must be used inside AuthProvider" errors
+const defaultAuthValue = {
+  status: "loading",
+  token: null,
+  role: null,
+  permissions: [],
+  user: null,
+  tenant: null,
+  login: async () => {
+    throw new Error("AuthProvider not initialized");
+  },
+  logout: () => {
+    throw new Error("AuthProvider not initialized");
+  },
+};
+
+const AuthCtx = createContext(defaultAuthValue);
 
 function readStoredSession() {
   const token = getToken();
@@ -33,6 +49,7 @@ export function AuthProvider({ children }) {
   const [permissions, setPermissions] = useState(initial.permissions);
   const [user, setUser] = useState(initial.user);
   const [tenant, setTenant] = useState(initial.tenant);
+  const [permissionsLoading, setPermissionsLoading] = useState(false);
 
   // status:
   // loading = we haven't finished validating
@@ -45,8 +62,21 @@ export function AuthProvider({ children }) {
 
   async function validateTokenSilently(tkn) {
     // Only verify with server; do NOT logout unless 401/403
+    setPermissionsLoading(true);
     try {
       const me = await apiFetch("/api/v1/me", { token: tkn });
+
+      // Refresh permissions from server (they may have changed)
+      const serverPermissions = me?.data?.permissions || [];
+      if (Array.isArray(serverPermissions)) {
+        // Always update permissions, even if empty (they might have been revoked)
+        setPermissions(serverPermissions);
+        // Update localStorage with fresh permissions
+        const stored = readStoredSession();
+        if (stored.token) {
+          localStorage.setItem("expograph_permissions", JSON.stringify(serverPermissions));
+        }
+      }
 
       // If your /me returns user/tenant you can refresh local copy (optional)
       // but DO NOT break if it doesn't
@@ -60,7 +90,7 @@ export function AuthProvider({ children }) {
     } catch (e) {
       // ✅ Premium rule:
       // - only logout on 401/403 (invalid/expired token)
-      // - if network/server error, keep session (don’t kick user out)
+      // - if network/server error, keep session (don't kick user out)
       if (e instanceof ApiError && (e.status === 401 || e.status === 403)) {
         clearSession();
         setToken(null);
@@ -73,6 +103,8 @@ export function AuthProvider({ children }) {
         // keep authed, but you may optionally show a small warning later
         setStatus("authed");
       }
+    } finally {
+      setPermissionsLoading(false);
     }
   }
 
@@ -163,12 +195,13 @@ export function AuthProvider({ children }) {
       token,
       role,
       permissions,
+      permissionsLoading,
       user,
       tenant,
       login,
       logout,
     }),
-    [status, token, role, permissions, user, tenant]
+    [status, token, role, permissions, permissionsLoading, user, tenant]
   );
 
   return <AuthCtx.Provider value={value}>{children}</AuthCtx.Provider>;
@@ -176,6 +209,6 @@ export function AuthProvider({ children }) {
 
 export function useAuth() {
   const ctx = useContext(AuthCtx);
-  if (!ctx) throw new Error("useAuth must be used inside AuthProvider");
+  // Context will always have a value (defaultAuthValue), so we don't need to check
   return ctx;
 }

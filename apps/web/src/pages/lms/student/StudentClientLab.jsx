@@ -1,8 +1,11 @@
 import { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../../app/providers/AuthProvider";
+import { useFeatureFlags } from "../../../hooks/useFeatureFlags";
+import { FEATURE_FLAGS, checkFeatureFlag } from "../../../utils/featureFlags";
 import { apiFetch } from "../../../services/api";
 import { unwrapArray, unwrapData } from "../../../services/apiShape";
+import { hasPermission, getPermissionErrorMessage } from "../../../utils/permissions";
 import { 
   FaLaptopCode, 
   FaTasks, 
@@ -25,28 +28,83 @@ function formatDate(dateString) {
 }
 
 export default function StudentClientLab() {
-  const { token } = useAuth();
+  const { token, permissions, permissionsLoading } = useAuth();
+  const { isEnabled, loading: flagsLoading, flags } = useFeatureFlags();
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
   const alive = useRef(true);
 
+  // Check permissions - ensure permissions is an array
+  // Wait for permissions to finish loading before checking
+  const permissionsArray = Array.isArray(permissions) ? permissions : [];
+  const hasReadPermission = !permissionsLoading && hasPermission(permissionsArray, "clientlab:read");
+
   async function loadProjects(signal) {
-    setErr("");
+    const clientLabEnabled = checkFeatureFlag(isEnabled, FEATURE_FLAGS.STUDENT_CLIENT_LAB);
+    
+    // Only skip API call if feature is explicitly disabled (not when loading)
+    if (!flagsLoading && Object.keys(flags).length > 0 && !clientLabEnabled) {
+      if (!signal?.aborted && alive.current) setLoading(false);
+      return;
+    }
+    
+    // Wait for permissions to finish loading before checking
+    // If permissions are still loading, try the API call anyway (server will tell us)
+    // Only block if permissions have loaded and are explicitly missing
+    if (!permissionsLoading && !hasReadPermission) {
+      if (alive.current) {
+        setErr(getPermissionErrorMessage("clientlab:read"));
+        setLoading(false);
+      }
+      return;
+    }
+    
     setLoading(true);
     try {
       const json = await apiFetch("/api/v1/lms/client-lab/projects", { token, signal });
       const list = unwrapArray(json);
-      if (alive.current) setProjects(list);
+      if (alive.current) {
+        setProjects(list);
+        setErr(""); // Clear any previous errors on success
+      }
     } catch (e) {
       if (signal?.aborted) return;
-      if (alive.current) setErr(e?.message || "Failed to load client lab projects");
+      // Handle 403 errors - user needs clientlab:read permission
+      if (e?.status === 403) {
+        if (alive.current) {
+          setErr(getPermissionErrorMessage("clientlab:read"));
+        }
+      } else {
+        // Only log non-403 errors to console in dev mode
+        if (import.meta.env.DEV) {
+          console.error("Failed to load client lab projects:", e);
+        }
+        if (alive.current) setErr(e?.message || "Failed to load client lab projects");
+      }
     } finally {
       if (!signal?.aborted && alive.current) setLoading(false);
     }
   }
 
   useEffect(() => {
+    // Only load when flags finish loading (to avoid multiple loads)
+    if (flagsLoading) return;
+    
+    // Wait a bit for permissions to load, but don't wait forever
+    // If permissions are still loading after a short delay, try the API call anyway
+    // The server will tell us if permissions are missing
+    if (permissionsLoading) {
+      // Wait up to 2 seconds for permissions to load
+      const timeout = setTimeout(() => {
+        if (alive.current) {
+          const ac = new AbortController();
+          loadProjects(ac.signal);
+        }
+      }, 2000);
+      return () => clearTimeout(timeout);
+    }
+    
     alive.current = true;
     const ac = new AbortController();
     loadProjects(ac.signal);
@@ -54,7 +112,7 @@ export default function StudentClientLab() {
       alive.current = false;
       ac.abort();
     };
-  }, [token]);
+  }, [token, flagsLoading, flags, permissions, permissionsLoading]);
 
   if (loading) {
     return (

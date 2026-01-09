@@ -57,6 +57,12 @@ export async function apiFetch(path, options = {}) {
         json?.message ||
         `Request failed (${res.status})`;
 
+      // Suppress console errors for 403 Forbidden (permission issues are handled in UI)
+      if (res.status === 403) {
+        // Still throw the error so components can handle it, but don't log to console
+        throw new ApiError(msg, res.status, json);
+      }
+
       throw new ApiError(msg, res.status, json);
     }
 

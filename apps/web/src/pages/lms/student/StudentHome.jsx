@@ -45,14 +45,6 @@ export default function StudentHome() {
   const [err, setErr] = useState("");
   const alive = useRef(true);
 
-  // Debug: Log feature flags
-  useEffect(() => {
-    if (!flagsLoading) {
-      console.log("🔍 Feature Flags:", flags);
-      console.log("🔍 micro_internships enabled:", isEnabled("micro_internships"));
-      console.log("🔍 internships enabled:", isEnabled("internships"));
-    }
-  }, [flags, flagsLoading, isEnabled]);
 
   async function loadSummary(signal) {
     try {

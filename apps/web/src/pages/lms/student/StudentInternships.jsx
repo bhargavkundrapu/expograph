@@ -1,9 +1,11 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { useAuth } from "../../../app/providers/AuthProvider";
 import { apiFetch } from "../../../services/api";
 import { unwrapArray, unwrapData } from "../../../services/apiShape";
 import { useFeatureFlags } from "../../../hooks/useFeatureFlags";
+import { FEATURE_FLAGS, checkFeatureFlag } from "../../../utils/featureFlags";
+import { hasPermission, getPermissionErrorMessage } from "../../../utils/permissions";
 import { 
   FaBriefcase, 
   FaCalendar, 
@@ -26,7 +28,7 @@ function formatDate(dateString) {
 }
 
 export default function StudentInternships() {
-  const { token } = useAuth();
+  const { token, permissions, permissionsLoading } = useAuth();
   const { isEnabled, loading: flagsLoading, flags } = useFeatureFlags();
   const [projects, setProjects] = useState([]);
   const [applications, setApplications] = useState([]);
@@ -36,9 +38,16 @@ export default function StudentInternships() {
   const [activeTab, setActiveTab] = useState("projects"); // projects, applications, assignments
   const alive = useRef(true);
 
-  // Check if internships feature is enabled
-  // Default to enabled (fail-open approach) - only redirect if explicitly disabled
-  const internshipsEnabled = isEnabled("micro_internships") || isEnabled("internships") || isEnabled("micro_internship");
+  // Check if internships feature is enabled using fail-open approach (memoized to prevent infinite loops)
+  const internshipsEnabled = useMemo(() => {
+    return checkFeatureFlag(isEnabled, FEATURE_FLAGS.STUDENT_INTERNSHIPS, "internships", "micro_internship");
+  }, [isEnabled, flags]);
+
+  // Check permissions - ensure permissions is an array
+  // Wait for permissions to finish loading before checking
+  const permissionsArray = Array.isArray(permissions) ? permissions : [];
+  const hasReadPermission = !permissionsLoading && hasPermission(permissionsArray, "internships:read");
+  const hasApplyPermission = !permissionsLoading && hasPermission(permissionsArray, "internships:apply");
 
   // Only redirect if flags have loaded AND feature is explicitly disabled
   // If flags are still loading or failed to load, allow access (default to enabled)
@@ -47,56 +56,144 @@ export default function StudentInternships() {
   }
 
   async function loadProjects(signal) {
+    // Only skip API call if feature is explicitly disabled (not when loading)
+    if (!flagsLoading && Object.keys(flags).length > 0 && !internshipsEnabled) {
+      return;
+    }
+    
+    // Wait for permissions to finish loading before checking
+    // If permissions are still loading, try the API call anyway (server will tell us)
+    // Only block if permissions have loaded and are explicitly missing
+    if (!permissionsLoading && !hasReadPermission) {
+      if (alive.current) {
+        setErr(getPermissionErrorMessage("internships:read"));
+        setLoading(false);
+      }
+      return;
+    }
+    
     try {
       const json = await apiFetch("/api/v1/lms/internships/projects", { token, signal });
       const list = unwrapArray(json);
-      if (alive.current) setProjects(list);
+      if (alive.current) {
+        setProjects(list);
+        setErr(""); // Clear any previous errors on success
+      }
     } catch (e) {
       if (signal?.aborted) return;
-      console.error("Failed to load projects:", e);
+      // Handle 403 errors - user needs internships:read permission
+      if (e?.status === 403) {
+        if (alive.current) {
+          setErr(getPermissionErrorMessage("internships:read"));
+        }
+      } else {
+        // Only log non-403 errors to console
+        if (import.meta.env.DEV) {
+          console.error("Failed to load projects:", e);
+        }
+        if (alive.current) setErr(e?.message || "Failed to load projects");
+      }
     }
   }
 
   async function loadApplications(signal) {
+    // Only skip API call if feature is explicitly disabled (not when loading)
+    if (!flagsLoading && Object.keys(flags).length > 0 && !internshipsEnabled) {
+      return;
+    }
+    
+    // Check permission before making API call
+    if (!hasApplyPermission) {
+      // Don't set error here, just return empty array
+      if (alive.current) setApplications([]);
+      return;
+    }
+    
     try {
       const json = await apiFetch("/api/v1/lms/internships/my/applications", { token, signal });
       const list = unwrapArray(json);
       if (alive.current) setApplications(list);
     } catch (e) {
       if (signal?.aborted) return;
-      console.error("Failed to load applications:", e);
+      // Handle 403 errors silently (permission issue)
+      if (e?.status !== 403 && import.meta.env.DEV) {
+        console.error("Failed to load applications:", e);
+      }
+      // Set empty array on error
+      if (alive.current) setApplications([]);
     }
   }
 
   async function loadAssignments(signal) {
+    // Only skip API call if feature is explicitly disabled (not when loading)
+    if (!flagsLoading && Object.keys(flags).length > 0 && !internshipsEnabled) {
+      return;
+    }
+    
+    // Check permission before making API call
+    if (!hasApplyPermission) {
+      // Don't set error here, just return empty array
+      if (alive.current) setAssignments([]);
+      return;
+    }
+    
     try {
       const json = await apiFetch("/api/v1/lms/internships/my/assignments", { token, signal });
       const list = unwrapArray(json);
       if (alive.current) setAssignments(list);
     } catch (e) {
       if (signal?.aborted) return;
-      console.error("Failed to load assignments:", e);
+      // Handle 403 errors silently (permission issue)
+      if (e?.status !== 403 && import.meta.env.DEV) {
+        console.error("Failed to load assignments:", e);
+      }
+      // Set empty array on error
+      if (alive.current) setAssignments([]);
     }
   }
 
   async function loadEverything(signal) {
-    setErr("");
     setLoading(true);
+    // Don't clear error here - let loadProjects set it if needed
     try {
-      await Promise.all([
-        loadProjects(signal),
-        loadApplications(signal),
-        loadAssignments(signal),
-      ]);
+      // Load projects first to check for permission errors
+      await loadProjects(signal);
+      // If we have read permission, load the rest
+      if (hasReadPermission && hasApplyPermission) {
+        await Promise.all([
+          loadApplications(signal),
+          loadAssignments(signal),
+        ]);
+      }
     } catch (e) {
       if (signal?.aborted) return;
-      if (alive.current) setErr(e?.message || "Failed to load internships data");
+      // Only set error if it's not a 403 (403 errors are handled in loadProjects)
+      if (alive.current && e?.status !== 403) {
+        setErr(e?.message || "Failed to load internships data");
+      }
     } finally {
       if (!signal?.aborted && alive.current) setLoading(false);
     }
   }
 
   useEffect(() => {
+    // Only load when flags finish loading (to avoid multiple loads)
+    if (flagsLoading) return;
+    
+    // Wait a bit for permissions to load, but don't wait forever
+    // If permissions are still loading after a short delay, try the API call anyway
+    // The server will tell us if permissions are missing
+    if (permissionsLoading) {
+      // Wait up to 2 seconds for permissions to load
+      const timeout = setTimeout(() => {
+        if (alive.current) {
+          const ac = new AbortController();
+          loadEverything(ac.signal);
+        }
+      }, 2000);
+      return () => clearTimeout(timeout);
+    }
+    
     alive.current = true;
     const ac = new AbortController();
     loadEverything(ac.signal);
@@ -104,7 +201,7 @@ export default function StudentInternships() {
       alive.current = false;
       ac.abort();
     };
-  }, [token]);
+  }, [token, flagsLoading, flags, permissions, permissionsLoading]);
 
   if (loading) {
     return (

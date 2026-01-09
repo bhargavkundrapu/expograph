@@ -4,12 +4,21 @@ import { FaSignOutAlt, FaUser, FaChartLine } from "react-icons/fa";
 import Button from "../Components/ui/Button";
 
 export default function AppLayout() {
-  const { user, role, logout } = useAuth();
+  const { user, role, logout, status } = useAuth();
   const nav = useNavigate();
 
   function onLogout() {
     logout();
     nav("/login", { replace: true });
+  }
+
+  // Show loading state if auth is still initializing
+  if (status === "loading") {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-gray-600">Loading...</div>
+      </div>
+    );
   }
 
   return (

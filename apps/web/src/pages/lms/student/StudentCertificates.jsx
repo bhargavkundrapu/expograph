@@ -5,6 +5,8 @@ import Card, { CardContent, CardTitle, CardDescription } from "../../../Componen
 import { apiFetch } from "../../../services/api";
 import { unwrapData, unwrapArray } from "../../../services/apiShape";
 import { useAuth } from "../../../app/providers/AuthProvider";
+import { useFeatureFlags } from "../../../hooks/useFeatureFlags";
+import { FEATURE_FLAGS, checkFeatureFlag } from "../../../utils/featureFlags";
 import Button from "../../../Components/ui/Button";
 import Skeleton from "../../../Components/ui/Skeleton";
 import EmptyState from "../../../Components/common/EmptyState";
@@ -23,6 +25,7 @@ function formatDate(dateString) {
 
 export default function StudentCertificates() {
   const { token } = useAuth();
+  const { isEnabled, loading: flagsLoading } = useFeatureFlags();
   const [verifyCode, setVerifyCode] = useState("");
   const [verifying, setVerifying] = useState(false);
   const [certificate, setCertificate] = useState(null);
@@ -62,13 +65,22 @@ export default function StudentCertificates() {
   }
 
   async function loadMyCertificates(signal) {
+    // Skip API call if feature is disabled or still loading flags
+    if (flagsLoading || !checkFeatureFlag(isEnabled, FEATURE_FLAGS.STUDENT_CERTIFICATES)) {
+      if (!signal?.aborted && alive.current) setLoading(false);
+      return;
+    }
+    
     try {
       const json = await apiFetch("/api/v1/lms/certificates/mine", { token, signal });
       const list = unwrapArray(json);
       if (alive.current) setMyCertificates(list);
     } catch (e) {
       if (signal?.aborted) return;
-      console.error("Failed to load my certificates:", e);
+      // Suppress 403 errors (expected permission failures) - only log other errors
+      if (e?.status !== 403) {
+        console.error("Failed to load my certificates:", e);
+      }
     } finally {
       if (!signal?.aborted && alive.current) setLoading(false);
     }
