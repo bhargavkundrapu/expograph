@@ -145,7 +145,7 @@ export default function StudentLesson(props) {
           // Don't break the page if token fetch fails - video might still work without token
           // Suppress 403 errors (expected permission failures) - only log other errors
           if (e?.status !== 403) {
-            console.warn("Failed to fetch video token:", e);
+          console.warn("Failed to fetch video token:", e);
           }
           // If it's "Video not attached", the video might not be in video_assets table
           // We'll show a message but don't set error state - let user see the lesson

@@ -1,4 +1,4 @@
-import { NavLink, Outlet, Navigate } from "react-router-dom";
+import { NavLink, Outlet, Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "../app/providers/AuthProvider";
 import { homePathForRole } from "../app/roles";
 import { useFeatureFlags } from "../hooks/useFeatureFlags";
@@ -16,7 +16,8 @@ import {
   FaCertificate,
   FaBriefcase,
   FaLaptopCode,
-  FaFlag
+  FaFlag,
+  FaGift
 } from "react-icons/fa";
 
 const iconMap = {
@@ -34,6 +35,7 @@ const iconMap = {
   "Internships": FaBriefcase,
   "Client Lab": FaLaptopCode,
   "Feature Flags": FaFlag,
+  "Referrals": FaGift,
 };
 
 function LinkWithIcon({ to, label, icon: Icon, end }) {
@@ -58,6 +60,7 @@ function LinkWithIcon({ to, label, icon: Icon, end }) {
 export default function PortalLayout() {
   const { role, user } = useAuth();
   const { isEnabled, loading: flagsLoading } = useFeatureFlags();
+  const location = useLocation();
 
   const base = homePathForRole(role);
 
@@ -158,6 +161,7 @@ export default function PortalLayout() {
     return studentNav;
   })();
 
+  // For other roles, keep the original layout
   return (
     <div className="min-h-[calc(100vh-56px)] bg-white position-relative">
       <div className="container layout-grid gap-4 sm:gap-lg" style={{ paddingTop: '1rem', paddingBottom: '2rem', gridTemplateColumns: '1fr' }}>
