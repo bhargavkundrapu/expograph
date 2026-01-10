@@ -1,7 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { FaRedo, FaArrowLeft, FaPlus, FaBook, FaLink, FaFileAlt, FaCode, FaSpinner } from "react-icons/fa";
 import { apiFetch, ApiError } from "../../../services/api";
 import { useAuth } from "../../../app/providers/AuthProvider";
+import Card, { CardContent } from "../../../Components/ui/Card";
+import Button from "../../../Components/ui/Button";
+import Skeleton from "../../../Components/ui/Skeleton";
+import ErrorState from "../../../Components/common/ErrorState";
 
 function unwrapData(json) {
   // apiFetch returns { ok:true, data: ... }
@@ -247,49 +252,65 @@ async function addResource() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-3xl font-bold">Lesson Resources + Practice</h1>
-          <p className="text-sm text-white">
-            Cheatsheets / links / text resources + practice tasks for this lesson.
-          </p>
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex items-start gap-3">
+          <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-teal-500 to-cyan-600 rounded-xl flex items-center justify-center shadow-lg">
+            <FaBook className="w-6 h-6 text-white" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">Resources + Practice</h1>
+            <p className="text-sm text-gray-600 mt-1">
+              Cheatsheets, links, text resources + practice tasks for this lesson
+            </p>
+          </div>
         </div>
 
-        <div className="flex gap-2">
-          <button
+        <div className="flex items-center gap-2 flex-wrap">
+          <Button
+            variant="outline"
+            size="sm"
             onClick={load}
-            className=" border-2 border-white px-3 py-2 text-sm hover:bg-white hover:text-black transition-all"
-            type="button"
+            icon={FaRedo}
+            disabled={loading}
           >
             Refresh
-          </button>
-
-          <Link
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            as={Link}
             to={backToLessonEditor}
-            className=" border-2 border-white px-3 py-2 text-sm hover:bg-white hover:text-black transition-all"
+            icon={FaArrowLeft}
           >
-            ← Back to Lesson
-          </Link>
+            Back to Lesson
+          </Button>
         </div>
       </div>
 
-      {err ? (
-        <div className=" border border-2 border-white bg-black px-4 py-3 text-sm text-white">
-          {err}{" "}
-          <button onClick={load} className="ml-2 underline underline-offset-2" type="button">
-            Retry
-          </button>
-        </div>
-      ) : null}
+      {/* Error State */}
+      {err && (
+        <ErrorState
+          title="Failed to load resources"
+          message={err}
+          onRetry={load}
+          size="sm"
+        />
+      )}
 
-      {info ? (
-        <div className=" border border-2 border-white bg-white text-black px-4 py-3 text-sm">
-          {info}
+      {/* Success Message */}
+      {info && (
+        <div className="px-4 py-3 bg-green-50 border border-green-200 rounded-lg">
+          <p className="text-sm text-green-700 font-medium">{info}</p>
         </div>
-      ) : null}
+      )}
 
       {loading ? (
-        <div className="text-sm text-white">Loading…</div>
+        <div className="space-y-4">
+          <Skeleton className="h-24 w-full" />
+          <Skeleton className="h-48 w-full" />
+          <Skeleton className="h-64 w-full" />
+        </div>
       ) : (
         <>
           <div className=" border-2 border-white bg-black p-5">

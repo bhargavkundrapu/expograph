@@ -102,18 +102,18 @@ export default function SuperAdminHome() {
   });
 
   return (
-    <div className="layout-flex-col gap-xl animate-fadeIn" style={{ width: '100%' }}>
+    <div className="space-y-8">
       {/* Header */}
-      <div className="position-relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900 via-black to-gray-900 border border-gray-800 p-10 shadow-glow" style={{ marginBottom: '2rem' }}>
-        <div className="position-absolute" style={{ top: 0, right: 0, width: '24rem', height: '24rem', background: 'rgba(251, 191, 36, 0.1)', borderRadius: '50%', filter: 'blur(3rem)', zIndex: 0 }}></div>
-        <div className="position-relative" style={{ zIndex: 10 }}>
-          <div className="layout-flex items-center gap-md" style={{ marginBottom: '1.5rem' }}>
-            <div className="p-4 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 shadow-lg shadow-amber-500/30">
-              <FaCrown className="text-white text-2xl" />
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 p-10 shadow-lg">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-amber-200/30 rounded-full blur-3xl"></div>
+        <div className="relative z-10">
+          <div className="flex items-center gap-4 mb-4">
+            <div className="p-4 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 shadow-lg">
+              <FaCrown className="text-white text-3xl" />
             </div>
             <div>
-              <h1 className="section-hero text-4xl" style={{ marginBottom: '0.5rem', marginTop: 0 }}>SuperAdmin Portal</h1>
-              <p className="text-gray-300 text-lg" style={{ margin: 0 }}>Complete platform management dashboard</p>
+              <h1 className="text-4xl font-bold text-gray-900 mb-2">SuperAdmin Portal</h1>
+              <p className="text-gray-700 text-lg">Complete platform management dashboard</p>
             </div>
           </div>
         </div>
@@ -121,28 +121,30 @@ export default function SuperAdminHome() {
 
       {/* Quick Actions Grid */}
       <div>
-        <div className="layout-flex items-center gap-md mb-6">
-          <div className="p-3 rounded-xl bg-gradient-to-br from-amber-400/20 to-orange-500/20 border border-amber-400/30">
-            <FaRocket className="text-amber-400 text-xl" />
+        <div className="flex items-center gap-3 mb-6">
+          <div className="p-3 rounded-xl bg-gradient-to-br from-blue-100 to-cyan-100 border border-blue-200">
+            <FaRocket className="text-blue-600 text-xl" />
           </div>
-          <h2 className="section-title text-3xl" style={{ margin: 0 }}>Quick Actions</h2>
+          <h2 className="text-2xl font-bold text-gray-900">Quick Actions</h2>
         </div>
 
-        <div className="layout-grid-3 gap-lg" style={{ width: '100%' }}>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {quickActions.map((action, idx) => (
-            <Link key={action.title} to={action.to} style={{ width: '100%', display: 'block' }}>
-              <Card 
-                variant="elevated" 
-                className="group animate-fadeIn"
-                style={{ animationDelay: `${idx * 0.05}s`, height: '100%', width: '100%', boxSizing: 'border-box' }}
-              >
-                <div className={`p-4 rounded-xl bg-gradient-to-br ${action.color} w-fit mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
-                  <action.icon className="text-white text-2xl" />
-                </div>
-                <CardTitle className="text-xl" style={{ marginBottom: '0.5rem' }}>{action.title}</CardTitle>
-                <CardDescription className="text-gray-400" style={{ margin: 0 }}>
-                  {action.desc}
-                </CardDescription>
+            <Link 
+              key={action.title} 
+              to={action.to}
+              className="block group"
+            >
+              <Card className="h-full hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                <CardContent className="p-6">
+                  <div className={`p-4 rounded-xl bg-gradient-to-br ${action.color} w-fit mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                    <action.icon className="text-white text-2xl" />
+                  </div>
+                  <CardTitle className="text-xl mb-2 text-gray-900">{action.title}</CardTitle>
+                  <CardDescription className="text-gray-600">
+                    {action.desc}
+                  </CardDescription>
+                </CardContent>
               </Card>
             </Link>
           ))}

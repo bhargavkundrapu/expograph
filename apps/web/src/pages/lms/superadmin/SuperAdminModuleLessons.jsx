@@ -1,7 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { FaRedo, FaArrowLeft, FaPlus, FaBook, FaGraduationCap, FaListOl, FaSpinner, FaEdit, FaCheckCircle, FaCircle } from "react-icons/fa";
 import { apiFetch, ApiError } from "../../../services/api";
 import { useAuth } from "../../../app/providers/AuthProvider";
+import Card, { CardContent, CardTitle, CardDescription } from "../../../Components/ui/Card";
+import Button from "../../../Components/ui/Button";
+import Skeleton from "../../../Components/ui/Skeleton";
+import ErrorState from "../../../Components/common/ErrorState";
 
 function normalizeModule(m) {
   return {
@@ -163,163 +168,258 @@ export default function SuperAdminModuleLessons() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-3xl font-bold">Lessons Manager</h1>
-          <p className="text-sm text-white">
-            Course → Module → Lessons (draft/publish).
-          </p>
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex items-start gap-3">
+          <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
+            <FaGraduationCap className="w-6 h-6 text-white" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">Lessons Manager</h1>
+            <p className="text-sm text-gray-600 mt-1">
+              Course → Module → Lessons (draft/publish)
+            </p>
+          </div>
         </div>
 
-        <div className="flex gap-2">
-          <button
+        <div className="flex items-center gap-2 flex-wrap">
+          <Button
+            variant="outline"
+            size="sm"
             onClick={loadTree}
-            className=" border-2 border-white px-3 py-2 text-sm hover:bg-white hover:text-black transition-all"
-            type="button"
+            icon={FaRedo}
+            disabled={loading}
           >
             Refresh
-          </button>
-          <Link
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            as={Link}
             to={`/lms/superadmin/content/${courseId}`}
-            className=" border-2 border-white px-3 py-2 text-sm hover:bg-white hover:text-black transition-all"
+            icon={FaArrowLeft}
           >
-            ← Back to Modules
-          </Link>
+            Back to Modules
+          </Button>
         </div>
       </div>
 
-      {err ? (
-        <div className=" border border-2 border-white bg-black px-4 py-3 text-sm text-white">
-          {err}{" "}
-          <button onClick={loadTree} className="ml-2 underline underline-offset-2" type="button">
-            Retry
-          </button>
-        </div>
-      ) : null}
+      {/* Error State */}
+      {err && (
+        <ErrorState
+          title="Failed to load lessons"
+          message={err}
+          onRetry={loadTree}
+          size="sm"
+        />
+      )}
 
+      {/* Loading State */}
       {loading ? (
-        <div className="text-sm text-white">Loading…</div>
+        <div className="space-y-4">
+          <Skeleton className="h-32 w-full" />
+          <Skeleton className="h-48 w-full" />
+          <Skeleton className="h-64 w-full" />
+        </div>
       ) : (
         <>
-          <div className=" border-2 border-white bg-black p-5">
-            <div className="text-sm text-white opacity-80">Course</div>
-            <div className="mt-1 font-semibold">{course?.title || "Course"}</div>
+          {/* Course & Module Info */}
+          <Card>
+            <CardContent className="p-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <div className="flex items-center gap-2 text-sm text-gray-500 mb-2">
+                    <FaBook className="w-4 h-4" />
+                    <span>Course</span>
+                  </div>
+                  <div className="text-lg font-semibold text-gray-900">
+                    {course?.title || "Course"}
+                  </div>
+                  <div className="text-xs text-gray-500 mt-1">
+                    ID: {courseId}
+                  </div>
+                </div>
 
-            <div className="mt-4 text-sm text-white opacity-80">Module</div>
-            <div className="mt-1 text-lg font-semibold">
-              {module ? `${module.position}. ${module.title}` : "Module not found"}
-            </div>
-            <div className="mt-1 text-xs text-white opacity-80">Module ID: {moduleId}</div>
-          </div>
+                <div>
+                  <div className="flex items-center gap-2 text-sm text-gray-500 mb-2">
+                    <FaListOl className="w-4 h-4" />
+                    <span>Module</span>
+                  </div>
+                  <div className="text-lg font-semibold text-gray-900">
+                    {module ? (
+                      <div className="flex items-center gap-2">
+                        <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-gradient-to-br from-blue-500 to-cyan-600 text-white text-xs font-bold">
+                          {module.position}
+                        </span>
+                        <span>{module.title}</span>
+                      </div>
+                    ) : (
+                      "Module not found"
+                    )}
+                  </div>
+                  <div className="text-xs text-gray-500 mt-1">
+                    Module ID: {moduleId}
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
-          {/* Create lesson */}
-          <form onSubmit={createLesson} className=" border-2 border-white bg-black p-5">
-            <div className="mb-3 font-semibold">Create Lesson</div>
-
-            <div className="grid gap-3 md:grid-cols-3">
-              <div className="md:col-span-2">
-                <label className="text-sm text-white">Title</label>
-                <input
-                  className="mt-1 w-full  border-2 border-white bg-black px-3 py-2 text-slate-100 outline-none focus:border-slate-500"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  placeholder="Props + State"
-                />
+          {/* Create Lesson Form */}
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <FaPlus className="w-4 h-4 text-gray-700" />
+                <h2 className="text-lg font-semibold text-gray-900">Create Lesson</h2>
               </div>
 
-              <div>
-                <label className="text-sm text-white">Position</label>
-                <input
-                  className="mt-1 w-full  border-2 border-white bg-black px-3 py-2 text-slate-100 outline-none focus:border-slate-500"
-                  value={position}
-                  onChange={(e) => setPosition(e.target.value)}
-                  type="number"
-                  min="1"
-                />
+              <form onSubmit={createLesson} className="space-y-4">
+                <div className="grid gap-4 md:grid-cols-3">
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <FaBook className="inline w-3.5 h-3.5 mr-1.5 text-gray-500" />
+                      Lesson Title
+                    </label>
+                    <input
+                      className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all bg-white text-gray-900 placeholder-gray-400"
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                      placeholder="e.g., Props + State Management"
+                      disabled={saving}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <FaListOl className="inline w-3.5 h-3.5 mr-1.5 text-gray-500" />
+                      Position
+                    </label>
+                    <input
+                      className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all bg-white text-gray-900"
+                      value={position}
+                      onChange={(e) => setPosition(e.target.value)}
+                      type="number"
+                      min="1"
+                      disabled={saving}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <Button
+                    type="submit"
+                    variant="primary"
+                    size="md"
+                    icon={saving ? FaSpinner : FaPlus}
+                    disabled={saving}
+                    className={saving ? "animate-pulse" : ""}
+                  >
+                    {saving ? "Creating Lesson..." : "Create Lesson"}
+                  </Button>
+                </div>
+              </form>
+            </CardContent>
+          </Card>
+
+          {/* Lessons List */}
+          <Card>
+            <div className="border-b border-gray-200 px-6 py-4 bg-gradient-to-r from-gray-50 to-white">
+              <div className="flex items-center gap-2">
+                <FaGraduationCap className="w-5 h-5 text-gray-700" />
+                <h2 className="text-lg font-semibold text-gray-900">
+                  Lessons ({sortedLessons.length})
+                </h2>
               </div>
-            </div>
-
-            <div className="mt-4">
-              <button
-                disabled={saving}
-                className=" border-2 border-white bg-white text-black px-4 py-2 text-sm font-semibold hover:bg-black hover:text-white transition-all disabled:opacity-60"
-                type="submit"
-              >
-                {saving ? "Creating…" : "Create Lesson"}
-              </button>
-            </div>
-          </form>
-
-          {/* Lessons list */}
-          <div className=" border-2 border-white bg-black">
-            <div className="border-b-2 border-white px-5 py-3 font-semibold">
-              Lessons
             </div>
 
             {sortedLessons.length === 0 ? (
-              <div className="px-5 py-6 text-sm text-white">
-                No lessons yet. Create one above.
-              </div>
+              <CardContent className="p-12 text-center">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-gray-100 to-gray-50 mb-4">
+                  <FaGraduationCap className="w-8 h-8 text-gray-400" />
+                </div>
+                <p className="text-gray-600 text-sm">
+                  No lessons yet. Create your first lesson above.
+                </p>
+              </CardContent>
             ) : (
-              <div className="divide-y divide-y-2 divide-white">
+              <div className="divide-y divide-gray-100">
                 {sortedLessons.map((l) => {
                   const busy = busyIds.has(l.id);
                   const isPublished = l.status === "published";
 
                   return (
-                    <div key={l.id} className="flex flex-wrap items-center justify-between gap-3 px-5 py-4">
-                      <div>
-                        <div className="font-semibold">
-                          {l.position}. {l.title}
+                    <div
+                      key={l.id}
+                      className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-6 py-4 hover:bg-gray-50 transition-colors"
+                    >
+                      <div className="flex items-start gap-3 flex-1">
+                        <span className="flex-shrink-0 inline-flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-600 text-white text-sm font-bold shadow-sm">
+                          {l.position}
+                        </span>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <h3 className="font-semibold text-gray-900">{l.title}</h3>
+                            {isPublished ? (
+                              <FaCheckCircle className="w-4 h-4 text-green-600" title="Published" />
+                            ) : (
+                              <FaCircle className="w-4 h-4 text-gray-300" title="Draft" />
+                            )}
+                          </div>
+                          <p className="text-xs text-gray-500 mt-1">
+                            Lesson ID: {l.id}
+                          </p>
                         </div>
-                        <div className="mt-1 text-xs text-white opacity-80">Lesson ID: {l.id}</div>
                       </div>
 
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 flex-wrap">
                         <span
                           className={[
-                            " border px-2.5 py-1 text-xs",
+                            "px-3 py-1 rounded-full text-xs font-medium",
                             isPublished
-                              ? "border-2 border-white bg-white text-black"
-                              : "border-slate-700 bg-black/30 text-white",
+                              ? "bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-sm"
+                              : "bg-gray-200 text-gray-700",
                           ].join(" ")}
                         >
                           {l.status}
                         </span>
 
-                        <button
-                          disabled={busy}
+                        <Button
+                          variant={isPublished ? "outline" : "primary"}
+                          size="sm"
                           onClick={() => toggleLessonStatus(l)}
-                          className=" border-2 border-white px-3 py-2 text-sm hover:bg-white hover:text-black transition-all disabled:opacity-60"
-                          type="button"
+                          disabled={busy}
+                          icon={busy ? FaSpinner : isPublished ? FaCircle : FaCheckCircle}
+                          className={busy ? "animate-pulse" : ""}
                         >
-                          {busy ? "Saving…" : isPublished ? "Unpublish" : "Publish"}
-                        </button>
+                          {busy ? "Saving..." : isPublished ? "Unpublish" : "Publish"}
+                        </Button>
 
-                        {/* next step: resources & practice */}
-                        <button   
-                          className=" border-2 border-white px-3 py-2 text-sm hover:bg-white hover:text-black transition-all disabled:opacity-60"
-                          type="button"
-                          title="Next step: resources + practice editor"
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          as={Link}
+                          to={`/lms/superadmin/content/${courseId}/lessons/${l.id}`}
+                          icon={FaEdit}
                         >
-                            <Link
-                            to={`/lms/superadmin/content/${courseId}/lessons/${l.id}`}
-                           
-                            >
-                            Edit →
-                            </Link>
-
-                        </button>
+                          Edit
+                        </Button>
                       </div>
                     </div>
                   );
                 })}
               </div>
             )}
-          </div>
+          </Card>
 
-          <div className="text-xs text-white opacity-80">
-            Premium note: We always reload canonical data from <code>/courses/:courseId/tree</code> so refresh/back never loses state.
+          {/* Info Note */}
+          <div className="px-4 py-3 bg-blue-50 border border-blue-200 rounded-lg">
+            <p className="text-xs text-blue-700">
+              <strong>Premium architecture:</strong> All data reloads from{" "}
+              <code className="px-1.5 py-0.5 bg-blue-100 rounded text-blue-800">
+                /courses/:courseId/tree
+              </code>{" "}
+              to ensure consistency.
+            </p>
           </div>
         </>
       )}

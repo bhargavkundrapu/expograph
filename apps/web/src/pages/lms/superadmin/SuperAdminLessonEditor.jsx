@@ -1,7 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { FaRedo, FaArrowLeft, FaSave, FaVideo, FaBook, FaListOl, FaCheckCircle, FaCircle, FaSpinner, FaArrowRight, FaFileAlt } from "react-icons/fa";
 import { apiFetch, ApiError } from "../../../services/api";
 import { useAuth } from "../../../app/providers/AuthProvider";
+import Card, { CardContent, CardTitle } from "../../../Components/ui/Card";
+import Button from "../../../Components/ui/Button";
+import Skeleton from "../../../Components/ui/Skeleton";
+import ErrorState from "../../../Components/common/ErrorState";
 
 function normalizeLesson(l) {
   return {
@@ -149,151 +154,194 @@ const [videoId, setVideoId] = useState("");
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-3xl font-bold">Lesson Editor</h1>
-          <p className="text-sm text-white">
-            Edit lesson details + attach video key (Cloudflare).
-          </p>
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex items-start gap-3">
+          <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+            <FaFileAlt className="w-6 h-6 text-white" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">Lesson Editor</h1>
+            <p className="text-sm text-gray-600 mt-1">
+              Edit lesson details + attach video key (Cloudflare)
+            </p>
+          </div>
         </div>
 
-        <div className="flex gap-2">
-          <button
+        <div className="flex items-center gap-2 flex-wrap">
+          <Button
+            variant="outline"
+            size="sm"
             onClick={loadLessonFromTree}
-            className=" border-2 border-white px-3 py-2 text-sm hover:bg-white hover:text-black transition-all"
-            type="button"
+            icon={FaRedo}
+            disabled={loading}
           >
             Refresh
-          </button>
-
-          <Link
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            as={Link}
             to={backUrl}
-            className=" border-2 border-white px-3 py-2 text-sm hover:bg-white hover:text-black transition-all"
+            icon={FaArrowLeft}
           >
-            ← Back
-          </Link>
+            Back
+          </Button>
         </div>
       </div>
 
-      {err ? (
-        <div className=" border border-2 border-white bg-black px-4 py-3 text-sm text-white">
-          {err}{" "}
-          <button
-            onClick={loadLessonFromTree}
-            className="ml-2 underline underline-offset-2"
-            type="button"
-          >
-            Retry
-          </button>
-        </div>
-      ) : null}
+      {/* Error State */}
+      {err && (
+        <ErrorState
+          title="Failed to load lesson"
+          message={err}
+          onRetry={loadLessonFromTree}
+          size="sm"
+        />
+      )}
 
-      {info ? (
-        <div className=" border border-2 border-white bg-white text-black px-4 py-3 text-sm">
-          {info}
+      {/* Success Message */}
+      {info && (
+        <div className="px-4 py-3 bg-green-50 border border-green-200 rounded-lg">
+          <p className="text-sm text-green-700 font-medium">{info}</p>
         </div>
-      ) : null}
+      )}
 
+      {/* Loading State */}
       {loading ? (
-        <div className="text-sm text-white">Loading…</div>
+        <div className="space-y-4">
+          <Skeleton className="h-24 w-full" />
+          <Skeleton className="h-64 w-full" />
+        </div>
       ) : (
-        <div className=" border-2 border-white bg-black p-5 space-y-4">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <div className="text-xs text-white opacity-80">Lesson ID: {lessonId}</div>
-              <div className="mt-1 font-semibold">
-                Status:{" "}
-                <span
-                  className={[
-                    " border px-2 py-1 text-xs",
-                    lesson?.status === "published"
-                      ? "border-2 border-white bg-white text-black"
-                      : "border-slate-700 bg-black/30 text-white",
-                  ].join(" ")}
-                >
-                  {lesson?.status || "draft"}
-                </span>
+        <Card>
+          <CardContent className="p-6 space-y-6">
+            {/* Lesson Status */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-gray-200">
+              <div>
+                <p className="text-xs text-gray-500 mb-2">Lesson ID: {lessonId}</p>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium text-gray-700">Status:</span>
+                  <span
+                    className={[
+                      "px-3 py-1 rounded-full text-xs font-medium inline-flex items-center gap-1.5",
+                      lesson?.status === "published"
+                        ? "bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-sm"
+                        : "bg-gray-200 text-gray-700",
+                    ].join(" ")}
+                  >
+                    {lesson?.status === "published" ? (
+                      <FaCheckCircle className="w-3 h-3" />
+                    ) : (
+                      <FaCircle className="w-3 h-3" />
+                    )}
+                    {lesson?.status || "draft"}
+                  </span>
+                </div>
+              </div>
+
+              <Button
+                variant={lesson?.status === "published" ? "outline" : "primary"}
+                size="sm"
+                onClick={togglePublish}
+                icon={lesson?.status === "published" ? FaCircle : FaCheckCircle}
+              >
+                {lesson?.status === "published" ? "Unpublish" : "Publish"}
+              </Button>
+            </div>
+
+            {/* Edit Form */}
+            <div className="space-y-4">
+              <div className="grid gap-4 md:grid-cols-3">
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <FaBook className="inline w-3.5 h-3.5 mr-1.5 text-gray-500" />
+                    Lesson Title
+                  </label>
+                  <input
+                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all bg-white text-gray-900 placeholder-gray-400"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    placeholder="e.g., Hooks Deep Dive"
+                    disabled={saving}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <FaListOl className="inline w-3.5 h-3.5 mr-1.5 text-gray-500" />
+                    Position
+                  </label>
+                  <input
+                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all bg-white text-gray-900"
+                    value={position}
+                    onChange={(e) => setPosition(e.target.value)}
+                    type="number"
+                    min="1"
+                    disabled={saving}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <FaFileAlt className="inline w-3.5 h-3.5 mr-1.5 text-gray-500" />
+                  Summary <span className="text-gray-400 font-normal">(optional)</span>
+                </label>
+                <textarea
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all bg-white text-gray-900 placeholder-gray-400 resize-none"
+                  value={summary}
+                  onChange={(e) => setSummary(e.target.value)}
+                  rows={3}
+                  placeholder="What students will learn in this lesson…"
+                  disabled={saving}
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <FaVideo className="inline w-3.5 h-3.5 mr-1.5 text-gray-500" />
+                  Video ID (Cloudflare Stream UID)
+                </label>
+                <input
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all bg-white text-gray-900 placeholder-gray-400"
+                  value={videoId}
+                  onChange={(e) => setVideoId(e.target.value)}
+                  placeholder="e.g. 1a2b3c4d5e6f..."
+                  disabled={saving}
+                />
+                <p className="mt-2 text-xs text-gray-500">
+                  We store provider = cloudflare_stream and this UID as video_id
+                </p>
               </div>
             </div>
 
-            <button
-              onClick={togglePublish}
-              className=" border-2 border-white px-3 py-2 text-sm hover:bg-white hover:text-black transition-all"
-              type="button"
-            >
-              {lesson?.status === "published" ? "Unpublish" : "Publish"}
-            </button>
-          </div>
+            {/* Actions */}
+            <div className="flex flex-wrap gap-2 pt-4 border-t border-gray-200">
+              <Button
+                type="button"
+                variant="primary"
+                size="md"
+                onClick={saveLesson}
+                disabled={saving}
+                icon={saving ? FaSpinner : FaSave}
+                className={saving ? "animate-pulse" : ""}
+              >
+                {saving ? "Saving..." : "Save Changes"}
+              </Button>
 
-          <div className="grid gap-3 md:grid-cols-3">
-            <div className="md:col-span-2">
-              <label className="text-sm text-white">Title</label>
-              <input
-                className="mt-1 w-full  border-2 border-white bg-black px-3 py-2 text-slate-100 outline-none focus:border-slate-500"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="Hooks Deep Dive"
-              />
+              <Button
+                variant="outline"
+                size="md"
+                as={Link}
+                to={`/lms/superadmin/content/${courseId}/lessons/${lessonId}/resources`}
+                icon={FaArrowRight}
+              >
+                Resources + Practice
+              </Button>
             </div>
-
-            <div>
-              <label className="text-sm text-white">Position</label>
-              <input
-                className="mt-1 w-full  border-2 border-white bg-black px-3 py-2 text-slate-100 outline-none focus:border-slate-500"
-                value={position}
-                onChange={(e) => setPosition(e.target.value)}
-                type="number"
-                min="1"
-              />
-            </div>
-          </div>
-
-          <div>
-  <label className="text-sm text-white">Summary (optional)</label>
-  <textarea
-    className="mt-1 w-full  border-2 border-white bg-black px-3 py-2 text-slate-100 outline-none focus:border-slate-500"
-    value={summary}
-    onChange={(e) => setSummary(e.target.value)}
-    rows={3}
-    placeholder="What student will learn in this lesson…"
-  />
-</div>
-
-
-         <div>
-  <label className="text-sm text-white">
-    Video ID (Cloudflare Stream UID)
-  </label>
-  <input
-    className="mt-1 w-full  border-2 border-white bg-black px-3 py-2 text-slate-100 outline-none focus:border-slate-500"
-    value={videoId}
-    onChange={(e) => setVideoId(e.target.value)}
-    placeholder="e.g. 1a2b3c4d5e6f..."
-  />
-  <div className="mt-1 text-xs text-white opacity-80">
-    We store provider = cloudflare_stream and this UID as video_id.
-  </div>
-</div>
-
-
-          <div className="flex flex-wrap gap-2">
-            <button
-              onClick={saveLesson}
-              disabled={saving}
-              className=" border-2 border-white bg-white text-black px-4 py-2 text-sm font-semibold hover:bg-black hover:text-white transition-all disabled:opacity-60"
-              type="button"
-            >
-              {saving ? "Saving…" : "Save"}
-            </button>
-
-            <Link
-              to={`/lms/superadmin/content/${courseId}/lessons/${lessonId}/resources`}
-              className=" border-2 border-white px-4 py-2 text-sm hover:bg-white hover:text-black transition-all"
-            >
-              Next: Resources + Practice →
-            </Link>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       )}
     </div>
   );
