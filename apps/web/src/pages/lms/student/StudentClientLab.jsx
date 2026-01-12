@@ -6,17 +6,7 @@ import { FEATURE_FLAGS, checkFeatureFlag } from "../../../utils/featureFlags";
 import { apiFetch } from "../../../services/api";
 import { unwrapArray, unwrapData } from "../../../services/apiShape";
 import { hasPermission, getPermissionErrorMessage } from "../../../utils/permissions";
-import { 
-  FaLaptopCode, 
-  FaTasks, 
-  FaCheckCircle, 
-  FaClock,
-  FaArrowRight,
-  FaUser,
-  FaCalendar,
-  FaCodeBranch
-} from "react-icons/fa";
-import Card, { CardContent, CardTitle, CardDescription } from "../../../Components/ui/Card";
+import Card, { CardTitle, CardDescription } from "../../../Components/ui/Card";
 import Skeleton from "../../../Components/ui/Skeleton";
 import ErrorState from "../../../Components/common/ErrorState";
 import EmptyState from "../../../Components/common/EmptyState";
@@ -35,24 +25,16 @@ export default function StudentClientLab() {
   const [err, setErr] = useState("");
   const alive = useRef(true);
 
-  // Check permissions - ensure permissions is an array
-  // Wait for permissions to finish loading before checking
   const permissionsArray = Array.isArray(permissions) ? permissions : [];
   const hasReadPermission = hasPermission(permissionsArray, "clientlab:read");
 
   async function loadProjects(signal) {
     const clientLabEnabled = checkFeatureFlag(isEnabled, FEATURE_FLAGS.STUDENT_CLIENT_LAB);
     
-    // Only skip API call if feature is explicitly disabled (not when loading)
     if (!flagsLoading && Object.keys(flags).length > 0 && !clientLabEnabled) {
       if (!signal?.aborted && alive.current) setLoading(false);
       return;
     }
-    
-    // Always try the API call - the server is the source of truth for permissions
-    // The server will return 403 if permissions are missing, which we handle gracefully
-    // Only show error message if we're certain permissions are missing (not just loading)
-    // This prevents false negatives when permissions are still being fetched
     
     setLoading(true);
     try {
@@ -60,17 +42,13 @@ export default function StudentClientLab() {
       const list = unwrapArray(json);
       if (alive.current) {
         setProjects(list);
-        setErr(""); // Clear any previous errors on success
+        setErr("");
       }
     } catch (e) {
       if (signal?.aborted) return;
-      // Handle 403 errors - user needs clientlab:read permission
       if (e?.status === 403) {
         if (alive.current) {
-          // Only show error if permissions have finished loading
-          // If still loading, wait a bit and retry (permissions might be updating)
           if (permissionsLoading) {
-            // Permissions are still loading, wait and retry once
             setTimeout(() => {
               if (alive.current && !permissionsLoading) {
                 const retryAc = new AbortController();
@@ -82,7 +60,6 @@ export default function StudentClientLab() {
           setErr(getPermissionErrorMessage("clientlab:read"));
         }
       } else {
-        // Only log non-403 errors to console in dev mode
         if (import.meta.env.DEV) {
           console.error("Failed to load client lab projects:", e);
         }
@@ -94,14 +71,9 @@ export default function StudentClientLab() {
   }
 
   useEffect(() => {
-    // Only load when flags finish loading (to avoid multiple loads)
     if (flagsLoading) return;
     
-    // Wait a bit for permissions to load, but don't wait forever
-    // If permissions are still loading after a short delay, try the API call anyway
-    // The server will tell us if permissions are missing
     if (permissionsLoading) {
-      // Wait up to 2 seconds for permissions to load
       const timeout = setTimeout(() => {
         if (alive.current) {
           const ac = new AbortController();
@@ -122,9 +94,9 @@ export default function StudentClientLab() {
 
   if (loading) {
     return (
-      <div className="layout-flex-col gap-lg animate-fadeIn" style={{ width: '100%' }}>
-        <Skeleton className="h-32 w-full mb-6" />
-        <Skeleton className="h-64 w-full" />
+      <div>
+        <Skeleton />
+        <Skeleton />
       </div>
     );
   }
@@ -143,80 +115,66 @@ export default function StudentClientLab() {
   }
 
   return (
-    <div className="layout-flex-col gap-xl animate-fadeIn" style={{ width: '100%' }}>
-      {/* Header */}
-      <div className="position-relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900 via-black to-gray-900 border border-gray-800 p-10 shadow-glow" style={{ marginBottom: '2rem' }}>
-        <div className="position-absolute" style={{ top: 0, right: 0, width: '24rem', height: '24rem', background: 'rgba(236, 72, 153, 0.1)', borderRadius: '50%', filter: 'blur(3rem)', zIndex: 0 }}></div>
-        <div className="position-relative" style={{ zIndex: 10 }}>
-          <div className="layout-flex items-center gap-md" style={{ marginBottom: '1.5rem' }}>
-            <div className="p-4 rounded-xl bg-gradient-to-br from-pink-400 to-rose-500 shadow-lg shadow-pink-500/30">
-              <FaLaptopCode className="text-white text-2xl" />
+    <div>
+      <div>
+        <div>
+        </div>
+        <div>
+          <div>
+            <div>
             </div>
             <div>
-              <h1 className="section-hero text-4xl" style={{ marginBottom: '0.5rem', marginTop: 0 }}>Client Lab</h1>
-              <p className="text-gray-300 text-lg" style={{ margin: 0 }}>Real-world projects with real clients</p>
+              <h1>Client Lab</h1>
+              <p>Real-world projects with real clients</p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Projects */}
       {projects.length === 0 ? (
         <EmptyState
           title="No Client Lab Projects"
           message="You're not currently assigned to any client lab projects. Check back later or contact your mentor."
         />
       ) : (
-        <div className="layout-grid-2 gap-lg" style={{ width: '100%' }}>
+        <div>
           {projects.map((project, idx) => (
             <Card
               key={project.id}
               variant="elevated"
-              className="animate-fadeIn"
-              style={{ animationDelay: `${idx * 0.1}s`, width: '100%', boxSizing: 'border-box' }}
             >
-              <div className="layout-flex items-start justify-between gap-md mb-4">
-                <div style={{ flex: 1 }}>
-                  <div className="layout-flex items-center gap-3 mb-2">
-                    <div className="p-2 rounded-lg bg-gradient-to-br from-pink-400/20 to-rose-500/20 border border-pink-400/30">
-                      <FaLaptopCode className="text-pink-400" />
-                    </div>
-                    <CardTitle className="text-xl" style={{ margin: 0 }}>{project.title}</CardTitle>
+              <div>
+                <div>
+                  <div>
                   </div>
-                  {project.client_name && (
-                    <div className="layout-flex items-center gap-2 text-sm text-gray-400 mb-2">
-                      <FaUser className="text-pink-400" />
-                      <span>Client: {project.client_name}</span>
-                    </div>
-                  )}
-                  {project.status && (
-                    <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
-                      project.status === 'active' ? 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-300' :
-                      project.status === 'completed' ? 'bg-blue-500/10 border border-blue-500/30 text-blue-300' :
-                      'bg-gray-800 border border-gray-700 text-gray-400'
-                    }`}>
-                      {project.status}
-                    </span>
-                  )}
+                  <CardTitle>{project.title}</CardTitle>
                 </div>
+                {project.client_name && (
+                  <div>
+                    <span>Client: {project.client_name}</span>
+                  </div>
+                )}
+                {project.status && (
+                  <span>
+                    {project.status}
+                  </span>
+                )}
               </div>
 
               {project.scope && (
-                <CardDescription className="text-gray-400 mb-4 line-clamp-3">
+                <CardDescription>
                   {project.scope}
                 </CardDescription>
               )}
 
-              <div className="layout-flex-col gap-sm mb-4">
+              <div>
                 {project.start_date && (
-                  <div className="layout-flex items-center gap-2 text-sm text-gray-400">
-                    <FaCalendar className="text-pink-400" />
+                  <div>
                     <span>Started: {formatDate(project.start_date)}</span>
                   </div>
                 )}
                 {project.end_date && (
-                  <div className="layout-flex items-center gap-2 text-sm text-gray-400">
-                    <FaCalendar className="text-pink-400" />
+                  <div>
                     <span>Ends: {formatDate(project.end_date)}</span>
                   </div>
                 )}
@@ -224,25 +182,21 @@ export default function StudentClientLab() {
 
               <Link
                 to={`/lms/student/client-lab/${project.id}`}
-                className="layout-flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-lg bg-gradient-to-r from-pink-400 to-rose-500 text-white hover:from-pink-500 hover:to-rose-600 hover:shadow-lg hover:shadow-pink-500/30 hover:scale-105 active:scale-95 transition-all duration-300 text-sm font-semibold"
               >
                 <span>View Project Board</span>
-                <FaArrowRight className="text-xs" />
               </Link>
             </Card>
           ))}
         </div>
       )}
 
-      {/* Info Card */}
-      <Card variant="elevated" className="p-6" style={{ width: '100%', boxSizing: 'border-box' }}>
-        <div className="layout-flex items-start gap-md">
-          <div className="p-3 rounded-xl bg-gradient-to-br from-pink-400/20 to-rose-500/20 border border-pink-400/30">
-            <FaCodeBranch className="text-pink-400 text-xl" />
+      <Card variant="elevated">
+        <div>
+          <div>
           </div>
           <div>
-            <CardTitle className="text-xl mb-2">About Client Lab</CardTitle>
-            <CardDescription className="text-gray-400 leading-relaxed">
+            <CardTitle>About Client Lab</CardTitle>
+            <CardDescription>
               Client Lab provides real-world project experience working with actual clients. You'll collaborate with mentors and other students to deliver real solutions. 
               Track your tasks, submit deliverables, and receive feedback from mentors.
             </CardDescription>
@@ -252,4 +206,3 @@ export default function StudentClientLab() {
     </div>
   );
 }
-

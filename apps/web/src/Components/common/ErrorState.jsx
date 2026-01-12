@@ -1,4 +1,3 @@
-import { FaExclamationTriangle, FaRedo, FaHome, FaBug, FaWifi } from "react-icons/fa";
 import Button from "../ui/Button";
 
 export default function ErrorState({
@@ -11,50 +10,32 @@ export default function ErrorState({
   size = "md",
   className = "",
 }) {
-  const types = {
-    default: { icon: FaExclamationTriangle, iconBg: "from-red-100 to-rose-50", iconColor: "text-red-500", border: "border-red-200" },
-    network: { icon: FaWifi, iconBg: "from-amber-100 to-yellow-50", iconColor: "text-amber-500", border: "border-amber-200" },
-    notFound: { icon: FaBug, iconBg: "from-purple-100 to-indigo-50", iconColor: "text-purple-500", border: "border-purple-200" },
-    permission: { icon: FaExclamationTriangle, iconBg: "from-orange-100 to-amber-50", iconColor: "text-orange-500", border: "border-orange-200" },
-  };
-
-  const sizes = {
-    sm: { container: "py-8 px-4", iconBox: "w-16 h-16", icon: "w-6 h-6", title: "text-lg", message: "text-sm" },
-    md: { container: "py-12 px-6", iconBox: "w-20 h-20", icon: "w-8 h-8", title: "text-xl", message: "text-base" },
-    lg: { container: "py-16 px-8", iconBox: "w-24 h-24", icon: "w-10 h-10", title: "text-2xl", message: "text-lg" },
-  };
-
-  const t = types[type] || types.default;
-  const s = sizes[size];
-  const Icon = t.icon;
-
   return (
-    <div className={`flex flex-col items-center justify-center text-center ${s.container} animate-fadeIn ${className}`}>
-      <div className="relative mb-6">
-        <div className={`${s.iconBox} rounded-2xl bg-gradient-to-br ${t.iconBg} border ${t.border} flex items-center justify-center shadow-soft animate-bounce`} style={{ animationDuration: '2s' }}>
-          <Icon className={`${s.icon} ${t.iconColor}`} />
+    <div>
+      <div>
+        <div>
         </div>
       </div>
 
-      <h3 className={`${s.title} font-bold text-gray-900 mb-2`}>{title}</h3>
-      <p className={`${s.message} text-gray-500 max-w-md mb-2`}>{message}</p>
+      <h3>{title}</h3>
+      <p>{message}</p>
 
       {error && (
-        <div className="mt-4 mb-6 p-4 rounded-xl bg-gray-50 border border-gray-200 max-w-md w-full">
-          <p className="text-xs font-mono text-gray-500 break-all">
+        <div>
+          <p>
             {typeof error === 'string' ? error : error?.message || JSON.stringify(error)}
           </p>
         </div>
       )}
 
-      <div className="flex flex-wrap items-center justify-center gap-3 mt-4">
+      <div>
         {onRetry && (
-          <Button variant="primary" size={size === 'lg' ? 'lg' : 'md'} onClick={onRetry} icon={FaRedo}>
+          <Button variant="primary" size={size === 'lg' ? 'lg' : 'md'} onClick={onRetry}>
             Try Again
           </Button>
         )}
         {onGoHome && (
-          <Button variant="outline" size={size === 'lg' ? 'lg' : 'md'} onClick={onGoHome} icon={FaHome}>
+          <Button variant="outline" size={size === 'lg' ? 'lg' : 'md'} onClick={onGoHome}>
             Go Home
           </Button>
         )}

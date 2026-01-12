@@ -4,20 +4,6 @@ import { useAuth } from "../../../app/providers/AuthProvider";
 import { getProgressSummary } from "../../../features/progress/progressApi";
 import { useFeatureFlags } from "../../../hooks/useFeatureFlags";
 import { FEATURE_FLAGS, checkFeatureFlag } from "../../../utils/featureFlags";
-import { 
-  FaBook, 
-  FaChartLine, 
-  FaFileAlt, 
-  FaCertificate,
-  FaBriefcase,
-  FaLaptopCode,
-  FaGift,
-  FaGraduationCap,
-  FaCheckCircle,
-  FaPlayCircle,
-  FaClock,
-  FaSpinner
-} from "react-icons/fa";
 import Card, { CardContent, CardTitle, CardDescription } from "../../../Components/ui/Card";
 import Skeleton from "../../../Components/ui/Skeleton";
 import ErrorState from "../../../Components/common/ErrorState";
@@ -73,33 +59,30 @@ export default function StudentHome() {
     };
   }, [token]);
 
-  // Calculate stats
   const { completed_lessons = 0, in_progress_lessons = 0, total_watch_seconds = 0 } = summary || {};
   const totalLessons = completed_lessons + in_progress_lessons;
   const completionRate = totalLessons > 0 ? Math.round((completed_lessons / totalLessons) * 100) : 0;
 
-  // Loading State
   if (loading) {
     return (
-      <div className="space-y-6">
-        <Skeleton className="h-8 w-64" />
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Skeleton className="h-32" />
-          <Skeleton className="h-32" />
-          <Skeleton className="h-32" />
+      <div>
+        <Skeleton />
+        <div>
+          <Skeleton />
+          <Skeleton />
+          <Skeleton />
         </div>
-        <Skeleton className="h-24" />
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Skeleton className="h-32" />
-          <Skeleton className="h-32" />
-          <Skeleton className="h-32" />
-          <Skeleton className="h-32" />
+        <Skeleton />
+        <div>
+          <Skeleton />
+          <Skeleton />
+          <Skeleton />
+          <Skeleton />
         </div>
       </div>
     );
   }
 
-  // Error State
   if (err) {
     return (
       <ErrorState 
@@ -114,26 +97,23 @@ export default function StudentHome() {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Welcome Header */}
+    <div>
       <div>
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">
+        <h1>
           Welcome {user?.full_name || user?.email?.split('@')[0] || 'Student'} 👏
         </h1>
-        <p className="text-gray-600">Here's your learning dashboard</p>
+        <p>Here's your learning dashboard</p>
       </div>
 
-      {/* Quick Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div>
         <Card variant="elevated">
           <CardContent>
-            <div className="flex items-center justify-between">
+            <div>
               <div>
                 <CardDescription>Completed Lessons</CardDescription>
-                <CardTitle className="text-3xl mt-2">{completed_lessons || 0}</CardTitle>
+                <CardTitle>{completed_lessons || 0}</CardTitle>
               </div>
-              <div className="p-3 rounded-lg bg-green-100">
-                <FaCheckCircle className="text-green-600 text-2xl" />
+              <div>
               </div>
             </div>
           </CardContent>
@@ -141,13 +121,12 @@ export default function StudentHome() {
 
         <Card variant="elevated">
           <CardContent>
-            <div className="flex items-center justify-between">
+            <div>
               <div>
                 <CardDescription>In Progress</CardDescription>
-                <CardTitle className="text-3xl mt-2">{in_progress_lessons || 0}</CardTitle>
+                <CardTitle>{in_progress_lessons || 0}</CardTitle>
               </div>
-              <div className="p-3 rounded-lg bg-blue-100">
-                <FaPlayCircle className="text-blue-600 text-2xl" />
+              <div>
               </div>
             </div>
           </CardContent>
@@ -155,45 +134,42 @@ export default function StudentHome() {
 
         <Card variant="elevated">
           <CardContent>
-            <div className="flex items-center justify-between">
+            <div>
               <div>
                 <CardDescription>Watch Time</CardDescription>
-                <CardTitle className="text-2xl mt-2">{formatWatchTime(total_watch_seconds)}</CardTitle>
+                <CardTitle>{formatWatchTime(total_watch_seconds)}</CardTitle>
               </div>
-              <div className="p-3 rounded-lg bg-purple-100">
-                <FaClock className="text-purple-600 text-2xl" />
+              <div>
               </div>
             </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Overall Progress */}
       <Card variant="elevated">
         <CardContent>
-          <div className="flex items-center justify-between mb-4">
+          <div>
             <CardTitle>Overall Progress</CardTitle>
-            <span className="text-2xl font-bold text-green-600">{completionRate}%</span>
+            <span>{completionRate}%</span>
           </div>
-          <div className="h-4 w-full bg-gray-200 rounded-full overflow-hidden">
+          <div>
             <div
-              className="h-full bg-gradient-to-r from-green-500 to-green-600 rounded-full transition-all"
               style={{ width: `${completionRate}%` }}
             />
           </div>
         </CardContent>
       </Card>
 
-      {/* Quick Actions */}
       <div>
-        <CardTitle className="mb-4">Quick Actions</CardTitle>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <CardTitle>Quick Actions</CardTitle>
+        <div>
           {checkFeatureFlag(isEnabled, FEATURE_FLAGS.STUDENT_COURSES) && (
             <Link to="/lms/student/courses">
-              <Card variant="outlined" className="hover:shadow-lg transition-all cursor-pointer h-full">
-                <CardContent className="text-center py-6">
-                  <FaBook className="text-green-600 text-3xl mx-auto mb-3" />
-                  <CardTitle className="text-base">Browse Courses</CardTitle>
+              <Card variant="outlined">
+                <CardContent>
+                  <div>
+                  </div>
+                  <CardTitle>Browse Courses</CardTitle>
                 </CardContent>
               </Card>
             </Link>
@@ -201,10 +177,11 @@ export default function StudentHome() {
           
           {checkFeatureFlag(isEnabled, FEATURE_FLAGS.STUDENT_PROGRESS) && (
             <Link to="/lms/student/progress">
-              <Card variant="outlined" className="hover:shadow-lg transition-all cursor-pointer h-full">
-                <CardContent className="text-center py-6">
-                  <FaChartLine className="text-blue-600 text-3xl mx-auto mb-3" />
-                  <CardTitle className="text-base">View Progress</CardTitle>
+              <Card variant="outlined">
+                <CardContent>
+                  <div>
+                  </div>
+                  <CardTitle>View Progress</CardTitle>
                 </CardContent>
               </Card>
             </Link>
@@ -212,10 +189,11 @@ export default function StudentHome() {
           
           {checkFeatureFlag(isEnabled, FEATURE_FLAGS.STUDENT_SUBMISSIONS) && (
             <Link to="/lms/student/submissions">
-              <Card variant="outlined" className="hover:shadow-lg transition-all cursor-pointer h-full">
-                <CardContent className="text-center py-6">
-                  <FaFileAlt className="text-purple-600 text-3xl mx-auto mb-3" />
-                  <CardTitle className="text-base">My Submissions</CardTitle>
+              <Card variant="outlined">
+                <CardContent>
+                  <div>
+                  </div>
+                  <CardTitle>My Submissions</CardTitle>
                 </CardContent>
               </Card>
             </Link>
@@ -223,10 +201,11 @@ export default function StudentHome() {
           
           {checkFeatureFlag(isEnabled, FEATURE_FLAGS.STUDENT_CERTIFICATES) && (
             <Link to="/lms/student/certificates">
-              <Card variant="outlined" className="hover:shadow-lg transition-all cursor-pointer h-full">
-                <CardContent className="text-center py-6">
-                  <FaCertificate className="text-yellow-600 text-3xl mx-auto mb-3" />
-                  <CardTitle className="text-base">Certificates</CardTitle>
+              <Card variant="outlined">
+                <CardContent>
+                  <div>
+                  </div>
+                  <CardTitle>Certificates</CardTitle>
                 </CardContent>
               </Card>
             </Link>
@@ -234,10 +213,11 @@ export default function StudentHome() {
           
           {checkFeatureFlag(isEnabled, FEATURE_FLAGS.STUDENT_INTERNSHIPS) && (
             <Link to="/lms/student/internships">
-              <Card variant="outlined" className="hover:shadow-lg transition-all cursor-pointer h-full">
-                <CardContent className="text-center py-6">
-                  <FaBriefcase className="text-indigo-600 text-3xl mx-auto mb-3" />
-                  <CardTitle className="text-base">Internships</CardTitle>
+              <Card variant="outlined">
+                <CardContent>
+                  <div>
+                  </div>
+                  <CardTitle>Internships</CardTitle>
                 </CardContent>
               </Card>
             </Link>
@@ -245,10 +225,11 @@ export default function StudentHome() {
           
           {checkFeatureFlag(isEnabled, FEATURE_FLAGS.STUDENT_CLIENT_LAB) && (
             <Link to="/lms/student/client-lab">
-              <Card variant="outlined" className="hover:shadow-lg transition-all cursor-pointer h-full">
-                <CardContent className="text-center py-6">
-                  <FaLaptopCode className="text-cyan-600 text-3xl mx-auto mb-3" />
-                  <CardTitle className="text-base">Client Lab</CardTitle>
+              <Card variant="outlined">
+                <CardContent>
+                  <div>
+                  </div>
+                  <CardTitle>Client Lab</CardTitle>
                 </CardContent>
               </Card>
             </Link>
@@ -256,10 +237,11 @@ export default function StudentHome() {
           
           {checkFeatureFlag(isEnabled, FEATURE_FLAGS.STUDENT_WORKSHOPS) && (
             <Link to="/lms/student/workshops">
-              <Card variant="outlined" className="hover:shadow-lg transition-all cursor-pointer h-full">
-                <CardContent className="text-center py-6">
-                  <FaGraduationCap className="text-pink-600 text-3xl mx-auto mb-3" />
-                  <CardTitle className="text-base">Workshops</CardTitle>
+              <Card variant="outlined">
+                <CardContent>
+                  <div>
+                  </div>
+                  <CardTitle>Workshops</CardTitle>
                 </CardContent>
               </Card>
             </Link>
@@ -267,10 +249,11 @@ export default function StudentHome() {
           
           {checkFeatureFlag(isEnabled, FEATURE_FLAGS.STUDENT_REFERRALS) && (
             <Link to="/lms/student/referrals">
-              <Card variant="outlined" className="hover:shadow-lg transition-all cursor-pointer h-full">
-                <CardContent className="text-center py-6">
-                  <FaGift className="text-red-600 text-3xl mx-auto mb-3" />
-                  <CardTitle className="text-base">Referrals</CardTitle>
+              <Card variant="outlined">
+                <CardContent>
+                  <div>
+                  </div>
+                  <CardTitle>Referrals</CardTitle>
                 </CardContent>
               </Card>
             </Link>

@@ -5,16 +5,6 @@ import { apiFetch } from "../../../services/api";
 import { unwrapArray, unwrapData } from "../../../services/apiShape";
 import { useFeatureFlags } from "../../../hooks/useFeatureFlags";
 import { FEATURE_FLAGS, checkFeatureFlag } from "../../../utils/featureFlags";
-import { 
-  FaLaptopCode, 
-  FaTasks, 
-  FaCheckCircle, 
-  FaClock,
-  FaUser,
-  FaCalendar,
-  FaEdit,
-  FaArrowLeft
-} from "react-icons/fa";
 import Card, { CardContent, CardTitle, CardDescription } from "../../../Components/ui/Card";
 import Skeleton from "../../../Components/ui/Skeleton";
 import ErrorState from "../../../Components/common/ErrorState";
@@ -29,10 +19,10 @@ function formatDate(dateString) {
 
 function getStatusBadge(status) {
   const badges = {
-    todo: { bg: "bg-gray-500/10", border: "border-gray-500/30", text: "text-gray-300", label: "To Do" },
-    in_progress: { bg: "bg-yellow-500/10", border: "border-yellow-500/30", text: "text-yellow-300", label: "In Progress" },
-    review: { bg: "bg-cyan-500/10", border: "border-cyan-500/30", text: "text-cyan-300", label: "Review" },
-    completed: { bg: "bg-emerald-500/10", border: "border-emerald-500/30", text: "text-emerald-300", label: "Completed" },
+    todo: { label: "To Do" },
+    in_progress: { label: "In Progress" },
+    review: { label: "Review" },
+    completed: { label: "Completed" },
   };
   return badges[status] || badges.todo;
 }
@@ -54,15 +44,13 @@ export default function MentorClientLab() {
   const [submitting, setSubmitting] = useState(false);
   const alive = useRef(true);
 
-  // Check if client lab feature is enabled
   const clientLabEnabled = checkFeatureFlag(isEnabled, FEATURE_FLAGS.MENTOR_CLIENT_LAB);
 
-  // Only show disabled message if flags have loaded AND feature is explicitly disabled
   if (!flagsLoading && !clientLabEnabled) {
     return (
-      <div className="layout-flex-col gap-lg animate-fadeIn" style={{ width: '100%' }}>
-        <Card variant="elevated" className="p-8">
-          <CardTitle className="text-2xl mb-4">Feature Disabled</CardTitle>
+      <div>
+        <Card variant="elevated">
+          <CardTitle>Feature Disabled</CardTitle>
           <CardDescription>Client lab review feature is currently disabled by the administrator.</CardDescription>
         </Card>
       </div>
@@ -73,7 +61,6 @@ export default function MentorClientLab() {
     try {
       setLoading(true);
       setErr("");
-      // Use mentor endpoint to get projects where mentor is a member
       const json = await apiFetch("/api/v1/mentor/client-lab/projects", { token, signal });
       const list = unwrapArray(json);
       console.log("✅ Loaded projects for mentor:", list.length, list);
@@ -93,7 +80,6 @@ export default function MentorClientLab() {
 
   async function loadReviewQueue(signal) {
     if (!projectId) {
-      // Load projects list instead
       await loadProjects(signal);
       return;
     }
@@ -152,7 +138,7 @@ export default function MentorClientLab() {
     alive.current = true;
     const ac = new AbortController();
     setLoading(true);
-    setErr(""); // Clear error on mount/change
+    setErr("");
     loadReviewQueue(ac.signal);
     return () => {
       alive.current = false;
@@ -162,9 +148,9 @@ export default function MentorClientLab() {
 
   if (loading) {
     return (
-      <div className="layout-flex-col gap-lg animate-fadeIn" style={{ width: '100%' }}>
-        <Skeleton className="h-32 w-full mb-6" />
-        <Skeleton className="h-64 w-full" />
+      <div>
+        <Skeleton />
+        <Skeleton />
       </div>
     );
   }
@@ -183,12 +169,11 @@ export default function MentorClientLab() {
   }
 
   if (!projectId) {
-    // Show project list
     if (loading) {
       return (
-        <div className="layout-flex-col gap-lg animate-fadeIn" style={{ width: '100%' }}>
-          <Skeleton className="h-32 w-full mb-6" />
-          <Skeleton className="h-64 w-full" />
+        <div>
+          <Skeleton />
+          <Skeleton />
         </div>
       );
     }
@@ -207,32 +192,32 @@ export default function MentorClientLab() {
     }
 
     return (
-      <div className="layout-flex-col gap-xl animate-fadeIn" style={{ width: '100%' }}>
-        <div className="position-relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900 via-black to-gray-900 border border-gray-800 p-10 shadow-glow" style={{ marginBottom: '2rem' }}>
-          <div className="position-absolute" style={{ top: 0, right: 0, width: '24rem', height: '24rem', background: 'rgba(236, 72, 153, 0.1)', borderRadius: '50%', filter: 'blur(3rem)', zIndex: 0 }}></div>
-          <div className="position-relative" style={{ zIndex: 10 }}>
-            <div className="layout-flex items-center gap-md" style={{ marginBottom: '1.5rem' }}>
-              <div className="p-4 rounded-xl bg-gradient-to-br from-pink-400 to-rose-500 shadow-lg shadow-pink-500/30">
-                <FaLaptopCode className="text-white text-2xl" />
+      <div>
+        <div>
+          <div>
+          </div>
+          <div>
+            <div>
+              <div>
               </div>
               <div>
-                <h1 className="section-hero text-4xl" style={{ marginBottom: '0.5rem', marginTop: 0 }}>Client Lab Review</h1>
-                <p className="text-gray-300 text-lg" style={{ margin: 0 }}>Select a project to review tasks</p>
+                <h1>Client Lab Review</h1>
+                <p>Select a project to review tasks</p>
               </div>
             </div>
           </div>
         </div>
 
         {projects.length === 0 ? (
-          <Card variant="elevated" className="p-8">
+          <Card variant="elevated">
             <EmptyState
               title="No Projects Available"
               message={
                 <div>
-                  <p className="mb-4">You are not assigned to any client lab projects yet.</p>
-                  <div className="p-4 rounded-lg bg-amber-500/10 border border-amber-500/30">
-                    <p className="text-sm text-amber-300 font-semibold mb-2">How to get access:</p>
-                    <ol className="text-xs text-gray-400 list-decimal list-inside space-y-1">
+                  <p>You are not assigned to any client lab projects yet.</p>
+                  <div>
+                    <p>How to get access:</p>
+                    <ol>
                       <li>Contact your SuperAdmin or Tenant Admin</li>
                       <li>Ask them to add you to a client lab project</li>
                       <li>They need to: Go to Client Lab → Select a project → Click "Add Member" → Select your user → Choose "Mentor" role</li>
@@ -244,28 +229,26 @@ export default function MentorClientLab() {
             />
           </Card>
         ) : (
-          <div className="layout-grid-2 gap-lg" style={{ width: '100%' }}>
+          <div>
             {projects.map((proj, idx) => (
               <Link key={proj.id} to={`/lms/mentor/client-lab/${proj.id}`}>
                 <Card
                   variant="elevated"
-                  className="p-6 group hover:scale-105 transition-transform duration-300 animate-fadeIn"
-                  style={{ animationDelay: `${idx * 0.1}s`, width: '100%', boxSizing: 'border-box', cursor: 'pointer' }}
                 >
-                  <div className="layout-flex items-center gap-md mb-4">
-                    <div className="p-3 rounded-xl bg-gradient-to-br from-pink-400/20 to-rose-500/20 border border-pink-400/30">
-                      <FaLaptopCode className="text-pink-400 text-xl" />
+                  <div>
+                    <div>
                     </div>
-                    <div style={{ flex: 1 }}>
-                      <CardTitle className="text-xl mb-2">{proj.name || proj.title || "Untitled Project"}</CardTitle>
+                    <div>
+                      <CardTitle>{proj.name || proj.title || "Untitled Project"}</CardTitle>
                       {proj.client_name && (
-                        <div className="text-sm text-gray-400">Client: {proj.client_name}</div>
+                        <div>Client: {proj.client_name}</div>
                       )}
                     </div>
-                    <FaArrowLeft className="text-gray-400 text-xl group-hover:text-white group-hover:-translate-x-2 transition-all duration-300 rotate-180" />
+                    <div>
+                    </div>
                   </div>
                   {proj.description && (
-                    <CardDescription className="line-clamp-2">{proj.description}</CardDescription>
+                    <CardDescription>{proj.description}</CardDescription>
                   )}
                 </Card>
               </Link>
@@ -280,111 +263,101 @@ export default function MentorClientLab() {
   const completedTasks = tasks.filter(t => t.status === "completed");
 
   return (
-    <div className="layout-flex-col gap-xl animate-fadeIn" style={{ width: '100%' }}>
-      {/* Header */}
-      <div className="position-relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900 via-black to-gray-900 border border-gray-800 p-10 shadow-glow" style={{ marginBottom: '2rem' }}>
-        <div className="position-absolute" style={{ top: 0, right: 0, width: '24rem', height: '24rem', background: 'rgba(236, 72, 153, 0.1)', borderRadius: '50%', filter: 'blur(3rem)', zIndex: 0 }}></div>
-        <div className="position-relative" style={{ zIndex: 10 }}>
-          <div className="layout-flex items-center gap-md" style={{ marginBottom: '1.5rem' }}>
-            <div className="p-4 rounded-xl bg-gradient-to-br from-pink-400 to-rose-500 shadow-lg shadow-pink-500/30">
-              <FaLaptopCode className="text-white text-2xl" />
+    <div>
+      <div>
+        <div>
+        </div>
+        <div>
+          <div>
+            <div>
             </div>
-            <div style={{ flex: 1 }}>
-              <h1 className="section-hero text-4xl" style={{ marginBottom: '0.5rem', marginTop: 0 }}>Client Lab Review</h1>
+            <div>
+              <h1>Client Lab Review</h1>
               {project && (
-                <p className="text-gray-300 text-lg" style={{ margin: 0 }}>Review tasks for: {project.name || project.title}</p>
+                <p>Review tasks for: {project.name || project.title}</p>
               )}
             </div>
           </div>
-          <div className="layout-flex gap-md">
-            <div className="px-4 py-2 rounded-lg bg-yellow-500/10 border border-yellow-500/30">
-              <div className="text-2xl font-bold text-yellow-400">{pendingTasks.length}</div>
-              <div className="text-sm text-gray-400">Pending Review</div>
+          <div>
+            <div>
+              <div>{pendingTasks.length}</div>
+              <div>Pending Review</div>
             </div>
-            <div className="px-4 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/30">
-              <div className="text-2xl font-bold text-emerald-400">{completedTasks.length}</div>
-              <div className="text-sm text-gray-400">Completed</div>
+            <div>
+              <div>{completedTasks.length}</div>
+              <div>Completed</div>
             </div>
-            <div className="px-4 py-2 rounded-lg bg-gray-500/10 border border-gray-500/30">
-              <div className="text-2xl font-bold text-gray-400">{tasks.length}</div>
-              <div className="text-sm text-gray-400">Total Tasks</div>
+            <div>
+              <div>{tasks.length}</div>
+              <div>Total Tasks</div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Pending Tasks */}
       {pendingTasks.length > 0 && (
-        <div className="layout-flex-col gap-md">
-          <h2 className="section-title text-2xl text-white">Pending Review ({pendingTasks.length})</h2>
-          <div className="layout-flex-col gap-md" style={{ width: '100%' }}>
+        <div>
+          <h2>Pending Review ({pendingTasks.length})</h2>
+          <div>
             {pendingTasks.map((task, idx) => {
               const statusBadge = getStatusBadge(task.status);
               return (
                 <Card
                   key={task.id}
                   variant="elevated"
-                  className="animate-fadeIn"
-                  style={{ animationDelay: `${idx * 0.05}s`, width: '100%', boxSizing: 'border-box' }}
                 >
-                  <div className="layout-flex items-start justify-between gap-md">
-                    <div style={{ flex: 1 }}>
-                      <div className="layout-flex items-center gap-md mb-4">
-                        <div className={`p-2 rounded-lg ${statusBadge.bg} border ${statusBadge.border}`}>
-                          <FaTasks className={statusBadge.text} />
-                        </div>
+                  <div>
+                    <div>
+                      <div>
+                      </div>
+                      <div>
+                        <CardTitle>{task.title || "Untitled Task"}</CardTitle>
                         <div>
-                          <CardTitle className="text-lg" style={{ margin: 0 }}>{task.title || "Untitled Task"}</CardTitle>
-                          <div className="layout-flex items-center gap-4 text-xs text-gray-400 mt-1">
-                            <div className="layout-flex items-center gap-1">
-                              <FaUser className="text-xs" />
-                              <span>Student: {task.student_email || task.user_email || "—"}</span>
-                            </div>
-                            {task.due_date && (
-                              <div className="layout-flex items-center gap-1">
-                                <FaCalendar className="text-xs" />
-                                <span>Due: {formatDate(task.due_date)}</span>
-                              </div>
-                            )}
+                          <div>
+                            <span>Student: {task.student_email || task.user_email || "—"}</span>
                           </div>
+                          {task.due_date && (
+                            <div>
+                              <span>Due: {formatDate(task.due_date)}</span>
+                            </div>
+                          )}
                         </div>
                       </div>
-
-                      {task.description && (
-                        <div className="p-4 rounded-lg bg-gray-800 border border-gray-700 mb-4">
-                          <div className="text-sm font-semibold text-gray-300 mb-2">Task Description:</div>
-                          <div className="text-sm text-gray-400 whitespace-pre-wrap">{task.description}</div>
-                        </div>
-                      )}
-
-                      {task.submission_content && (
-                        <div className="p-4 rounded-lg bg-gray-800 border border-gray-700 mb-4">
-                          <div className="text-sm font-semibold text-gray-300 mb-2">Student Submission:</div>
-                          <div className="text-sm text-gray-400 whitespace-pre-wrap">{task.submission_content}</div>
-                        </div>
-                      )}
-
-                      {task.mentor_feedback && (
-                        <div className="p-3 rounded-lg bg-blue-500/10 border border-blue-500/30 mb-4">
-                          <div className="text-xs text-blue-300 mb-1">Previous Feedback:</div>
-                          <div className="text-sm text-gray-300">{task.mentor_feedback}</div>
-                        </div>
-                      )}
                     </div>
 
-                    <div className="layout-flex-col gap-md">
-                      <span className={`px-3 py-1.5 rounded-lg text-xs font-semibold ${statusBadge.bg} border ${statusBadge.border} ${statusBadge.text}`}>
-                        {statusBadge.label}
-                      </span>
-                      <Button
-                        variant="gradient"
-                        size="sm"
-                        icon={FaEdit}
-                        onClick={() => setSelectedTask(task)}
-                      >
-                        Review
-                      </Button>
-                    </div>
+                    {task.description && (
+                      <div>
+                        <div>Task Description:</div>
+                        <div>{task.description}</div>
+                      </div>
+                    )}
+
+                    {task.submission_content && (
+                      <div>
+                        <div>Student Submission:</div>
+                        <div>{task.submission_content}</div>
+                      </div>
+                    )}
+
+                    {task.mentor_feedback && (
+                      <div>
+                        <div>Previous Feedback:</div>
+                        <div>{task.mentor_feedback}</div>
+                      </div>
+                    )}
+                  </div>
+
+                  <div>
+                    <span>
+                      {statusBadge.label}
+                    </span>
+                    <Button
+                      variant="gradient"
+                      size="sm"
+                      onClick={() => setSelectedTask(task)}
+                    >
+                      Review
+                    </Button>
                   </div>
                 </Card>
               );
@@ -393,40 +366,34 @@ export default function MentorClientLab() {
         </div>
       )}
 
-      {/* Completed Tasks */}
       {completedTasks.length > 0 && (
-        <div className="layout-flex-col gap-md">
-          <h2 className="section-title text-2xl text-white">Completed ({completedTasks.length})</h2>
-          <div className="layout-flex-col gap-md" style={{ width: '100%' }}>
+        <div>
+          <h2>Completed ({completedTasks.length})</h2>
+          <div>
             {completedTasks.map((task, idx) => {
               const statusBadge = getStatusBadge(task.status);
               return (
                 <Card
                   key={task.id}
                   variant="elevated"
-                  className="animate-fadeIn opacity-75"
-                  style={{ animationDelay: `${idx * 0.05}s`, width: '100%', boxSizing: 'border-box' }}
                 >
-                  <div className="layout-flex items-start justify-between gap-md">
-                    <div style={{ flex: 1 }}>
-                      <div className="layout-flex items-center gap-md mb-2">
-                        <div className={`p-2 rounded-lg ${statusBadge.bg} border ${statusBadge.border}`}>
-                          <FaCheckCircle className={statusBadge.text} />
-                        </div>
+                  <div>
+                    <div>
+                      <div>
+                      </div>
+                      <div>
+                        <CardTitle>{task.title || "Untitled Task"}</CardTitle>
                         <div>
-                          <CardTitle className="text-lg" style={{ margin: 0 }}>{task.title || "Untitled Task"}</CardTitle>
-                          <div className="text-xs text-gray-400 mt-1">
-                            Student: {task.student_email || task.user_email || "—"} | {formatDate(task.completed_at || task.updated_at)}
-                          </div>
+                          Student: {task.student_email || task.user_email || "—"} | {formatDate(task.completed_at || task.updated_at)}
                         </div>
                       </div>
                       {task.mentor_feedback && (
-                        <div className="text-sm text-gray-400 ml-11">
+                        <div>
                           Feedback: {task.mentor_feedback.substring(0, 100)}...
                         </div>
                       )}
                     </div>
-                    <span className={`px-3 py-1.5 rounded-lg text-xs font-semibold ${statusBadge.bg} border ${statusBadge.border} ${statusBadge.text}`}>
+                    <span>
                       {statusBadge.label}
                     </span>
                   </div>
@@ -444,34 +411,28 @@ export default function MentorClientLab() {
         />
       )}
 
-      {/* Feedback Modal */}
       {selectedTask && (
-        <div className="position-fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setSelectedTask(null)}>
+        <div onClick={() => setSelectedTask(null)}>
           <Card
             variant="elevated"
-            className="p-8 max-w-3xl w-full max-h-[90vh] overflow-auto"
             onClick={(e) => e.stopPropagation()}
           >
-            <CardTitle className="text-2xl mb-4">Provide Feedback</CardTitle>
+            <CardTitle>Provide Feedback</CardTitle>
             
-            {/* Task Details Section */}
-            <div className="mb-6 p-6 rounded-lg bg-gray-800 border border-gray-700">
-              <div className="layout-flex items-center gap-md mb-4">
-                <div className={`p-2 rounded-lg ${getStatusBadge(selectedTask.status).bg} border ${getStatusBadge(selectedTask.status).border}`}>
-                  <FaTasks className={getStatusBadge(selectedTask.status).text} />
+            <div>
+              <div>
+                <div>
                 </div>
-                <div style={{ flex: 1 }}>
-                  <div className="text-lg font-bold text-white mb-2">
+                <div>
+                  <div>
                     {selectedTask.title || "Untitled Task"}
                   </div>
-                  <div className="layout-flex flex-wrap items-center gap-4 text-sm text-gray-400">
-                    <div className="layout-flex items-center gap-1">
-                      <FaUser className="text-xs" />
+                  <div>
+                    <div>
                       <span>Student: {selectedTask.student_email || selectedTask.user_email || "—"}</span>
                     </div>
                     {selectedTask.due_date && (
-                      <div className="layout-flex items-center gap-1">
-                        <FaCalendar className="text-xs" />
+                      <div>
                         <span>Due: {formatDate(selectedTask.due_date)}</span>
                       </div>
                     )}
@@ -480,42 +441,41 @@ export default function MentorClientLab() {
               </div>
 
               {selectedTask.description && (
-                <div className="mt-4 p-4 rounded-lg bg-gray-900 border border-gray-800">
-                  <div className="text-sm font-semibold text-gray-300 mb-2">Task Description:</div>
-                  <div className="text-sm text-gray-400 whitespace-pre-wrap max-h-48 overflow-y-auto">
+                <div>
+                  <div>Task Description:</div>
+                  <div>
                     {selectedTask.description}
                   </div>
                 </div>
               )}
 
               {selectedTask.submission_content && (
-                <div className="mt-4 p-4 rounded-lg bg-gray-900 border border-gray-800">
-                  <div className="text-sm font-semibold text-gray-300 mb-2">Student Submission:</div>
-                  <div className="text-sm text-gray-400 whitespace-pre-wrap max-h-48 overflow-y-auto">
+                <div>
+                  <div>Student Submission:</div>
+                  <div>
                     {selectedTask.submission_content}
                   </div>
                 </div>
               )}
 
               {selectedTask.mentor_feedback && (
-                <div className="mt-4 p-3 rounded-lg bg-blue-500/10 border border-blue-500/30">
-                  <div className="text-xs text-blue-300 mb-1">Previous Feedback:</div>
-                  <div className="text-sm text-gray-300">{selectedTask.mentor_feedback}</div>
+                <div>
+                  <div>Previous Feedback:</div>
+                  <div>{selectedTask.mentor_feedback}</div>
                 </div>
               )}
             </div>
 
-            <div className="border-t border-gray-700 pt-6 mb-6">
-              <CardDescription className="mb-4 text-lg font-semibold">Provide Your Feedback</CardDescription>
+            <div>
+              <CardDescription>Provide Your Feedback</CardDescription>
             </div>
 
-            <div className="layout-flex-col gap-md mb-6">
+            <div>
               <div>
-                <label className="text-sm font-semibold text-white mb-2 block">Feedback *</label>
+                <label>Feedback *</label>
                 <textarea
                   value={feedbackForm.feedback}
                   onChange={(e) => setFeedbackForm({ ...feedbackForm, feedback: e.target.value })}
-                  className="w-full border-2 border-gray-700 bg-gray-900 text-white px-4 py-2 rounded-lg focus:outline-none focus:border-pink-400"
                   rows={6}
                   placeholder="Provide detailed feedback..."
                   required
@@ -523,11 +483,10 @@ export default function MentorClientLab() {
               </div>
 
               <div>
-                <label className="text-sm font-semibold text-white mb-2 block">Status *</label>
+                <label>Status *</label>
                 <select
                   value={feedbackForm.status}
                   onChange={(e) => setFeedbackForm({ ...feedbackForm, status: e.target.value })}
-                  className="w-full border-2 border-gray-700 bg-gray-900 text-white px-4 py-2 rounded-lg focus:outline-none focus:border-pink-400"
                 >
                   <option value="review">Needs Review</option>
                   <option value="in_progress">In Progress</option>
@@ -536,14 +495,12 @@ export default function MentorClientLab() {
               </div>
             </div>
 
-            <div className="layout-flex flex-col sm:flex-row gap-3 sm:gap-md items-stretch sm:items-center">
+            <div>
               <Button
                 variant="gradient"
                 size="md"
                 onClick={() => submitFeedback(selectedTask.id)}
                 disabled={submitting || !feedbackForm.feedback.trim()}
-                fullWidth
-                className="sm:w-auto"
               >
                 {submitting ? "Submitting..." : "Submit Feedback"}
               </Button>
@@ -554,8 +511,6 @@ export default function MentorClientLab() {
                   setSelectedTask(null);
                   setFeedbackForm({ feedback: "", status: "review" });
                 }}
-                fullWidth
-                className="sm:w-auto"
               >
                 Cancel
               </Button>
@@ -566,4 +521,3 @@ export default function MentorClientLab() {
     </div>
   );
 }
-

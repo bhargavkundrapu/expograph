@@ -1,18 +1,15 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../app/providers/AuthProvider";
-import Button from "./ui/Button";
-import { 
-  FaChartLine, 
-  FaSignInAlt, 
-  FaSignOutAlt, 
-  FaUser,
-  FaBars,
-  FaTimes,
-  FaGraduationCap,
-  FaRocket
-} from "react-icons/fa";
-import { HiSparkles } from "react-icons/hi";
+import {
+  HiOutlineMenuAlt3,
+  HiOutlineX,
+  HiOutlineAcademicCap,
+  HiOutlineLogin,
+  HiOutlineLogout,
+  HiOutlineUser,
+} from "react-icons/hi";
 
 export default function Navbar() {
   const { token, user, role, logout } = useAuth();
@@ -32,162 +29,252 @@ export default function Navbar() {
     setMobileMenuOpen(false);
   }, [location.pathname]);
 
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [mobileMenuOpen]);
+
   const navLinks = [
-    { to: "/academy", label: "Academy", icon: FaGraduationCap },
-    { to: "/solutions", label: "Solutions", icon: FaRocket },
+    { to: "/academy", label: "Academy" },
+    { to: "/solutions", label: "Solutions" },
   ];
 
   const isActive = (path) => location.pathname === path;
 
+  function handleLogout() {
+    logout();
+    setMobileMenuOpen(false);
+  }
+
+  // Get dashboard link based on role
+  const getDashboardLink = () => {
+    switch (role) {
+      case "SuperAdmin":
+        return "/lms/superadmin";
+      case "TenantAdmin":
+        return "/lms/admin";
+      case "Mentor":
+        return "/lms/mentor";
+      case "Student":
+        return "/lms/student";
+      default:
+        return "/lms/student";
+    }
+  };
+
   return (
     <>
-      <nav 
-        className={`
-          fixed top-0 left-0 right-0 z-50
-          transition-all duration-500 ease-out
-          ${scrolled 
-            ? 'bg-white/90 backdrop-blur-xl shadow-lg border-b border-gray-100/50' 
-            : 'bg-transparent'
-          }
-        `}
+      {/* Main Navigation */}
+      <motion.nav
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        style={{ position: 'fixed' }}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+          scrolled
+            ? "bg-[#0a0a0f]/80 backdrop-blur-xl border-b border-white/5 shadow-lg"
+            : "bg-transparent"
+        }`}
       >
-        <div className="container">
-          <div className="flex items-center justify-between h-16 sm:h-20">
-            <Link 
-              to="/" 
-              className="flex items-center gap-3 group"
-            >
-              <div className={`
-                p-2 sm:p-2.5 rounded-xl
-                bg-gradient-to-br from-emerald-500 to-teal-600
-                shadow-lg shadow-emerald-500/30
-                transform transition-all duration-300
-                group-hover:scale-110 group-hover:shadow-xl group-hover:shadow-emerald-500/40
-              `}>
-                <FaChartLine className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-              </div>
-              <div className="hidden sm:block">
-                <span className="text-xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+        <div className="container-academy">
+          <div className="flex items-center justify-between h-20">
+            {/* Logo */}
+            <Link to="/" className="flex items-center gap-3 group">
+              <motion.div
+                whileHover={{ scale: 1.05, rotate: 5 }}
+                className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-purple-500/25"
+              >
+                <HiOutlineAcademicCap className="w-6 h-6 text-white" />
+              </motion.div>
+              <div>
+                <span className="text-xl font-bold text-white group-hover:text-purple-300 transition-colors">
                   ExpoGraph
                 </span>
-                <div className="flex items-center gap-1 -mt-0.5">
-                  <HiSparkles className="w-3 h-3 text-amber-500" />
-                  <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-widest">
-                    Learning Platform
-                  </span>
+                <div className="text-xs text-gray-500 hidden sm:block">
+                  Learning Platform
                 </div>
               </div>
             </Link>
 
-            <div className="hidden md:flex items-center gap-1">
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center gap-8">
               {navLinks.map((link) => (
                 <Link
                   key={link.to}
                   to={link.to}
-                  className={`
-                    relative px-4 py-2 rounded-xl text-sm font-medium
-                    transition-all duration-300
-                    flex items-center gap-2
-                    ${isActive(link.to)
-                      ? 'text-emerald-600 bg-emerald-50'
-                      : 'text-gray-600 hover:text-emerald-600 hover:bg-gray-50'
-                    }
-                  `}
+                  className={`relative text-sm font-medium transition-colors ${
+                    isActive(link.to)
+                      ? "text-white"
+                      : "text-gray-400 hover:text-white"
+                  }`}
                 >
-                  <link.icon className="w-4 h-4" />
                   {link.label}
                   {isActive(link.to) && (
-                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 bg-emerald-500 rounded-full" />
+                    <motion.div
+                      layoutId="activeNav"
+                      className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-purple-500 to-cyan-500"
+                    />
                   )}
                 </Link>
               ))}
             </div>
 
-            <div className="flex items-center gap-3">
+            {/* Desktop Auth Buttons */}
+            <div className="hidden md:flex items-center gap-4">
               {token ? (
-                <>
-                  <div className="hidden sm:flex items-center gap-3 px-3 py-2 rounded-xl bg-gray-50 border border-gray-100">
-                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center">
-                      <FaUser className="w-3.5 h-3.5 text-white" />
-                    </div>
-                    <div className="hidden lg:block">
-                      <div className="text-sm font-semibold text-gray-900 truncate max-w-[150px]">
-                        {user?.email?.split('@')[0] || 'User'}
-                      </div>
-                      <div className="text-xs text-emerald-600 font-medium">{role}</div>
-                    </div>
-                  </div>
-                  
-                  <Link to={`/lms/${role?.toLowerCase() || 'student'}`}>
-                    <Button variant="primary" size="sm" icon={FaRocket}>
-                      <span className="hidden sm:inline">Dashboard</span>
-                    </Button>
-                  </Link>
-                  
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    icon={FaSignOutAlt}
-                    onClick={() => {
-                      logout();
-                      window.location.href = '/';
-                    }}
-                    className="hidden sm:flex"
+                <div className="flex items-center gap-4">
+                  <Link
+                    to={getDashboardLink()}
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-white text-sm font-medium transition-colors"
                   >
-                    <span className="hidden lg:inline">Logout</span>
-                  </Button>
-                </>
+                    <HiOutlineUser className="w-4 h-4" />
+                    <span className="max-w-[120px] truncate">{user?.email || "User"}</span>
+                  </Link>
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={handleLogout}
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg border border-white/10 hover:bg-white/5 text-gray-400 hover:text-white text-sm font-medium transition-colors"
+                  >
+                    <HiOutlineLogout className="w-4 h-4" />
+                    Logout
+                  </motion.button>
+                </div>
               ) : (
                 <Link to="/login">
-                  <Button variant="primary" size="sm" icon={FaSignInAlt}>
-                    Sign In
-                  </Button>
+                  <motion.button
+                    whileHover={{ scale: 1.02, boxShadow: "0 10px 30px rgba(124, 58, 237, 0.3)" }}
+                    whileTap={{ scale: 0.98 }}
+                    className="flex items-center gap-2 px-6 py-2.5 rounded-lg bg-gradient-to-r from-purple-600 to-cyan-500 text-white text-sm font-semibold shadow-lg shadow-purple-500/25"
+                  >
+                    <HiOutlineLogin className="w-4 h-4" />
+                    Login
+                  </motion.button>
                 </Link>
               )}
-
-              <button
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="md:hidden p-2 rounded-xl text-gray-600 hover:text-emerald-600 hover:bg-gray-50 transition-colors"
-              >
-                {mobileMenuOpen ? (
-                  <FaTimes className="w-5 h-5" />
-                ) : (
-                  <FaBars className="w-5 h-5" />
-                )}
-              </button>
             </div>
+
+            {/* Mobile Menu Button */}
+            <motion.button
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center text-white"
+              aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+            >
+              {mobileMenuOpen ? (
+                <HiOutlineX className="w-5 h-5" />
+              ) : (
+                <HiOutlineMenuAlt3 className="w-5 h-5" />
+              )}
+            </motion.button>
           </div>
         </div>
+      </motion.nav>
 
+      {/* Mobile Menu */}
+      <AnimatePresence>
         {mobileMenuOpen && (
-          <div className="md:hidden absolute top-full left-0 right-0 bg-white/95 backdrop-blur-xl border-b border-gray-100 shadow-xl">
-            <div className="container py-4">
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setMobileMenuOpen(false)}
+              className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm md:hidden"
+            />
+
+            {/* Menu Panel */}
+            <motion.div
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              className="fixed top-0 right-0 bottom-0 w-[280px] z-50 bg-[#0f0f1a] border-l border-white/10 p-6 md:hidden"
+            >
+              {/* Close Button */}
+              <div className="flex justify-end mb-8">
+                <button
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center text-white"
+                >
+                  <HiOutlineX className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Nav Links */}
               <div className="space-y-2">
                 {navLinks.map((link, idx) => (
-                  <Link
+                  <motion.div
                     key={link.to}
-                    to={link.to}
-                    className={`
-                      flex items-center gap-3 px-4 py-3 rounded-xl
-                      text-base font-medium
-                      transition-all duration-200
-                      ${isActive(link.to)
-                        ? 'text-emerald-600 bg-emerald-50'
-                        : 'text-gray-600 hover:text-emerald-600 hover:bg-gray-50'
-                      }
-                    `}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: idx * 0.1 }}
                   >
-                    <link.icon className="w-5 h-5" />
-                    {link.label}
-                  </Link>
+                    <Link
+                      to={link.to}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={`block px-4 py-3 rounded-lg font-medium transition-colors ${
+                        isActive(link.to)
+                          ? "bg-purple-500/20 text-purple-300"
+                          : "text-gray-400 hover:bg-white/5 hover:text-white"
+                      }`}
+                    >
+                      {link.label}
+                    </Link>
+                  </motion.div>
                 ))}
               </div>
-            </div>
-          </div>
-        )}
-      </nav>
 
-      <div className="h-16 sm:h-20" />
+              {/* Auth Section */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="mt-8 pt-8 border-t border-white/10"
+              >
+                {token ? (
+                  <div className="space-y-4">
+                    <div className="px-4 py-3 rounded-lg bg-white/5">
+                      <div className="text-sm text-gray-400">Signed in as</div>
+                      <div className="text-white font-medium truncate">{user?.email}</div>
+                      <div className="text-xs text-purple-400 mt-1">{role}</div>
+                    </div>
+                    <Link
+                      to={getDashboardLink()}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="block w-full px-4 py-3 rounded-lg bg-purple-500/20 text-purple-300 font-medium text-center"
+                    >
+                      Go to Dashboard
+                    </Link>
+                    <button
+                      onClick={handleLogout}
+                      className="w-full px-4 py-3 rounded-lg border border-white/10 text-gray-400 hover:text-white font-medium transition-colors"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                ) : (
+                  <Link
+                    to="/login"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block w-full px-4 py-3 rounded-lg bg-gradient-to-r from-purple-600 to-cyan-500 text-white font-semibold text-center"
+                  >
+                    Login
+                  </Link>
+                )}
+              </motion.div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </>
   );
 }

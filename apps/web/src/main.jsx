@@ -22,7 +22,7 @@ if (import.meta.env.PROD && SENTRY_DSN) {
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <ThemeProvider>
-      <Sentry.ErrorBoundary fallback={<div style={{ padding: 20 }}>Something went wrong.</div>}>
+      <Sentry.ErrorBoundary fallback={<div>Something went wrong.</div>}>
         <App />
       </Sentry.ErrorBoundary>
     </ThemeProvider>

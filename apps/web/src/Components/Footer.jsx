@@ -1,16 +1,12 @@
 import { Link } from "react-router-dom";
-import { 
-  FaChartLine, 
-  FaTwitter, 
-  FaLinkedin, 
-  FaGithub, 
-  FaYoutube,
-  FaEnvelope,
-  FaPhone,
-  FaMapMarkerAlt,
-  FaHeart
-} from "react-icons/fa";
-import { HiSparkles } from "react-icons/hi";
+import { motion } from "framer-motion";
+import {
+  HiOutlineAcademicCap,
+  HiOutlineMail,
+  HiOutlinePhone,
+  HiOutlineLocationMarker,
+} from "react-icons/hi";
+import { FaTwitter, FaLinkedin, FaGithub, FaYoutube, FaDiscord } from "react-icons/fa";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -20,7 +16,7 @@ export default function Footer() {
       { label: "Academy", to: "/academy" },
       { label: "Solutions", to: "/solutions" },
       { label: "Pricing", to: "#" },
-      { label: "Roadmap", to: "#" },
+      { label: "Enterprise", to: "#" },
     ],
     resources: [
       { label: "Documentation", to: "#" },
@@ -43,57 +39,74 @@ export default function Footer() {
   };
 
   const socialLinks = [
-    { icon: FaTwitter, href: "#", label: "Twitter" },
-    { icon: FaLinkedin, href: "#", label: "LinkedIn" },
-    { icon: FaGithub, href: "#", label: "GitHub" },
-    { icon: FaYoutube, href: "#", label: "YouTube" },
+    { href: "#", label: "Twitter", icon: FaTwitter },
+    { href: "#", label: "LinkedIn", icon: FaLinkedin },
+    { href: "#", label: "GitHub", icon: FaGithub },
+    { href: "#", label: "YouTube", icon: FaYoutube },
+    { href: "#", label: "Discord", icon: FaDiscord },
   ];
 
   return (
-    <footer className="bg-gray-900 text-white">
-      <div className="container py-12 sm:py-16">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-8 lg:gap-12">
-          <div className="sm:col-span-2">
-            <Link to="/" className="flex items-center gap-3 mb-6 group">
-              <div className="p-2.5 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 shadow-lg shadow-emerald-500/30 transform transition-transform group-hover:scale-110">
-                <FaChartLine className="w-6 h-6 text-white" />
-              </div>
+    <footer className="relative bg-[#0a0a0f] border-t border-white/5">
+      {/* Background gradient */}
+      <div className="absolute inset-0 bg-gradient-to-t from-purple-900/10 to-transparent pointer-events-none" />
+
+      {/* Main Footer Content */}
+      <div className="container-academy relative z-10 py-16">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 lg:gap-12">
+          {/* Brand Column */}
+          <div className="col-span-2 md:col-span-3 lg:col-span-2">
+            <Link to="/" className="inline-flex items-center gap-3 group mb-6">
+              <motion.div
+                whileHover={{ scale: 1.05, rotate: 5 }}
+                className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-purple-500/25"
+              >
+                <HiOutlineAcademicCap className="w-6 h-6 text-white" />
+              </motion.div>
               <div>
-                <span className="text-xl font-bold text-white">ExpoGraph</span>
-                <div className="flex items-center gap-1 -mt-0.5">
-                  <HiSparkles className="w-3 h-3 text-amber-400" />
-                  <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
-                    Learning Platform
-                  </span>
+                <span className="text-xl font-bold text-white group-hover:text-purple-300 transition-colors">
+                  ExpoGraph
+                </span>
+                <div className="text-xs text-gray-500">
+                  Learning Platform
                 </div>
               </div>
             </Link>
-            <p className="text-gray-400 text-sm leading-relaxed mb-6 max-w-sm">
+            
+            <p className="text-gray-400 mb-6 max-w-sm leading-relaxed">
               Empowering the next generation of learners with cutting-edge technology and 
               world-class educational content.
             </p>
+
+            {/* Social Links */}
             <div className="flex items-center gap-3">
               {socialLinks.map((social) => (
-                <a
+                <motion.a
                   key={social.label}
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={social.label}
-                  className="p-2.5 rounded-xl bg-gray-800 hover:bg-emerald-500 text-gray-400 hover:text-white transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/30"
+                  whileHover={{ scale: 1.1, y: -2 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
                 >
-                  <social.icon className="w-4 h-4" />
-                </a>
+                  <social.icon className="w-5 h-5" />
+                </motion.a>
               ))}
             </div>
           </div>
 
+          {/* Product Links */}
           <div>
-            <h4 className="text-sm font-bold text-white uppercase tracking-wider mb-4">Product</h4>
+            <h4 className="text-white font-semibold mb-4">Product</h4>
             <ul className="space-y-3">
               {footerLinks.product.map((link) => (
                 <li key={link.label}>
-                  <Link to={link.to} className="text-gray-400 hover:text-emerald-400 text-sm transition-colors">
+                  <Link
+                    to={link.to}
+                    className="text-gray-400 hover:text-purple-300 transition-colors text-sm"
+                  >
                     {link.label}
                   </Link>
                 </li>
@@ -101,12 +114,16 @@ export default function Footer() {
             </ul>
           </div>
 
+          {/* Resources Links */}
           <div>
-            <h4 className="text-sm font-bold text-white uppercase tracking-wider mb-4">Resources</h4>
+            <h4 className="text-white font-semibold mb-4">Resources</h4>
             <ul className="space-y-3">
               {footerLinks.resources.map((link) => (
                 <li key={link.label}>
-                  <Link to={link.to} className="text-gray-400 hover:text-emerald-400 text-sm transition-colors">
+                  <Link
+                    to={link.to}
+                    className="text-gray-400 hover:text-purple-300 transition-colors text-sm"
+                  >
                     {link.label}
                   </Link>
                 </li>
@@ -114,12 +131,16 @@ export default function Footer() {
             </ul>
           </div>
 
+          {/* Company Links */}
           <div>
-            <h4 className="text-sm font-bold text-white uppercase tracking-wider mb-4">Company</h4>
+            <h4 className="text-white font-semibold mb-4">Company</h4>
             <ul className="space-y-3">
               {footerLinks.company.map((link) => (
                 <li key={link.label}>
-                  <Link to={link.to} className="text-gray-400 hover:text-emerald-400 text-sm transition-colors">
+                  <Link
+                    to={link.to}
+                    className="text-gray-400 hover:text-purple-300 transition-colors text-sm"
+                  >
                     {link.label}
                   </Link>
                 </li>
@@ -127,46 +148,66 @@ export default function Footer() {
             </ul>
           </div>
 
+          {/* Legal Links */}
           <div>
-            <h4 className="text-sm font-bold text-white uppercase tracking-wider mb-4">Contact</h4>
+            <h4 className="text-white font-semibold mb-4">Legal</h4>
             <ul className="space-y-3">
-              <li>
-                <a href="mailto:hello@expograph.in" className="flex items-center gap-2 text-gray-400 hover:text-emerald-400 text-sm transition-colors">
-                  <FaEnvelope className="w-4 h-4" />
-                  <span>hello@expograph.in</span>
-                </a>
-              </li>
-              <li>
-                <a href="tel:+919876543210" className="flex items-center gap-2 text-gray-400 hover:text-emerald-400 text-sm transition-colors">
-                  <FaPhone className="w-4 h-4" />
-                  <span>+91 98765 43210</span>
-                </a>
-              </li>
-              <li>
-                <span className="flex items-start gap-2 text-gray-400 text-sm">
-                  <FaMapMarkerAlt className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                  <span>Hyderabad, India</span>
-                </span>
-              </li>
+              {footerLinks.legal.map((link) => (
+                <li key={link.label}>
+                  <Link
+                    to={link.to}
+                    className="text-gray-400 hover:text-purple-300 transition-colors text-sm"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
+          </div>
+        </div>
+
+        {/* Newsletter Section */}
+        <div className="mt-12 pt-8 border-t border-white/5">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+            <div>
+              <h4 className="text-white font-semibold mb-2">Subscribe to our newsletter</h4>
+              <p className="text-gray-400 text-sm">Get the latest updates on courses and features.</p>
+            </div>
+            <div className="flex gap-3">
+              <input
+                type="email"
+                placeholder="Enter your email"
+                className="px-4 py-2.5 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 text-sm w-64"
+              />
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="px-6 py-2.5 rounded-lg bg-gradient-to-r from-purple-600 to-cyan-500 text-white font-medium text-sm"
+              >
+                Subscribe
+              </motion.button>
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="border-t border-gray-800">
-        <div className="container py-6">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-400">
-            <div className="flex items-center gap-1">
-              <span>© {currentYear} ExpoGraph. Made with</span>
-              <FaHeart className="w-3 h-3 text-red-500 animate-pulse" />
-              <span>in India</span>
-            </div>
-            <div className="flex items-center gap-6">
-              {footerLinks.legal.slice(0, 2).map((link) => (
-                <Link key={link.label} to={link.to} className="hover:text-emerald-400 transition-colors">
-                  {link.label}
-                </Link>
-              ))}
+      {/* Bottom Bar */}
+      <div className="border-t border-white/5">
+        <div className="container-academy py-6">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <p className="text-gray-500 text-sm">
+              © {currentYear} ExpoGraph. All rights reserved.
+            </p>
+            <div className="flex items-center gap-6 text-sm">
+              <Link to="#" className="text-gray-500 hover:text-gray-400 transition-colors">
+                Privacy
+              </Link>
+              <Link to="#" className="text-gray-500 hover:text-gray-400 transition-colors">
+                Terms
+              </Link>
+              <Link to="#" className="text-gray-500 hover:text-gray-400 transition-colors">
+                Cookies
+              </Link>
             </div>
           </div>
         </div>

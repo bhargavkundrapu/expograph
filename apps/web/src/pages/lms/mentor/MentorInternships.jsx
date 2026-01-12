@@ -4,16 +4,6 @@ import { apiFetch } from "../../../services/api";
 import { unwrapArray, unwrapData } from "../../../services/apiShape";
 import { useFeatureFlags } from "../../../hooks/useFeatureFlags";
 import { FEATURE_FLAGS, checkFeatureFlag } from "../../../utils/featureFlags";
-import { 
-  FaBriefcase, 
-  FaCheckCircle, 
-  FaTimesCircle, 
-  FaClock,
-  FaUser,
-  FaCalendar,
-  FaEdit,
-  FaCodeBranch
-} from "react-icons/fa";
 import Card, { CardContent, CardTitle, CardDescription } from "../../../Components/ui/Card";
 import Skeleton from "../../../Components/ui/Skeleton";
 import ErrorState from "../../../Components/common/ErrorState";
@@ -28,9 +18,9 @@ function formatDate(dateString) {
 
 function getStatusBadge(status) {
   const badges = {
-    submitted: { bg: "bg-yellow-500/10", border: "border-yellow-500/30", text: "text-yellow-700", label: "Submitted" },
-    approved: { bg: "bg-green-500/10", border: "border-green-500/30", text: "text-green-700", label: "Approved" },
-    changes_requested: { bg: "bg-orange-500/10", border: "border-orange-500/30", text: "text-orange-700", label: "Changes Requested" },
+    submitted: { label: "Submitted" },
+    approved: { label: "Approved" },
+    changes_requested: { label: "Changes Requested" },
   };
   return badges[status] || badges.submitted;
 }
@@ -49,15 +39,13 @@ export default function MentorInternships() {
   const [submitting, setSubmitting] = useState(false);
   const alive = useRef(true);
 
-  // Check if internships feature is enabled
   const internshipsEnabled = checkFeatureFlag(isEnabled, FEATURE_FLAGS.MENTOR_INTERNSHIPS);
 
-  // Only show disabled message if flags have loaded AND feature is explicitly disabled
   if (!flagsLoading && !internshipsEnabled) {
     return (
-      <div className="layout-flex-col gap-lg animate-fadeIn" style={{ width: '100%' }}>
-        <Card variant="elevated" className="p-8">
-          <CardTitle className="text-2xl mb-4">Feature Disabled</CardTitle>
+      <div>
+        <Card variant="elevated">
+          <CardTitle>Feature Disabled</CardTitle>
           <CardDescription>Internship review feature is currently disabled by the administrator.</CardDescription>
         </Card>
       </div>
@@ -121,9 +109,9 @@ export default function MentorInternships() {
 
   if (loading) {
     return (
-      <div className="layout-flex-col gap-lg animate-fadeIn" style={{ width: '100%' }}>
-        <Skeleton className="h-32 w-full mb-6" />
-        <Skeleton className="h-64 w-full" />
+      <div>
+        <Skeleton />
+        <Skeleton />
       </div>
     );
   }
@@ -142,31 +130,31 @@ export default function MentorInternships() {
   }
 
   return (
-    <div className="layout-flex-col gap-xl animate-fadeIn" style={{ width: '100%' }}>
-      {/* Header */}
-      <div className="position-relative overflow-hidden rounded-xl sm:rounded-2xl bg-green-50 border border-green-200 p-6 sm:p-10 shadow-soft" style={{ marginBottom: '1rem sm:2rem' }}>
-        <div className="position-relative" style={{ zIndex: 10 }}>
-          <div className="layout-flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-md" style={{ marginBottom: '1rem sm:1.5rem' }}>
-            <div className="p-3 sm:p-4 rounded-xl bg-green-600 shadow-medium">
-              <FaBriefcase className="text-white text-xl sm:text-2xl" />
+    <div>
+      <div>
+        <div>
+        </div>
+        <div>
+          <div>
+            <div>
             </div>
             <div>
-              <h1 className="section-hero text-2xl sm:text-4xl" style={{ marginBottom: '0.5rem', marginTop: 0 }}>Internship Reviews</h1>
-              <p className="text-gray-600 text-base sm:text-lg" style={{ margin: 0 }}>Review internship project deliverables</p>
+              <h1>Internship Reviews</h1>
+              <p>Review internship project deliverables</p>
             </div>
           </div>
-          <div className="layout-flex flex-wrap gap-3 sm:gap-md">
-            <div className="px-3 sm:px-4 py-2 rounded-lg bg-yellow-50 border border-yellow-200">
-              <div className="text-xl sm:text-2xl font-bold text-yellow-700">{deliverables.filter(d => d.status === "submitted").length}</div>
-              <div className="text-xs sm:text-sm text-gray-600">Pending Review</div>
+          <div>
+            <div>
+              <div>{deliverables.filter(d => d.status === "submitted").length}</div>
+              <div>Pending Review</div>
             </div>
-            <div className="px-3 sm:px-4 py-2 rounded-lg bg-green-50 border border-green-200">
-              <div className="text-xl sm:text-2xl font-bold text-green-700">{deliverables.filter(d => d.status === "approved").length}</div>
-              <div className="text-xs sm:text-sm text-gray-600">Approved</div>
+            <div>
+              <div>{deliverables.filter(d => d.status === "approved").length}</div>
+              <div>Approved</div>
             </div>
-            <div className="px-3 sm:px-4 py-2 rounded-lg bg-gray-50 border border-gray-200">
-              <div className="text-xl sm:text-2xl font-bold text-gray-700">{deliverables.length}</div>
-              <div className="text-xs sm:text-sm text-gray-600">Total</div>
+            <div>
+              <div>{deliverables.length}</div>
+              <div>Total</div>
             </div>
           </div>
         </div>
@@ -178,100 +166,89 @@ export default function MentorInternships() {
           message="There are currently no internship deliverables pending review. Deliverables will appear here when students submit their work."
         />
       ) : (
-        <div className="layout-flex-col gap-md" style={{ width: '100%' }}>
+        <div>
           {deliverables.map((deliverable, idx) => {
             const statusBadge = getStatusBadge(deliverable.status);
             return (
               <Card
                 key={deliverable.id}
                 variant="elevated"
-                className="animate-fadeIn"
-                style={{ animationDelay: `${idx * 0.05}s`, width: '100%', boxSizing: 'border-box' }}
               >
-                <div className="layout-flex items-start justify-between gap-md">
-                  <div style={{ flex: 1 }}>
-                    <div className="layout-flex items-center gap-md mb-4">
-                      <div className={`p-2 rounded-lg ${statusBadge.bg} border ${statusBadge.border}`}>
-                        <FaBriefcase className={statusBadge.text} />
-                      </div>
+                <div>
+                  <div>
+                    <div>
+                    </div>
+                    <div>
+                      <CardTitle>
+                        {deliverable.project_title || "Internship Project"}
+                      </CardTitle>
                       <div>
-                        <CardTitle className="text-lg" style={{ margin: 0 }}>
-                          {deliverable.project_title || "Internship Project"}
-                        </CardTitle>
-                        <div className="layout-flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-600 mt-1">
-                          <div className="layout-flex items-center gap-1">
-                            <FaUser className="text-xs" />
-                            <span>Student: {deliverable.student_email || deliverable.student_name || "—"}</span>
-                          </div>
-                          <div className="layout-flex items-center gap-1">
-                            <FaCalendar className="text-xs" />
-                            <span>Submitted: {formatDate(deliverable.submitted_at)}</span>
-                          </div>
-                          {deliverable.version_no && (
-                            <div className="layout-flex items-center gap-1">
-                              <span>Version: {deliverable.version_no}</span>
-                            </div>
-                          )}
+                        <div>
+                          <span>Student: {deliverable.student_email || deliverable.student_name || "—"}</span>
                         </div>
+                        <div>
+                          <span>Submitted: {formatDate(deliverable.submitted_at)}</span>
+                        </div>
+                        {deliverable.version_no && (
+                          <div>
+                            <span>Version: {deliverable.version_no}</span>
+                          </div>
+                        )}
                       </div>
                     </div>
-
-                    {deliverable.repo_url && (
-                      <div className="p-3 rounded-lg bg-green-50 border border-green-200 mb-2">
-                        <div className="layout-flex items-center gap-2 text-sm">
-                          <FaCodeBranch className="text-green-600" />
-                          <a href={deliverable.repo_url} target="_blank" rel="noopener noreferrer" className="text-green-700">
-                            Repository
-                          </a>
-                        </div>
-                      </div>
-                    )}
-
-                    {deliverable.deploy_url && (
-                      <div className="p-3 rounded-lg bg-green-50 border border-green-200 mb-2">
-                        <div className="layout-flex items-center gap-2 text-sm">
-                          <FaCheckCircle className="text-green-600" />
-                          <a href={deliverable.deploy_url} target="_blank" rel="noopener noreferrer" className="text-green-700">
-                            Deployed URL
-                          </a>
-                        </div>
-                      </div>
-                    )}
-
-                    {deliverable.demo_url && (
-                      <div className="p-3 rounded-lg bg-green-50 border border-green-200 mb-2">
-                        <div className="layout-flex items-center gap-2 text-sm">
-                          <FaCheckCircle className="text-green-600" />
-                          <a href={deliverable.demo_url} target="_blank" rel="noopener noreferrer" className="text-green-700">
-                            Demo URL
-                          </a>
-                        </div>
-                      </div>
-                    )}
-
-                    {deliverable.notes && (
-                      <div className="p-3 rounded-lg bg-green-50 border border-green-200 mb-4">
-                        <div className="text-sm font-semibold text-gray-900 mb-1">Student Notes:</div>
-                        <div className="text-sm text-gray-700 whitespace-pre-wrap">{deliverable.notes}</div>
-                      </div>
-                    )}
                   </div>
 
-                  <div className="layout-flex-col gap-md">
-                    <span className={`px-3 py-1.5 rounded-lg text-xs font-semibold ${statusBadge.bg} border ${statusBadge.border} ${statusBadge.text}`}>
-                      {statusBadge.label}
-                    </span>
-                    {deliverable.status === "submitted" && (
-                      <Button
-                        variant="gradient"
-                        size="sm"
-                        icon={FaEdit}
-                        onClick={() => setSelectedDeliverable(deliverable)}
-                      >
-                        Review
-                      </Button>
-                    )}
-                  </div>
+                  {deliverable.repo_url && (
+                    <div>
+                      <div>
+                        <a href={deliverable.repo_url} target="_blank" rel="noopener noreferrer">
+                          Repository
+                        </a>
+                      </div>
+                    </div>
+                  )}
+
+                  {deliverable.deploy_url && (
+                    <div>
+                      <div>
+                        <a href={deliverable.deploy_url} target="_blank" rel="noopener noreferrer">
+                          Deployed URL
+                        </a>
+                      </div>
+                    </div>
+                  )}
+
+                  {deliverable.demo_url && (
+                    <div>
+                      <div>
+                        <a href={deliverable.demo_url} target="_blank" rel="noopener noreferrer">
+                          Demo URL
+                        </a>
+                      </div>
+                    </div>
+                  )}
+
+                  {deliverable.notes && (
+                    <div>
+                      <div>Student Notes:</div>
+                      <div>{deliverable.notes}</div>
+                    </div>
+                  )}
+                </div>
+
+                <div>
+                  <span>
+                    {statusBadge.label}
+                  </span>
+                  {deliverable.status === "submitted" && (
+                    <Button
+                      variant="gradient"
+                      size="sm"
+                      onClick={() => setSelectedDeliverable(deliverable)}
+                    >
+                      Review
+                    </Button>
+                  )}
                 </div>
               </Card>
             );
@@ -279,33 +256,27 @@ export default function MentorInternships() {
         </div>
       )}
 
-      {/* Review Modal */}
       {selectedDeliverable && (
-        <div className="position-fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setSelectedDeliverable(null)}>
+        <div onClick={() => setSelectedDeliverable(null)}>
           <Card
             variant="elevated"
-            className="p-8 max-w-3xl w-full max-h-[90vh] overflow-auto"
             onClick={(e) => e.stopPropagation()}
           >
-            <CardTitle className="text-2xl mb-4">Review Deliverable</CardTitle>
+            <CardTitle>Review Deliverable</CardTitle>
             
-            {/* Deliverable Details Section */}
-            <div className="mb-6 p-6 rounded-lg bg-green-50 border border-green-200">
-              <div className="layout-flex items-center gap-md mb-4">
-                <div className={`p-2 rounded-lg ${getStatusBadge(selectedDeliverable.status).bg} border ${getStatusBadge(selectedDeliverable.status).border}`}>
-                  <FaBriefcase className={getStatusBadge(selectedDeliverable.status).text} />
+            <div>
+              <div>
+                <div>
                 </div>
-                <div style={{ flex: 1 }}>
-                  <div className="text-lg font-bold text-gray-900 mb-2">
+                <div>
+                  <div>
                     {selectedDeliverable.project_title || "Internship Project"}
                   </div>
-                  <div className="layout-flex flex-wrap items-center gap-4 text-sm text-gray-600">
-                    <div className="layout-flex items-center gap-1">
-                      <FaUser className="text-xs" />
+                  <div>
+                    <div>
                       <span>Student: {selectedDeliverable.student_email || selectedDeliverable.student_name || "—"}</span>
                     </div>
-                    <div className="layout-flex items-center gap-1">
-                      <FaCalendar className="text-xs" />
+                    <div>
                       <span>Submitted: {formatDate(selectedDeliverable.submitted_at)}</span>
                     </div>
                     {selectedDeliverable.version_no && (
@@ -319,10 +290,9 @@ export default function MentorInternships() {
               </div>
 
               {selectedDeliverable.repo_url && (
-                <div className="mt-3 p-3 rounded-lg bg-green-100 border border-green-300">
-                  <div className="layout-flex items-center gap-2 text-sm">
-                    <FaCodeBranch className="text-green-700" />
-                    <a href={selectedDeliverable.repo_url} target="_blank" rel="noopener noreferrer" className="text-green-700">
+                <div>
+                  <div>
+                    <a href={selectedDeliverable.repo_url} target="_blank" rel="noopener noreferrer">
                       Repository: {selectedDeliverable.repo_url}
                     </a>
                   </div>
@@ -330,10 +300,9 @@ export default function MentorInternships() {
               )}
 
               {selectedDeliverable.deploy_url && (
-                <div className="mt-3 p-3 rounded-lg bg-green-100 border border-green-300">
-                  <div className="layout-flex items-center gap-2 text-sm">
-                    <FaCheckCircle className="text-green-700" />
-                    <a href={selectedDeliverable.deploy_url} target="_blank" rel="noopener noreferrer" className="text-green-700">
+                <div>
+                  <div>
+                    <a href={selectedDeliverable.deploy_url} target="_blank" rel="noopener noreferrer">
                       Deployed URL: {selectedDeliverable.deploy_url}
                     </a>
                   </div>
@@ -341,10 +310,9 @@ export default function MentorInternships() {
               )}
 
               {selectedDeliverable.demo_url && (
-                <div className="mt-3 p-3 rounded-lg bg-green-100 border border-green-300">
-                  <div className="layout-flex items-center gap-2 text-sm">
-                    <FaCheckCircle className="text-green-700" />
-                    <a href={selectedDeliverable.demo_url} target="_blank" rel="noopener noreferrer" className="text-green-700">
+                <div>
+                  <div>
+                    <a href={selectedDeliverable.demo_url} target="_blank" rel="noopener noreferrer">
                       Demo URL: {selectedDeliverable.demo_url}
                     </a>
                   </div>
@@ -352,26 +320,25 @@ export default function MentorInternships() {
               )}
 
               {selectedDeliverable.notes && (
-                <div className="mt-4 p-4 rounded-lg bg-green-100 border border-green-300">
-                  <div className="text-sm font-semibold text-gray-900 mb-2">Student Notes:</div>
-                  <div className="text-sm text-gray-700 whitespace-pre-wrap max-h-48 overflow-y-auto">
+                <div>
+                  <div>Student Notes:</div>
+                  <div>
                     {selectedDeliverable.notes}
                   </div>
                 </div>
               )}
             </div>
 
-            <div className="border-t border-green-200 pt-6 mb-6">
-              <CardDescription className="mb-4 text-lg font-semibold">Provide Your Review</CardDescription>
+            <div>
+              <CardDescription>Provide Your Review</CardDescription>
             </div>
 
-            <div className="layout-flex-col gap-md mb-6">
+            <div>
               <div>
-                <label className="text-sm font-semibold text-gray-900 mb-2 block">Status *</label>
+                <label>Status *</label>
                 <select
                   value={reviewForm.status}
                   onChange={(e) => setReviewForm({ ...reviewForm, status: e.target.value })}
-                  className="w-full border-2 border-green-200 bg-white text-gray-900 px-3 sm:px-4 py-2 sm:py-3 rounded-lg focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20"
                 >
                   <option value="approved">Approved</option>
                   <option value="changes_requested">Changes Requested</option>
@@ -379,25 +346,22 @@ export default function MentorInternships() {
               </div>
 
               <div>
-                <label className="text-sm font-semibold text-gray-900 mb-2 block">Notes</label>
+                <label>Notes</label>
                 <textarea
                   value={reviewForm.notes}
                   onChange={(e) => setReviewForm({ ...reviewForm, notes: e.target.value })}
-                  className="w-full border-2 border-green-200 bg-white text-gray-900 px-3 sm:px-4 py-2 sm:py-3 rounded-lg focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20"
                   rows={6}
                   placeholder="Provide feedback and notes..."
                 />
               </div>
             </div>
 
-            <div className="layout-flex flex-col sm:flex-row gap-3 sm:gap-md items-stretch sm:items-center">
+            <div>
               <Button
                 variant="gradient"
                 size="md"
                 onClick={() => submitReview(selectedDeliverable.id)}
                 disabled={submitting || (reviewForm.status === "changes_requested" && !reviewForm.notes.trim())}
-                fullWidth
-                className="sm:w-auto"
               >
                 {submitting ? "Submitting..." : "Submit Review"}
               </Button>
@@ -408,8 +372,6 @@ export default function MentorInternships() {
                   setSelectedDeliverable(null);
                   setReviewForm({ status: "approved", notes: "" });
                 }}
-                fullWidth
-                className="sm:w-auto"
               >
                 Cancel
               </Button>
@@ -420,4 +382,3 @@ export default function MentorInternships() {
     </div>
   );
 }
-

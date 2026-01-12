@@ -3,56 +3,14 @@ import { useAuth } from "../app/providers/AuthProvider";
 import { homePathForRole } from "../app/roles";
 import { useFeatureFlags } from "../hooks/useFeatureFlags";
 import { FEATURE_FLAGS, checkFeatureFlag } from "../utils/featureFlags";
-import { 
-  FaHome, 
-  FaBook, 
-  FaChartBar, 
-  FaFileAlt, 
-  FaCog, 
-  FaClipboardList,
-  FaUser,
-  FaEnvelope,
-  FaGraduationCap,
-  FaCertificate,
-  FaBriefcase,
-  FaLaptopCode,
-  FaFlag,
-  FaGift
-} from "react-icons/fa";
-
-const iconMap = {
-  "Dashboard": FaHome,
-  "Content Admin": FaBook,
-  "Courses": FaBook,
-  "Progress": FaChartBar,
-  "My Submissions": FaFileAlt,
-  "Submissions Queue": FaClipboardList,
-  "Tenant Settings": FaCog,
-  "Analytics": FaChartBar,
-  "Leads": FaEnvelope,
-  "Workshops": FaGraduationCap,
-  "Certificates": FaCertificate,
-  "Internships": FaBriefcase,
-  "Client Lab": FaLaptopCode,
-  "Feature Flags": FaFlag,
-  "Referrals": FaGift,
-};
 
 function LinkWithIcon({ to, label, icon: Icon, end }) {
   return (
     <NavLink 
       to={to} 
-      className={({ isActive }) => [
-        "flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium rounded-lg",
-        isActive 
-          ? "bg-green-600 text-white shadow-medium" 
-          : "text-gray-700 bg-white border border-green-200",
-      ].join(" ")}
       end={end}
     >
-      <Icon className="text-sm sm:text-base" />
-      <span className="hidden sm:inline">{label}</span>
-      <span className="sm:hidden">{label.split(' ')[0]}</span>
+      <span>{label}</span>
     </NavLink>
   );
 }
@@ -163,35 +121,30 @@ export default function PortalLayout() {
 
   // For other roles, keep the original layout
   return (
-    <div className="min-h-[calc(100vh-56px)] bg-white position-relative">
-      <div className="container layout-grid gap-4 sm:gap-lg" style={{ paddingTop: '1rem', paddingBottom: '2rem', gridTemplateColumns: '1fr' }}>
-        {/* Mobile: Sidebar becomes horizontal nav */}
-        <aside className="rounded-xl bg-green-50 border border-green-200 p-4 sm:p-6 shadow-soft animate-slideIn sm:position-sticky sm:top-20" style={{ maxHeight: 'fit-content', sm: { maxHeight: 'calc(100vh - 120px)' } }}>
-          <div className="margin-section-sm" style={{ paddingBottom: '1rem', borderBottom: '1px solid rgba(34, 197, 94, 0.2)' }}>
-            <div className="layout-flex items-center gap-2 margin-section-sm">
-              <div className="p-2 rounded-lg bg-green-600 shadow-medium">
-                <FaUser className="text-white text-sm" />
+    <div>
+      <div>
+        <aside>
+          <div>
+            <div>
+              <div>
               </div>
               <div>
-                <div className="text-xs text-gray-600 mb-1 uppercase tracking-wide font-semibold">Logged in as</div>
-                <div className="font-bold text-base sm:text-lg text-green-700 section-title">{role}</div>
+                <div>Logged in as</div>
+                <div>{role}</div>
               </div>
             </div>
-            <div className="layout-flex items-center gap-2 text-xs text-gray-600">
-              <FaEnvelope className="text-green-600" />
-              <span className="truncate">{user?.email}</span>
+            <div>
+              <span>{user?.email}</span>
             </div>
           </div>
 
-          <nav className="layout-flex flex-wrap sm:flex-col gap-2 sm:gap-sm">
+          <nav>
             {navItems.map((i) => {
-              const Icon = iconMap[i.label] || FaHome;
               return (
                 <LinkWithIcon 
                   key={i.to} 
                   to={i.to} 
                   label={i.label} 
-                  icon={Icon}
                   end
                 />
               );
@@ -199,7 +152,7 @@ export default function PortalLayout() {
           </nav>
         </aside>
 
-        <section className="rounded-xl bg-white border border-green-200 p-4 sm:p-8 shadow-soft animate-fadeIn overflow-auto">
+        <section>
           <Outlet />
         </section>
       </div>

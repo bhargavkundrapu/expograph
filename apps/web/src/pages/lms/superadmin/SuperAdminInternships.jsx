@@ -2,17 +2,6 @@ import { useEffect, useState, useRef } from "react";
 import { useAuth } from "../../../app/providers/AuthProvider";
 import { apiFetch } from "../../../services/api";
 import { unwrapArray, unwrapData } from "../../../services/apiShape";
-import { 
-  FaBriefcase, 
-  FaPlus,
-  FaCheckCircle,
-  FaTimesCircle,
-  FaClock,
-  FaUsers,
-  FaCalendar,
-  FaTag,
-  FaEdit
-} from "react-icons/fa";
 import Card, { CardContent, CardTitle, CardDescription } from "../../../Components/ui/Card";
 import Skeleton from "../../../Components/ui/Skeleton";
 import ErrorState from "../../../Components/common/ErrorState";
@@ -173,9 +162,9 @@ export default function SuperAdminInternships() {
 
   if (loading) {
     return (
-      <div className="layout-flex-col gap-lg animate-fadeIn" style={{ width: '100%' }}>
-        <Skeleton className="h-32 w-full mb-6" />
-        <Skeleton className="h-64 w-full" />
+      <div>
+        <Skeleton />
+        <Skeleton />
       </div>
     );
   }
@@ -194,100 +183,76 @@ export default function SuperAdminInternships() {
   }
 
   return (
-    <div className="layout-flex-col gap-xl animate-fadeIn" style={{ width: '100%' }}>
-      {/* Header */}
-      <div className="position-relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900 via-black to-gray-900 border border-gray-800 p-10 shadow-glow" style={{ marginBottom: '2rem' }}>
-        <div className="position-absolute" style={{ top: 0, right: 0, width: '24rem', height: '24rem', background: 'rgba(99, 102, 241, 0.1)', borderRadius: '50%', filter: 'blur(3rem)', zIndex: 0 }}></div>
-        <div className="position-relative" style={{ zIndex: 10 }}>
-          <div className="layout-flex items-center justify-between gap-md" style={{ marginBottom: '1.5rem' }}>
-            <div className="layout-flex items-center gap-md">
-              <div className="p-4 rounded-xl bg-gradient-to-br from-indigo-400 to-purple-500 shadow-lg shadow-indigo-500/30">
-                <FaBriefcase className="text-white text-2xl" />
-              </div>
-              <div>
-                <h1 className="section-hero text-4xl" style={{ marginBottom: '0.5rem', marginTop: 0 }}>Micro-Internships</h1>
-                <p className="text-gray-300 text-lg" style={{ margin: 0 }}>Manage internship projects and applications</p>
-              </div>
-            </div>
-            <Button
-              variant="gradient"
-              size="lg"
-              icon={FaPlus}
-              onClick={() => {
-                setShowProjectForm(true);
-                setShowBatchForm(false);
-              }}
-            >
-              Create Project
-            </Button>
+    <div>
+      <div>
+        <div>
+          <div>
           </div>
+          <div>
+            <h1>Micro-Internships</h1>
+            <p>Manage internship projects and applications</p>
+          </div>
+          <Button
+            variant="gradient"
+            size="lg"
+            onClick={() => {
+              setShowProjectForm(true);
+              setShowBatchForm(false);
+            }}
+          >
+            Create Project
+          </Button>
         </div>
       </div>
 
-      {/* Tabs */}
-      <div className="layout-flex gap-2 border-b border-gray-800" style={{ marginBottom: '2rem' }}>
+      <div>
         <button
           onClick={() => setActiveTab("projects")}
-          className={`px-6 py-3 text-sm font-semibold border-b-2 transition-all ${
-            activeTab === "projects"
-              ? "border-indigo-400 text-indigo-400"
-              : "border-transparent text-gray-500 hover:text-gray-300"
-          }`}
         >
           Projects
         </button>
         <button
           onClick={() => setActiveTab("applications")}
-          className={`px-6 py-3 text-sm font-semibold border-b-2 transition-all ${
-            activeTab === "applications"
-              ? "border-indigo-400 text-indigo-400"
-              : "border-transparent text-gray-500 hover:text-gray-300"
-          }`}
         >
           Applications ({applications.length})
         </button>
       </div>
 
-      {/* Create Project Form */}
       {showProjectForm && (
-        <Card variant="elevated" className="p-8" style={{ width: '100%', boxSizing: 'border-box' }}>
-          <CardTitle className="text-2xl mb-6">Create Micro-Internship Project</CardTitle>
-          <div className="layout-grid-2 gap-md mb-6">
+        <Card variant="elevated">
+          <CardTitle>Create Micro-Internship Project</CardTitle>
+          <div>
             <div>
-              <label className="text-sm font-semibold text-white mb-2 block">Title *</label>
+              <label>Title *</label>
               <input
                 type="text"
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                className="w-full border-2 border-gray-700 bg-gray-900 text-white px-4 py-2 rounded-lg focus:outline-none focus:border-indigo-400"
                 required
               />
             </div>
             <div>
-              <label className="text-sm font-semibold text-white mb-2 block">Slug</label>
+              <label>Slug</label>
               <input
                 type="text"
                 value={formData.slug}
                 onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-                className="w-full border-2 border-gray-700 bg-gray-900 text-white px-4 py-2 rounded-lg focus:outline-none focus:border-indigo-400"
               />
             </div>
             <div>
-              <label className="text-sm font-semibold text-white mb-2 block">Track</label>
+              <label>Track</label>
               <input
                 type="text"
                 value={formData.track}
                 onChange={(e) => setFormData({ ...formData, track: e.target.value })}
-                className="w-full border-2 border-gray-700 bg-gray-900 text-white px-4 py-2 rounded-lg focus:outline-none focus:border-indigo-400"
                 placeholder="e.g., Web Development"
               />
             </div>
             <div>
-              <label className="text-sm font-semibold text-white mb-2 block">Difficulty</label>
+              <label>Difficulty</label>
               <select
                 value={formData.difficulty}
                 onChange={(e) => setFormData({ ...formData, difficulty: e.target.value })}
-                className="w-full border-2 border-gray-700 bg-gray-900 text-white px-4 py-2 rounded-lg focus:outline-none focus:border-indigo-400"
               >
                 <option value="">Select difficulty</option>
                 <option value="beginner">Beginner</option>
@@ -295,32 +260,29 @@ export default function SuperAdminInternships() {
                 <option value="advanced">Advanced</option>
               </select>
             </div>
-            <div className="col-span-2">
-              <label className="text-sm font-semibold text-white mb-2 block">Brief *</label>
+            <div>
+              <label>Brief *</label>
               <textarea
                 value={formData.brief}
                 onChange={(e) => setFormData({ ...formData, brief: e.target.value })}
-                className="w-full border-2 border-gray-700 bg-gray-900 text-white px-4 py-2 rounded-lg focus:outline-none focus:border-indigo-400"
                 rows={4}
                 required
               />
             </div>
-            <div className="col-span-2">
-              <label className="text-sm font-semibold text-white mb-2 block">Skills (comma-separated)</label>
+            <div>
+              <label>Skills (comma-separated)</label>
               <input
                 type="text"
                 value={formData.skills}
                 onChange={(e) => setFormData({ ...formData, skills: e.target.value })}
-                className="w-full border-2 border-gray-700 bg-gray-900 text-white px-4 py-2 rounded-lg focus:outline-none focus:border-indigo-400"
                 placeholder="React, Node.js, MongoDB"
               />
             </div>
             <div>
-              <label className="text-sm font-semibold text-white mb-2 block">Status</label>
+              <label>Status</label>
               <select
                 value={formData.status}
                 onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                className="w-full border-2 border-gray-700 bg-gray-900 text-white px-4 py-2 rounded-lg focus:outline-none focus:border-indigo-400"
               >
                 <option value="draft">Draft</option>
                 <option value="published">Published</option>
@@ -328,7 +290,7 @@ export default function SuperAdminInternships() {
               </select>
             </div>
           </div>
-          <div className="layout-flex gap-md">
+          <div>
             <Button variant="gradient" size="md" onClick={createProject}>
               Create Project
             </Button>
@@ -339,53 +301,48 @@ export default function SuperAdminInternships() {
         </Card>
       )}
 
-      {/* Create Batch Form */}
       {showBatchForm && (
-        <Card variant="elevated" className="p-8" style={{ width: '100%', boxSizing: 'border-box' }}>
-          <CardTitle className="text-2xl mb-6">Create Batch for Project</CardTitle>
-          <div className="layout-grid-2 gap-md mb-6">
+        <Card variant="elevated">
+          <CardTitle>Create Batch for Project</CardTitle>
+          <div>
             <div>
-              <label className="text-sm font-semibold text-white mb-2 block">Batch Name *</label>
+              <label>Batch Name *</label>
               <input
                 type="text"
                 value={batchFormData.batchName}
                 onChange={(e) => setBatchFormData({ ...batchFormData, batchName: e.target.value })}
-                className="w-full border-2 border-gray-700 bg-gray-900 text-white px-4 py-2 rounded-lg focus:outline-none focus:border-indigo-400"
                 required
               />
             </div>
             <div>
-              <label className="text-sm font-semibold text-white mb-2 block">Start Date & Time *</label>
+              <label>Start Date & Time *</label>
               <input
                 type="datetime-local"
                 value={batchFormData.startAt}
                 onChange={(e) => setBatchFormData({ ...batchFormData, startAt: e.target.value })}
-                className="w-full border-2 border-gray-700 bg-gray-900 text-white px-4 py-2 rounded-lg focus:outline-none focus:border-indigo-400"
                 required
               />
             </div>
             <div>
-              <label className="text-sm font-semibold text-white mb-2 block">End Date & Time *</label>
+              <label>End Date & Time *</label>
               <input
                 type="datetime-local"
                 value={batchFormData.endAt}
                 onChange={(e) => setBatchFormData({ ...batchFormData, endAt: e.target.value })}
-                className="w-full border-2 border-gray-700 bg-gray-900 text-white px-4 py-2 rounded-lg focus:outline-none focus:border-indigo-400"
                 required
               />
             </div>
             <div>
-              <label className="text-sm font-semibold text-white mb-2 block">Max Seats</label>
+              <label>Max Seats</label>
               <input
                 type="number"
                 value={batchFormData.maxSeats}
                 onChange={(e) => setBatchFormData({ ...batchFormData, maxSeats: e.target.value })}
-                className="w-full border-2 border-gray-700 bg-gray-900 text-white px-4 py-2 rounded-lg focus:outline-none focus:border-indigo-400"
                 placeholder="Optional"
               />
             </div>
           </div>
-          <div className="layout-flex gap-md">
+          <div>
             <Button variant="gradient" size="md" onClick={createBatch}>
               Create Batch
             </Button>
@@ -399,7 +356,6 @@ export default function SuperAdminInternships() {
         </Card>
       )}
 
-      {/* Content */}
       {activeTab === "projects" && (
         <div>
           {projects.length === 0 ? (
@@ -408,71 +364,54 @@ export default function SuperAdminInternships() {
               message="Create your first micro-internship project to get started!"
             />
           ) : (
-            <div className="layout-grid-2 gap-lg" style={{ width: '100%' }}>
+            <div>
               {projects.map((project, idx) => (
                 <Card
                   key={`${project.project_id}-${project.batch_id || idx}`}
                   variant="elevated"
-                  className="animate-fadeIn"
-                  style={{ animationDelay: `${idx * 0.1}s`, width: '100%', boxSizing: 'border-box' }}
                 >
-                  <div className="layout-flex items-start justify-between gap-md mb-4">
-                    <div style={{ flex: 1 }}>
-                      <CardTitle className="text-xl mb-2">{project.title || "Untitled Project"}</CardTitle>
+                  <div>
+                    <div>
+                      <CardTitle>{project.title || "Untitled Project"}</CardTitle>
                       {project.track && (
-                        <div className="layout-flex items-center gap-2 mb-2">
-                          <FaTag className="text-gray-400 text-sm" />
-                          <span className="text-sm text-gray-400">{project.track}</span>
+                        <div>
+                          <span>{project.track}</span>
                         </div>
                       )}
                       {project.difficulty && (
-                        <span className={`px-2 py-1 rounded text-xs font-semibold ${
-                          project.difficulty === 'beginner' ? 'bg-green-500/20 text-green-300 border border-green-500/30' :
-                          project.difficulty === 'intermediate' ? 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/30' :
-                          'bg-red-500/20 text-red-300 border border-red-500/30'
-                        }`}>
+                        <span>
                           {project.difficulty}
                         </span>
                       )}
                     </div>
-                    <span className={`px-3 py-1 rounded-lg text-xs font-semibold ${
-                      project.project_status === 'published' ? 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-300' :
-                      project.project_status === 'archived' ? 'bg-gray-500/10 border border-gray-500/30 text-gray-400' :
-                      'bg-yellow-500/10 border border-yellow-500/30 text-yellow-300'
-                    }`}>
+                    <span>
                       {project.project_status || 'draft'}
                     </span>
                   </div>
-                  <CardDescription className="mb-4">{project.brief || "No description"}</CardDescription>
+                  <CardDescription>{project.brief || "No description"}</CardDescription>
                   {project.batch_id && (
-                    <div className="layout-flex-col gap-2 p-4 rounded-lg bg-gray-800 border border-gray-700">
-                      <div className="layout-flex items-center justify-between">
-                        <div className="layout-flex items-center gap-2">
-                          <FaUsers className="text-gray-400 text-sm" />
-                          <span className="text-sm font-semibold text-white">{project.batch_name}</span>
+                    <div>
+                      <div>
+                        <div>
+                          <span>{project.batch_name}</span>
                         </div>
-                        <span className={`px-2 py-1 rounded text-xs ${
-                          project.batch_status === 'open' ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30' :
-                          'bg-gray-500/20 text-gray-400 border border-gray-500/30'
-                        }`}>
+                        <span>
                           {project.batch_status || 'closed'}
                         </span>
                       </div>
-                      <div className="layout-flex items-center gap-4 text-xs text-gray-400">
+                      <div>
                         {project.start_at && (
-                          <div className="layout-flex items-center gap-1">
-                            <FaCalendar className="text-xs" />
+                          <div>
                             <span>Start: {formatDate(project.start_at)}</span>
                           </div>
                         )}
                         {project.end_at && (
-                          <div className="layout-flex items-center gap-1">
-                            <FaCalendar className="text-xs" />
+                          <div>
                             <span>End: {formatDate(project.end_at)}</span>
                           </div>
                         )}
                       </div>
-                      <div className="layout-flex items-center gap-4 text-xs text-gray-400">
+                      <div>
                         {project.max_seats && (
                           <span>Max Seats: {project.max_seats}</span>
                         )}
@@ -489,16 +428,15 @@ export default function SuperAdminInternships() {
                     </div>
                   )}
                   {!project.batch_id && (
-                    <div className="p-4 rounded-lg bg-gray-800 border border-gray-700 text-sm text-gray-400 mb-4">
+                    <div>
                       No batches created yet. Create a batch to make this project available to students.
                     </div>
                   )}
-                  <div className="layout-flex gap-md">
+                  <div>
                     {!project.batch_id && (
                       <Button
                         variant="outline"
                         size="sm"
-                        icon={FaPlus}
                         onClick={() => {
                           setSelectedProject(project.project_id);
                           setShowBatchForm(true);
@@ -511,7 +449,6 @@ export default function SuperAdminInternships() {
                     <Button
                       variant="outline"
                       size="sm"
-                      icon={FaEdit}
                       onClick={() => {
                         setFormData({
                           title: project.title,
@@ -545,57 +482,44 @@ export default function SuperAdminInternships() {
               message="No internship applications pending review."
             />
           ) : (
-            <div className="layout-flex-col gap-md" style={{ width: '100%' }}>
+            <div>
               {applications.map((app, idx) => (
                 <Card
                   key={app.id}
                   variant="elevated"
-                  className="animate-fadeIn"
-                  style={{ animationDelay: `${idx * 0.05}s`, width: '100%', boxSizing: 'border-box' }}
                 >
-                  <div className="layout-flex items-center justify-between gap-md">
-                    <div style={{ flex: 1 }}>
-                      <div className="layout-flex items-center gap-md mb-2">
-                        <div className={`p-2 rounded-lg ${
-                          app.status === 'approved' ? 'bg-emerald-500/20 border border-emerald-500/30' :
-                          app.status === 'rejected' ? 'bg-red-500/20 border border-red-500/30' :
-                          'bg-cyan-500/20 border border-cyan-500/30'
-                        }`}>
-                          {app.status === 'approved' ? (
-                            <FaCheckCircle className="text-emerald-400" />
-                          ) : app.status === 'rejected' ? (
-                            <FaTimesCircle className="text-red-400" />
-                          ) : (
-                            <FaClock className="text-cyan-400" />
-                          )}
-                        </div>
+                  <div>
+                    <div>
+                      <div>
+                        {app.status === 'approved' ? (
+                          <span>✓</span>
+                        ) : app.status === 'rejected' ? (
+                          <span>✗</span>
+                        ) : (
+                          <span>○</span>
+                        )}
+                      </div>
+                      <div>
+                        <CardTitle>{app.project_title || "Project"}</CardTitle>
                         <div>
-                          <CardTitle className="text-lg" style={{ margin: 0 }}>{app.project_title || "Project"}</CardTitle>
-                          <div className="text-xs text-gray-500 mt-1">
-                            Student: {app.student_email || "—"} | Applied: {formatDate(app.applied_at)}
-                          </div>
+                          Student: {app.student_email || "—"} | Applied: {formatDate(app.applied_at)}
                         </div>
                       </div>
-                      {app.note && (
-                        <div className="text-sm text-gray-400 ml-11 mt-2 p-3 rounded-lg bg-gray-800 border border-gray-700">
-                          {app.note}
-                        </div>
-                      )}
                     </div>
-                    <div className="layout-flex-col gap-md">
-                      <span className={`px-3 py-1.5 rounded-lg text-xs font-semibold ${
-                        app.status === 'approved' ? 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-300' :
-                        app.status === 'rejected' ? 'bg-red-500/10 border border-red-500/30 text-red-300' :
-                        'bg-cyan-500/10 border border-cyan-500/30 text-cyan-300'
-                      }`}>
+                    {app.note && (
+                      <div>
+                        {app.note}
+                      </div>
+                    )}
+                    <div>
+                      <span>
                         {app.status || "pending"}
                       </span>
                       {app.status === 'applied' && (
-                        <div className="layout-flex gap-md">
+                        <div>
                           <Button
                             variant="outline"
                             size="sm"
-                            icon={FaCheckCircle}
                             onClick={() => approveApplication(app.id)}
                           >
                             Approve
@@ -603,7 +527,6 @@ export default function SuperAdminInternships() {
                           <Button
                             variant="outline"
                             size="sm"
-                            icon={FaTimesCircle}
                             onClick={() => rejectApplication(app.id)}
                           >
                             Reject
@@ -621,4 +544,3 @@ export default function SuperAdminInternships() {
     </div>
   );
 }
-
