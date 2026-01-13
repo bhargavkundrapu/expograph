@@ -1,8 +1,8 @@
-export default function Solutions() {
+export default function SolutionsPage() {
   return (
-    <div style={{ padding: 20 }}>
+    <div>
       <h1>ExpoGraph IT Solutions</h1>
-      <p>Welcome to ExpoGraph Solutions page.Comming soooon............</p>
+      <p>Welcome to ExpoGraph Solutions page. Coming soon...</p>
     </div>
   );
 }

@@ -1,8 +1,8 @@
-export default function Academy() {
+export default function AcademyPage() {
   return (
-    <div style={{ padding: 20 }}>
+    <div>
       <h1>ExpoGraph Academy</h1>
-      <p>Welcome to ExpoGraph Academy page. Comming soooon............</p>
+      <p>Welcome to ExpoGraph Academy page. Coming soon...</p>
     </div>
   );
 }
