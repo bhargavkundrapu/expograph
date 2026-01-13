@@ -45,7 +45,7 @@ export default function SuperAdminHome() {
       title: "Certificates",
       desc: "Issue certificates to students",
       to: "/lms/superadmin/certificates",
-    });
+    }); 
   }
   
   if (checkFeatureFlag(isEnabled, FEATURE_FLAGS.SUPERADMIN_INTERNSHIPS, "micro_internships", "internships", "micro_internship")) {
