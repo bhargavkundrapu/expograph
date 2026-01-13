@@ -4,7 +4,6 @@ import * as Sentry from "@sentry/react";
 
 import "./index.css";
 import App from "./App.jsx";
-import { ThemeProvider } from "./contexts/ThemeContext";
 
 // Note: Cloudflare Stream analytics beacon 404 errors may appear in console Network tab.
 // These are harmless analytics requests and don't affect video playback.
@@ -21,10 +20,8 @@ if (import.meta.env.PROD && SENTRY_DSN) {
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <ThemeProvider>
-      <Sentry.ErrorBoundary fallback={<div>Something went wrong.</div>}>
-        <App />
-      </Sentry.ErrorBoundary>
-    </ThemeProvider>
+    <Sentry.ErrorBoundary fallback={<div>Something went wrong.</div>}>
+      <App />
+    </Sentry.ErrorBoundary>
   </StrictMode>
 );
