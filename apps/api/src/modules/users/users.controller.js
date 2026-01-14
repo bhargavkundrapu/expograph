@@ -13,6 +13,19 @@ const UpdateUserStatusSchema = z.object({
   isActive: z.boolean(),
 });
 
+const CreateStudentSchema = z.object({
+  email: z.string().email(),
+  fullName: z.string().min(1),
+  phone: z.string().optional(),
+  password: z.string().min(8).optional(),
+});
+
+const UpdateStudentSchema = z.object({
+  fullName: z.string().min(1).optional(),
+  email: z.string().email().optional(),
+  phone: z.string().optional(),
+});
+
 // Tenant Admin: List all users in tenant
 const listTenantUsers = asyncHandler(async (req, res) => {
   const rows = await repo.listTenantUsers({ tenantId: req.tenant.id });
@@ -89,11 +102,130 @@ const listTenantRoles = asyncHandler(async (req, res) => {
   res.json({ ok: true, data: rows });
 });
 
+// SuperAdmin: List all students
+const listStudents = asyncHandler(async (req, res) => {
+  const tenantId = req.tenant.id;
+  const search = req.query.search || "";
+  
+  const students = await repo.listStudents({ tenantId, search });
+  res.json({ ok: true, data: students });
+});
+
+// SuperAdmin: Get student with stats
+const getStudentWithStats = asyncHandler(async (req, res) => {
+  const tenantId = req.tenant.id;
+  const userId = req.params.userId;
+  
+  const student = await repo.getStudentWithStats({ tenantId, userId });
+  if (!student) throw new HttpError(404, "Student not found");
+  
+  res.json({ ok: true, data: student });
+});
+
+// SuperAdmin: Create student
+const createStudent = asyncHandler(async (req, res) => {
+  const tenantId = req.tenant.id;
+  const parsed = CreateStudentSchema.safeParse(req.body);
+  if (!parsed.success) throw new HttpError(400, "Invalid input", parsed.error.flatten());
+  
+  // Check if email exists
+  const existing = await repo.findUserByEmail(parsed.data.email);
+  if (existing) throw new HttpError(409, "Email already registered");
+  
+  // Hash password (default password if not provided)
+  const bcrypt = require("bcrypt");
+  const password = parsed.data.password || "Student@123"; // Default password
+  const passwordHash = await bcrypt.hash(password, 12);
+  
+  const student = await repo.createStudent({
+    tenantId,
+    email: parsed.data.email.trim().toLowerCase(),
+    fullName: parsed.data.fullName,
+    phone: parsed.data.phone || null,
+    passwordHash,
+  });
+  
+  await audit(req, {
+    action: "student.create",
+    entityType: "user",
+    entityId: student.id,
+    payload: { email: student.email },
+  });
+  
+  res.status(201).json({ ok: true, data: student });
+});
+
+// SuperAdmin: Update student details
+const updateStudent = asyncHandler(async (req, res) => {
+  const tenantId = req.tenant.id;
+  const userId = req.params.userId;
+  const parsed = UpdateStudentSchema.safeParse(req.body);
+  if (!parsed.success) throw new HttpError(400, "Invalid input", parsed.error.flatten());
+  
+  // Verify student exists
+  const student = await repo.getTenantUser({ tenantId, userId });
+  if (!student || student.role_name !== "Student") {
+    throw new HttpError(404, "Student not found");
+  }
+  
+  // Check email uniqueness if updating email
+  if (parsed.data.email) {
+    const existing = await repo.findUserByEmail(parsed.data.email);
+    if (existing && existing.id !== userId) {
+      throw new HttpError(409, "Email already in use");
+    }
+  }
+  
+  const updated = await repo.updateStudentDetails({
+    userId,
+    fullName: parsed.data.fullName,
+    email: parsed.data.email,
+    phone: parsed.data.phone,
+  });
+  
+  await audit(req, {
+    action: "student.update",
+    entityType: "user",
+    entityId: userId,
+    payload: parsed.data,
+  });
+  
+  res.json({ ok: true, data: updated });
+});
+
+// SuperAdmin: Delete student (soft delete)
+const deleteStudent = asyncHandler(async (req, res) => {
+  const tenantId = req.tenant.id;
+  const userId = req.params.userId;
+  
+  // Verify student exists
+  const student = await repo.getTenantUser({ tenantId, userId });
+  if (!student || student.role_name !== "Student") {
+    throw new HttpError(404, "Student not found");
+  }
+  
+  const deleted = await repo.deleteStudent({ userId });
+  
+  await audit(req, {
+    action: "student.delete",
+    entityType: "user",
+    entityId: userId,
+    payload: { email: student.email },
+  });
+  
+  res.json({ ok: true, data: deleted });
+});
+
 module.exports = {
   listTenantUsers,
   getTenantUser,
   updateUserRole,
   updateUserStatus,
   listTenantRoles,
+  listStudents,
+  getStudentWithStats,
+  createStudent,
+  updateStudent,
+  deleteStudent,
 };
 

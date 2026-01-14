@@ -80,6 +80,49 @@ async function updatePractice({ tenantId, practiceId, patch, updatedBy }) {
   return repo.updatePractice({ tenantId, practiceId, patch, updatedBy });
 }
 
+async function updateMcq({ tenantId, mcqId, patch, updatedBy }) {
+  return repo.updateMcq({ tenantId, mcqId, patch, updatedBy });
+}
+
+async function updateSlide({ tenantId, slideId, patch, updatedBy }) {
+  return repo.updateSlide({ tenantId, slideId, patch, updatedBy });
+}
+
+async function addMcq({ tenantId, lessonId, question, options, explanation, sortOrder, createdBy }) {
+  return repo.addMcq({ tenantId, lessonId, question, options, explanation, sortOrder, createdBy });
+}
+
+async function addSlide({ tenantId, lessonId, title, content, slideNumber, imageUrl, sortOrder, createdBy }) {
+  return repo.addSlide({ tenantId, lessonId, title, content, slideNumber, imageUrl, sortOrder, createdBy });
+}
+
+async function deleteMcq({ tenantId, mcqId }) {
+  return repo.deleteMcq({ tenantId, mcqId });
+}
+
+async function deleteSlide({ tenantId, slideId }) {
+  return repo.deleteSlide({ tenantId, slideId });
+}
+
+async function deleteResource({ tenantId, resourceId }) {
+  return repo.deleteResource({ tenantId, resourceId });
+}
+
+async function deletePractice({ tenantId, practiceId }) {
+  return repo.deletePractice({ tenantId, practiceId });
+}
+
+async function deleteCourse({ tenantId, courseId }) {
+  return repo.deleteCourse({ tenantId, courseId });
+}
+
+async function deleteModule({ tenantId, moduleId }) {
+  return repo.deleteModule({ tenantId, moduleId });
+}
+
+async function deleteLesson({ tenantId, lessonId }) {
+  return repo.deleteLesson({ tenantId, lessonId });
+}
 
 module.exports = {
   createCourseSmart,
@@ -90,5 +133,16 @@ module.exports = {
   updateLesson,
   updateResource,
   updatePractice,
+  updateMcq,
+  updateSlide,
+  addMcq,
+  addSlide,
+  deleteMcq,
+  deleteSlide,
+  deleteResource,
+  deletePractice,
+  deleteCourse,
+  deleteModule,
+  deleteLesson,
   ...repo,
 };

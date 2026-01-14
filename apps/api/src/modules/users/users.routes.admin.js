@@ -15,5 +15,12 @@ router.get("/users/:userId", ctrl.getTenantUser);
 router.patch("/users/:userId/role", ctrl.updateUserRole);
 router.patch("/users/:userId/status", ctrl.updateUserStatus);
 
+// SuperAdmin: Students management routes
+router.get("/students", ctrl.listStudents);
+router.get("/students/:userId", ctrl.getStudentWithStats);
+router.post("/students", ctrl.createStudent);
+router.patch("/students/:userId", ctrl.updateStudent);
+router.delete("/students/:userId", ctrl.deleteStudent);
+
 module.exports = { router };
 

@@ -396,6 +396,194 @@ async function updatePractice({ tenantId, practiceId, patch, updatedBy }) {
   return rows[0] || null;
 }
 
+async function deleteResource({ tenantId, resourceId }) {
+  const { rows } = await query(
+    `DELETE FROM resources
+     WHERE tenant_id=$1 AND id=$2
+     RETURNING *`,
+    [tenantId, resourceId]
+  );
+  return rows[0] || null;
+}
+
+async function deletePractice({ tenantId, practiceId }) {
+  const { rows } = await query(
+    `DELETE FROM practice_tasks
+     WHERE tenant_id=$1 AND id=$2
+     RETURNING *`,
+    [tenantId, practiceId]
+  );
+  return rows[0] || null;
+}
+
+// MCQ Functions
+async function listLessonMcqsAdmin({ tenantId, lessonId }) {
+  const { rows } = await query(
+    `SELECT *
+     FROM lesson_mcqs
+     WHERE tenant_id=$1 AND lesson_id=$2
+     ORDER BY sort_order ASC, created_at ASC`,
+    [tenantId, lessonId]
+  );
+  return rows;
+}
+
+async function addMcq({ tenantId, lessonId, question, options, explanation, sortOrder, createdBy }) {
+  const { rows } = await query(
+    `INSERT INTO lesson_mcqs (tenant_id, lesson_id, question, options, explanation, sort_order, created_by)
+     VALUES ($1,$2,$3,$4,$5,$6,$7)
+     RETURNING *`,
+    [tenantId, lessonId, question, JSON.stringify(options), explanation ?? null, sortOrder ?? 0, createdBy ?? null]
+  );
+  return rows[0];
+}
+
+async function updateMcq({ tenantId, mcqId, patch, updatedBy }) {
+  const fields = [];
+  const values = [];
+  let i = 1;
+
+  if (patch.question !== undefined) { fields.push(`question=$${i++}`); values.push(patch.question); }
+  if (patch.options !== undefined) { fields.push(`options=$${i++}`); values.push(JSON.stringify(patch.options)); }
+  if (patch.explanation !== undefined) { fields.push(`explanation=$${i++}`); values.push(patch.explanation); }
+  if (patch.sortOrder !== undefined) { fields.push(`sort_order=$${i++}`); values.push(patch.sortOrder); }
+
+  if (!fields.length) return null;
+
+  values.push(updatedBy);
+  values.push(tenantId);
+  values.push(mcqId);
+
+  const sql = `
+    UPDATE lesson_mcqs
+    SET ${fields.join(", ")},
+        updated_at=now()
+    WHERE tenant_id=$${i++}
+      AND id=$${i++}
+    RETURNING *
+  `;
+
+  const { rows } = await query(sql, values);
+  return rows[0] || null;
+}
+
+async function deleteMcq({ tenantId, mcqId }) {
+  const { rows } = await query(
+    `DELETE FROM lesson_mcqs
+     WHERE tenant_id=$1 AND id=$2
+     RETURNING *`,
+    [tenantId, mcqId]
+  );
+  return rows[0] || null;
+}
+
+// Slides Functions
+async function listLessonSlidesAdmin({ tenantId, lessonId }) {
+  // Try to order by sort_order, fallback to slide_number if column doesn't exist
+  try {
+    const { rows } = await query(
+      `SELECT *
+       FROM lesson_slides
+       WHERE tenant_id=$1 AND lesson_id=$2
+       ORDER BY sort_order ASC, slide_number ASC, created_at ASC`,
+      [tenantId, lessonId]
+    );
+    return rows;
+  } catch (err) {
+    // If sort_order doesn't exist, order by slide_number and created_at
+    if (err.message && err.message.includes('sort_order')) {
+      const { rows } = await query(
+        `SELECT *
+         FROM lesson_slides
+         WHERE tenant_id=$1 AND lesson_id=$2
+         ORDER BY slide_number ASC, created_at ASC`,
+        [tenantId, lessonId]
+      );
+      return rows;
+    }
+    throw err;
+  }
+}
+
+async function addSlide({ tenantId, lessonId, title, content, slideNumber, imageUrl, sortOrder, createdBy }) {
+  const { rows } = await query(
+    `INSERT INTO lesson_slides (tenant_id, lesson_id, title, content, slide_number, image_url, sort_order, created_by)
+     VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
+     RETURNING *`,
+    [tenantId, lessonId, title, content ?? null, slideNumber ?? 0, imageUrl ?? null, sortOrder ?? 0, createdBy ?? null]
+  );
+  return rows[0];
+}
+
+async function updateSlide({ tenantId, slideId, patch, updatedBy }) {
+  const fields = [];
+  const values = [];
+  let i = 1;
+
+  if (patch.title !== undefined) { fields.push(`title=$${i++}`); values.push(patch.title); }
+  if (patch.content !== undefined) { fields.push(`content=$${i++}`); values.push(patch.content); }
+  if (patch.slideNumber !== undefined) { fields.push(`slide_number=$${i++}`); values.push(patch.slideNumber); }
+  if (patch.imageUrl !== undefined) { fields.push(`image_url=$${i++}`); values.push(patch.imageUrl); }
+  if (patch.sortOrder !== undefined) { fields.push(`sort_order=$${i++}`); values.push(patch.sortOrder); }
+
+  if (!fields.length) return null;
+
+  values.push(updatedBy);
+  values.push(tenantId);
+  values.push(slideId);
+
+  const sql = `
+    UPDATE lesson_slides
+    SET ${fields.join(", ")},
+        updated_at=now()
+    WHERE tenant_id=$${i++}
+      AND id=$${i++}
+    RETURNING *
+  `;
+
+  const { rows } = await query(sql, values);
+  return rows[0] || null;
+}
+
+async function deleteSlide({ tenantId, slideId }) {
+  const { rows } = await query(
+    `DELETE FROM lesson_slides
+     WHERE tenant_id=$1 AND id=$2
+     RETURNING *`,
+    [tenantId, slideId]
+  );
+  return rows[0] || null;
+}
+
+async function deleteCourse({ tenantId, courseId }) {
+  const { rows } = await query(
+    `DELETE FROM courses
+     WHERE tenant_id=$1 AND id=$2
+     RETURNING *`,
+    [tenantId, courseId]
+  );
+  return rows[0] || null;
+}
+
+async function deleteModule({ tenantId, moduleId }) {
+  const { rows } = await query(
+    `DELETE FROM course_modules
+     WHERE tenant_id=$1 AND id=$2
+     RETURNING *`,
+    [tenantId, moduleId]
+  );
+  return rows[0] || null;
+}
+
+async function deleteLesson({ tenantId, lessonId }) {
+  const { rows } = await query(
+    `DELETE FROM lessons
+     WHERE tenant_id=$1 AND id=$2
+     RETURNING *`,
+    [tenantId, lessonId]
+  );
+  return rows[0] || null;
+}
 
 module.exports = {
   createCourse,
@@ -419,4 +607,17 @@ module.exports = {
   updatePractice,
   listLessonResourcesAdmin,
   listLessonPracticeAdmin,
+  listLessonMcqsAdmin,
+  addMcq,
+  updateMcq,
+  deleteMcq,
+  listLessonSlidesAdmin,
+  addSlide,
+  updateSlide,
+  deleteSlide,
+  deleteResource,
+  deletePractice,
+  deleteCourse,
+  deleteModule,
+  deleteLesson,
 };

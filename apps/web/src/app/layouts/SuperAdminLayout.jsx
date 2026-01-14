@@ -48,7 +48,7 @@ export default function SuperAdminLayout() {
   const menuItems = [
     { path: "/lms/superadmin", label: "Home", icon: FiHome },
     { path: "/lms/superadmin/students", label: "Students", icon: FiUsers },
-    { path: "/lms/superadmin/content", label: "Courses", icon: FiBook },
+    { path: "/lms/superadmin/courses", label: "Courses", icon: FiBook },
     { path: "/lms/superadmin/mentors", label: "Mentors", icon: FiUserCheck },
     { path: "/lms/superadmin/workshops", label: "Events", icon: FiCalendar },
     { path: "/lms/superadmin/podcasts", label: "Podcast Updates", icon: FiRadio },

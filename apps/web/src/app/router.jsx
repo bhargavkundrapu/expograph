@@ -12,6 +12,7 @@ import MentorHome from "../pages/lms/mentor/MentorHome";
 import StudentHome from "../pages/lms/student/StudentHome";
 import PublicOnly from "./PublicOnly";
 import SuperAdminContent from "../pages/lms/superadmin/SuperAdminContent";
+import SuperAdminCourses from "../pages/lms/superadmin/SuperAdminCourses";
 import SuperAdminCourseBuilder from "../pages/lms/superadmin/SuperAdminCourseBuilder";
 import SuperAdminModuleLessons from "../pages/lms/superadmin/SuperAdminModuleLessons";
 import SuperAdminLessonEditor from "../pages/lms/superadmin/SuperAdminLessonEditor";
@@ -24,6 +25,7 @@ import SuperAdminClientLab from "../pages/lms/superadmin/SuperAdminClientLab";
 import SuperAdminInternships from "../pages/lms/superadmin/SuperAdminInternships";
 import SuperAdminAnalytics from "../pages/lms/superadmin/SuperAdminAnalytics";
 import SuperAdminPlaceholder from "../pages/lms/superadmin/SuperAdminPlaceholder";
+import SuperAdminStudents from "../pages/lms/superadmin/SuperAdminStudents";
 import StudentCourses from "../pages/lms/student/StudentCourses";
 import StudentCourseTree from "../pages/lms/student/StudentCourseTree";
 import StudentLesson from "../pages/lms/student/StudentLesson";
@@ -72,6 +74,7 @@ export const router = createBrowserRouter([
         ),
         children: [
           { index: true, element: <SuperAdminHome /> },
+          { path: "courses", element: <SuperAdminCourses /> },
           { path: "content", element: <SuperAdminContent /> },
           { path: "content/:courseId", element: <SuperAdminCourseBuilder /> },
           { path: "content/:courseId/modules/:moduleId", element: <SuperAdminModuleLessons /> },
@@ -84,8 +87,8 @@ export const router = createBrowserRouter([
           { path: "internships", element: <SuperAdminInternships /> },
           { path: "client-lab", element: <SuperAdminClientLab /> },
           { path: "feature-flags", element: <SuperAdminFeatureFlags /> },
-          // Placeholder routes for menu items
-          { path: "students", element: <SuperAdminPlaceholder title="Students Management" /> },
+          // Students management
+          { path: "students", element: <SuperAdminStudents /> },
           { path: "mentors", element: <SuperAdminPlaceholder title="Mentors Management" /> },
           { path: "podcasts", element: <SuperAdminPlaceholder title="Podcast Updates" /> },
           { path: "playground", element: <SuperAdminPlaceholder title="Playground" /> },

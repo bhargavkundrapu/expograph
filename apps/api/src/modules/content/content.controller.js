@@ -83,6 +83,42 @@ const UpdatePracticeSchema = z.object({
   sortOrder: z.number().int().optional(),
 });
 
+const AddMcqSchema = z.object({
+  question: z.string().min(1),
+  options: z.array(z.object({
+    text: z.string().min(1),
+    isCorrect: z.boolean(),
+  })).min(2),
+  explanation: z.string().optional(),
+  sortOrder: z.number().int().optional(),
+});
+
+const UpdateMcqSchema = z.object({
+  question: z.string().min(1).optional(),
+  options: z.array(z.object({
+    text: z.string().min(1),
+    isCorrect: z.boolean(),
+  })).min(2).optional(),
+  explanation: z.string().optional(),
+  sortOrder: z.number().int().optional(),
+});
+
+const AddSlideSchema = z.object({
+  title: z.string().min(1),
+  content: z.string().optional(),
+  slideNumber: z.number().int().optional(),
+  imageUrl: z.string().url().optional(),
+  sortOrder: z.number().int().optional(),
+});
+
+const UpdateSlideSchema = z.object({
+  title: z.string().min(1).optional(),
+  content: z.string().optional(),
+  slideNumber: z.number().int().optional(),
+  imageUrl: z.string().url().optional(),
+  sortOrder: z.number().int().optional(),
+});
+
 // ---------- Admin ----------
 const createCourse = asyncHandler(async (req, res) => {
   const parsed = CreateCourseSchema.safeParse(req.body);
@@ -348,6 +384,173 @@ const courseTreeAdmin = asyncHandler(async (req, res) => {
   res.json({ ok: true, data: tree });
 });
 
+// MCQ endpoints
+const listLessonMcqsAdmin = asyncHandler(async (req, res) => {
+  const rows = await svc.listLessonMcqsAdmin({
+    tenantId: req.tenant.id,
+    lessonId: req.params.lessonId,
+  });
+  // Parse JSON options
+  const mcqs = rows.map(mcq => ({
+    ...mcq,
+    options: typeof mcq.options === 'string' ? JSON.parse(mcq.options) : mcq.options,
+  }));
+  res.json({ ok: true, data: mcqs });
+});
+
+const addMcq = asyncHandler(async (req, res) => {
+  const parsed = AddMcqSchema.safeParse(req.body);
+  if (!parsed.success) throw new HttpError(400, "Invalid input", parsed.error.flatten());
+
+  const created = await svc.addMcq({
+    tenantId: req.tenant.id,
+    lessonId: req.params.lessonId,
+    question: parsed.data.question,
+    options: parsed.data.options,
+    explanation: parsed.data.explanation,
+    sortOrder: parsed.data.sortOrder ?? 0,
+    createdBy: req.auth.userId,
+  });
+  delByPrefix(`pub:tenant:${req.tenant.id}:`);
+
+  res.status(201).json({ ok: true, data: { ...created, options: typeof created.options === 'string' ? JSON.parse(created.options) : created.options } });
+});
+
+const updateMcq = asyncHandler(async (req, res) => {
+  const parsed = UpdateMcqSchema.safeParse(req.body);
+  if (!parsed.success) throw new HttpError(400, "Invalid input", parsed.error.flatten());
+
+  const updated = await svc.updateMcq({
+    tenantId: req.tenant.id,
+    mcqId: req.params.mcqId,
+    patch: parsed.data,
+    updatedBy: req.auth.userId,
+  });
+
+  if (!updated) throw new HttpError(404, "MCQ not found");
+  res.json({ ok: true, data: { ...updated, options: typeof updated.options === 'string' ? JSON.parse(updated.options) : updated.options } });
+});
+
+const deleteMcq = asyncHandler(async (req, res) => {
+  const deleted = await svc.deleteMcq({
+    tenantId: req.tenant.id,
+    mcqId: req.params.mcqId,
+  });
+
+  if (!deleted) throw new HttpError(404, "MCQ not found");
+  delByPrefix(`pub:tenant:${req.tenant.id}:`);
+  res.json({ ok: true, data: deleted });
+});
+
+// Slides endpoints
+const listLessonSlidesAdmin = asyncHandler(async (req, res) => {
+  const rows = await svc.listLessonSlidesAdmin({
+    tenantId: req.tenant.id,
+    lessonId: req.params.lessonId,
+  });
+  res.json({ ok: true, data: rows });
+});
+
+const addSlide = asyncHandler(async (req, res) => {
+  const parsed = AddSlideSchema.safeParse(req.body);
+  if (!parsed.success) throw new HttpError(400, "Invalid input", parsed.error.flatten());
+
+  const created = await svc.addSlide({
+    tenantId: req.tenant.id,
+    lessonId: req.params.lessonId,
+    title: parsed.data.title,
+    content: parsed.data.content,
+    slideNumber: parsed.data.slideNumber ?? 0,
+    imageUrl: parsed.data.imageUrl,
+    sortOrder: parsed.data.sortOrder ?? 0,
+    createdBy: req.auth.userId,
+  });
+  delByPrefix(`pub:tenant:${req.tenant.id}:`);
+
+  res.status(201).json({ ok: true, data: created });
+});
+
+const updateSlide = asyncHandler(async (req, res) => {
+  const parsed = UpdateSlideSchema.safeParse(req.body);
+  if (!parsed.success) throw new HttpError(400, "Invalid input", parsed.error.flatten());
+
+  const updated = await svc.updateSlide({
+    tenantId: req.tenant.id,
+    slideId: req.params.slideId,
+    patch: parsed.data,
+    updatedBy: req.auth.userId,
+  });
+
+  if (!updated) throw new HttpError(404, "Slide not found");
+  res.json({ ok: true, data: updated });
+});
+
+const deleteSlide = asyncHandler(async (req, res) => {
+  const deleted = await svc.deleteSlide({
+    tenantId: req.tenant.id,
+    slideId: req.params.slideId,
+  });
+
+  if (!deleted) throw new HttpError(404, "Slide not found");
+  delByPrefix(`pub:tenant:${req.tenant.id}:`);
+  res.json({ ok: true, data: deleted });
+});
+
+const deleteResource = asyncHandler(async (req, res) => {
+  const deleted = await svc.deleteResource({
+    tenantId: req.tenant.id,
+    resourceId: req.params.resourceId,
+  });
+
+  if (!deleted) throw new HttpError(404, "Resource not found");
+  delByPrefix(`pub:tenant:${req.tenant.id}:`);
+  res.json({ ok: true, data: deleted });
+});
+
+const deletePractice = asyncHandler(async (req, res) => {
+  const deleted = await svc.deletePractice({
+    tenantId: req.tenant.id,
+    practiceId: req.params.practiceId,
+  });
+
+  if (!deleted) throw new HttpError(404, "Practice not found");
+  delByPrefix(`pub:tenant:${req.tenant.id}:`);
+  res.json({ ok: true, data: deleted });
+});
+
+const deleteCourse = asyncHandler(async (req, res) => {
+  const deleted = await svc.deleteCourse({
+    tenantId: req.tenant.id,
+    courseId: req.params.courseId,
+  });
+
+  if (!deleted) throw new HttpError(404, "Course not found");
+  delByPrefix(`pub:tenant:${req.tenant.id}:`);
+  res.json({ ok: true, data: deleted });
+});
+
+const deleteModule = asyncHandler(async (req, res) => {
+  const deleted = await svc.deleteModule({
+    tenantId: req.tenant.id,
+    moduleId: req.params.moduleId,
+  });
+
+  if (!deleted) throw new HttpError(404, "Module not found");
+  delByPrefix(`pub:tenant:${req.tenant.id}:`);
+  res.json({ ok: true, data: deleted });
+});
+
+const deleteLesson = asyncHandler(async (req, res) => {
+  const deleted = await svc.deleteLesson({
+    tenantId: req.tenant.id,
+    lessonId: req.params.lessonId,
+  });
+
+  if (!deleted) throw new HttpError(404, "Lesson not found");
+  delByPrefix(`pub:tenant:${req.tenant.id}:`);
+  res.json({ ok: true, data: deleted });
+});
+
 // ---------- Public ----------
 const listCoursesPublic = asyncHandler(async (req, res) => {
   const tenantId = req.tenant.id;
@@ -424,8 +627,19 @@ module.exports = {
   courseTreeAdmin,
   listLessonResourcesAdmin,
   listLessonPracticeAdmin,
-
-   
+  listLessonMcqsAdmin,
+  addMcq,
+  updateMcq,
+  deleteMcq,
+  listLessonSlidesAdmin,
+  addSlide,
+  updateSlide,
+  deleteSlide,
+  deleteResource,
+  deletePractice,
+  deleteCourse,
+  deleteModule,
+  deleteLesson,
 
   // public
   listCoursesPublic,
