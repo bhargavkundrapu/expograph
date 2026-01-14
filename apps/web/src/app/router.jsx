@@ -1,5 +1,6 @@
 import { createBrowserRouter, Outlet } from "react-router-dom";
 import RequireRole from "./RequireRole";
+import SuperAdminLayout from "./layouts/SuperAdminLayout";
 
 import AcademyPage from "../pages/academy/AcademyPage";
 import SolutionsPage from "../pages/solutions/SolutionsPage";
@@ -22,6 +23,7 @@ import SuperAdminFeatureFlags from "../pages/lms/superadmin/SuperAdminFeatureFla
 import SuperAdminClientLab from "../pages/lms/superadmin/SuperAdminClientLab";
 import SuperAdminInternships from "../pages/lms/superadmin/SuperAdminInternships";
 import SuperAdminAnalytics from "../pages/lms/superadmin/SuperAdminAnalytics";
+import SuperAdminPlaceholder from "../pages/lms/superadmin/SuperAdminPlaceholder";
 import StudentCourses from "../pages/lms/student/StudentCourses";
 import StudentCourseTree from "../pages/lms/student/StudentCourseTree";
 import StudentLesson from "../pages/lms/student/StudentLesson";
@@ -65,7 +67,7 @@ export const router = createBrowserRouter([
         path: "/lms/superadmin",
         element: (
           <RequireRole allow={["SuperAdmin"]}>
-            <PortalLayout />
+            <SuperAdminLayout />
           </RequireRole>
         ),
         children: [
@@ -82,6 +84,12 @@ export const router = createBrowserRouter([
           { path: "internships", element: <SuperAdminInternships /> },
           { path: "client-lab", element: <SuperAdminClientLab /> },
           { path: "feature-flags", element: <SuperAdminFeatureFlags /> },
+          // Placeholder routes for menu items
+          { path: "students", element: <SuperAdminPlaceholder title="Students Management" /> },
+          { path: "mentors", element: <SuperAdminPlaceholder title="Mentors Management" /> },
+          { path: "podcasts", element: <SuperAdminPlaceholder title="Podcast Updates" /> },
+          { path: "playground", element: <SuperAdminPlaceholder title="Playground" /> },
+          { path: "settings", element: <SuperAdminPlaceholder title="Settings" /> },
         ],
       },
       {
