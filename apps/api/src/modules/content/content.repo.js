@@ -479,8 +479,17 @@ async function deleteMcq({ tenantId, mcqId }) {
 
 // Slides Functions
 async function listLessonSlidesAdmin({ tenantId, lessonId }) {
-  // Try to order by sort_order, fallback to slide_number if column doesn't exist
-  try {
+  // Check if sort_order column exists first
+  const columnCheck = await query(
+    `SELECT column_name FROM information_schema.columns 
+     WHERE table_schema = 'public' 
+     AND table_name = 'lesson_slides' 
+     AND column_name = 'sort_order'`
+  );
+  
+  const hasSortOrder = columnCheck.rows.length > 0;
+  
+  if (hasSortOrder) {
     const { rows } = await query(
       `SELECT *
        FROM lesson_slides
@@ -489,33 +498,56 @@ async function listLessonSlidesAdmin({ tenantId, lessonId }) {
       [tenantId, lessonId]
     );
     return rows;
-  } catch (err) {
-    // If sort_order doesn't exist, order by slide_number and created_at
-    if (err.message && err.message.includes('sort_order')) {
-      const { rows } = await query(
-        `SELECT *
-         FROM lesson_slides
-         WHERE tenant_id=$1 AND lesson_id=$2
-         ORDER BY slide_number ASC, created_at ASC`,
-        [tenantId, lessonId]
-      );
-      return rows;
-    }
-    throw err;
+  } else {
+    // Column doesn't exist, order by slide_number and created_at
+    const { rows } = await query(
+      `SELECT *
+       FROM lesson_slides
+       WHERE tenant_id=$1 AND lesson_id=$2
+       ORDER BY slide_number ASC, created_at ASC`,
+      [tenantId, lessonId]
+    );
+    return rows;
   }
 }
 
 async function addSlide({ tenantId, lessonId, title, content, slideNumber, imageUrl, sortOrder, createdBy }) {
-  const { rows } = await query(
-    `INSERT INTO lesson_slides (tenant_id, lesson_id, title, content, slide_number, image_url, sort_order, created_by)
-     VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
-     RETURNING *`,
-    [tenantId, lessonId, title, content ?? null, slideNumber ?? 0, imageUrl ?? null, sortOrder ?? 0, createdBy ?? null]
+  // Check if sort_order column exists
+  const checkColumn = await query(
+    `SELECT column_name FROM information_schema.columns 
+     WHERE table_name = 'lesson_slides' AND column_name = 'sort_order'`
   );
-  return rows[0];
+  
+  const hasSortOrder = checkColumn.rows.length > 0;
+  
+  if (hasSortOrder) {
+    const { rows } = await query(
+      `INSERT INTO lesson_slides (tenant_id, lesson_id, title, content, slide_number, image_url, sort_order, created_by)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
+       RETURNING *`,
+      [tenantId, lessonId, title, content ?? null, slideNumber ?? 0, imageUrl ?? null, sortOrder ?? 0, createdBy ?? null]
+    );
+    return rows[0];
+  } else {
+    // Insert without sort_order column
+    const { rows } = await query(
+      `INSERT INTO lesson_slides (tenant_id, lesson_id, title, content, slide_number, image_url, created_by)
+       VALUES ($1,$2,$3,$4,$5,$6,$7)
+       RETURNING *`,
+      [tenantId, lessonId, title, content ?? null, slideNumber ?? 0, imageUrl ?? null, createdBy ?? null]
+    );
+    return rows[0];
+  }
 }
 
 async function updateSlide({ tenantId, slideId, patch, updatedBy }) {
+  // Check if sort_order column exists
+  const checkColumn = await query(
+    `SELECT column_name FROM information_schema.columns 
+     WHERE table_name = 'lesson_slides' AND column_name = 'sort_order'`
+  );
+  const hasSortOrder = checkColumn.rows.length > 0;
+
   const fields = [];
   const values = [];
   let i = 1;
@@ -524,7 +556,7 @@ async function updateSlide({ tenantId, slideId, patch, updatedBy }) {
   if (patch.content !== undefined) { fields.push(`content=$${i++}`); values.push(patch.content); }
   if (patch.slideNumber !== undefined) { fields.push(`slide_number=$${i++}`); values.push(patch.slideNumber); }
   if (patch.imageUrl !== undefined) { fields.push(`image_url=$${i++}`); values.push(patch.imageUrl); }
-  if (patch.sortOrder !== undefined) { fields.push(`sort_order=$${i++}`); values.push(patch.sortOrder); }
+  if (patch.sortOrder !== undefined && hasSortOrder) { fields.push(`sort_order=$${i++}`); values.push(patch.sortOrder); }
 
   if (!fields.length) return null;
 
