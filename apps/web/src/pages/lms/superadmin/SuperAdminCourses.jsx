@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useAuth } from "../../../app/providers/AuthProvider";
 import { apiFetch } from "../../../services/api";
+import { PageLoading, ButtonLoading } from "../../../Components/common/LoadingStates";
 import {
   FiBook,
   FiPlus,
@@ -25,7 +27,28 @@ import {
 
 export default function SuperAdminCourses() {
   const { token } = useAuth();
-  const [view, setView] = useState("cards"); // "cards" | "list" | "course" | "module" | "lesson" | "create"
+  const navigate = useNavigate();
+  const params = useParams();
+  const location = useLocation();
+  
+  // Determine view from route
+  const getViewFromPath = () => {
+    const path = location.pathname;
+    const { courseId, moduleId, lessonId } = params;
+    
+    if (lessonId) {
+      if (path.includes("/edit")) return "lesson-edit";
+      return "lesson";
+    }
+    if (moduleId) return "module";
+    if (courseId) return "course";
+    if (path.includes("/create")) return "create";
+    if (path.includes("/list")) return "list";
+    if (path.includes("/cards")) return "cards";
+    return "cards"; // default
+  };
+  
+  const view = getViewFromPath();
   const [courses, setCourses] = useState([]);
   const [filteredCourses, setFilteredCourses] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -96,6 +119,46 @@ export default function SuperAdminCourses() {
     }
   }, [searchQuery, courses]);
 
+  // Load course/module/lesson data when route params change
+  useEffect(() => {
+    if (!token || !params.courseId || courses.length === 0) return;
+
+    const loadCourseData = async () => {
+      const course = courses.find((c) => String(c.id) === String(params.courseId));
+      if (!course) return;
+
+      if (params.moduleId) {
+        // Loading module view
+        const tree = await fetchCourseTree(course.id);
+        if (tree) {
+          const module = tree.modules?.find((m) => String(m.id) === String(params.moduleId));
+          if (module) {
+            const moduleLessons = tree.lessons?.filter((l) => String(l.module_id) === String(params.moduleId)) || [];
+            setSelectedCourse({ ...course, modules: tree.modules || [], lessons: tree.lessons || [] });
+            setSelectedModule({ ...module, lessons: moduleLessons });
+            
+            if (params.lessonId) {
+              // Loading lesson view
+              const lesson = moduleLessons.find((l) => String(l.id) === String(params.lessonId));
+              if (lesson) {
+                await openLesson(lesson);
+              }
+            }
+          }
+        }
+      } else if (view === "course" || view === "create") {
+        // Just course view - load course tree
+        const tree = await fetchCourseTree(course.id);
+        if (tree) {
+          setSelectedCourse({ ...course, modules: tree.modules || [], lessons: tree.lessons || [] });
+        }
+      }
+    };
+
+    loadCourseData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params.courseId, params.moduleId, params.lessonId, courses.length, view, token]);
+
   const fetchCourseTree = async (courseId) => {
     try {
       const res = await apiFetch(`/api/v1/admin/courses/${courseId}/tree`, { token });
@@ -124,7 +187,7 @@ export default function SuperAdminCourses() {
 
       if (res?.ok) {
         await fetchCourses();
-        setView("list");
+        navigate("/lms/superadmin/courses/list");
         setCourseForm({ title: "", description: "", level: "" });
       }
     } catch (error) {
@@ -182,7 +245,7 @@ export default function SuperAdminCourses() {
           setSelectedCourse({ ...selectedCourse, modules: tree.modules, lessons: tree.lessons });
         }
         setLessonForm({ title: "", summary: "" });
-        setView("module");
+        navigate(`/lms/superadmin/courses/${selectedCourse.id}/modules/${module.id}`);
       }
     } catch (error) {
       alert(error?.message || "Failed to create lesson");
@@ -220,14 +283,14 @@ export default function SuperAdminCourses() {
     const tree = await fetchCourseTree(course.id);
     if (tree) {
       setSelectedCourse({ ...course, modules: tree.modules || [], lessons: tree.lessons || [] });
-      setView("course");
+      navigate(`/lms/superadmin/courses/${course.id}`);
     }
   };
 
   const openModule = (module) => {
     const moduleLessons = selectedCourse?.lessons?.filter((l) => l.module_id === module.id) || [];
     setSelectedModule({ ...module, lessons: moduleLessons });
-    setView("module");
+    navigate(`/lms/superadmin/courses/${selectedCourse.id}/modules/${module.id}`);
   };
 
   const openLesson = async (lesson) => {
@@ -271,7 +334,7 @@ export default function SuperAdminCourses() {
         mcqs: mcqsRes?.ok ? mcqsRes.data : [],
         slides: slidesRes?.ok ? slidesRes.data : [],
       });
-      setView("lesson");
+      navigate(`/lms/superadmin/courses/${selectedCourse.id}/modules/${selectedModule?.id || lesson.module_id}/lessons/${lesson.id}`);
     } catch (error) {
       // Silently handle errors - they're already caught in Promise.all
     } finally {
@@ -299,7 +362,7 @@ export default function SuperAdminCourses() {
       await apiFetch(`/api/v1/admin/courses/${courseId}`, { method: "DELETE", token });
       await fetchCourses();
       if (selectedCourse?.id === courseId) {
-        setView("list");
+        navigate("/lms/superadmin/courses/list");
         setSelectedCourse(null);
       }
     } catch (error) {
@@ -320,7 +383,7 @@ export default function SuperAdminCourses() {
         setSelectedCourse({ ...selectedCourse, modules: tree.modules || [], lessons: tree.lessons || [] });
       }
       if (selectedModule?.id === moduleId) {
-        setView("course");
+        navigate(`/lms/superadmin/courses/${selectedCourse.id}`);
         setSelectedModule(null);
       }
     } catch (error) {
@@ -343,7 +406,7 @@ export default function SuperAdminCourses() {
         setSelectedModule({ ...selectedModule, lessons: moduleLessons });
       }
       if (selectedLesson?.id === lessonId) {
-        setView("module");
+        navigate(`/lms/superadmin/courses/${selectedCourse.id}/modules/${module.id}`);
         setSelectedLesson(null);
       }
     } catch (error) {
@@ -370,7 +433,7 @@ export default function SuperAdminCourses() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              onClick={() => setView("list")}
+              onClick={() => navigate("/lms/superadmin/courses/list")}
               className="bg-white rounded-2xl p-8 border border-slate-200 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
             >
               <div className="flex items-center justify-between mb-6">
@@ -395,7 +458,7 @@ export default function SuperAdminCourses() {
               transition={{ delay: 0.2 }}
               onClick={() => {
                 setCourseForm({ title: "", description: "", level: "" });
-                setView("create");
+                navigate("/lms/superadmin/courses/create");
               }}
               className="bg-white rounded-2xl p-8 border border-slate-200 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
             >
@@ -422,7 +485,7 @@ export default function SuperAdminCourses() {
           <div className="flex items-center justify-between mb-8">
             <div>
               <button
-                onClick={() => setView("cards")}
+                onClick={() => navigate("/lms/superadmin/courses")}
                 className="text-slate-600 hover:text-slate-900 mb-2 flex items-center gap-2"
               >
                 <FiArrowLeft className="w-4 h-4" />
@@ -435,7 +498,7 @@ export default function SuperAdminCourses() {
             <button
               onClick={() => {
                 setCourseForm({ title: "", description: "", level: "" });
-                setView("create");
+                navigate("/lms/superadmin/courses/create");
               }}
               className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"
             >
@@ -541,7 +604,7 @@ export default function SuperAdminCourses() {
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold text-slate-900">Create New Course</h2>
               <button
-                onClick={() => setView("list")}
+                onClick={() => navigate("/lms/superadmin/courses/list")}
                 className="p-2 rounded-lg hover:bg-slate-100 transition-colors"
               >
                 <FiX className="w-6 h-6 text-slate-600" />
@@ -593,11 +656,17 @@ export default function SuperAdminCourses() {
                   disabled={saving || !courseForm.title}
                   className="flex-1 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
-                  <FiSave className="w-5 h-5" />
-                  {saving ? "Creating..." : "Create Course"}
+                  {saving ? (
+                    <ButtonLoading text="Creating..." size="sm" />
+                  ) : (
+                    <>
+                      <FiSave className="w-5 h-5" />
+                      Create Course
+                    </>
+                  )}
                 </button>
                 <button
-                  onClick={() => setView("list")}
+                  onClick={() => navigate("/lms/superadmin/courses/list")}
                   className="px-6 py-3 bg-slate-100 text-slate-700 font-semibold rounded-xl hover:bg-slate-200 transition-colors"
                 >
                   Cancel
@@ -621,7 +690,7 @@ export default function SuperAdminCourses() {
           {/* Header */}
           <div className="mb-8">
             <button
-              onClick={() => setView("list")}
+              onClick={() => navigate("/lms/superadmin/courses/list")}
               className="text-slate-600 hover:text-slate-900 mb-4 flex items-center gap-2"
             >
               <FiArrowLeft className="w-4 h-4" />
@@ -643,7 +712,7 @@ export default function SuperAdminCourses() {
                 <button
                   onClick={() => {
                     setModuleForm({ title: "" });
-                    setView("create-module");
+                    navigate(`/lms/superadmin/courses/${selectedCourse.id}/modules/create`);
                   }}
                   className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"
                 >
@@ -663,7 +732,7 @@ export default function SuperAdminCourses() {
               <button
                 onClick={() => {
                   setModuleForm({ title: "" });
-                  setView("create-module");
+                    navigate(`/lms/superadmin/courses/${selectedCourse.id}/modules/create`);
                 }}
                 className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl"
               >
@@ -777,7 +846,7 @@ export default function SuperAdminCourses() {
             <div className="flex items-center justify-between mb-6">
               <div>
                 <button
-                  onClick={() => setView("course")}
+                  onClick={() => navigate(`/lms/superadmin/courses/${selectedCourse.id}`)}
                   className="text-slate-600 hover:text-slate-900 mb-2 flex items-center gap-2"
                 >
                   <FiArrowLeft className="w-4 h-4" />
@@ -787,7 +856,7 @@ export default function SuperAdminCourses() {
                 <p className="text-slate-600 mt-1">Course: {selectedCourse.title}</p>
               </div>
               <button
-                onClick={() => setView("course")}
+                onClick={() => navigate(`/lms/superadmin/courses/${selectedCourse.id}`)}
                 className="p-2 rounded-lg hover:bg-slate-100 transition-colors"
               >
                 <FiX className="w-6 h-6 text-slate-600" />
@@ -814,11 +883,17 @@ export default function SuperAdminCourses() {
                   disabled={saving || !moduleForm.title}
                   className="flex-1 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
-                  <FiSave className="w-5 h-5" />
-                  {saving ? "Creating..." : "Create Module"}
+                  {saving ? (
+                    <ButtonLoading text="Creating..." size="sm" />
+                  ) : (
+                    <>
+                      <FiSave className="w-5 h-5" />
+                      Create Module
+                    </>
+                  )}
                 </button>
                 <button
-                  onClick={() => setView("course")}
+                  onClick={() => navigate(`/lms/superadmin/courses/${selectedCourse.id}`)}
                   className="px-6 py-3 bg-slate-100 text-slate-700 font-semibold rounded-xl hover:bg-slate-200 transition-colors"
                 >
                   Cancel
@@ -841,7 +916,7 @@ export default function SuperAdminCourses() {
           {/* Header */}
           <div className="mb-8">
             <button
-              onClick={() => setView("course")}
+              onClick={() => navigate(`/lms/superadmin/courses/${selectedCourse.id}`)}
               className="text-slate-600 hover:text-slate-900 mb-4 flex items-center gap-2"
             >
               <FiArrowLeft className="w-4 h-4" />
@@ -863,7 +938,7 @@ export default function SuperAdminCourses() {
                 <button
                   onClick={() => {
                     setLessonForm({ title: "", summary: "" });
-                    setView("create-lesson");
+                    navigate(`/lms/superadmin/courses/${selectedCourse.id}/modules/${selectedModule.id}/lessons/create`);
                   }}
                   className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"
                 >
@@ -883,7 +958,7 @@ export default function SuperAdminCourses() {
               <button
                 onClick={() => {
                   setLessonForm({ title: "", summary: "" });
-                  setView("create-lesson");
+                  navigate(`/lms/superadmin/courses/${selectedCourse.id}/modules/${selectedModule.id}/lessons/create`);
                 }}
                 className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl"
               >
@@ -951,7 +1026,7 @@ export default function SuperAdminCourses() {
             <div className="flex items-center justify-between mb-6">
               <div>
                 <button
-                  onClick={() => setView("module")}
+                  onClick={() => navigate(`/lms/superadmin/courses/${selectedCourse.id}/modules/${selectedModule.id}`)}
                   className="text-slate-600 hover:text-slate-900 mb-2 flex items-center gap-2"
                 >
                   <FiArrowLeft className="w-4 h-4" />
@@ -961,7 +1036,7 @@ export default function SuperAdminCourses() {
                 <p className="text-slate-600 mt-1">Module: {selectedModule.title}</p>
               </div>
               <button
-                onClick={() => setView("module")}
+                onClick={() => navigate(`/lms/superadmin/courses/${selectedCourse.id}/modules/${selectedModule.id}`)}
                 className="p-2 rounded-lg hover:bg-slate-100 transition-colors"
               >
                 <FiX className="w-6 h-6 text-slate-600" />
@@ -999,11 +1074,17 @@ export default function SuperAdminCourses() {
                   disabled={saving || !lessonForm.title}
                   className="flex-1 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
-                  <FiSave className="w-5 h-5" />
-                  {saving ? "Creating..." : "Create Lesson"}
+                  {saving ? (
+                    <ButtonLoading text="Creating..." size="sm" />
+                  ) : (
+                    <>
+                      <FiSave className="w-5 h-5" />
+                      Create Lesson
+                    </>
+                  )}
                 </button>
                 <button
-                  onClick={() => setView("module")}
+                  onClick={() => navigate(`/lms/superadmin/courses/${selectedCourse.id}/modules/${selectedModule.id}`)}
                   className="px-6 py-3 bg-slate-100 text-slate-700 font-semibold rounded-xl hover:bg-slate-200 transition-colors"
                 >
                   Cancel
@@ -1039,7 +1120,7 @@ export default function SuperAdminCourses() {
                       setSelectedModule({ ...module, lessons: moduleLessons });
                     }
                   }
-                  setView("module");
+                  navigate(`/lms/superadmin/courses/${selectedCourse.id}/modules/${module.id}`);
                 } else if (selectedCourse && selectedLesson) {
                   // If module context is lost, find it from the lesson's module_id
                   const tree = await fetchCourseTree(selectedCourse.id);
@@ -1049,15 +1130,15 @@ export default function SuperAdminCourses() {
                       const moduleLessons = tree.lessons?.filter((l) => l.module_id === module.id) || [];
                       setSelectedModule({ ...module, lessons: moduleLessons });
                       setSelectedCourse({ ...selectedCourse, modules: tree.modules || [], lessons: tree.lessons || [] });
-                      setView("module");
+                      navigate(`/lms/superadmin/courses/${selectedCourse.id}/modules/${module.id}`);
                     } else {
-                      setView("course");
+                      navigate(`/lms/superadmin/courses/${selectedCourse.id}`);
                     }
                   } else {
-                    setView("course");
+                    navigate(`/lms/superadmin/courses/${selectedCourse.id}`);
                   }
                 } else {
-                  setView("course");
+                  navigate(`/lms/superadmin/courses/${selectedCourse.id}`);
                 }
               }}
               className="text-slate-600 hover:text-slate-900 mb-4 flex items-center gap-2"
@@ -1083,8 +1164,14 @@ export default function SuperAdminCourses() {
                   disabled={saving}
                   className="px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                 >
-                  <FiSave className="w-5 h-5" />
-                  {saving ? "Saving..." : "Save All Changes"}
+                  {saving ? (
+                    <ButtonLoading text="Saving..." size="sm" />
+                  ) : (
+                    <>
+                      <FiSave className="w-5 h-5" />
+                      Save All Changes
+                    </>
+                  )}
                 </button>
               </div>
             </div>

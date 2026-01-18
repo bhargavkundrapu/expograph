@@ -22,5 +22,12 @@ router.post("/students", ctrl.createStudent);
 router.patch("/students/:userId", ctrl.updateStudent);
 router.delete("/students/:userId", ctrl.deleteStudent);
 
+// SuperAdmin: Mentors management routes
+router.get("/mentors", ctrl.listMentors);
+router.get("/mentors/:mentorId", ctrl.getMentorWithStudents);
+router.post("/mentors", ctrl.createMentor);
+router.patch("/mentors/:mentorId", ctrl.updateMentor);
+router.delete("/mentors/:mentorId", ctrl.deleteMentor);
+
 module.exports = { router };
 

@@ -8,5 +8,7 @@ const router = express.Router();
 router.use(requireAuth, requirePermission("certificates:issue"));
 
 router.post("/certificates/issue", ctrl.issueAdmin);
+router.get("/certificates", ctrl.listAllCertificates);
+router.get("/certificates/:id", ctrl.getCertificate);
 
 module.exports = { router };

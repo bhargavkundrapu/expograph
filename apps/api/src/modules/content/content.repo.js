@@ -479,74 +479,145 @@ async function deleteMcq({ tenantId, mcqId }) {
 
 // Slides Functions
 async function listLessonSlidesAdmin({ tenantId, lessonId }) {
-  // Check if sort_order column exists first
-  const columnCheck = await query(
-    `SELECT column_name FROM information_schema.columns 
-     WHERE table_schema = 'public' 
-     AND table_name = 'lesson_slides' 
-     AND column_name = 'sort_order'`
-  );
-  
-  const hasSortOrder = columnCheck.rows.length > 0;
-  
-  if (hasSortOrder) {
-    const { rows } = await query(
-      `SELECT *
-       FROM lesson_slides
-       WHERE tenant_id=$1 AND lesson_id=$2
-       ORDER BY sort_order ASC, slide_number ASC, created_at ASC`,
-      [tenantId, lessonId]
-    );
-    return rows;
-  } else {
-    // Column doesn't exist, order by slide_number and created_at
-    const { rows } = await query(
-      `SELECT *
-       FROM lesson_slides
-       WHERE tenant_id=$1 AND lesson_id=$2
-       ORDER BY slide_number ASC, created_at ASC`,
-      [tenantId, lessonId]
-    );
-    return rows;
+  // Wrap everything in try-catch to handle any possible error
+  try {
+    // First, try query with sort_order (if column exists)
+    try {
+      const { rows } = await query(
+        `SELECT *
+         FROM lesson_slides
+         WHERE tenant_id=$1 AND lesson_id=$2
+         ORDER BY sort_order ASC, slide_number ASC, created_at ASC`,
+        [tenantId, lessonId]
+      );
+      return rows || [];
+    } catch (primaryErr) {
+      // Check if it's a column error (42703 = column does not exist)
+      const isColumnError = primaryErr.code === '42703' || 
+                           (primaryErr.message && (
+                             primaryErr.message.includes('sort_order') || 
+                             primaryErr.message.includes('column') ||
+                             primaryErr.message.toLowerCase().includes('does not exist')
+                           ));
+      
+      // If it's a column error, try without sort_order
+      if (isColumnError) {
+        try {
+          const { rows } = await query(
+            `SELECT *
+             FROM lesson_slides
+             WHERE tenant_id=$1 AND lesson_id=$2
+             ORDER BY slide_number ASC, created_at ASC`,
+            [tenantId, lessonId]
+          );
+          return rows || [];
+        } catch (fallbackErr) {
+          // If fallback also fails (table doesn't exist, etc.), return empty
+          console.error("[listLessonSlidesAdmin] Fallback query failed:", fallbackErr.code, fallbackErr.message);
+          return [];
+        }
+      }
+      
+      // If it's not a column error, check if table exists
+      const isTableError = primaryErr.code === '42P01' || 
+                          (primaryErr.message && primaryErr.message.includes('relation') && primaryErr.message.includes('does not exist'));
+      
+      if (isTableError) {
+        console.error("[listLessonSlidesAdmin] Table lesson_slides does not exist. Please run migration 012_lesson_mcq_slides.sql");
+        return [];
+      }
+      
+      // For any other error, log and return empty array
+      console.error("[listLessonSlidesAdmin] Unexpected error:", primaryErr.code, primaryErr.message);
+      return [];
+    }
+  } catch (outerErr) {
+    // Catch any unexpected errors (synchronous errors, etc.)
+    console.error("[listLessonSlidesAdmin] Outer catch - unexpected error:", outerErr);
+    return [];
   }
 }
 
 async function addSlide({ tenantId, lessonId, title, content, slideNumber, imageUrl, sortOrder, createdBy }) {
+  // Check if table exists first
+  try {
+    const tableCheck = await query(
+      `SELECT table_name FROM information_schema.tables 
+       WHERE table_schema = 'public' 
+       AND table_name = 'lesson_slides'`
+    );
+    
+    if (tableCheck.rows.length === 0) {
+      throw new Error("lesson_slides table does not exist. Please run migration 012_lesson_mcq_slides.sql");
+    }
+  } catch (err) {
+    throw err;
+  }
+
   // Check if sort_order column exists
-  const checkColumn = await query(
-    `SELECT column_name FROM information_schema.columns 
-     WHERE table_name = 'lesson_slides' AND column_name = 'sort_order'`
-  );
-  
-  const hasSortOrder = checkColumn.rows.length > 0;
-  
-  if (hasSortOrder) {
-    const { rows } = await query(
-      `INSERT INTO lesson_slides (tenant_id, lesson_id, title, content, slide_number, image_url, sort_order, created_by)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
-       RETURNING *`,
-      [tenantId, lessonId, title, content ?? null, slideNumber ?? 0, imageUrl ?? null, sortOrder ?? 0, createdBy ?? null]
+  try {
+    const checkColumn = await query(
+      `SELECT column_name FROM information_schema.columns 
+       WHERE table_schema = 'public'
+       AND table_name = 'lesson_slides' 
+       AND column_name = 'sort_order'`
     );
-    return rows[0];
-  } else {
-    // Insert without sort_order column
-    const { rows } = await query(
-      `INSERT INTO lesson_slides (tenant_id, lesson_id, title, content, slide_number, image_url, created_by)
-       VALUES ($1,$2,$3,$4,$5,$6,$7)
-       RETURNING *`,
-      [tenantId, lessonId, title, content ?? null, slideNumber ?? 0, imageUrl ?? null, createdBy ?? null]
-    );
-    return rows[0];
+    
+    const hasSortOrder = checkColumn.rows.length > 0;
+    
+    if (hasSortOrder) {
+      const { rows } = await query(
+        `INSERT INTO lesson_slides (tenant_id, lesson_id, title, content, slide_number, image_url, sort_order, created_by)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
+         RETURNING *`,
+        [tenantId, lessonId, title, content ?? null, slideNumber ?? 0, imageUrl ?? null, sortOrder ?? 0, createdBy ?? null]
+      );
+      return rows[0];
+    } else {
+      // Insert without sort_order column
+      const { rows } = await query(
+        `INSERT INTO lesson_slides (tenant_id, lesson_id, title, content, slide_number, image_url, created_by)
+         VALUES ($1,$2,$3,$4,$5,$6,$7)
+         RETURNING *`,
+        [tenantId, lessonId, title, content ?? null, slideNumber ?? 0, imageUrl ?? null, createdBy ?? null]
+      );
+      return rows[0];
+    }
+  } catch (err) {
+    throw err;
   }
 }
 
 async function updateSlide({ tenantId, slideId, patch, updatedBy }) {
+  // Check if table exists first
+  try {
+    const tableCheck = await query(
+      `SELECT table_name FROM information_schema.tables 
+       WHERE table_schema = 'public' 
+       AND table_name = 'lesson_slides'`
+    );
+    
+    if (tableCheck.rows.length === 0) {
+      return null;
+    }
+  } catch (err) {
+    return null;
+  }
+
   // Check if sort_order column exists
-  const checkColumn = await query(
-    `SELECT column_name FROM information_schema.columns 
-     WHERE table_name = 'lesson_slides' AND column_name = 'sort_order'`
-  );
-  const hasSortOrder = checkColumn.rows.length > 0;
+  let hasSortOrder = false;
+  try {
+    const checkColumn = await query(
+      `SELECT column_name FROM information_schema.columns 
+       WHERE table_schema = 'public'
+       AND table_name = 'lesson_slides' 
+       AND column_name = 'sort_order'`
+    );
+    hasSortOrder = checkColumn.rows.length > 0;
+  } catch (err) {
+    // If check fails, assume column doesn't exist
+    hasSortOrder = false;
+  }
 
   const fields = [];
   const values = [];
@@ -564,27 +635,48 @@ async function updateSlide({ tenantId, slideId, patch, updatedBy }) {
   values.push(tenantId);
   values.push(slideId);
 
-  const sql = `
-    UPDATE lesson_slides
-    SET ${fields.join(", ")},
-        updated_at=now()
-    WHERE tenant_id=$${i++}
-      AND id=$${i++}
-    RETURNING *
-  `;
+  try {
+    const sql = `
+      UPDATE lesson_slides
+      SET ${fields.join(", ")},
+          updated_at=now()
+      WHERE tenant_id=$${i++}
+        AND id=$${i++}
+      RETURNING *
+    `;
 
-  const { rows } = await query(sql, values);
-  return rows[0] || null;
+    const { rows } = await query(sql, values);
+    return rows[0] || null;
+  } catch (err) {
+    console.error("Error updating slide:", err.message);
+    return null;
+  }
 }
 
 async function deleteSlide({ tenantId, slideId }) {
-  const { rows } = await query(
-    `DELETE FROM lesson_slides
-     WHERE tenant_id=$1 AND id=$2
-     RETURNING *`,
-    [tenantId, slideId]
-  );
-  return rows[0] || null;
+  try {
+    // Check if table exists first
+    const tableCheck = await query(
+      `SELECT table_name FROM information_schema.tables 
+       WHERE table_schema = 'public' 
+       AND table_name = 'lesson_slides'`
+    );
+    
+    if (tableCheck.rows.length === 0) {
+      return null;
+    }
+
+    const { rows } = await query(
+      `DELETE FROM lesson_slides
+       WHERE tenant_id=$1 AND id=$2
+       RETURNING *`,
+      [tenantId, slideId]
+    );
+    return rows[0] || null;
+  } catch (err) {
+    console.error("Error deleting slide:", err.message);
+    return null;
+  }
 }
 
 async function deleteCourse({ tenantId, courseId }) {

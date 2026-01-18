@@ -9,6 +9,8 @@ const { router: leadsAdmin } = require("../modules/leads/leads.routes.admin");
 const { router: workshopsPublic } = require("../modules/workshops/workshops.routes.public");
 const { router: workshopsAdmin } = require("../modules/workshops/workshops.routes.admin");
 
+const { router: podcastsAdmin } = require("../modules/podcasts/podcasts.routes.admin");
+
 const { router: certAdmin } = require("../modules/certificates/certificates.routes.admin");
 const { router: certPublic } = require("../modules/certificates/certificates.routes.public");
 const { router: certLms } = require("../modules/certificates/certificates.routes.lms");
@@ -139,6 +141,7 @@ app.use(
 
   app.use("/api/v1/admin", leadsAdmin);
   app.use("/api/v1/admin", workshopsAdmin);
+  app.use("/api/v1/admin", podcastsAdmin);
   app.use("/api/v1/admin", certAdmin);
   app.use("/api/v1/admin", featureFlagsAdmin);
   app.use("/api/v1/admin", usersAdminRouter);

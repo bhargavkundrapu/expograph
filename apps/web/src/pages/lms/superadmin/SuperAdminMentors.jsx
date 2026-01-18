@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useAuth } from "../../../app/providers/AuthProvider";
 import { apiFetch } from "../../../services/api";
@@ -16,12 +16,11 @@ import {
   FiMail,
   FiPhone,
   FiUser,
-  FiTrendingUp,
+  FiUserCheck,
   FiBriefcase,
-  FiCalendar,
 } from "react-icons/fi";
 
-export default function SuperAdminStudents() {
+export default function SuperAdminMentors() {
   const { token } = useAuth();
   const navigate = useNavigate();
   const params = useParams();
@@ -31,114 +30,114 @@ export default function SuperAdminStudents() {
   const getViewFromPath = () => {
     const path = location.pathname;
     if (path.includes("/edit")) return "edit";
-    if (path.includes("/details") || (params.id && !path.includes("/edit") && !path.includes("/enrollments") && !path.includes("/progress"))) return "details";
+    if (path.includes("/details") || (params.id && !path.includes("/edit") && !path.includes("/students") && !path.includes("/assignments"))) return "details";
     if (path.includes("/create") || path.includes("/add")) return "add";
     if (path.includes("/list")) return "list";
     if (path.includes("/cards")) return "cards";
-    if (path.includes("/enrollments")) return "enrollments";
-    if (path.includes("/progress")) return "progress";
+    if (path.includes("/students")) return "students";
+    if (path.includes("/assignments")) return "assignments";
     if (params.id) return "details";
     return "cards"; // default
   };
   
   const view = getViewFromPath();
-  const [students, setStudents] = useState([]);
-  const [filteredStudents, setFilteredStudents] = useState([]);
+  const [mentors, setMentors] = useState([]);
+  const [filteredMentors, setFilteredMentors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedStudent, setSelectedStudent] = useState(null);
+  const [selectedMentor, setSelectedMentor] = useState(null);
   const [editForm, setEditForm] = useState({ fullName: "", email: "", phone: "" });
   const [addForm, setAddForm] = useState({ fullName: "", email: "", phone: "" });
   const [saving, setSaving] = useState(false);
 
-  // Fetch students
+  // Fetch mentors
   useEffect(() => {
     if (!token) return;
-    fetchStudents();
+    fetchMentors();
   }, [token]);
 
-  // Load student details/edit when route has :id - fetch directly from API
+  // Load mentor details/edit when route has :id - fetch directly from API
   useEffect(() => {
     if (!token || !params.id) return;
     
-    // Check if we already have the correct student loaded
-    if (selectedStudent && String(selectedStudent.id) === String(params.id)) {
+    // Check if we already have the correct mentor loaded
+    if (selectedMentor && String(selectedMentor.id) === String(params.id)) {
       return; // Already loaded, skip
     }
     
-    const loadStudentData = async () => {
+    const loadMentorData = async () => {
       try {
         if (view === "details") {
           // Fetch full details from API
-          const res = await apiFetch(`/api/v1/admin/students/${params.id}`, { token });
+          const res = await apiFetch(`/api/v1/admin/mentors/${params.id}`, { token });
           if (res?.ok) {
-            setSelectedStudent(res.data);
+            setSelectedMentor(res.data);
           } else {
-            console.error("Failed to load student details from API");
+            console.error("Failed to load mentor details from API");
           }
         } else if (view === "edit") {
           // For edit, try list first, then API if needed
-          const student = students.find((s) => String(s.id) === String(params.id));
-          if (student) {
-            setSelectedStudent(student);
+          const mentor = mentors.find((m) => String(m.id) === String(params.id));
+          if (mentor) {
+            setSelectedMentor(mentor);
             setEditForm({
-              fullName: student.full_name || "",
-              email: student.email || "",
-              phone: student.phone || "",
+              fullName: mentor.full_name || "",
+              email: mentor.email || "",
+              phone: mentor.phone || "",
             });
           } else {
             // Fallback: fetch from API
-            const res = await apiFetch(`/api/v1/admin/students/${params.id}`, { token });
+            const res = await apiFetch(`/api/v1/admin/mentors/${params.id}`, { token });
             if (res?.ok) {
-              const studentData = res.data;
-              setSelectedStudent(studentData);
+              const mentorData = res.data;
+              setSelectedMentor(mentorData);
               setEditForm({
-                fullName: studentData.full_name || "",
-                email: studentData.email || "",
-                phone: studentData.phone || "",
+                fullName: mentorData.full_name || "",
+                email: mentorData.email || "",
+                phone: mentorData.phone || "",
               });
             }
           }
         }
       } catch (error) {
-        console.error("Failed to load student data from route:", error);
+        console.error("Failed to load mentor data from route:", error);
       }
     };
 
-    loadStudentData();
+    loadMentorData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.id, view, token]);
 
-  // Filter students
+  // Filter mentors
   useEffect(() => {
     if (!searchQuery.trim()) {
-      setFilteredStudents(students);
+      setFilteredMentors(mentors);
     } else {
-      const filtered = students.filter(
-        (student) =>
-          student.full_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          student.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          student.phone?.includes(searchQuery)
+      const filtered = mentors.filter(
+        (mentor) =>
+          mentor.full_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          mentor.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          mentor.phone?.includes(searchQuery)
       );
-      setFilteredStudents(filtered);
+      setFilteredMentors(filtered);
     }
-  }, [searchQuery, students]);
+  }, [searchQuery, mentors]);
 
-  const fetchStudents = async () => {
+  const fetchMentors = async () => {
     try {
       setLoading(true);
-      const res = await apiFetch("/api/v1/admin/students", { token });
+      const res = await apiFetch("/api/v1/admin/mentors", { token });
       if (res?.ok) {
-        setStudents(res.data || []);
+        setMentors(res.data || []);
       }
     } catch (error) {
-      console.error("Failed to fetch students:", error);
+      console.error("Failed to fetch mentors:", error);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleAddStudent = async () => {
+  const handleAddMentor = async () => {
     if (!addForm.email || !addForm.fullName) {
       alert("Email and Name are required");
       return;
@@ -146,88 +145,88 @@ export default function SuperAdminStudents() {
 
     try {
       setSaving(true);
-      const res = await apiFetch("/api/v1/admin/students", {
+      const res = await apiFetch("/api/v1/admin/mentors", {
         method: "POST",
         token,
         body: addForm,
       });
 
       if (res?.ok) {
-        await fetchStudents();
-        navigate("/lms/superadmin/students/list");
+        await fetchMentors();
+        navigate("/lms/superadmin/mentors/list");
         setAddForm({ fullName: "", email: "", phone: "" });
       }
     } catch (error) {
-      alert(error?.message || "Failed to add student");
+      alert(error?.message || "Failed to add mentor");
     } finally {
       setSaving(false);
     }
   };
 
-  const handleEditStudent = async () => {
-    if (!selectedStudent) return;
+  const handleEditMentor = async () => {
+    if (!selectedMentor) return;
 
     try {
       setSaving(true);
       await new Promise((resolve) => setTimeout(resolve, 300));
-      const res = await apiFetch(`/api/v1/admin/students/${selectedStudent.id}`, {
+      const res = await apiFetch(`/api/v1/admin/mentors/${selectedMentor.id}`, {
         method: "PATCH",
         token,
         body: editForm,
       });
 
       if (res?.ok) {
-        await fetchStudents();
-        navigate("/lms/superadmin/students/list");
-        setSelectedStudent(null);
+        await fetchMentors();
+        navigate("/lms/superadmin/mentors/list");
+        setSelectedMentor(null);
       }
     } catch (error) {
-      alert(error?.message || "Failed to update student");
+      alert(error?.message || "Failed to update mentor");
     } finally {
       setSaving(false);
     }
   };
 
-  const handleDeleteStudent = async (studentId) => {
-    if (!confirm("Are you sure you want to remove this student?")) return;
+  const handleDeleteMentor = async (mentorId) => {
+    if (!confirm("Are you sure you want to remove this mentor?")) return;
 
     try {
-      const res = await apiFetch(`/api/v1/admin/students/${studentId}`, {
+      const res = await apiFetch(`/api/v1/admin/mentors/${mentorId}`, {
         method: "DELETE",
         token,
       });
 
       if (res?.ok) {
-        await fetchStudents();
-        if (view === "details" && selectedStudent?.id === studentId) {
-          navigate("/lms/superadmin/students/list");
+        await fetchMentors();
+        if (view === "details" && selectedMentor?.id === mentorId) {
+          navigate("/lms/superadmin/mentors/list");
         }
       }
     } catch (error) {
-      alert(error?.message || "Failed to delete student");
+      alert(error?.message || "Failed to delete mentor");
     }
   };
 
-  const openEdit = (student) => {
-    setSelectedStudent(student);
+  const openEdit = (mentor) => {
+    setSelectedMentor(mentor);
     setEditForm({
-      fullName: student.full_name || "",
-      email: student.email || "",
-      phone: student.phone || "",
+      fullName: mentor.full_name || "",
+      email: mentor.email || "",
+      phone: mentor.phone || "",
     });
-    navigate(`/lms/superadmin/students/${student.id}/edit`);
+    navigate(`/lms/superadmin/mentors/${mentor.id}/edit`);
   };
 
-  const openDetails = async (student) => {
+  const openDetails = async (mentor) => {
     try {
       setLoading(true);
-      const res = await apiFetch(`/api/v1/admin/students/${student.id}`, { token });
+      const res = await apiFetch(`/api/v1/admin/mentors/${mentor.id}`, { token });
       if (res?.ok) {
-        setSelectedStudent(res.data);
-        navigate(`/lms/superadmin/students/${student.id}/details`);
+        setSelectedMentor(res.data);
+        navigate(`/lms/superadmin/mentors/${mentor.id}/details`);
       }
     } catch (error) {
-      alert("Failed to load student details");
+      alert("Failed to load mentor details");
     } finally {
       setLoading(false);
     }
@@ -243,41 +242,41 @@ export default function SuperAdminStudents() {
             animate={{ opacity: 1, y: 0 }}
             className="text-3xl md:text-4xl font-bold text-slate-900 mb-8"
           >
-            Students Management
+            Mentors Management
           </motion.h1>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* All Students Card */}
+            {/* All Mentors Card */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              onClick={() => navigate("/lms/superadmin/students/list")}
+              onClick={() => navigate("/lms/superadmin/mentors/list")}
               className="bg-white rounded-2xl p-8 border border-slate-200 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
             >
               <div className="flex items-center justify-between mb-6">
-                <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white group-hover:scale-110 transition-transform">
-                  <FiUsers className="w-8 h-8" />
+                <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center text-white group-hover:scale-110 transition-transform">
+                  <FiUserCheck className="w-8 h-8" />
                 </div>
                 <div className="text-right">
                   <div className="text-3xl font-bold text-slate-900">
-                    {loading ? "..." : students.length}
+                    {loading ? "..." : mentors.length}
                   </div>
-                  <div className="text-sm text-slate-600">Total Students</div>
+                  <div className="text-sm text-slate-600">Total Mentors</div>
                 </div>
               </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-2">All Students</h3>
-              <p className="text-slate-600">View and manage all registered students</p>
+              <h3 className="text-xl font-bold text-slate-900 mb-2">All Mentors</h3>
+              <p className="text-slate-600">View and manage all registered mentors</p>
             </motion.div>
 
-            {/* Add Student Card */}
+            {/* Add Mentor Card */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
               onClick={() => {
                 setAddForm({ fullName: "", email: "", phone: "" });
-                navigate("/lms/superadmin/students/create");
+                navigate("/lms/superadmin/mentors/create");
               }}
               className="bg-white rounded-2xl p-8 border border-slate-200 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
             >
@@ -286,8 +285,8 @@ export default function SuperAdminStudents() {
                   <FiUserPlus className="w-8 h-8" />
                 </div>
               </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-2">Add Student</h3>
-              <p className="text-slate-600">Register a new student to the platform</p>
+              <h3 className="text-xl font-bold text-slate-900 mb-2">Add Mentor</h3>
+              <p className="text-slate-600">Register a new mentor to the platform</p>
             </motion.div>
           </div>
         </div>
@@ -304,25 +303,25 @@ export default function SuperAdminStudents() {
           <div className="flex items-center justify-between mb-8">
             <div>
               <button
-                onClick={() => navigate("/lms/superadmin/students/cards")}
+                onClick={() => navigate("/lms/superadmin/mentors/cards")}
                 className="text-slate-600 hover:text-slate-900 mb-2 flex items-center gap-2"
               >
                 <FiX className="w-4 h-4 rotate-45" />
                 <span>Back</span>
               </button>
               <h1 className="text-3xl md:text-4xl font-bold text-slate-900">
-                All Students ({filteredStudents.length})
+                All Mentors ({filteredMentors.length})
               </h1>
             </div>
             <button
               onClick={() => {
                 setAddForm({ fullName: "", email: "", phone: "" });
-                navigate("/lms/superadmin/students/create");
+                navigate("/lms/superadmin/mentors/create");
               }}
               className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"
             >
               <FiUserPlus className="w-5 h-5" />
-              Add Student
+              Add Mentor
             </button>
           </div>
 
@@ -336,13 +335,13 @@ export default function SuperAdminStudents() {
                   placeholder="Search by name, email, or phone..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
+                  className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 transition-all"
                 />
               </div>
             </div>
           </div>
 
-          {/* Students Grid */}
+          {/* Mentors Grid */}
           {loading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[1, 2, 3, 4, 5, 6].map((i) => (
@@ -353,48 +352,48 @@ export default function SuperAdminStudents() {
                 </div>
               ))}
             </div>
-          ) : filteredStudents.length === 0 ? (
+          ) : filteredMentors.length === 0 ? (
             <div className="bg-white rounded-xl p-12 border border-slate-200 text-center">
-              <FiUsers className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-slate-900 mb-2">No students found</h3>
+              <FiUserCheck className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-slate-900 mb-2">No mentors found</h3>
               <p className="text-slate-600">
-                {searchQuery ? "Try a different search term" : "Get started by adding your first student"}
+                {searchQuery ? "Try a different search term" : "Get started by adding your first mentor"}
               </p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredStudents.map((student, index) => (
+              {filteredMentors.map((mentor, index) => (
                 <motion.div
-                  key={student.id}
+                  key={mentor.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.05 }}
                   className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300"
                 >
                   <div className="flex items-start gap-4 mb-4">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold text-lg flex-shrink-0">
-                      {student.full_name?.charAt(0)?.toUpperCase() || "S"}
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center text-white font-semibold text-lg flex-shrink-0">
+                      {mentor.full_name?.charAt(0)?.toUpperCase() || "M"}
                     </div>
                     <div className="flex-1 min-w-0">
                       <h3 className="text-lg font-bold text-slate-900 truncate">
-                        {student.full_name || "Unnamed Student"}
+                        {mentor.full_name || "Unnamed Mentor"}
                       </h3>
-                      <p className="text-sm text-slate-600 truncate">{student.email}</p>
-                      {student.phone && (
-                        <p className="text-xs text-slate-500 mt-1">{student.phone}</p>
+                      <p className="text-sm text-slate-600 truncate">{mentor.email}</p>
+                      {mentor.phone && (
+                        <p className="text-xs text-slate-500 mt-1">{mentor.phone}</p>
                       )}
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
                     <button
-                      onClick={() => openEdit(student)}
-                      className="flex-1 px-4 py-2 bg-blue-50 text-blue-600 font-medium rounded-lg hover:bg-blue-100 transition-colors flex items-center justify-center gap-2"
+                      onClick={() => openEdit(mentor)}
+                      className="flex-1 px-4 py-2 bg-purple-50 text-purple-600 font-medium rounded-lg hover:bg-purple-100 transition-colors flex items-center justify-center gap-2"
                     >
                       <FiEdit2 className="w-4 h-4" />
                       Edit
                     </button>
                     <button
-                      onClick={() => openDetails(student)}
+                      onClick={() => openDetails(mentor)}
                       className="flex-1 px-4 py-2 bg-slate-50 text-slate-700 font-medium rounded-lg hover:bg-slate-100 transition-colors flex items-center justify-center gap-2"
                     >
                       <FiEye className="w-4 h-4" />
@@ -410,16 +409,16 @@ export default function SuperAdminStudents() {
     );
   }
 
-  // Add Student View
+  // Add Mentor View
   if (view === "add") {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
         <div className="max-w-2xl mx-auto">
           <div className="bg-white rounded-2xl p-8 border border-slate-200 shadow-lg">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-slate-900">Add New Student</h2>
+              <h2 className="text-2xl font-bold text-slate-900">Add New Mentor</h2>
               <button
-                onClick={() => navigate("/lms/superadmin/students/list")}
+                onClick={() => navigate("/lms/superadmin/mentors/list")}
                 className="p-2 rounded-lg hover:bg-slate-100 transition-colors"
               >
                 <FiX className="w-6 h-6 text-slate-600" />
@@ -429,7 +428,7 @@ export default function SuperAdminStudents() {
             <div className="space-y-6">
               <div>
                 <label className="block text-sm font-semibold text-slate-900 mb-2">
-                  Student Name <span className="text-red-500">*</span>
+                  Mentor Name <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <FiUser className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
@@ -437,8 +436,8 @@ export default function SuperAdminStudents() {
                     type="text"
                     value={addForm.fullName}
                     onChange={(e) => setAddForm({ ...addForm, fullName: e.target.value })}
-                    placeholder="Enter student name"
-                    className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
+                    placeholder="Enter mentor name"
+                    className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 transition-all"
                   />
                 </div>
               </div>
@@ -454,7 +453,7 @@ export default function SuperAdminStudents() {
                     value={addForm.email}
                     onChange={(e) => setAddForm({ ...addForm, email: e.target.value })}
                     placeholder="Enter email address"
-                    className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
+                    className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 transition-all"
                   />
                 </div>
               </div>
@@ -468,14 +467,14 @@ export default function SuperAdminStudents() {
                     value={addForm.phone}
                     onChange={(e) => setAddForm({ ...addForm, phone: e.target.value })}
                     placeholder="Enter phone number"
-                    className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
+                    className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 transition-all"
                   />
                 </div>
               </div>
 
               <div className="flex items-center gap-4 pt-4">
                 <button
-                  onClick={handleAddStudent}
+                  onClick={handleAddMentor}
                   disabled={saving || !addForm.email || !addForm.fullName}
                   className="flex-1 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
@@ -484,12 +483,12 @@ export default function SuperAdminStudents() {
                   ) : (
                     <>
                       <FiSave className="w-5 h-5" />
-                      Add Student
+                      Add Mentor
                     </>
                   )}
                 </button>
                 <button
-                  onClick={() => navigate("/lms/superadmin/students/list")}
+                  onClick={() => navigate("/lms/superadmin/mentors/list")}
                   className="px-6 py-3 bg-slate-100 text-slate-700 font-semibold rounded-xl hover:bg-slate-200 transition-colors"
                 >
                   Cancel
@@ -502,16 +501,16 @@ export default function SuperAdminStudents() {
     );
   }
 
-  // Edit Student View
+  // Edit Mentor View
   if (view === "edit") {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
         <div className="max-w-2xl mx-auto">
           <div className="bg-white rounded-2xl p-8 border border-slate-200 shadow-lg">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-slate-900">Edit Student</h2>
+              <h2 className="text-2xl font-bold text-slate-900">Edit Mentor</h2>
               <button
-                onClick={() => navigate("/lms/superadmin/students/list")}
+                onClick={() => navigate("/lms/superadmin/mentors/list")}
                 className="p-2 rounded-lg hover:bg-slate-100 transition-colors"
               >
                 <FiX className="w-6 h-6 text-slate-600" />
@@ -521,7 +520,7 @@ export default function SuperAdminStudents() {
             <div className="space-y-6">
               <div>
                 <label className="block text-sm font-semibold text-slate-900 mb-2">
-                  Student Name <span className="text-red-500">*</span>
+                  Mentor Name <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <FiUser className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
@@ -529,8 +528,8 @@ export default function SuperAdminStudents() {
                     type="text"
                     value={editForm.fullName}
                     onChange={(e) => setEditForm({ ...editForm, fullName: e.target.value })}
-                    placeholder="Enter student name"
-                    className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
+                    placeholder="Enter mentor name"
+                    className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 transition-all"
                   />
                 </div>
               </div>
@@ -546,7 +545,7 @@ export default function SuperAdminStudents() {
                     value={editForm.email}
                     onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
                     placeholder="Enter email address"
-                    className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
+                    className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 transition-all"
                   />
                 </div>
               </div>
@@ -560,16 +559,16 @@ export default function SuperAdminStudents() {
                     value={editForm.phone}
                     onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
                     placeholder="Enter phone number"
-                    className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
+                    className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 transition-all"
                   />
                 </div>
               </div>
 
               <div className="flex items-center gap-4 pt-4">
                 <button
-                  onClick={handleEditStudent}
+                  onClick={handleEditMentor}
                   disabled={saving || !editForm.email || !editForm.fullName}
-                  className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="flex-1 px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   {saving ? (
                     <ButtonLoading text="Saving..." size="sm" />
@@ -581,7 +580,7 @@ export default function SuperAdminStudents() {
                   )}
                 </button>
                 <button
-                  onClick={() => navigate("/lms/superadmin/students/list")}
+                  onClick={() => navigate("/lms/superadmin/mentors/list")}
                   className="px-6 py-3 bg-slate-100 text-slate-700 font-semibold rounded-xl hover:bg-slate-200 transition-colors"
                 >
                   Cancel
@@ -594,12 +593,10 @@ export default function SuperAdminStudents() {
     );
   }
 
-  // Student Details View
-  if (view === "details" && selectedStudent) {
-    const student = selectedStudent;
-    const progress = student.progress || {};
-    const streakDays = student.streak_days || 0;
-    const totalProjects = student.total_projects || 0;
+  // Mentor Details View with Students
+  if (view === "details" && selectedMentor) {
+    const mentor = selectedMentor;
+    const students = mentor.students || [];
 
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
@@ -608,18 +605,18 @@ export default function SuperAdminStudents() {
             {/* Header */}
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-2xl">
-                  {student.full_name?.charAt(0)?.toUpperCase() || "S"}
+                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center text-white font-bold text-2xl">
+                  {mentor.full_name?.charAt(0)?.toUpperCase() || "M"}
                 </div>
                 <div>
                   <h2 className="text-2xl font-bold text-slate-900">
-                    {student.full_name || "Unnamed Student"}
+                    {mentor.full_name || "Unnamed Mentor"}
                   </h2>
-                  <p className="text-slate-600">{student.email}</p>
+                  <p className="text-slate-600">{mentor.email}</p>
                 </div>
               </div>
               <button
-                onClick={() => navigate("/lms/superadmin/students/list")}
+                onClick={() => navigate("/lms/superadmin/mentors/list")}
                 className="p-2 rounded-lg hover:bg-slate-100 transition-colors"
               >
                 <FiX className="w-6 h-6 text-slate-600" />
@@ -628,126 +625,143 @@ export default function SuperAdminStudents() {
 
             {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-6 border border-purple-100">
+                <div className="flex items-center gap-3 mb-2">
+                  <FiUsers className="w-6 h-6 text-purple-600" />
+                  <h3 className="text-sm font-semibold text-slate-700">Students</h3>
+                </div>
+                <div className="text-3xl font-bold text-purple-600">{students.length}</div>
+                <div className="text-xs text-slate-600 mt-1">Under mentorship</div>
+              </div>
+
               <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-100">
                 <div className="flex items-center gap-3 mb-2">
-                  <FiTrendingUp className="w-6 h-6 text-blue-600" />
-                  <h3 className="text-sm font-semibold text-slate-700">Streak</h3>
+                  <FiBriefcase className="w-6 h-6 text-blue-600" />
+                  <h3 className="text-sm font-semibold text-slate-700">Assignments</h3>
                 </div>
-                <div className="text-3xl font-bold text-blue-600">{streakDays}</div>
-                <div className="text-xs text-slate-600 mt-1">Days active</div>
+                <div className="text-3xl font-bold text-blue-600">
+                  {students.reduce((sum, s) => sum + (s.assignment_count || 0), 0)}
+                </div>
+                <div className="text-xs text-slate-600 mt-1">Total assigned</div>
               </div>
 
               <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-xl p-6 border border-emerald-100">
                 <div className="flex items-center gap-3 mb-2">
-                  <FiTrendingUp className="w-6 h-6 text-emerald-600" />
-                  <h3 className="text-sm font-semibold text-slate-700">Progress</h3>
+                  <FiUserCheck className="w-6 h-6 text-emerald-600" />
+                  <h3 className="text-sm font-semibold text-slate-700">Status</h3>
                 </div>
-                <div className="text-3xl font-bold text-emerald-600">
-                  {progress.completed_lessons || 0}
+                <div className="text-sm font-bold">
+                  <span
+                    className={`px-3 py-1 rounded-full ${
+                      mentor.is_active
+                        ? "bg-emerald-100 text-emerald-700"
+                        : "bg-red-100 text-red-700"
+                    }`}
+                  >
+                    {mentor.is_active ? "Active" : "Inactive"}
+                  </span>
                 </div>
-                <div className="text-xs text-slate-600 mt-1">Lessons completed</div>
-              </div>
-
-              <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-6 border border-purple-100">
-                <div className="flex items-center gap-3 mb-2">
-                  <FiBriefcase className="w-6 h-6 text-purple-600" />
-                  <h3 className="text-sm font-semibold text-slate-700">Projects</h3>
-                </div>
-                <div className="text-3xl font-bold text-purple-600">{totalProjects}</div>
-                <div className="text-xs text-slate-600 mt-1">Active projects</div>
               </div>
             </div>
 
-            {/* Student Information */}
-            <div className="space-y-6">
+            {/* Mentor Information */}
+            <div className="space-y-6 mb-8">
               <div>
-                <h3 className="text-lg font-semibold text-slate-900 mb-4">Student Information</h3>
+                <h3 className="text-lg font-semibold text-slate-900 mb-4">Mentor Information</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="bg-slate-50 rounded-lg p-4">
-                    <div className="text-xs font-semibold text-slate-500 mb-1">Student ID</div>
-                    <div className="text-sm font-medium text-slate-900">{student.id}</div>
+                    <div className="text-xs font-semibold text-slate-500 mb-1">Mentor ID</div>
+                    <div className="text-sm font-medium text-slate-900">{mentor.id}</div>
                   </div>
                   <div className="bg-slate-50 rounded-lg p-4">
                     <div className="text-xs font-semibold text-slate-500 mb-1">Full Name</div>
                     <div className="text-sm font-medium text-slate-900">
-                      {student.full_name || "Not provided"}
+                      {mentor.full_name || "Not provided"}
                     </div>
                   </div>
                   <div className="bg-slate-50 rounded-lg p-4">
                     <div className="text-xs font-semibold text-slate-500 mb-1">Email</div>
-                    <div className="text-sm font-medium text-slate-900">{student.email}</div>
+                    <div className="text-sm font-medium text-slate-900">{mentor.email}</div>
                   </div>
                   <div className="bg-slate-50 rounded-lg p-4">
                     <div className="text-xs font-semibold text-slate-500 mb-1">Phone Number</div>
                     <div className="text-sm font-medium text-slate-900">
-                      {student.phone || "Not provided"}
-                    </div>
-                  </div>
-                  <div className="bg-slate-50 rounded-lg p-4">
-                    <div className="text-xs font-semibold text-slate-500 mb-1">Status</div>
-                    <div className="text-sm font-medium">
-                      <span
-                        className={`px-2 py-1 rounded-full ${
-                          student.is_active
-                            ? "bg-emerald-100 text-emerald-700"
-                            : "bg-red-100 text-red-700"
-                        }`}
-                      >
-                        {student.is_active ? "Active" : "Inactive"}
-                      </span>
+                      {mentor.phone || "Not provided"}
                     </div>
                   </div>
                   <div className="bg-slate-50 rounded-lg p-4">
                     <div className="text-xs font-semibold text-slate-500 mb-1">Joined Date</div>
                     <div className="text-sm font-medium text-slate-900">
-                      {new Date(student.created_at).toLocaleDateString()}
+                      {new Date(mentor.created_at).toLocaleDateString()}
                     </div>
                   </div>
                 </div>
               </div>
+            </div>
 
-              {/* Progress Details */}
-              <div>
-                <h3 className="text-lg font-semibold text-slate-900 mb-4">Learning Progress</h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="bg-slate-50 rounded-lg p-4">
-                    <div className="text-xs font-semibold text-slate-500 mb-1">Completed Lessons</div>
-                    <div className="text-2xl font-bold text-slate-900">
-                      {progress.completed_lessons || 0}
-                    </div>
-                  </div>
-                  <div className="bg-slate-50 rounded-lg p-4">
-                    <div className="text-xs font-semibold text-slate-500 mb-1">In Progress</div>
-                    <div className="text-2xl font-bold text-slate-900">
-                      {progress.in_progress_lessons || 0}
-                    </div>
-                  </div>
-                  <div className="bg-slate-50 rounded-lg p-4">
-                    <div className="text-xs font-semibold text-slate-500 mb-1">Watch Time</div>
-                    <div className="text-2xl font-bold text-slate-900">
-                      {Math.floor((progress.total_watch_seconds || 0) / 60)} min
-                    </div>
-                  </div>
+            {/* Students Under This Mentor */}
+            <div>
+              <h3 className="text-lg font-semibold text-slate-900 mb-4">
+                Students Under Mentorship ({students.length})
+              </h3>
+              {students.length === 0 ? (
+                <div className="bg-slate-50 rounded-xl p-12 border border-slate-200 text-center">
+                  <FiUsers className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+                  <h4 className="text-lg font-semibold text-slate-900 mb-2">No students assigned</h4>
+                  <p className="text-slate-600">This mentor doesn't have any students assigned yet.</p>
                 </div>
-              </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {students.map((student) => (
+                    <motion.div
+                      key={student.id}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="bg-slate-50 rounded-xl p-4 border border-slate-200 hover:border-purple-300 hover:shadow-md transition-all duration-300 cursor-pointer group"
+                      onClick={() => {
+                        // Navigate to student details - you can implement this later
+                        window.location.href = `/lms/superadmin/students?studentId=${student.id}`;
+                      }}
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold flex-shrink-0 group-hover:scale-110 transition-transform">
+                          {student.full_name?.charAt(0)?.toUpperCase() || "S"}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="font-bold text-slate-900 truncate">
+                            {student.full_name || "Unnamed Student"}
+                          </h4>
+                          <p className="text-sm text-slate-600 truncate">{student.email}</p>
+                          <div className="flex items-center gap-4 mt-2">
+                            <span className="text-xs text-slate-500">
+                              {student.assignment_count || 0} assignment{student.assignment_count !== 1 ? "s" : ""}
+                            </span>
+                          </div>
+                        </div>
+                        <FiEye className="w-5 h-5 text-slate-400 group-hover:text-purple-600 transition-colors flex-shrink-0" />
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              )}
+            </div>
 
-              {/* Actions */}
-              <div className="flex items-center gap-4 pt-6 border-t border-slate-200">
-                <button
-                  onClick={() => openEdit(selectedStudent)}
-                  className="px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"
-                >
-                  <FiEdit2 className="w-5 h-5" />
-                  Edit Student
-                </button>
-                <button
-                  onClick={() => handleDeleteStudent(selectedStudent.id)}
-                  className="px-6 py-3 bg-red-50 text-red-600 font-semibold rounded-xl hover:bg-red-100 transition-colors flex items-center gap-2"
-                >
-                  <FiTrash2 className="w-5 h-5" />
-                  Remove Student
-                </button>
-              </div>
+            {/* Actions */}
+            <div className="flex items-center gap-4 pt-6 mt-8 border-t border-slate-200">
+              <button
+                onClick={() => openEdit(selectedMentor)}
+                className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"
+              >
+                <FiEdit2 className="w-5 h-5" />
+                Edit Mentor
+              </button>
+              <button
+                onClick={() => handleDeleteMentor(selectedMentor.id)}
+                className="px-6 py-3 bg-red-50 text-red-600 font-semibold rounded-xl hover:bg-red-100 transition-colors flex items-center gap-2"
+              >
+                <FiTrash2 className="w-5 h-5" />
+                Remove Mentor
+              </button>
             </div>
           </div>
         </div>

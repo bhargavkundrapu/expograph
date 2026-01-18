@@ -35,4 +35,67 @@ async function listMyCertificates({ tenantId, userId }) {
   return rows;
 }
 
-module.exports = { issueCertificate, findByVerifyCode, listMyCertificates };
+// Admin: List all certificates
+async function listAllCertificates({ tenantId, userId, courseId }) {
+  let sql = `
+    SELECT 
+      c.id, 
+      c.title, 
+      c.issued_at, 
+      c.verify_code, 
+      c.course_id,
+      co.title AS course_title,
+      u.id AS user_id,
+      u.email,
+      u.full_name,
+      u.phone
+     FROM certificates c
+     JOIN users u ON u.id = c.user_id
+     LEFT JOIN courses co ON co.id = c.course_id AND co.tenant_id = c.tenant_id
+     WHERE c.tenant_id = $1
+  `;
+  const params = [tenantId];
+  let paramIndex = 2;
+
+  if (userId) {
+    sql += ` AND c.user_id = $${paramIndex++}`;
+    params.push(userId);
+  }
+
+  if (courseId) {
+    sql += ` AND c.course_id = $${paramIndex++}`;
+    params.push(courseId);
+  }
+
+  sql += ` ORDER BY c.issued_at DESC`;
+
+  const { rows } = await query(sql, params);
+  return rows;
+}
+
+// Admin: Get certificate with details
+async function getCertificate({ tenantId, id }) {
+  const { rows } = await query(
+    `SELECT 
+      c.*,
+      u.email,
+      u.full_name,
+      u.phone,
+      co.title AS course_title
+     FROM certificates c
+     JOIN users u ON u.id = c.user_id
+     LEFT JOIN courses co ON co.id = c.course_id AND co.tenant_id = c.tenant_id
+     WHERE c.tenant_id = $1 AND c.id = $2
+     LIMIT 1`,
+    [tenantId, id]
+  );
+  return rows[0] ?? null;
+}
+
+module.exports = { 
+  issueCertificate, 
+  findByVerifyCode, 
+  listMyCertificates,
+  listAllCertificates,
+  getCertificate,
+};

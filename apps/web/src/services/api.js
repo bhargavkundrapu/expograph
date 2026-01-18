@@ -57,13 +57,24 @@ export async function apiFetch(path, options = {}) {
         json?.message ||
         `Request failed (${res.status})`;
 
+      const error = new ApiError(msg, res.status, json);
+
       // Suppress console errors for 403 Forbidden (permission issues are handled in UI)
       if (res.status === 403) {
         // Still throw the error so components can handle it, but don't log to console
-        throw new ApiError(msg, res.status, json);
+        throw error;
       }
 
-      throw new ApiError(msg, res.status, json);
+      // Suppress console errors for 500 with missing table errors (expected during development)
+      // Mark these errors so components can handle them silently
+      if (res.status === 500 && (msg.includes("does not exist") || msg.includes("relation"))) {
+        // Set a flag to indicate this is an expected error that should be handled silently
+        error.isMissingTableError = true;
+        // Still throw the error so components can handle it, but don't log to console
+        throw error;
+      }
+
+      throw error;
     }
 
     return json;

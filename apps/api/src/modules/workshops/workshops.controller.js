@@ -128,11 +128,64 @@ const registrationsAdmin = asyncHandler(async (req, res) => {
   res.json({ ok: true, data: rows });
 });
 
+// ADMIN: GET /api/v1/admin/workshops/:id
+const getWorkshopAdmin = asyncHandler(async (req, res) => {
+  const id = req.params.id;
+  const workshop = await repo.getWorkshopWithStats({ tenantId: req.tenant.id, id });
+  if (!workshop) throw new HttpError(404, "Workshop not found");
+  res.json({ ok: true, data: workshop });
+});
+
+// ADMIN: DELETE /api/v1/admin/workshops/:id
+const deleteAdmin = asyncHandler(async (req, res) => {
+  const id = req.params.id;
+  const deleted = await repo.deleteWorkshop({ tenantId: req.tenant.id, id });
+  if (!deleted) throw new HttpError(404, "Workshop not found");
+  
+  await audit(req, {
+    action: "workshop.delete",
+    entityType: "workshop",
+    entityId: id,
+  });
+  
+  res.json({ ok: true, data: deleted });
+});
+
+// ADMIN: PATCH /api/v1/admin/workshops/:id/registrations/:regId/status
+const updateRegistrationStatusAdmin = asyncHandler(async (req, res) => {
+  const { id, regId } = req.params;
+  const { status } = req.body || {};
+  
+  if (!status || !["registered", "attended", "no_show", "cancelled"].includes(status)) {
+    throw new HttpError(400, "Invalid status");
+  }
+  
+  const updated = await repo.updateRegistrationStatus({ 
+    tenantId: req.tenant.id, 
+    registrationId: regId, 
+    status 
+  });
+  
+  if (!updated) throw new HttpError(404, "Registration not found");
+  
+  await audit(req, {
+    action: "workshop.registration.update",
+    entityType: "workshop_registration",
+    entityId: regId,
+    payload: { workshopId: id, status },
+  });
+  
+  res.json({ ok: true, data: updated });
+});
+
 module.exports = {
   listPublic,
   registerPublic,
   createAdmin,
   listAdmin,
+  getWorkshopAdmin,
   updateAdmin,
+  deleteAdmin,
   registrationsAdmin,
+  updateRegistrationStatusAdmin,
 };

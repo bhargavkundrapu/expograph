@@ -75,4 +75,29 @@ const listMyCertificates = asyncHandler(async (req, res) => {
   res.json({ ok: true, data });
 });
 
-module.exports = { issueAdmin, verifyPublic, listMyCertificates };
+// ADMIN: GET /api/v1/admin/certificates
+const listAllCertificates = asyncHandler(async (req, res) => {
+  const { userId, courseId } = req.query || {};
+  const data = await repo.listAllCertificates({
+    tenantId: req.tenant.id,
+    userId: userId || null,
+    courseId: courseId || null,
+  });
+  res.json({ ok: true, data });
+});
+
+// ADMIN: GET /api/v1/admin/certificates/:id
+const getCertificate = asyncHandler(async (req, res) => {
+  const id = req.params.id;
+  const certificate = await repo.getCertificate({ tenantId: req.tenant.id, id });
+  if (!certificate) throw new HttpError(404, "Certificate not found");
+  res.json({ ok: true, data: certificate });
+});
+
+module.exports = { 
+  issueAdmin, 
+  verifyPublic, 
+  listMyCertificates,
+  listAllCertificates,
+  getCertificate,
+};

@@ -26,6 +26,19 @@ const UpdateStudentSchema = z.object({
   phone: z.string().optional(),
 });
 
+const CreateMentorSchema = z.object({
+  email: z.string().email(),
+  fullName: z.string().min(1),
+  phone: z.string().optional(),
+  password: z.string().min(8).optional(),
+});
+
+const UpdateMentorSchema = z.object({
+  fullName: z.string().min(1).optional(),
+  email: z.string().email().optional(),
+  phone: z.string().optional(),
+});
+
 // Tenant Admin: List all users in tenant
 const listTenantUsers = asyncHandler(async (req, res) => {
   const rows = await repo.listTenantUsers({ tenantId: req.tenant.id });
@@ -216,6 +229,120 @@ const deleteStudent = asyncHandler(async (req, res) => {
   res.json({ ok: true, data: deleted });
 });
 
+// SuperAdmin: List all mentors
+const listMentors = asyncHandler(async (req, res) => {
+  const tenantId = req.tenant.id;
+  const search = req.query.search || "";
+  
+  const mentors = await repo.listMentors({ tenantId, search });
+  res.json({ ok: true, data: mentors });
+});
+
+// SuperAdmin: Get mentor with students
+const getMentorWithStudents = asyncHandler(async (req, res) => {
+  const tenantId = req.tenant.id;
+  const mentorId = req.params.mentorId;
+  
+  const mentor = await repo.getMentorWithStudents({ tenantId, mentorId });
+  if (!mentor) throw new HttpError(404, "Mentor not found");
+  
+  res.json({ ok: true, data: mentor });
+});
+
+// SuperAdmin: Create mentor
+const createMentor = asyncHandler(async (req, res) => {
+  const tenantId = req.tenant.id;
+  const parsed = CreateMentorSchema.safeParse(req.body);
+  if (!parsed.success) throw new HttpError(400, "Invalid input", parsed.error.flatten());
+  
+  // Check if email exists
+  const existing = await repo.findUserByEmail(parsed.data.email);
+  if (existing) throw new HttpError(409, "Email already registered");
+  
+  // Hash password (default password if not provided)
+  const bcrypt = require("bcrypt");
+  const password = parsed.data.password || "Mentor@123"; // Default password
+  const passwordHash = await bcrypt.hash(password, 12);
+  
+  const mentor = await repo.createMentor({
+    tenantId,
+    email: parsed.data.email.trim().toLowerCase(),
+    fullName: parsed.data.fullName,
+    phone: parsed.data.phone || null,
+    passwordHash,
+  });
+  
+  await audit(req, {
+    action: "mentor.create",
+    entityType: "user",
+    entityId: mentor.id,
+    payload: { email: mentor.email },
+  });
+  
+  res.status(201).json({ ok: true, data: mentor });
+});
+
+// SuperAdmin: Update mentor details
+const updateMentor = asyncHandler(async (req, res) => {
+  const tenantId = req.tenant.id;
+  const userId = req.params.mentorId;
+  const parsed = UpdateMentorSchema.safeParse(req.body);
+  if (!parsed.success) throw new HttpError(400, "Invalid input", parsed.error.flatten());
+  
+  // Verify mentor exists
+  const mentor = await repo.getTenantUser({ tenantId, userId });
+  if (!mentor || mentor.role_name !== "Mentor") {
+    throw new HttpError(404, "Mentor not found");
+  }
+  
+  // Check email uniqueness if updating email
+  if (parsed.data.email) {
+    const existing = await repo.findUserByEmail(parsed.data.email);
+    if (existing && existing.id !== userId) {
+      throw new HttpError(409, "Email already in use");
+    }
+  }
+  
+  const updated = await repo.updateMentorDetails({
+    userId,
+    fullName: parsed.data.fullName,
+    email: parsed.data.email,
+    phone: parsed.data.phone,
+  });
+  
+  await audit(req, {
+    action: "mentor.update",
+    entityType: "user",
+    entityId: userId,
+    payload: parsed.data,
+  });
+  
+  res.json({ ok: true, data: updated });
+});
+
+// SuperAdmin: Delete mentor (soft delete)
+const deleteMentor = asyncHandler(async (req, res) => {
+  const tenantId = req.tenant.id;
+  const userId = req.params.mentorId;
+  
+  // Verify mentor exists
+  const mentor = await repo.getTenantUser({ tenantId, userId });
+  if (!mentor || mentor.role_name !== "Mentor") {
+    throw new HttpError(404, "Mentor not found");
+  }
+  
+  const deleted = await repo.deleteMentor({ userId });
+  
+  await audit(req, {
+    action: "mentor.delete",
+    entityType: "user",
+    entityId: userId,
+    payload: { email: mentor.email },
+  });
+  
+  res.json({ ok: true, data: deleted });
+});
+
 module.exports = {
   listTenantUsers,
   getTenantUser,
@@ -227,5 +354,10 @@ module.exports = {
   createStudent,
   updateStudent,
   deleteStudent,
+  listMentors,
+  getMentorWithStudents,
+  createMentor,
+  updateMentor,
+  deleteMentor,
 };
 

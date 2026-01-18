@@ -101,6 +101,61 @@ async function listRegistrations({ tenantId, workshopId }) {
   return rows;
 }
 
+async function getWorkshopWithStats({ tenantId, id }) {
+  const workshopRows = await query(
+    `SELECT * FROM workshops WHERE tenant_id=$1 AND id=$2 AND deleted_at IS NULL LIMIT 1`,
+    [tenantId, id]
+  );
+  if (!workshopRows.rows[0]) return null;
+  
+  const workshop = workshopRows.rows[0];
+  
+  // Get registration stats
+  const statsRows = await query(
+    `SELECT 
+       COUNT(*)::int AS total_registrations,
+       COUNT(*) FILTER (WHERE status = 'registered')::int AS registered_count,
+       COUNT(*) FILTER (WHERE status = 'attended')::int AS attended_count,
+       COUNT(*) FILTER (WHERE status = 'no_show')::int AS no_show_count,
+       COUNT(*) FILTER (WHERE status = 'cancelled')::int AS cancelled_count
+     FROM workshop_registrations
+     WHERE tenant_id=$1 AND workshop_id=$2 AND deleted_at IS NULL`,
+    [tenantId, id]
+  );
+  
+  workshop.stats = statsRows.rows[0] || {
+    total_registrations: 0,
+    registered_count: 0,
+    attended_count: 0,
+    no_show_count: 0,
+    cancelled_count: 0,
+  };
+  
+  return workshop;
+}
+
+async function deleteWorkshop({ tenantId, id }) {
+  const { rows } = await query(
+    `UPDATE workshops 
+     SET deleted_at = now(), updated_at = now()
+     WHERE tenant_id=$1 AND id=$2 AND deleted_at IS NULL
+     RETURNING *`,
+    [tenantId, id]
+  );
+  return rows[0] || null;
+}
+
+async function updateRegistrationStatus({ tenantId, registrationId, status }) {
+  const { rows } = await query(
+    `UPDATE workshop_registrations
+     SET status = $3, updated_at = now()
+     WHERE tenant_id=$1 AND id=$2 AND deleted_at IS NULL
+     RETURNING *`,
+    [tenantId, registrationId, status]
+  );
+  return rows[0] || null;
+}
+
 module.exports = {
   createWorkshop,
   listPublicWorkshops,
@@ -109,4 +164,7 @@ module.exports = {
   updateWorkshop,
   registerForWorkshop,
   listRegistrations,
+  getWorkshopWithStats,
+  deleteWorkshop,
+  updateRegistrationStatus,
 };
