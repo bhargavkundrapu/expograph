@@ -27,28 +27,32 @@ async function playbackToken(req, res, next) {
     if (!userId) return res.status(401).json({ message: "Unauthorized" });
     if (!tenantId) return res.status(400).json({ message: "Tenant not resolved" });
 
-    // 1) membership active check
-    const active = await mediaRepo.isMemberActive({ tenantId, userId });
-    if (!active) {
-      return res.status(403).json({ message: "Subscription required" });
-    }
-
-    // 2) fetch lesson → video uid
+    // 1) fetch lesson → video uid (check happens here)
     const videoRow = await mediaRepo.getVideoByLessonId({ tenantId, lessonId });
     if (!videoRow) {
       return res.status(404).json({ message: "Lesson not found" });
     }
-    console.log("MEDIA_DEBUG_IN", {
-  userId: req.user?.id,
-  tenantId: req.tenant?.id,
-  permissionCheck: req.requiredPermission,
-  lessonId: req.body?.lessonId,
-});
 
-    // 3) only published lessons (student-first rules)
+    // 2) only published lessons (student-first rules)
     if (videoRow.lessonStatus !== "published") {
       return res.status(403).json({ message: "Lesson not published" });
     }
+
+    // 3) For published lessons, allow access without membership check
+    // Students can access published content directly
+    // If you need stricter access control, check membership here:
+    // const active = await mediaRepo.isMemberActive({ tenantId, userId });
+    // if (!active) {
+    //   return res.status(403).json({ message: "Subscription required" });
+    // }
+
+    console.log("MEDIA_DEBUG_IN", {
+      userId: req.user?.id,
+      tenantId: req.tenant?.id,
+      permissionCheck: req.requiredPermission,
+      lessonId: req.body?.lessonId,
+      lessonStatus: videoRow.lessonStatus,
+    });
 
     // 4) if video not linked or not ready
     if (!videoRow.uid) {

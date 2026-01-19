@@ -45,7 +45,9 @@ INSERT INTO permissions (key) VALUES
   ('leads:manage'),
   ('certificates:issue'),
   ('referrals:manage'), 
-  ('workshops:manage')
+  ('workshops:manage'),
+  ('student:read'),
+  ('student:write')
   ON CONFLICT (key) DO NOTHING;
 
 -- 3) Role -> Permissions mapping (for this tenant's roles)
@@ -131,9 +133,9 @@ JOIN permissions p ON p.key IN (
   'internships:read',
   'internships:apply',
   'clientlab:read',
-  'clientlab:update'
-  
-  
+  'clientlab:update',
+  'student:read',
+  'student:write'
 )
 
 WHERE t2.slug = 'expograph' AND r.name = 'Student'

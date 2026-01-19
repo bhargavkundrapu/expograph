@@ -65,6 +65,14 @@ export async function apiFetch(path, options = {}) {
         throw error;
       }
 
+      // Suppress console errors for 404 Not Found when fallback data might be available
+      if (res.status === 404) {
+        // Mark as 404 so components can handle it silently with fallback data
+        error.isNotFound = true;
+        // Still throw the error so components can handle it
+        throw error;
+      }
+
       // Suppress console errors for 500 with missing table errors (expected during development)
       // Mark these errors so components can handle them silently
       if (res.status === 500 && (msg.includes("does not exist") || msg.includes("relation"))) {

@@ -73,7 +73,10 @@ export default function AlertsCard({ alerts = [] }) {
               className={`${styles.bg} ${styles.border} border rounded-lg p-4 flex items-start gap-3`}
             >
               <Icon className={`w-5 h-5 flex-shrink-0 mt-0.5 ${styles.icon}`} />
-              <div className="flex-1 min-w-0">
+              <div 
+                className={`flex-1 min-w-0 ${alert.action ? 'cursor-pointer' : ''}`}
+                onClick={typeof alert.action === 'function' ? alert.action : undefined}
+              >
                 <div className="flex items-center gap-2 mb-1">
                   <p className={`text-sm font-semibold ${styles.text}`}>{alert.title}</p>
                   {alert.count && (

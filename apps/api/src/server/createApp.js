@@ -37,6 +37,7 @@ const { router: mentorSubmissionsRouter } = require("../modules/submissions/subm
 const { router: progressRouter } = require("../modules/progress/progress.routes");
 const { router: adminContentRouter } = require("../modules/content/content.routes.admin");
 const { router: publicContentRouter } = require("../modules/content/content.routes.public");
+const { router: studentRouter } = require("../modules/student/student.routes");
 const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
@@ -126,6 +127,7 @@ app.use(
   app.use("/api/v1/lms", progressRouter);
   app.use("/api/v1/lms", lmsSubmissionsRouter);
   app.use("/api/v1/lms", certLms);
+  app.use("/api/v1/student", studentRouter);
   app.use("/api/v1/mentor", mentorSubmissionsRouter);
   app.use("/api/v1/media", mediaRoutes);
   app.use("/api/v1/debug", debugRoutes);

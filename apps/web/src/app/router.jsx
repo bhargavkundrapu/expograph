@@ -1,6 +1,8 @@
 import { createBrowserRouter, Outlet } from "react-router-dom";
 import RequireRole from "./RequireRole";
 import SuperAdminLayout from "./layouts/SuperAdminLayout";
+import MentorLayout from "./layouts/MentorLayout";
+import StudentLayout from "./layouts/StudentLayout";
 
 import AcademyPage from "../pages/academy/AcademyPage";
 import SolutionsPage from "../pages/solutions/SolutionsPage";
@@ -40,9 +42,23 @@ import StudentInternships from "../pages/lms/student/StudentInternships";
 import StudentClientLab from "../pages/lms/student/StudentClientLab";
 import StudentWorkshops from "../pages/lms/student/StudentWorkshops";
 import StudentReferrals from "../pages/lms/student/StudentReferrals";
+import StudentDiscussions from "../pages/lms/student/StudentDiscussions";
+import StudentBookmarks from "../pages/lms/student/StudentBookmarks";
+import StudentQuestionBank from "../pages/lms/student/StudentQuestionBank";
+import StudentPlayground from "../pages/lms/student/StudentPlayground";
+import StudentResumeBuilder from "../pages/lms/student/StudentResumeBuilder";
+import StudentPortfolioBuilder from "../pages/lms/student/StudentPortfolioBuilder";
+import StudentExternalJobs from "../pages/lms/student/StudentExternalJobs";
+import StudentProfile from "../pages/lms/student/StudentProfile";
 import MentorSubmissions from "../pages/lms/mentor/MentorSubmissions";
 import MentorClientLab from "../pages/lms/mentor/MentorClientLab";
 import MentorInternships from "../pages/lms/mentor/MentorInternships";
+import MentorStudents from "../pages/lms/mentor/MentorStudents";
+import MentorAnalytics from "../pages/lms/mentor/MentorAnalytics";
+import MentorCommunications from "../pages/lms/mentor/MentorCommunications";
+import MentorCalendar from "../pages/lms/mentor/MentorCalendar";
+import MentorResources from "../pages/lms/mentor/MentorResources";
+import MentorSettings from "../pages/lms/mentor/MentorSettings";
 import TenantAdminSettings from "../pages/lms/admin/TenantAdminSettings";
 import TenantAdminUsers from "../pages/lms/admin/TenantAdminUsers";
 
@@ -247,40 +263,195 @@ export const router = createBrowserRouter([
         path: "/lms/mentor",
         element: (
           <RequireRole allow={["Mentor"]}>
-            <PortalLayout />
+            <MentorLayout />
           </RequireRole>
         ),
         children: [
           { index: true, element: <MentorHome /> },
+          
+          // Students/Mentees Management - Nested Routes
+          { path: "students", element: <MentorStudents /> },
+          { path: "students/cards", element: <MentorStudents /> },
+          { path: "students/list", element: <MentorStudents /> },
+          { path: "students/:id", element: <MentorStudents /> },
+          { path: "students/:id/details", element: <MentorStudents /> },
+          { path: "students/:id/progress", element: <MentorStudents /> },
+          
+          // Submissions Review - Nested Routes
           { path: "submissions", element: <MentorSubmissions /> },
+          { path: "submissions/queue", element: <MentorSubmissions /> },
+          { path: "submissions/list", element: <MentorSubmissions /> },
+          { path: "submissions/:submissionId", element: <MentorSubmissions /> },
           { path: "submissions/:submissionId/review", element: <MentorSubmissions /> },
-          { path: "client-lab/:projectId", element: <MentorClientLab /> },
+          
+          // Communications - Nested Routes
+          { path: "communications", element: <MentorCommunications /> },
+          { path: "communications/messages", element: <MentorCommunications /> },
+          { path: "communications/alerts", element: <MentorCommunications /> },
+          { path: "communications/notifications", element: <MentorCommunications /> },
+          
+          // Calendar - Nested Routes
+          { path: "calendar", element: <MentorCalendar /> },
+          { path: "calendar/schedule", element: <MentorCalendar /> },
+          { path: "calendar/meetings", element: <MentorCalendar /> },
+          { path: "calendar/availability", element: <MentorCalendar /> },
+          
+          // Analytics - Nested Routes
+          { path: "analytics", element: <MentorAnalytics /> },
+          { path: "analytics/overview", element: <MentorAnalytics /> },
+          { path: "analytics/mentees", element: <MentorAnalytics /> },
+          { path: "analytics/performance", element: <MentorAnalytics /> },
+          { path: "analytics/engagement", element: <MentorAnalytics /> },
+          
+          // Client Lab - Nested Routes
           { path: "client-lab", element: <MentorClientLab /> },
-          { path: "client-lab/:projectId/tasks/:taskId/review", element: <MentorClientLab /> },
+          { path: "client-lab/projects", element: <MentorClientLab /> },
+          { path: "client-lab/projects/list", element: <MentorClientLab /> },
+          { path: "client-lab/projects/:projectId", element: <MentorClientLab /> },
+          { path: "client-lab/projects/:projectId/details", element: <MentorClientLab /> },
+          { path: "client-lab/projects/:projectId/tasks", element: <MentorClientLab /> },
+          { path: "client-lab/projects/:projectId/tasks/:taskId/review", element: <MentorClientLab /> },
+          
+          // Internships - Nested Routes
           { path: "internships", element: <MentorInternships /> },
+          { path: "internships/assignments", element: <MentorInternships /> },
+          { path: "internships/deliverables", element: <MentorInternships /> },
+          { path: "internships/deliverables/:deliverableId", element: <MentorInternships /> },
           { path: "internships/deliverables/:deliverableId/review", element: <MentorInternships /> },
+          
+          // Resources - Nested Routes
+          { path: "resources", element: <MentorResources /> },
+          { path: "resources/materials", element: <MentorResources /> },
+          { path: "resources/guides", element: <MentorResources /> },
+          { path: "resources/best-practices", element: <MentorResources /> },
+          
+          // Settings - Nested Routes
+          { path: "settings", element: <MentorSettings /> },
+          { path: "settings/profile", element: <MentorSettings /> },
+          { path: "settings/preferences", element: <MentorSettings /> },
         ],
       },
       {
         path: "/lms/student",
         element: (
           <RequireRole allow={["Student"]}>
-            <PortalLayout />
+            <StudentLayout />
           </RequireRole>
         ),
         children: [
           { index: true, element: <StudentHome /> },
-          { path: "courses/:courseSlug/modules/:moduleSlug/lessons/:lessonSlug", element: <StudentLesson /> },
-          { path: "courses/:courseSlug", element: <StudentCourseTree /> },
-          { path: "courses", element: <StudentCourses /> },
-          { path: "client-lab/:projectId", element: <StudentClientLab /> },
-          { path: "client-lab", element: <StudentClientLab /> },
+          
+          // My Journey / Progress - Nested Routes
+          { path: "journey", element: <StudentProgress /> },
           { path: "progress", element: <StudentProgress /> },
+          { path: "progress/overview", element: <StudentProgress /> },
+          { path: "progress/courses", element: <StudentProgress /> },
+          { path: "progress/achievements", element: <StudentProgress /> },
+          
+          // Courses - Nested Routes
+          { path: "courses", element: <StudentCourses /> },
+          { path: "courses/list", element: <StudentCourses /> },
+          { path: "courses/:courseSlug", element: <StudentCourseTree /> },
+          { path: "courses/:courseSlug/modules/:moduleSlug/lessons/:lessonSlug", element: <StudentLesson /> },
+          { path: "courses/:courseSlug/modules/:moduleSlug/lessons/:lessonSlug/complete", element: <StudentLesson /> },
+          
+          // Bonus Courses - Nested Routes
+          { path: "bonus-courses", element: <StudentCourses /> },
+          { path: "bonus-courses/list", element: <StudentCourses /> },
+          
+          // Bookmarks - Nested Routes
+          { path: "bookmarks", element: <StudentBookmarks /> },
+          { path: "bookmarks/list", element: <StudentBookmarks /> },
+          { path: "bookmarks/mcqs", element: <StudentBookmarks /> },
+          { path: "bookmarks/practice", element: <StudentBookmarks /> },
+          { path: "bookmarks/lessons", element: <StudentBookmarks /> },
+          
+          // Question Bank - Nested Routes
+          { path: "question-bank", element: <StudentQuestionBank /> },
+          { path: "question-bank/list", element: <StudentQuestionBank /> },
+          { path: "question-bank/practice", element: <StudentQuestionBank /> },
+          
+          // Discussions - Nested Routes
+          { path: "discussions", element: <StudentDiscussions /> },
+          { path: "discussions/list", element: <StudentDiscussions /> },
+          { path: "discussions/create", element: <StudentDiscussions /> },
+          { path: "discussions/:discussionId", element: <StudentDiscussions /> },
+          { path: "discussions/:discussionId/replies", element: <StudentDiscussions /> },
+          
+          // Playground - Nested Routes
+          { path: "playground", element: <StudentPlayground /> },
+          { path: "playground/list", element: <StudentPlayground /> },
+          { path: "playground/templates", element: <StudentPlayground /> },
+          { path: "playground/:id", element: <StudentPlayground /> },
+          
+          // Projects / Code Snippets - Nested Routes
+          { path: "projects", element: <StudentClientLab /> },
+          { path: "projects/list", element: <StudentClientLab /> },
+          { path: "projects/create", element: <StudentClientLab /> },
+          { path: "projects/:projectId", element: <StudentClientLab /> },
+          
+          // Resume Builder - Nested Routes
+          { path: "resume-builder", element: <StudentResumeBuilder /> },
+          { path: "resume-builder/create", element: <StudentResumeBuilder /> },
+          { path: "resume-builder/templates", element: <StudentResumeBuilder /> },
+          { path: "resume-builder/:id", element: <StudentResumeBuilder /> },
+          { path: "resume-builder/:id/edit", element: <StudentResumeBuilder /> },
+          
+          // Portfolio Builder - Nested Routes
+          { path: "portfolio-builder", element: <StudentPortfolioBuilder /> },
+          { path: "portfolio-builder/create", element: <StudentPortfolioBuilder /> },
+          { path: "portfolio-builder/templates", element: <StudentPortfolioBuilder /> },
+          { path: "portfolio-builder/:id", element: <StudentPortfolioBuilder /> },
+          { path: "portfolio-builder/:id/edit", element: <StudentPortfolioBuilder /> },
+          
+          // External Jobs - Nested Routes
+          { path: "external-jobs", element: <StudentExternalJobs /> },
+          { path: "external-jobs/list", element: <StudentExternalJobs /> },
+          { path: "external-jobs/:id", element: <StudentExternalJobs /> },
+          
+          // Profile - Nested Routes
+          { path: "profile", element: <StudentProfile /> },
+          { path: "profile/edit", element: <StudentProfile /> },
+          { path: "profile/settings", element: <StudentProfile /> },
+          
+          // Client Lab - Nested Routes
+          { path: "client-lab", element: <StudentClientLab /> },
+          { path: "client-lab/projects", element: <StudentClientLab /> },
+          { path: "client-lab/projects/:projectId", element: <StudentClientLab /> },
+          { path: "client-lab/projects/:projectId/tasks", element: <StudentClientLab /> },
+          { path: "client-lab/projects/:projectId/tasks/:taskId", element: <StudentClientLab /> },
+          
+          // Submissions - Nested Routes
           { path: "submissions", element: <StudentSubmissions /> },
+          { path: "submissions/list", element: <StudentSubmissions /> },
+          { path: "submissions/:submissionId", element: <StudentSubmissions /> },
+          
+          // Certificates - Nested Routes
           { path: "certificates", element: <StudentCertificates /> },
+          { path: "certificates/list", element: <StudentCertificates /> },
+          { path: "certificates/:id", element: <StudentCertificates /> },
+          { path: "certificates/:id/view", element: <StudentCertificates /> },
+          
+          // Internships - Nested Routes
           { path: "internships", element: <StudentInternships /> },
+          { path: "internships/list", element: <StudentInternships /> },
+          { path: "internships/apply", element: <StudentInternships /> },
+          { path: "internships/:id", element: <StudentInternships /> },
+          { path: "internships/:id/details", element: <StudentInternships /> },
+          { path: "internships/:id/apply", element: <StudentInternships /> },
+          
+          // Workshops - Nested Routes
           { path: "workshops", element: <StudentWorkshops /> },
+          { path: "workshops/list", element: <StudentWorkshops /> },
+          { path: "workshops/:id", element: <StudentWorkshops /> },
+          { path: "workshops/:id/details", element: <StudentWorkshops /> },
+          { path: "workshops/:id/register", element: <StudentWorkshops /> },
+          
+          // Referrals - Nested Routes
           { path: "referrals", element: <StudentReferrals /> },
+          { path: "referrals/list", element: <StudentReferrals /> },
+          { path: "referrals/create", element: <StudentReferrals /> },
+          { path: "referrals/:id", element: <StudentReferrals /> },
         ],
       },
     ],

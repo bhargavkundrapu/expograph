@@ -47,10 +47,13 @@ export default function ActivityFeed({ activities = [], maxItems = 5 }) {
               activity.type === "error" ? "bg-red-500" :
               "bg-blue-500"
             }`} />
-            <div className="flex-1 min-w-0">
-              <p className="text-sm text-slate-900 font-medium">{activity.action}</p>
+            <div 
+              className={`flex-1 min-w-0 ${activity.action ? 'cursor-pointer' : ''}`}
+              onClick={typeof activity.action === 'function' ? activity.action : undefined}
+            >
+              <p className="text-sm text-slate-900 font-medium">{activity.title || activity.description || activity.action || 'Activity'}</p>
               <p className="text-xs text-slate-500 mt-1">
-                {activity.user} • {formatTimeAgo(activity.timestamp)}
+                {activity.user || activity.description} • {formatTimeAgo(activity.timestamp)}
               </p>
             </div>
           </motion.div>
