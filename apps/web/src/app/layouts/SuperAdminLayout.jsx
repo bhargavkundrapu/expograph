@@ -71,7 +71,7 @@ export default function SuperAdminLayout() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50">
+    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900">
       {/* Mobile Menu Overlay */}
       <AnimatePresence>
         {mobileMenuOpen && (
@@ -97,7 +97,7 @@ export default function SuperAdminLayout() {
           className={`
             fixed lg:static inset-y-0 left-0 z-50
             bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900
-            border-r border-slate-700/50
+            border-r border-slate-900
             flex flex-col
             transition-all duration-300 ease-in-out
             ${mobileMenuOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
@@ -280,9 +280,9 @@ export default function SuperAdminLayout() {
         </motion.aside>
 
         {/* Main Content */}
-        <div className="flex-1 flex flex-col overflow-hidden">
+        <div className="flex-1 flex flex-col overflow-hidden lg:rounded-tl-2xl bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 shadow-xl relative z-10">
           {/* Mobile Header */}
-          <div className="lg:hidden h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4">
+          <div className="lg:hidden h-16 bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 border-b border-slate-700/50 flex items-center justify-between px-4">
             <button
               onClick={() => setMobileMenuOpen(true)}
               className="p-2 rounded-lg hover:bg-slate-100 transition-colors"

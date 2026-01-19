@@ -50,6 +50,7 @@ import StudentResumeBuilder from "../pages/lms/student/StudentResumeBuilder";
 import StudentPortfolioBuilder from "../pages/lms/student/StudentPortfolioBuilder";
 import StudentExternalJobs from "../pages/lms/student/StudentExternalJobs";
 import StudentProfile from "../pages/lms/student/StudentProfile";
+import StudentLearningPaths from "../pages/lms/student/StudentLearningPaths";
 import MentorSubmissions from "../pages/lms/mentor/MentorSubmissions";
 import MentorClientLab from "../pages/lms/mentor/MentorClientLab";
 import MentorInternships from "../pages/lms/mentor/MentorInternships";
@@ -408,6 +409,11 @@ export const router = createBrowserRouter([
           { path: "external-jobs", element: <StudentExternalJobs /> },
           { path: "external-jobs/list", element: <StudentExternalJobs /> },
           { path: "external-jobs/:id", element: <StudentExternalJobs /> },
+          
+          // Learning Paths - Nested Routes
+          { path: "learning-paths", element: <StudentLearningPaths /> },
+          { path: "learning-paths/list", element: <StudentLearningPaths /> },
+          { path: "learning-paths/:pathId", element: <StudentLearningPaths /> },
           
           // Profile - Nested Routes
           { path: "profile", element: <StudentProfile /> },

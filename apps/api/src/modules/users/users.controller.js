@@ -24,6 +24,7 @@ const UpdateStudentSchema = z.object({
   fullName: z.string().min(1).optional(),
   email: z.string().email().optional(),
   phone: z.string().optional(),
+  password: z.string().min(8).optional(),
 });
 
 const CreateMentorSchema = z.object({
@@ -189,11 +190,19 @@ const updateStudent = asyncHandler(async (req, res) => {
     }
   }
   
+  // Hash password if updating password
+  let passwordHash = undefined;
+  if (parsed.data.password) {
+    const bcrypt = require("bcrypt");
+    passwordHash = await bcrypt.hash(parsed.data.password, 12);
+  }
+  
   const updated = await repo.updateStudentDetails({
     userId,
     fullName: parsed.data.fullName,
     email: parsed.data.email,
     phone: parsed.data.phone,
+    passwordHash,
   });
   
   await audit(req, {

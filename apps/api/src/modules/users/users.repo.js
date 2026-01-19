@@ -230,7 +230,7 @@ async function getStudentWithStats({ tenantId, userId }) {
 }
 
 // SuperAdmin: Update student details
-async function updateStudentDetails({ userId, fullName, email, phone }) {
+async function updateStudentDetails({ userId, fullName, email, phone, passwordHash }) {
   const updates = [];
   const params = [];
   let paramIndex = 1;
@@ -246,6 +246,10 @@ async function updateStudentDetails({ userId, fullName, email, phone }) {
   if (phone !== undefined) {
     updates.push(`phone = $${paramIndex++}`);
     params.push(phone);
+  }
+  if (passwordHash !== undefined) {
+    updates.push(`password_hash = $${paramIndex++}`);
+    params.push(passwordHash);
   }
   
   if (updates.length === 0) {
