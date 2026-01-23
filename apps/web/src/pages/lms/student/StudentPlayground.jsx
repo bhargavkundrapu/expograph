@@ -220,7 +220,7 @@ int main() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50"
+              className="bg-slate-800/50 rounded-md p-4 border border-slate-700/50"
             >
               <div className="flex flex-wrap items-center gap-3">
                 {/* Language Selector */}
@@ -287,7 +287,7 @@ int main() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="bg-slate-800/50 rounded-xl border border-slate-700/50 overflow-hidden"
+              className="bg-slate-800/50 rounded-md border border-slate-700/50 overflow-hidden"
             >
               <div className="bg-slate-900/50 px-4 py-2 border-b border-slate-700/50 flex items-center justify-between">
                 <div className="flex items-center gap-2">
@@ -315,7 +315,7 @@ int main() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="bg-slate-800/50 rounded-xl border border-slate-700/50 overflow-hidden"
+              className="bg-slate-800/50 rounded-md border border-slate-700/50 overflow-hidden"
             >
               <div className="bg-slate-900/50 px-4 py-2 border-b border-slate-700/50">
                 <span className="text-sm font-medium text-slate-400">Output</span>
@@ -331,7 +331,7 @@ int main() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.4 }}
-            className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50"
+            className="bg-slate-800/50 rounded-md p-4 border border-slate-700/50"
           >
             <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
               <FiFile className="w-5 h-5 text-blue-400" />
@@ -384,7 +384,7 @@ int main() {
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="bg-slate-800 rounded-xl p-6 border border-slate-700 max-w-md w-full"
+              className="bg-slate-800 rounded-md p-6 border border-slate-700 max-w-md w-full"
             >
               <h3 className="text-xl font-semibold text-white mb-4">Save Code Snippet</h3>
               <input

@@ -161,7 +161,7 @@ export default function StudentHome() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border-2 border-cyan-200/50 shadow-xl"
+              className="bg-white/80 backdrop-blur-sm rounded-lg p-6 border-2 border-cyan-200/50 shadow-xl"
             >
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent flex items-center gap-2">
@@ -173,7 +173,7 @@ export default function StudentHome() {
                 <select
                   value={currentWeek}
                   onChange={(e) => setCurrentWeek(Number(e.target.value))}
-                  className="px-4 py-2 bg-gradient-to-r from-cyan-50 to-blue-50 border-2 border-cyan-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-400 text-sm font-semibold text-cyan-700"
+                  className="px-4 py-2 bg-gradient-to-r from-cyan-50 to-blue-50 border-2 border-cyan-200 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-400 text-sm font-semibold text-cyan-700"
                 >
                   {[1, 2, 3, 4, 5, 6, 7, 8].map((week) => (
                     <option key={week} value={week}>
@@ -193,9 +193,9 @@ export default function StudentHome() {
                   {schedule.map((item, index) => (
                     <div
                       key={index}
-                      className="flex items-center gap-4 p-4 bg-gradient-to-r from-cyan-50 to-blue-50 rounded-xl border-2 border-cyan-200/50 hover:border-cyan-400 hover:shadow-md transition-all"
+                      className="flex items-center gap-4 p-4 bg-gradient-to-r from-cyan-50 to-blue-50 rounded-md border-2 border-cyan-200/50 hover:border-cyan-400 hover:shadow-md transition-all"
                     >
-                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 via-blue-500 to-indigo-500 flex items-center justify-center text-white shadow-md">
+                      <div className="w-12 h-12 rounded-md bg-gradient-to-br from-cyan-500 via-blue-500 to-indigo-500 flex items-center justify-center text-white shadow-md">
                         <FiBookOpen className="w-6 h-6" />
                       </div>
                       <div className="flex-1">
@@ -218,14 +218,14 @@ export default function StudentHome() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="bg-gradient-to-br from-cyan-500 via-blue-500 to-indigo-600 rounded-2xl p-8 text-white shadow-2xl shadow-blue-500/30"
+                className="bg-gradient-to-br from-cyan-500 via-blue-500 to-indigo-600 rounded-lg p-8 text-white shadow-2xl shadow-blue-500/30"
               >
                 <div className="flex items-start justify-between mb-6">
                   <div>
                     <h2 className="text-3xl font-bold mb-2">Continue Learning</h2>
                     <p className="text-cyan-100">Pick up where you left off</p>
                   </div>
-                  <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
+                  <div className="p-3 bg-white/20 rounded-md backdrop-blur-sm">
                     <FiPlay className="w-8 h-8" />
                   </div>
                 </div>
@@ -242,7 +242,7 @@ export default function StudentHome() {
                 </div>
                 <button
                   onClick={() => navigate(`/lms/student/courses/${currentCourse.courseSlug}/modules/${currentCourse.moduleSlug}/lessons/${currentCourse.lessonSlug}`)}
-                  className="w-full px-6 py-4 bg-white text-cyan-600 font-bold rounded-xl hover:bg-cyan-50 transition-all flex items-center justify-center gap-2 shadow-xl hover:shadow-2xl"
+                  className="w-full px-6 py-4 bg-white text-cyan-600 font-bold rounded-md hover:bg-cyan-50 transition-all flex items-center justify-center gap-2 shadow-xl hover:shadow-2xl"
                 >
                   <FiPlay className="w-5 h-5" />
                   Resume Learning
@@ -258,7 +258,7 @@ export default function StudentHome() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="bg-white/80 backdrop-blur-sm rounded-xl p-6 border-2 border-indigo-200/50 shadow-lg"
+              className="bg-white/80 backdrop-blur-sm rounded-md p-6 border-2 border-indigo-200/50 shadow-lg"
             >
               <h3 className="text-lg font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-4 flex items-center gap-2">
                 <div className="p-1.5 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-lg text-white">
@@ -285,7 +285,7 @@ export default function StudentHome() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
-              className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-xl p-6 border-2 border-emerald-200/50 shadow-lg"
+              className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-md p-6 border-2 border-emerald-200/50 shadow-lg"
             >
               <h3 className="text-lg font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent mb-4 flex items-center gap-2">
                 <div className="p-1.5 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-lg text-white">
@@ -304,7 +304,7 @@ export default function StudentHome() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6 }}
-              className="bg-white rounded-xl p-6 border border-slate-200 shadow-lg"
+              className="bg-white rounded-md p-6 border border-slate-200 shadow-lg"
             >
               <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
                 <FiBarChart2 className="w-5 h-5 text-purple-600" />
@@ -328,7 +328,7 @@ export default function StudentHome() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.7 }}
-              className="bg-gradient-to-br from-purple-500 via-pink-500 to-rose-500 rounded-xl p-6 text-white shadow-xl"
+              className="bg-gradient-to-br from-purple-500 via-pink-500 to-rose-500 rounded-md p-6 text-white shadow-xl"
             >
               <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
                 <div className="p-1.5 bg-white/20 rounded-lg backdrop-blur-sm">
@@ -364,7 +364,7 @@ export default function StudentHome() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.8 }}
-              className="bg-white/80 backdrop-blur-sm rounded-xl p-6 border-2 border-cyan-200/50 shadow-lg"
+              className="bg-white/80 backdrop-blur-sm rounded-md p-6 border-2 border-cyan-200/50 shadow-lg"
             >
               <h3 className="text-lg font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent mb-4 flex items-center gap-2">
                 <div className="p-1.5 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-lg text-white">
@@ -387,7 +387,7 @@ export default function StudentHome() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.9 }}
-              className="bg-gradient-to-br from-amber-400 via-orange-500 to-red-500 rounded-xl p-6 text-white shadow-xl"
+              className="bg-gradient-to-br from-amber-400 via-orange-500 to-red-500 rounded-md p-6 text-white shadow-xl"
             >
               <h3 className="text-lg font-bold mb-2 flex items-center gap-2">
                 <div className="p-1.5 bg-white/20 rounded-lg backdrop-blur-sm">

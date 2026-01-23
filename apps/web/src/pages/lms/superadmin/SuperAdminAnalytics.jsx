@@ -99,7 +99,7 @@ export default function SuperAdminAnalytics() {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-white rounded-xl p-6 border border-slate-200 shadow-lg"
+      className="bg-white rounded-md p-6 border border-slate-200 shadow-lg"
     >
       <div className="flex items-center justify-between mb-4">
         <div className={`p-3 rounded-lg bg-gradient-to-r ${color}`}>
@@ -229,7 +229,7 @@ export default function SuperAdminAnalytics() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white rounded-xl p-6 border border-slate-200 shadow-lg"
+            className="bg-white rounded-md p-6 border border-slate-200 shadow-lg"
           >
             <h2 className="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
               <FiBarChart2 className="w-5 h-5 text-indigo-600" />
@@ -242,7 +242,7 @@ export default function SuperAdminAnalytics() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white rounded-xl p-6 border border-slate-200 shadow-lg"
+            className="bg-white rounded-md p-6 border border-slate-200 shadow-lg"
           >
             <h2 className="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
               <FiTarget className="w-5 h-5 text-green-600" />
@@ -256,7 +256,7 @@ export default function SuperAdminAnalytics() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white rounded-xl p-6 border border-slate-200 shadow-lg mb-8"
+          className="bg-white rounded-md p-6 border border-slate-200 shadow-lg mb-8"
         >
           <h2 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
             <FiBook className="w-5 h-5 text-indigo-600" />
@@ -304,7 +304,7 @@ export default function SuperAdminAnalytics() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white rounded-xl p-6 border border-slate-200 shadow-lg"
+            className="bg-white rounded-md p-6 border border-slate-200 shadow-lg"
           >
             <h3 className="text-lg font-semibold text-slate-900 mb-4">Drop-off Rate</h3>
             <div className="text-4xl font-bold text-red-600 mb-2">{metrics.dropOffRate}%</div>
@@ -314,7 +314,7 @@ export default function SuperAdminAnalytics() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white rounded-xl p-6 border border-slate-200 shadow-lg"
+            className="bg-white rounded-md p-6 border border-slate-200 shadow-lg"
           >
             <h3 className="text-lg font-semibold text-slate-900 mb-4">Active Users</h3>
             <div className="text-4xl font-bold text-blue-600 mb-2">{stats.activeUsers}</div>
@@ -324,7 +324,7 @@ export default function SuperAdminAnalytics() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white rounded-xl p-6 border border-slate-200 shadow-lg"
+            className="bg-white rounded-md p-6 border border-slate-200 shadow-lg"
           >
             <h3 className="text-lg font-semibold text-slate-900 mb-4">Total Mentors</h3>
             <div className="text-4xl font-bold text-purple-600 mb-2">{stats.totalMentors}</div>
@@ -336,7 +336,7 @@ export default function SuperAdminAnalytics() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="mt-8 p-4 bg-amber-50 border border-amber-200 rounded-xl"
+          className="mt-8 p-4 bg-amber-50 border border-amber-200 rounded-md"
         >
           <div className="flex items-start gap-3">
             <FiAlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />

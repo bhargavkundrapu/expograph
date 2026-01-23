@@ -22,7 +22,7 @@ export default function ActivityFeed({ activities = [], maxItems = 5 }) {
 
   if (displayActivities.length === 0) {
     return (
-      <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
+      <div className="bg-white rounded-md p-6 border border-slate-200 shadow-sm">
         <h3 className="text-lg font-semibold text-slate-900 mb-4">Recent Activity</h3>
         <p className="text-slate-500 text-sm">No recent activity</p>
       </div>
@@ -30,7 +30,7 @@ export default function ActivityFeed({ activities = [], maxItems = 5 }) {
   }
 
   return (
-    <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
+    <div className="bg-white rounded-md p-6 border border-slate-200 shadow-sm">
       <h3 className="text-lg font-semibold text-slate-900 mb-4">Recent Activity</h3>
       <div className="space-y-4">
         {displayActivities.map((activity, index) => (

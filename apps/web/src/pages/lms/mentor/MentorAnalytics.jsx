@@ -68,7 +68,7 @@ export default function MentorAnalytics() {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-white rounded-xl p-6 border border-slate-200 shadow-lg"
+      className="bg-white rounded-md p-6 border border-slate-200 shadow-lg"
     >
       <div className="flex items-center justify-between mb-4">
         <div className={`p-3 rounded-lg bg-gradient-to-r ${color}`}>
@@ -145,7 +145,7 @@ export default function MentorAnalytics() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white rounded-xl p-6 border border-slate-200 shadow-lg"
+            className="bg-white rounded-md p-6 border border-slate-200 shadow-lg"
           >
             <h2 className="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
               <FiActivity className="w-5 h-5 text-emerald-600" />
@@ -185,7 +185,7 @@ export default function MentorAnalytics() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white rounded-xl p-6 border border-slate-200 shadow-lg"
+            className="bg-white rounded-md p-6 border border-slate-200 shadow-lg"
           >
             <h2 className="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
               <FiTarget className="w-5 h-5 text-purple-600" />
@@ -220,7 +220,7 @@ export default function MentorAnalytics() {
         <h1 className="text-3xl md:text-4xl font-bold text-slate-900 mb-2">Mentees Analytics</h1>
         <p className="text-slate-600">Detailed insights for each mentee</p>
       </motion.div>
-      <div className="bg-white rounded-xl p-8 border border-slate-200 shadow-lg">
+      <div className="bg-white rounded-md p-8 border border-slate-200 shadow-lg">
         <div className="text-center py-12">
           <FiUsers className="w-16 h-16 text-slate-300 mx-auto mb-4" />
           <h3 className="text-xl font-semibold text-slate-900 mb-2">Mentees Analytics</h3>
@@ -244,7 +244,7 @@ export default function MentorAnalytics() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white rounded-xl p-6 border border-slate-200 shadow-lg"
+          className="bg-white rounded-md p-6 border border-slate-200 shadow-lg"
         >
           <h2 className="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
             <FiTarget className="w-5 h-5 text-purple-600" />
@@ -268,7 +268,7 @@ export default function MentorAnalytics() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white rounded-xl p-6 border border-slate-200 shadow-lg"
+          className="bg-white rounded-md p-6 border border-slate-200 shadow-lg"
         >
           <h2 className="text-xl font-bold text-slate-900 mb-4">Performance Trends</h2>
           <div className="text-center py-12">
@@ -293,7 +293,7 @@ export default function MentorAnalytics() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white rounded-xl p-6 border border-slate-200 shadow-lg"
+        className="bg-white rounded-md p-6 border border-slate-200 shadow-lg"
       >
         <h2 className="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
           <FiActivity className="w-5 h-5 text-emerald-600" />

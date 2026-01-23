@@ -434,10 +434,10 @@ export default function SuperAdminCourses() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
               onClick={() => navigate("/lms/superadmin/courses/list")}
-              className="bg-white rounded-2xl p-8 border border-slate-200 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
+              className="bg-white rounded-md p-8 border border-slate-200 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
             >
               <div className="flex items-center justify-between mb-6">
-                <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white group-hover:scale-110 transition-transform">
+                <div className="w-16 h-16 rounded-md bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white group-hover:scale-110 transition-transform">
                   <FiBook className="w-8 h-8" />
                 </div>
                 <div className="text-right">
@@ -460,10 +460,10 @@ export default function SuperAdminCourses() {
                 setCourseForm({ title: "", description: "", level: "" });
                 navigate("/lms/superadmin/courses/create");
               }}
-              className="bg-white rounded-2xl p-8 border border-slate-200 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
+              className="bg-white rounded-md p-8 border border-slate-200 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
             >
               <div className="flex items-center justify-between mb-6">
-                <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white group-hover:scale-110 transition-transform">
+                <div className="w-16 h-16 rounded-md bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white group-hover:scale-110 transition-transform">
                   <FiPlus className="w-8 h-8" />
                 </div>
               </div>
@@ -500,7 +500,7 @@ export default function SuperAdminCourses() {
                 setCourseForm({ title: "", description: "", level: "" });
                 navigate("/lms/superadmin/courses/create");
               }}
-              className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"
+              className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"
             >
               <FiPlus className="w-5 h-5" />
               Create Course
@@ -516,7 +516,7 @@ export default function SuperAdminCourses() {
                 placeholder="Search courses..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
+                className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
               />
             </div>
           </div>
@@ -525,15 +525,15 @@ export default function SuperAdminCourses() {
           {loading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div key={i} className="bg-white rounded-xl p-6 border border-slate-200 animate-pulse">
-                  <div className="h-12 w-12 bg-slate-200 rounded-xl mb-4"></div>
+                <div key={i} className="bg-white rounded-md p-6 border border-slate-200 animate-pulse">
+                  <div className="h-12 w-12 bg-slate-200 rounded-md mb-4"></div>
                   <div className="h-4 w-32 bg-slate-200 rounded mb-2"></div>
                   <div className="h-4 w-48 bg-slate-200 rounded"></div>
                 </div>
               ))}
             </div>
           ) : filteredCourses.length === 0 ? (
-            <div className="bg-white rounded-xl p-12 border border-slate-200 text-center">
+            <div className="bg-white rounded-md p-12 border border-slate-200 text-center">
               <FiBook className="w-16 h-16 text-slate-300 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-slate-900 mb-2">No courses found</h3>
               <p className="text-slate-600">
@@ -549,10 +549,10 @@ export default function SuperAdminCourses() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.05 }}
                   onClick={() => openCourse(course)}
-                  className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer"
+                  className="bg-white rounded-md p-6 border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer"
                 >
                   <div className="flex items-start gap-4 mb-4">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold text-lg flex-shrink-0">
+                    <div className="w-12 h-12 rounded-md bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold text-lg flex-shrink-0">
                       <FiBook className="w-6 h-6" />
                     </div>
                     <div className="flex-1 min-w-0">
@@ -600,7 +600,7 @@ export default function SuperAdminCourses() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
         <div className="max-w-2xl mx-auto">
-          <div className="bg-white rounded-2xl p-8 border border-slate-200 shadow-lg">
+          <div className="bg-white rounded-md p-8 border border-slate-200 shadow-lg">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold text-slate-900">Create New Course</h2>
               <button
@@ -621,7 +621,7 @@ export default function SuperAdminCourses() {
                   value={courseForm.title}
                   onChange={(e) => setCourseForm({ ...courseForm, title: e.target.value })}
                   placeholder="Enter course title"
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
                 />
               </div>
 
@@ -632,7 +632,7 @@ export default function SuperAdminCourses() {
                   onChange={(e) => setCourseForm({ ...courseForm, description: e.target.value })}
                   placeholder="Enter course description"
                   rows={4}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
                 />
               </div>
 
@@ -641,7 +641,7 @@ export default function SuperAdminCourses() {
                 <select
                   value={courseForm.level}
                   onChange={(e) => setCourseForm({ ...courseForm, level: e.target.value })}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
                 >
                   <option value="">Select level</option>
                   <option value="Beginner">Beginner</option>
@@ -654,7 +654,7 @@ export default function SuperAdminCourses() {
                 <button
                   onClick={handleCreateCourse}
                   disabled={saving || !courseForm.title}
-                  className="flex-1 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="flex-1 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   {saving ? (
                     <ButtonLoading text="Creating..." size="sm" />
@@ -667,7 +667,7 @@ export default function SuperAdminCourses() {
                 </button>
                 <button
                   onClick={() => navigate("/lms/superadmin/courses/list")}
-                  className="px-6 py-3 bg-slate-100 text-slate-700 font-semibold rounded-xl hover:bg-slate-200 transition-colors"
+                  className="px-6 py-3 bg-slate-100 text-slate-700 font-semibold rounded-md hover:bg-slate-200 transition-colors"
                 >
                   Cancel
                 </button>
@@ -704,7 +704,7 @@ export default function SuperAdminCourses() {
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => handleDeleteCourse(selectedCourse.id)}
-                  className="px-4 py-2 bg-red-50 text-red-600 font-semibold rounded-xl hover:bg-red-100 transition-all duration-300 flex items-center gap-2"
+                  className="px-4 py-2 bg-red-50 text-red-600 font-semibold rounded-md hover:bg-red-100 transition-all duration-300 flex items-center gap-2"
                 >
                   <FiTrash2 className="w-4 h-4" />
                   Delete Course
@@ -714,7 +714,7 @@ export default function SuperAdminCourses() {
                     setModuleForm({ title: "" });
                     navigate(`/lms/superadmin/courses/${selectedCourse.id}/modules/create`);
                   }}
-                  className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"
+                  className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"
                 >
                   <FiPlus className="w-5 h-5" />
                   Add Module
@@ -725,7 +725,7 @@ export default function SuperAdminCourses() {
 
           {/* Modules List */}
           {modules.length === 0 ? (
-            <div className="bg-white rounded-xl p-12 border border-slate-200 text-center">
+            <div className="bg-white rounded-md p-12 border border-slate-200 text-center">
               <FiBook className="w-16 h-16 text-slate-300 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-slate-900 mb-2">No modules yet</h3>
               <p className="text-slate-600 mb-4">Create your first module to start building the course</p>
@@ -734,7 +734,7 @@ export default function SuperAdminCourses() {
                   setModuleForm({ title: "" });
                     navigate(`/lms/superadmin/courses/${selectedCourse.id}/modules/create`);
                 }}
-                className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl"
+                className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-md"
               >
                 Create Module
               </button>
@@ -750,7 +750,7 @@ export default function SuperAdminCourses() {
                     key={module.id}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden"
+                    className="bg-white rounded-md border border-slate-200 shadow-sm overflow-hidden"
                   >
                     <div
                       className="p-6 cursor-pointer hover:bg-slate-50 transition-colors"
@@ -842,7 +842,7 @@ export default function SuperAdminCourses() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
         <div className="max-w-2xl mx-auto">
-          <div className="bg-white rounded-2xl p-8 border border-slate-200 shadow-lg">
+          <div className="bg-white rounded-md p-8 border border-slate-200 shadow-lg">
             <div className="flex items-center justify-between mb-6">
               <div>
                 <button
@@ -873,7 +873,7 @@ export default function SuperAdminCourses() {
                   value={moduleForm.title}
                   onChange={(e) => setModuleForm({ ...moduleForm, title: e.target.value })}
                   placeholder="Enter module title"
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
                 />
               </div>
 
@@ -881,7 +881,7 @@ export default function SuperAdminCourses() {
                 <button
                   onClick={handleCreateModule}
                   disabled={saving || !moduleForm.title}
-                  className="flex-1 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="flex-1 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   {saving ? (
                     <ButtonLoading text="Creating..." size="sm" />
@@ -894,7 +894,7 @@ export default function SuperAdminCourses() {
                 </button>
                 <button
                   onClick={() => navigate(`/lms/superadmin/courses/${selectedCourse.id}`)}
-                  className="px-6 py-3 bg-slate-100 text-slate-700 font-semibold rounded-xl hover:bg-slate-200 transition-colors"
+                  className="px-6 py-3 bg-slate-100 text-slate-700 font-semibold rounded-md hover:bg-slate-200 transition-colors"
                 >
                   Cancel
                 </button>
@@ -930,7 +930,7 @@ export default function SuperAdminCourses() {
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => handleDeleteModule(selectedModule.id)}
-                  className="px-4 py-2 bg-red-50 text-red-600 font-semibold rounded-xl hover:bg-red-100 transition-all duration-300 flex items-center gap-2"
+                  className="px-4 py-2 bg-red-50 text-red-600 font-semibold rounded-md hover:bg-red-100 transition-all duration-300 flex items-center gap-2"
                 >
                   <FiTrash2 className="w-4 h-4" />
                   Delete Module
@@ -940,7 +940,7 @@ export default function SuperAdminCourses() {
                     setLessonForm({ title: "", summary: "" });
                     navigate(`/lms/superadmin/courses/${selectedCourse.id}/modules/${selectedModule.id}/lessons/create`);
                   }}
-                  className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"
+                  className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"
                 >
                   <FiPlus className="w-5 h-5" />
                   Add Lesson
@@ -951,7 +951,7 @@ export default function SuperAdminCourses() {
 
           {/* Lessons List */}
           {moduleLessons.length === 0 ? (
-            <div className="bg-white rounded-xl p-12 border border-slate-200 text-center">
+            <div className="bg-white rounded-md p-12 border border-slate-200 text-center">
               <FiPlay className="w-16 h-16 text-slate-300 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-slate-900 mb-2">No lessons yet</h3>
               <p className="text-slate-600 mb-4">Create your first lesson for this module</p>
@@ -960,7 +960,7 @@ export default function SuperAdminCourses() {
                   setLessonForm({ title: "", summary: "" });
                   navigate(`/lms/superadmin/courses/${selectedCourse.id}/modules/${selectedModule.id}/lessons/create`);
                 }}
-                className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl"
+                className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-md"
               >
                 Create Lesson
               </button>
@@ -974,10 +974,10 @@ export default function SuperAdminCourses() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.05 }}
                   onClick={() => openLesson(lesson)}
-                  className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer"
+                  className="bg-white rounded-md p-6 border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer"
                 >
                   <div className="flex items-start gap-4 mb-4">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center text-white flex-shrink-0">
+                    <div className="w-12 h-12 rounded-md bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center text-white flex-shrink-0">
                       <FiPlay className="w-6 h-6" />
                     </div>
                     <div className="flex-1 min-w-0">
@@ -1022,7 +1022,7 @@ export default function SuperAdminCourses() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
         <div className="max-w-2xl mx-auto">
-          <div className="bg-white rounded-2xl p-8 border border-slate-200 shadow-lg">
+          <div className="bg-white rounded-md p-8 border border-slate-200 shadow-lg">
             <div className="flex items-center justify-between mb-6">
               <div>
                 <button
@@ -1053,7 +1053,7 @@ export default function SuperAdminCourses() {
                   value={lessonForm.title}
                   onChange={(e) => setLessonForm({ ...lessonForm, title: e.target.value })}
                   placeholder="Enter lesson title"
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
                 />
               </div>
 
@@ -1064,7 +1064,7 @@ export default function SuperAdminCourses() {
                   onChange={(e) => setLessonForm({ ...lessonForm, summary: e.target.value })}
                   placeholder="Enter lesson summary"
                   rows={4}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
                 />
               </div>
 
@@ -1072,7 +1072,7 @@ export default function SuperAdminCourses() {
                 <button
                   onClick={handleCreateLesson}
                   disabled={saving || !lessonForm.title}
-                  className="flex-1 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="flex-1 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   {saving ? (
                     <ButtonLoading text="Creating..." size="sm" />
@@ -1085,7 +1085,7 @@ export default function SuperAdminCourses() {
                 </button>
                 <button
                   onClick={() => navigate(`/lms/superadmin/courses/${selectedCourse.id}/modules/${selectedModule.id}`)}
-                  className="px-6 py-3 bg-slate-100 text-slate-700 font-semibold rounded-xl hover:bg-slate-200 transition-colors"
+                  className="px-6 py-3 bg-slate-100 text-slate-700 font-semibold rounded-md hover:bg-slate-200 transition-colors"
                 >
                   Cancel
                 </button>
@@ -1154,7 +1154,7 @@ export default function SuperAdminCourses() {
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => handleDeleteLesson(selectedLesson.id)}
-                  className="px-4 py-2 bg-red-50 text-red-600 font-semibold rounded-xl hover:bg-red-100 transition-all duration-300 flex items-center gap-2"
+                  className="px-4 py-2 bg-red-50 text-red-600 font-semibold rounded-md hover:bg-red-100 transition-all duration-300 flex items-center gap-2"
                 >
                   <FiTrash2 className="w-4 h-4" />
                   Delete Lesson
@@ -1162,7 +1162,7 @@ export default function SuperAdminCourses() {
                 <button
                   onClick={handleSaveLessonDetails}
                   disabled={saving}
-                  className="px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                  className="px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                 >
                   {saving ? (
                     <ButtonLoading text="Saving..." size="sm" />
@@ -1178,7 +1178,7 @@ export default function SuperAdminCourses() {
           </div>
 
           {/* Lesson Details Tabs */}
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-lg overflow-hidden">
+          <div className="bg-white rounded-md border border-slate-200 shadow-lg overflow-hidden">
             {/* Basic Info */}
             <div className="p-6 border-b border-slate-200">
               <h2 className="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">

@@ -39,7 +39,7 @@ export default function BannerCarousel({ items = [], autoRotateInterval = 5000 }
   const currentItem = items[currentIndex];
 
   return (
-    <div className="relative w-full h-[320px] rounded-2xl overflow-hidden group">
+    <div className="relative w-full h-[320px] rounded-lg overflow-hidden group">
       <AnimatePresence mode="wait">
         <motion.div
           key={currentIndex}
@@ -97,7 +97,7 @@ export default function BannerCarousel({ items = [], autoRotateInterval = 5000 }
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 }}
                   onClick={currentItem.action.onClick}
-                  className="w-fit px-6 py-3 bg-white text-slate-900 font-semibold rounded-xl hover:bg-slate-100 transition-all duration-300 shadow-lg hover:shadow-xl"
+                  className="w-fit px-6 py-3 bg-white text-slate-900 font-semibold rounded-md hover:bg-slate-100 transition-all duration-300 shadow-lg hover:shadow-xl"
                 >
                   {currentItem.action.label}
                 </motion.button>

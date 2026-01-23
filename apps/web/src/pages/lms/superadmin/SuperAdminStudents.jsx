@@ -318,7 +318,7 @@ export default function SuperAdminStudents() {
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="bg-white rounded-2xl p-8 border border-slate-200 shadow-2xl max-w-md w-full"
+          className="bg-white rounded-md p-8 border border-slate-200 shadow-2xl max-w-md w-full"
         >
           <div className="text-center mb-6">
             <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center">
@@ -331,14 +331,14 @@ export default function SuperAdminStudents() {
           </div>
 
           <div className="space-y-4 mb-6">
-            <div className="bg-slate-50 rounded-xl p-4 border-2 border-slate-200">
+            <div className="bg-slate-50 rounded-md p-4 border-2 border-slate-200">
               <label className="block text-xs font-semibold text-slate-500 mb-1">Student Name</label>
               <div className="flex items-center justify-between">
                 <p className="text-lg font-bold text-slate-900">{studentCredentials.name}</p>
               </div>
             </div>
 
-            <div className="bg-blue-50 rounded-xl p-4 border-2 border-blue-200">
+            <div className="bg-blue-50 rounded-md p-4 border-2 border-blue-200">
               <label className="block text-xs font-semibold text-blue-600 mb-1">Email</label>
               <div className="flex items-center justify-between">
                 <p className="text-lg font-mono font-bold text-blue-900">{studentCredentials.email}</p>
@@ -352,7 +352,7 @@ export default function SuperAdminStudents() {
               </div>
             </div>
 
-            <div className="bg-amber-50 rounded-xl p-4 border-2 border-amber-200">
+            <div className="bg-amber-50 rounded-md p-4 border-2 border-amber-200">
               <label className="block text-xs font-semibold text-amber-600 mb-1">Password</label>
               <div className="flex items-center justify-between">
                 <p className="text-lg font-mono font-bold text-amber-900">{studentCredentials.password}</p>
@@ -367,7 +367,7 @@ export default function SuperAdminStudents() {
             </div>
           </div>
 
-          <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-6">
+          <div className="bg-yellow-50 border border-yellow-200 rounded-md p-4 mb-6">
             <p className="text-sm text-yellow-800 flex items-start gap-2">
               <FiLock className="w-4 h-4 mt-0.5 flex-shrink-0" />
               <span>
@@ -385,7 +385,7 @@ export default function SuperAdminStudents() {
                   navigate("/lms/superadmin/students/list");
                 }
               }}
-              className="flex-1 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+              className="flex-1 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition-all duration-300"
             >
               Done
             </button>
@@ -394,7 +394,7 @@ export default function SuperAdminStudents() {
                 const credentials = `Student Login Credentials\n\nName: ${studentCredentials.name}\nEmail: ${studentCredentials.email}\nPassword: ${studentCredentials.password}\n\nPlease keep this information secure.`;
                 copyToClipboard(credentials);
               }}
-              className="px-6 py-3 bg-slate-100 text-slate-700 font-semibold rounded-xl hover:bg-slate-200 transition-colors flex items-center gap-2"
+              className="px-6 py-3 bg-slate-100 text-slate-700 font-semibold rounded-md hover:bg-slate-200 transition-colors flex items-center gap-2"
             >
               <FiCopy className="w-4 h-4" />
               Copy All
@@ -426,10 +426,10 @@ export default function SuperAdminStudents() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
                 onClick={() => navigate("/lms/superadmin/students/list")}
-                className="bg-white rounded-2xl p-8 border border-slate-200 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
+                className="bg-white rounded-md p-8 border border-slate-200 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
               >
                 <div className="flex items-center justify-between mb-6">
-                  <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white group-hover:scale-110 transition-transform">
+                  <div className="w-16 h-16 rounded-md bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white group-hover:scale-110 transition-transform">
                     <FiUsers className="w-8 h-8" />
                   </div>
                   <div className="text-right">
@@ -452,10 +452,10 @@ export default function SuperAdminStudents() {
                   setAddForm({ fullName: "", email: "", phone: "", password: "", generatePassword: true });
                   navigate("/lms/superadmin/students/create");
                 }}
-                className="bg-white rounded-2xl p-8 border border-slate-200 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
+                className="bg-white rounded-md p-8 border border-slate-200 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
               >
                 <div className="flex items-center justify-between mb-6">
-                  <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white group-hover:scale-110 transition-transform">
+                  <div className="w-16 h-16 rounded-md bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white group-hover:scale-110 transition-transform">
                     <FiUserPlus className="w-8 h-8" />
                   </div>
                 </div>
@@ -495,7 +495,7 @@ export default function SuperAdminStudents() {
                 setAddForm({ fullName: "", email: "", phone: "", password: "", generatePassword: true });
                 navigate("/lms/superadmin/students/create");
               }}
-              className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"
+              className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"
             >
               <FiUserPlus className="w-5 h-5" />
               Add Student
@@ -512,7 +512,7 @@ export default function SuperAdminStudents() {
                   placeholder="Search by name, email, or phone..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
+                  className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
                 />
               </div>
             </div>
@@ -522,7 +522,7 @@ export default function SuperAdminStudents() {
           {loading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div key={i} className="bg-white rounded-xl p-6 border border-slate-200 animate-pulse">
+                <div key={i} className="bg-white rounded-md p-6 border border-slate-200 animate-pulse">
                   <div className="h-12 w-12 bg-slate-200 rounded-full mb-4"></div>
                   <div className="h-4 w-32 bg-slate-200 rounded mb-2"></div>
                   <div className="h-4 w-48 bg-slate-200 rounded"></div>
@@ -530,7 +530,7 @@ export default function SuperAdminStudents() {
               ))}
             </div>
           ) : filteredStudents.length === 0 ? (
-            <div className="bg-white rounded-xl p-12 border border-slate-200 text-center">
+            <div className="bg-white rounded-md p-12 border border-slate-200 text-center">
               <FiUsers className="w-16 h-16 text-slate-300 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-slate-900 mb-2">No students found</h3>
               <p className="text-slate-600">
@@ -545,7 +545,7 @@ export default function SuperAdminStudents() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.05 }}
-                  className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300"
+                  className="bg-white rounded-md p-6 border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300"
                 >
                   <div className="flex items-start gap-4 mb-4">
                     <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold text-lg flex-shrink-0">
@@ -594,7 +594,7 @@ export default function SuperAdminStudents() {
       <>
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
         <div className="max-w-2xl mx-auto">
-          <div className="bg-white rounded-2xl p-8 border border-slate-200 shadow-lg">
+          <div className="bg-white rounded-md p-8 border border-slate-200 shadow-lg">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold text-slate-900">Add New Student</h2>
               <button
@@ -617,7 +617,7 @@ export default function SuperAdminStudents() {
                     value={addForm.fullName}
                     onChange={(e) => setAddForm({ ...addForm, fullName: e.target.value })}
                     placeholder="Enter student name"
-                    className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
+                    className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
                   />
                 </div>
               </div>
@@ -633,7 +633,7 @@ export default function SuperAdminStudents() {
                     value={addForm.email}
                     onChange={(e) => setAddForm({ ...addForm, email: e.target.value })}
                     placeholder="Enter email address"
-                    className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
+                    className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
                   />
                 </div>
               </div>
@@ -647,7 +647,7 @@ export default function SuperAdminStudents() {
                     value={addForm.phone}
                     onChange={(e) => setAddForm({ ...addForm, phone: e.target.value })}
                     placeholder="Enter phone number"
-                    className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
+                    className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
                   />
                 </div>
               </div>
@@ -676,11 +676,11 @@ export default function SuperAdminStudents() {
                       onChange={(e) => setAddForm({ ...addForm, password: e.target.value })}
                       placeholder="Enter custom password (min 8 characters)"
                       minLength={8}
-                      className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
+                      className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
                     />
                   </div>
                 ) : (
-                  <div className="p-3 bg-blue-50 border border-blue-200 rounded-xl">
+                  <div className="p-3 bg-blue-50 border border-blue-200 rounded-md">
                     <p className="text-sm text-blue-700 flex items-center gap-2">
                       <FiLock className="w-4 h-4" />
                       A secure password will be automatically generated
@@ -693,7 +693,7 @@ export default function SuperAdminStudents() {
                 <button
                   onClick={handleAddStudent}
                   disabled={saving || !addForm.email || !addForm.fullName}
-                  className="flex-1 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="flex-1 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   {saving ? (
                     <ButtonLoading text="Adding..." size="sm" />
@@ -706,7 +706,7 @@ export default function SuperAdminStudents() {
                 </button>
                 <button
                   onClick={() => navigate("/lms/superadmin/students/list")}
-                  className="px-6 py-3 bg-slate-100 text-slate-700 font-semibold rounded-xl hover:bg-slate-200 transition-colors"
+                  className="px-6 py-3 bg-slate-100 text-slate-700 font-semibold rounded-md hover:bg-slate-200 transition-colors"
                 >
                   Cancel
                 </button>
@@ -726,7 +726,7 @@ export default function SuperAdminStudents() {
       <>
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
         <div className="max-w-2xl mx-auto">
-          <div className="bg-white rounded-2xl p-8 border border-slate-200 shadow-lg">
+          <div className="bg-white rounded-md p-8 border border-slate-200 shadow-lg">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold text-slate-900">Edit Student</h2>
               <button
@@ -749,7 +749,7 @@ export default function SuperAdminStudents() {
                     value={editForm.fullName}
                     onChange={(e) => setEditForm({ ...editForm, fullName: e.target.value })}
                     placeholder="Enter student name"
-                    className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
+                    className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
                   />
                 </div>
               </div>
@@ -765,7 +765,7 @@ export default function SuperAdminStudents() {
                     value={editForm.email}
                     onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
                     placeholder="Enter email address"
-                    className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
+                    className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
                   />
                 </div>
               </div>
@@ -779,7 +779,7 @@ export default function SuperAdminStudents() {
                     value={editForm.phone}
                     onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
                     placeholder="Enter phone number"
-                    className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
+                    className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
                   />
                 </div>
               </div>
@@ -788,7 +788,7 @@ export default function SuperAdminStudents() {
                 <button
                   onClick={handleEditStudent}
                   disabled={saving || !editForm.email || !editForm.fullName}
-                  className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   {saving ? (
                     <ButtonLoading text="Saving..." size="sm" />
@@ -801,7 +801,7 @@ export default function SuperAdminStudents() {
                 </button>
                 <button
                   onClick={() => navigate("/lms/superadmin/students/list")}
-                  className="px-6 py-3 bg-slate-100 text-slate-700 font-semibold rounded-xl hover:bg-slate-200 transition-colors"
+                  className="px-6 py-3 bg-slate-100 text-slate-700 font-semibold rounded-md hover:bg-slate-200 transition-colors"
                 >
                   Cancel
                 </button>
@@ -826,7 +826,7 @@ export default function SuperAdminStudents() {
       <>
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
           <div className="max-w-4xl mx-auto">
-            <div className="bg-white rounded-2xl p-8 border border-slate-200 shadow-lg">
+            <div className="bg-white rounded-md p-8 border border-slate-200 shadow-lg">
               {/* Header */}
               <div className="flex items-center justify-between mb-8">
               <div className="flex items-center gap-4">
@@ -850,7 +850,7 @@ export default function SuperAdminStudents() {
 
               {/* Stats Grid */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-100">
+              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-md p-6 border border-blue-100">
                 <div className="flex items-center gap-3 mb-2">
                   <FiTrendingUp className="w-6 h-6 text-blue-600" />
                   <h3 className="text-sm font-semibold text-slate-700">Streak</h3>
@@ -859,7 +859,7 @@ export default function SuperAdminStudents() {
                 <div className="text-xs text-slate-600 mt-1">Days active</div>
               </div>
 
-              <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-xl p-6 border border-emerald-100">
+              <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-md p-6 border border-emerald-100">
                 <div className="flex items-center gap-3 mb-2">
                   <FiTrendingUp className="w-6 h-6 text-emerald-600" />
                   <h3 className="text-sm font-semibold text-slate-700">Progress</h3>
@@ -870,7 +870,7 @@ export default function SuperAdminStudents() {
                 <div className="text-xs text-slate-600 mt-1">Lessons completed</div>
               </div>
 
-              <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-6 border border-purple-100">
+              <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-md p-6 border border-purple-100">
                 <div className="flex items-center gap-3 mb-2">
                   <FiBriefcase className="w-6 h-6 text-purple-600" />
                   <h3 className="text-sm font-semibold text-slate-700">Projects</h3>
@@ -957,7 +957,7 @@ export default function SuperAdminStudents() {
               <div className="flex items-center gap-4 pt-6 border-t border-slate-200">
                 <button
                   onClick={() => openEdit(selectedStudent)}
-                  className="px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"
+                  className="px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"
                 >
                   <FiEdit2 className="w-5 h-5" />
                   Edit Student
@@ -965,7 +965,7 @@ export default function SuperAdminStudents() {
                 <button
                   onClick={() => handleResetPassword(student.id, student.email)}
                   disabled={resettingPassword}
-                  className="px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2 disabled:opacity-50"
+                  className="px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-600 text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2 disabled:opacity-50"
                 >
                   {resettingPassword ? (
                     <ButtonLoading text="Resetting..." size="sm" />
@@ -978,7 +978,7 @@ export default function SuperAdminStudents() {
                 </button>
                 <button
                   onClick={() => handleDeleteStudent(selectedStudent.id)}
-                  className="px-6 py-3 bg-red-50 text-red-600 font-semibold rounded-xl hover:bg-red-100 transition-colors flex items-center gap-2"
+                  className="px-6 py-3 bg-red-50 text-red-600 font-semibold rounded-md hover:bg-red-100 transition-colors flex items-center gap-2"
                 >
                   <FiTrash2 className="w-5 h-5" />
                   Remove Student

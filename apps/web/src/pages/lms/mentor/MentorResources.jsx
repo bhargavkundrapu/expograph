@@ -79,7 +79,7 @@ export default function MentorResources() {
             <input
               type="text"
               placeholder="Search resources..."
-              className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all"
+              className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all"
             />
           </div>
         </div>
@@ -91,7 +91,7 @@ export default function MentorResources() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              className="bg-white rounded-xl p-6 border border-slate-200 shadow-lg hover:shadow-xl transition-all"
+              className="bg-white rounded-md p-6 border border-slate-200 shadow-lg hover:shadow-xl transition-all"
             >
               <div className="flex items-start gap-4 mb-4">
                 <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white">

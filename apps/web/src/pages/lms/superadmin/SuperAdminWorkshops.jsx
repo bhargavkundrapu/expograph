@@ -312,10 +312,10 @@ export default function SuperAdminWorkshops() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
               onClick={() => navigate("/lms/superadmin/workshops/list")}
-              className="bg-white rounded-2xl p-8 border border-slate-200 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
+              className="bg-white rounded-md p-8 border border-slate-200 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
             >
               <div className="flex items-center justify-between mb-6">
-                <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center text-white group-hover:scale-110 transition-transform">
+                <div className="w-16 h-16 rounded-md bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center text-white group-hover:scale-110 transition-transform">
                   <FiCalendar className="w-8 h-8" />
                 </div>
                 <div className="text-right">
@@ -348,10 +348,10 @@ export default function SuperAdminWorkshops() {
                 });
                 navigate("/lms/superadmin/workshops/create");
               }}
-              className="bg-white rounded-2xl p-8 border border-slate-200 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
+              className="bg-white rounded-md p-8 border border-slate-200 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
             >
               <div className="flex items-center justify-between mb-6">
-                <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white group-hover:scale-110 transition-transform">
+                <div className="w-16 h-16 rounded-md bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white group-hover:scale-110 transition-transform">
                   <FiPlus className="w-8 h-8" />
                 </div>
               </div>
@@ -398,7 +398,7 @@ export default function SuperAdminWorkshops() {
                 });
                 navigate("/lms/superadmin/workshops/create");
               }}
-              className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"
+              className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"
             >
               <FiPlus className="w-5 h-5" />
               Create Workshop
@@ -415,7 +415,7 @@ export default function SuperAdminWorkshops() {
                   placeholder="Search by title, description, or location..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all"
+                  className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all"
                 />
               </div>
             </div>
@@ -425,7 +425,7 @@ export default function SuperAdminWorkshops() {
           {loading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div key={i} className="bg-white rounded-xl p-6 border border-slate-200 animate-pulse">
+                <div key={i} className="bg-white rounded-md p-6 border border-slate-200 animate-pulse">
                   <div className="h-12 w-12 bg-slate-200 rounded-full mb-4"></div>
                   <div className="h-4 w-32 bg-slate-200 rounded mb-2"></div>
                   <div className="h-4 w-48 bg-slate-200 rounded"></div>
@@ -433,7 +433,7 @@ export default function SuperAdminWorkshops() {
               ))}
             </div>
           ) : filteredWorkshops.length === 0 ? (
-            <div className="bg-white rounded-xl p-12 border border-slate-200 text-center">
+            <div className="bg-white rounded-md p-12 border border-slate-200 text-center">
               <FiCalendar className="w-16 h-16 text-slate-300 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-slate-900 mb-2">No workshops found</h3>
               <p className="text-slate-600">
@@ -453,7 +453,7 @@ export default function SuperAdminWorkshops() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.05 }}
-                    className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300"
+                    className="bg-white rounded-md p-6 border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300"
                   >
                     <div className="flex items-start gap-4 mb-4">
                       <div className="w-12 h-12 rounded-full bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center text-white font-semibold text-lg flex-shrink-0">
@@ -520,7 +520,7 @@ export default function SuperAdminWorkshops() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
         <div className="max-w-3xl mx-auto">
-          <div className="bg-white rounded-2xl p-8 border border-slate-200 shadow-lg">
+          <div className="bg-white rounded-md p-8 border border-slate-200 shadow-lg">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold text-slate-900">Create New Workshop</h2>
               <button
@@ -541,7 +541,7 @@ export default function SuperAdminWorkshops() {
                   value={addForm.title}
                   onChange={(e) => setAddForm({ ...addForm, title: e.target.value })}
                   placeholder="Enter workshop title"
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all"
                 />
               </div>
 
@@ -552,7 +552,7 @@ export default function SuperAdminWorkshops() {
                   onChange={(e) => setAddForm({ ...addForm, description: e.target.value })}
                   placeholder="Enter workshop description"
                   rows={4}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all resize-none"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all resize-none"
                 />
               </div>
 
@@ -565,7 +565,7 @@ export default function SuperAdminWorkshops() {
                     type="datetime-local"
                     value={addForm.startsAt}
                     onChange={(e) => setAddForm({ ...addForm, startsAt: e.target.value })}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all"
                   />
                 </div>
 
@@ -575,7 +575,7 @@ export default function SuperAdminWorkshops() {
                     type="datetime-local"
                     value={addForm.endsAt}
                     onChange={(e) => setAddForm({ ...addForm, endsAt: e.target.value })}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all"
                   />
                 </div>
               </div>
@@ -586,7 +586,7 @@ export default function SuperAdminWorkshops() {
                   <select
                     value={addForm.mode}
                     onChange={(e) => setAddForm({ ...addForm, mode: e.target.value })}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all"
                   >
                     <option value="offline">Offline</option>
                     <option value="online">Online</option>
@@ -599,7 +599,7 @@ export default function SuperAdminWorkshops() {
                   <select
                     value={addForm.status}
                     onChange={(e) => setAddForm({ ...addForm, status: e.target.value })}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all"
                   >
                     <option value="draft">Draft</option>
                     <option value="published">Published</option>
@@ -619,7 +619,7 @@ export default function SuperAdminWorkshops() {
                       value={addForm.location}
                       onChange={(e) => setAddForm({ ...addForm, location: e.target.value })}
                       placeholder="Enter physical location"
-                      className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all"
+                      className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all"
                     />
                   </div>
                 </div>
@@ -635,7 +635,7 @@ export default function SuperAdminWorkshops() {
                       value={addForm.meetLink}
                       onChange={(e) => setAddForm({ ...addForm, meetLink: e.target.value })}
                       placeholder="Enter meeting URL (Zoom, Google Meet, etc.)"
-                      className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all"
+                      className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all"
                     />
                   </div>
                 </div>
@@ -648,7 +648,7 @@ export default function SuperAdminWorkshops() {
                   value={addForm.capacity}
                   onChange={(e) => setAddForm({ ...addForm, capacity: parseInt(e.target.value) || 0 })}
                   min="0"
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all"
                 />
               </div>
 
@@ -656,7 +656,7 @@ export default function SuperAdminWorkshops() {
                 <button
                   onClick={handleAddWorkshop}
                   disabled={saving || !addForm.title || !addForm.startsAt}
-                  className="flex-1 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="flex-1 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   {saving ? (
                     <ButtonLoading text="Creating..." size="sm" />
@@ -669,7 +669,7 @@ export default function SuperAdminWorkshops() {
                 </button>
                 <button
                   onClick={() => navigate("/lms/superadmin/workshops/list")}
-                  className="px-6 py-3 bg-slate-100 text-slate-700 font-semibold rounded-xl hover:bg-slate-200 transition-colors"
+                  className="px-6 py-3 bg-slate-100 text-slate-700 font-semibold rounded-md hover:bg-slate-200 transition-colors"
                 >
                   Cancel
                 </button>
@@ -686,7 +686,7 @@ export default function SuperAdminWorkshops() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
         <div className="max-w-3xl mx-auto">
-          <div className="bg-white rounded-2xl p-8 border border-slate-200 shadow-lg">
+          <div className="bg-white rounded-md p-8 border border-slate-200 shadow-lg">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold text-slate-900">Edit Workshop</h2>
               <button
@@ -707,7 +707,7 @@ export default function SuperAdminWorkshops() {
                   value={editForm.title}
                   onChange={(e) => setEditForm({ ...editForm, title: e.target.value })}
                   placeholder="Enter workshop title"
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all"
                 />
               </div>
 
@@ -718,7 +718,7 @@ export default function SuperAdminWorkshops() {
                   onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
                   placeholder="Enter workshop description"
                   rows={4}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all resize-none"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all resize-none"
                 />
               </div>
 
@@ -731,7 +731,7 @@ export default function SuperAdminWorkshops() {
                     type="datetime-local"
                     value={editForm.startsAt}
                     onChange={(e) => setEditForm({ ...editForm, startsAt: e.target.value })}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all"
                   />
                 </div>
 
@@ -741,7 +741,7 @@ export default function SuperAdminWorkshops() {
                     type="datetime-local"
                     value={editForm.endsAt}
                     onChange={(e) => setEditForm({ ...editForm, endsAt: e.target.value })}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all"
                   />
                 </div>
               </div>
@@ -752,7 +752,7 @@ export default function SuperAdminWorkshops() {
                   <select
                     value={editForm.mode}
                     onChange={(e) => setEditForm({ ...editForm, mode: e.target.value })}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all"
                   >
                     <option value="offline">Offline</option>
                     <option value="online">Online</option>
@@ -765,7 +765,7 @@ export default function SuperAdminWorkshops() {
                   <select
                     value={editForm.status}
                     onChange={(e) => setEditForm({ ...editForm, status: e.target.value })}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all"
                   >
                     <option value="draft">Draft</option>
                     <option value="published">Published</option>
@@ -785,7 +785,7 @@ export default function SuperAdminWorkshops() {
                       value={editForm.location}
                       onChange={(e) => setEditForm({ ...editForm, location: e.target.value })}
                       placeholder="Enter physical location"
-                      className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all"
+                      className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all"
                     />
                   </div>
                 </div>
@@ -801,7 +801,7 @@ export default function SuperAdminWorkshops() {
                       value={editForm.meetLink}
                       onChange={(e) => setEditForm({ ...editForm, meetLink: e.target.value })}
                       placeholder="Enter meeting URL (Zoom, Google Meet, etc.)"
-                      className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all"
+                      className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all"
                     />
                   </div>
                 </div>
@@ -814,7 +814,7 @@ export default function SuperAdminWorkshops() {
                   value={editForm.capacity}
                   onChange={(e) => setEditForm({ ...editForm, capacity: parseInt(e.target.value) || 0 })}
                   min="0"
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all"
                 />
               </div>
 
@@ -822,7 +822,7 @@ export default function SuperAdminWorkshops() {
                 <button
                   onClick={handleEditWorkshop}
                   disabled={saving || !editForm.title || !editForm.startsAt}
-                  className="flex-1 px-6 py-3 bg-gradient-to-r from-orange-500 to-red-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="flex-1 px-6 py-3 bg-gradient-to-r from-orange-500 to-red-600 text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   {saving ? (
                     <ButtonLoading text="Saving..." size="sm" />
@@ -835,7 +835,7 @@ export default function SuperAdminWorkshops() {
                 </button>
                 <button
                   onClick={() => navigate("/lms/superadmin/workshops/list")}
-                  className="px-6 py-3 bg-slate-100 text-slate-700 font-semibold rounded-xl hover:bg-slate-200 transition-colors"
+                  className="px-6 py-3 bg-slate-100 text-slate-700 font-semibold rounded-md hover:bg-slate-200 transition-colors"
                 >
                   Cancel
                 </button>
@@ -857,7 +857,7 @@ export default function SuperAdminWorkshops() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
         <div className="max-w-6xl mx-auto">
-          <div className="bg-white rounded-2xl p-8 border border-slate-200 shadow-lg">
+          <div className="bg-white rounded-md p-8 border border-slate-200 shadow-lg">
             {/* Header */}
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center gap-4">
@@ -884,7 +884,7 @@ export default function SuperAdminWorkshops() {
 
             {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-              <div className="bg-gradient-to-br from-orange-50 to-red-50 rounded-xl p-6 border border-orange-100">
+              <div className="bg-gradient-to-br from-orange-50 to-red-50 rounded-md p-6 border border-orange-100">
                 <div className="flex items-center gap-3 mb-2">
                   <FiUsers className="w-6 h-6 text-orange-600" />
                   <h3 className="text-sm font-semibold text-slate-700">Total Registrations</h3>
@@ -892,7 +892,7 @@ export default function SuperAdminWorkshops() {
                 <div className="text-3xl font-bold text-orange-600">{stats.total_registrations || 0}</div>
               </div>
 
-              <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-xl p-6 border border-emerald-100">
+              <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-md p-6 border border-emerald-100">
                 <div className="flex items-center gap-3 mb-2">
                   <FiCheckCircle className="w-6 h-6 text-emerald-600" />
                   <h3 className="text-sm font-semibold text-slate-700">Attended</h3>
@@ -900,7 +900,7 @@ export default function SuperAdminWorkshops() {
                 <div className="text-3xl font-bold text-emerald-600">{stats.attended_count || 0}</div>
               </div>
 
-              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-100">
+              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-md p-6 border border-blue-100">
                 <div className="flex items-center gap-3 mb-2">
                   <FiUsers className="w-6 h-6 text-blue-600" />
                   <h3 className="text-sm font-semibold text-slate-700">Registered</h3>
@@ -908,7 +908,7 @@ export default function SuperAdminWorkshops() {
                 <div className="text-3xl font-bold text-blue-600">{stats.registered_count || 0}</div>
               </div>
 
-              <div className="bg-gradient-to-br from-red-50 to-pink-50 rounded-xl p-6 border border-red-100">
+              <div className="bg-gradient-to-br from-red-50 to-pink-50 rounded-md p-6 border border-red-100">
                 <div className="flex items-center gap-3 mb-2">
                   <FiAlertCircle className="w-6 h-6 text-red-600" />
                   <h3 className="text-sm font-semibold text-slate-700">No Show</h3>
@@ -986,7 +986,7 @@ export default function SuperAdminWorkshops() {
                 Registrations ({registrations.length})
               </h3>
               {registrations.length === 0 ? (
-                <div className="bg-slate-50 rounded-xl p-12 border border-slate-200 text-center">
+                <div className="bg-slate-50 rounded-md p-12 border border-slate-200 text-center">
                   <FiUsers className="w-16 h-16 text-slate-300 mx-auto mb-4" />
                   <h4 className="text-lg font-semibold text-slate-900 mb-2">No registrations yet</h4>
                   <p className="text-slate-600">No one has registered for this workshop yet.</p>
@@ -1040,14 +1040,14 @@ export default function SuperAdminWorkshops() {
             <div className="flex items-center gap-4 pt-6 mt-8 border-t border-slate-200">
               <button
                 onClick={() => openEdit(selectedWorkshop)}
-                className="px-6 py-3 bg-gradient-to-r from-orange-500 to-red-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"
+                className="px-6 py-3 bg-gradient-to-r from-orange-500 to-red-600 text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"
               >
                 <FiEdit2 className="w-5 h-5" />
                 Edit Workshop
               </button>
               <button
                 onClick={() => handleDeleteWorkshop(selectedWorkshop.id)}
-                className="px-6 py-3 bg-red-50 text-red-600 font-semibold rounded-xl hover:bg-red-100 transition-colors flex items-center gap-2"
+                className="px-6 py-3 bg-red-50 text-red-600 font-semibold rounded-md hover:bg-red-100 transition-colors flex items-center gap-2"
               >
                 <FiTrash2 className="w-5 h-5" />
                 Delete Workshop

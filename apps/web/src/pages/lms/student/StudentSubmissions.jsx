@@ -148,7 +148,7 @@ export default function StudentSubmissions() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 border-2 border-cyan-200/50 shadow-xl"
+            className="bg-white/80 backdrop-blur-sm rounded-md p-8 border-2 border-cyan-200/50 shadow-xl"
           >
             <div className="flex items-start justify-between mb-6">
               <div>
@@ -157,7 +157,7 @@ export default function StudentSubmissions() {
                 </h1>
                 <p className="text-slate-600">{selectedSubmission.course}</p>
               </div>
-              <div className={`px-4 py-2 rounded-xl border-2 flex items-center gap-2 ${getStatusColor(selectedSubmission.status)}`}>
+              <div className={`px-4 py-2 rounded-md border-2 flex items-center gap-2 ${getStatusColor(selectedSubmission.status)}`}>
                 {(() => {
                   const Icon = getStatusIcon(selectedSubmission.status);
                   return <Icon className="w-5 h-5" />;
@@ -168,14 +168,14 @@ export default function StudentSubmissions() {
 
             <div className="space-y-6">
               <div className="grid grid-cols-2 gap-4">
-                <div className="p-4 bg-gradient-to-r from-cyan-50 to-blue-50 rounded-xl border-2 border-cyan-200">
+                <div className="p-4 bg-gradient-to-r from-cyan-50 to-blue-50 rounded-md border-2 border-cyan-200">
                   <p className="text-sm text-slate-600 mb-1">Submitted</p>
                   <p className="font-semibold text-slate-800">
                     {new Date(selectedSubmission.submitted_at).toLocaleString()}
                   </p>
                 </div>
                 {selectedSubmission.reviewed_at && (
-                  <div className="p-4 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl border-2 border-emerald-200">
+                  <div className="p-4 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-md border-2 border-emerald-200">
                     <p className="text-sm text-slate-600 mb-1">Reviewed</p>
                     <p className="font-semibold text-slate-800">
                       {new Date(selectedSubmission.reviewed_at).toLocaleString()}
@@ -185,7 +185,7 @@ export default function StudentSubmissions() {
               </div>
 
               {selectedSubmission.score !== null && (
-                <div className="p-6 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl border-2 border-indigo-200">
+                <div className="p-6 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-md border-2 border-indigo-200">
                   <p className="text-sm text-slate-600 mb-2">Score</p>
                   <p className="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
                     {selectedSubmission.score}%
@@ -194,7 +194,7 @@ export default function StudentSubmissions() {
               )}
 
               {selectedSubmission.feedback && (
-                <div className="p-6 bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl border-2 border-amber-200">
+                <div className="p-6 bg-gradient-to-br from-amber-50 to-orange-50 rounded-md border-2 border-amber-200">
                   <h3 className="font-semibold text-slate-800 mb-3">Feedback</h3>
                   <p className="text-slate-700">{selectedSubmission.feedback}</p>
                   {selectedSubmission.reviewer && (
@@ -204,11 +204,11 @@ export default function StudentSubmissions() {
               )}
 
               <div className="flex gap-4">
-                <button className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-semibold rounded-xl hover:from-cyan-600 hover:to-blue-600 transition-all flex items-center gap-2">
+                <button className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-semibold rounded-md hover:from-cyan-600 hover:to-blue-600 transition-all flex items-center gap-2">
                   <FiEye className="w-5 h-5" />
                   View Submission
                 </button>
-                <button className="px-6 py-3 bg-white border-2 border-slate-200 text-slate-700 font-semibold rounded-xl hover:bg-slate-50 transition-all flex items-center gap-2">
+                <button className="px-6 py-3 bg-white border-2 border-slate-200 text-slate-700 font-semibold rounded-md hover:bg-slate-50 transition-all flex items-center gap-2">
                   <FiDownload className="w-5 h-5" />
                   Download
                 </button>
@@ -240,7 +240,7 @@ export default function StudentSubmissions() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border-2 border-cyan-200/50 shadow-lg mb-8"
+          className="bg-white/80 backdrop-blur-sm rounded-md p-6 border-2 border-cyan-200/50 shadow-lg mb-8"
         >
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1 relative">
@@ -250,7 +250,7 @@ export default function StudentSubmissions() {
                 placeholder="Search submissions..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 bg-gradient-to-r from-cyan-50 to-blue-50 border-2 border-cyan-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-400 text-slate-700"
+                className="w-full pl-12 pr-4 py-3 bg-gradient-to-r from-cyan-50 to-blue-50 border-2 border-cyan-200 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-400 text-slate-700"
               />
             </div>
             <div className="flex items-center gap-2 flex-wrap">
@@ -259,7 +259,7 @@ export default function StudentSubmissions() {
                 <button
                   key={status}
                   onClick={() => setFilter(status)}
-                  className={`px-4 py-2 rounded-xl font-semibold transition-all ${
+                  className={`px-4 py-2 rounded-md font-semibold transition-all ${
                     filter === status
                       ? "bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-md"
                       : "bg-slate-100 text-slate-600 hover:bg-slate-200"
@@ -277,7 +277,7 @@ export default function StudentSubmissions() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="bg-white/80 backdrop-blur-sm rounded-2xl p-12 border-2 border-cyan-200/50 text-center"
+            className="bg-white/80 backdrop-blur-sm rounded-md p-12 border-2 border-cyan-200/50 text-center"
           >
             <FiFileText className="w-20 h-20 text-slate-300 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-slate-700 mb-2">No submissions found</h3>
@@ -296,7 +296,7 @@ export default function StudentSubmissions() {
                     setSelectedSubmission(submission);
                     navigate(`/lms/student/submissions/${submission.id}`);
                   }}
-                  className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border-2 border-cyan-200/50 hover:border-cyan-400 hover:shadow-xl transition-all cursor-pointer group"
+                  className="bg-white/80 backdrop-blur-sm rounded-md p-6 border-2 border-cyan-200/50 hover:border-cyan-400 hover:shadow-xl transition-all cursor-pointer group"
                 >
                   <div className="flex items-start justify-between mb-4">
                     <div className={`p-2 rounded-lg ${getStatusColor(submission.status)}`}>

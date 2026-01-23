@@ -101,10 +101,10 @@ export default function StudentProgress() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border-2 border-cyan-200/50 shadow-lg"
+            className="bg-white/80 backdrop-blur-sm rounded-md p-6 border-2 border-cyan-200/50 shadow-lg"
           >
             <div className="flex items-center justify-between mb-4">
-              <div className="p-3 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-xl text-white">
+              <div className="p-3 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-md text-white">
                 <FiBookOpen className="w-6 h-6" />
               </div>
               <span className="text-3xl font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
@@ -127,10 +127,10 @@ export default function StudentProgress() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border-2 border-emerald-200/50 shadow-lg"
+            className="bg-white/80 backdrop-blur-sm rounded-md p-6 border-2 border-emerald-200/50 shadow-lg"
           >
             <div className="flex items-center justify-between mb-4">
-              <div className="p-3 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-xl text-white">
+              <div className="p-3 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-md text-white">
                 <FiCheckCircle className="w-6 h-6" />
               </div>
               <span className="text-3xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
@@ -145,10 +145,10 @@ export default function StudentProgress() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border-2 border-amber-200/50 shadow-lg"
+            className="bg-white/80 backdrop-blur-sm rounded-md p-6 border-2 border-amber-200/50 shadow-lg"
           >
             <div className="flex items-center justify-between mb-4">
-              <div className="p-3 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl text-white">
+              <div className="p-3 bg-gradient-to-br from-amber-500 to-orange-500 rounded-md text-white">
                 <FiTarget className="w-6 h-6" />
               </div>
               <span className="text-3xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
@@ -163,10 +163,10 @@ export default function StudentProgress() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border-2 border-purple-200/50 shadow-lg"
+            className="bg-white/80 backdrop-blur-sm rounded-md p-6 border-2 border-purple-200/50 shadow-lg"
           >
             <div className="flex items-center justify-between mb-4">
-              <div className="p-3 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl text-white">
+              <div className="p-3 bg-gradient-to-br from-purple-500 to-pink-500 rounded-md text-white">
                 <FiBarChart2 className="w-6 h-6" />
               </div>
               <span className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
@@ -184,7 +184,7 @@ export default function StudentProgress() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
-            className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border-2 border-cyan-200/50 shadow-lg"
+            className="bg-white/80 backdrop-blur-sm rounded-md p-6 border-2 border-cyan-200/50 shadow-lg"
           >
             <h2 className="text-2xl font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent mb-6 flex items-center gap-2">
               <FiBookOpen className="w-6 h-6" />
@@ -196,7 +196,7 @@ export default function StudentProgress() {
                 <p className="text-slate-600">No courses enrolled yet</p>
                 <button
                   onClick={() => navigate("/lms/student/courses")}
-                  className="mt-4 px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-semibold rounded-xl hover:from-cyan-600 hover:to-blue-600 transition-all"
+                  className="mt-4 px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-semibold rounded-md hover:from-cyan-600 hover:to-blue-600 transition-all"
                 >
                   Browse Courses
                 </button>
@@ -212,7 +212,7 @@ export default function StudentProgress() {
                     <div
                       key={course.id}
                       onClick={() => navigate(`/lms/student/courses/${course.slug}`)}
-                      className="p-4 bg-gradient-to-r from-cyan-50 to-blue-50 rounded-xl border-2 border-cyan-200 hover:border-cyan-400 hover:shadow-md transition-all cursor-pointer"
+                      className="p-4 bg-gradient-to-r from-cyan-50 to-blue-50 rounded-md border-2 border-cyan-200 hover:border-cyan-400 hover:shadow-md transition-all cursor-pointer"
                     >
                       <div className="flex items-center justify-between mb-2">
                         <h3 className="font-semibold text-slate-800">{course.title}</h3>
@@ -239,7 +239,7 @@ export default function StudentProgress() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 }}
-            className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border-2 border-purple-200/50 shadow-lg"
+            className="bg-white/80 backdrop-blur-sm rounded-md p-6 border-2 border-purple-200/50 shadow-lg"
           >
             <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-6 flex items-center gap-2">
               <FiAward className="w-6 h-6" />
@@ -255,7 +255,7 @@ export default function StudentProgress() {
                 {achievements.map((achievement) => (
                   <div
                     key={achievement.id}
-                    className={`p-4 rounded-xl border-2 transition-all ${
+                    className={`p-4 rounded-md border-2 transition-all ${
                       achievement.unlocked
                         ? "bg-gradient-to-br from-purple-50 to-pink-50 border-purple-200"
                         : "bg-slate-50 border-slate-200 opacity-60"

@@ -257,7 +257,7 @@ export default function StudentQuestionBank() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-gradient-to-br from-blue-600/20 to-purple-600/20 rounded-xl p-6 border border-blue-500/30"
+            className="bg-gradient-to-br from-blue-600/20 to-purple-600/20 rounded-md p-6 border border-blue-500/30"
           >
             <div className="flex items-center justify-between mb-2">
               <FiBook className="w-6 h-6 text-blue-400" />
@@ -270,7 +270,7 @@ export default function StudentQuestionBank() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-gradient-to-br from-emerald-600/20 to-teal-600/20 rounded-xl p-6 border border-emerald-500/30"
+            className="bg-gradient-to-br from-emerald-600/20 to-teal-600/20 rounded-md p-6 border border-emerald-500/30"
           >
             <div className="flex items-center justify-between mb-2">
               <FiCheckCircle className="w-6 h-6 text-emerald-400" />
@@ -283,7 +283,7 @@ export default function StudentQuestionBank() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="bg-gradient-to-br from-amber-600/20 to-orange-600/20 rounded-xl p-6 border border-amber-500/30"
+            className="bg-gradient-to-br from-amber-600/20 to-orange-600/20 rounded-md p-6 border border-amber-500/30"
           >
             <div className="flex items-center justify-between mb-2">
               <FiTarget className="w-6 h-6 text-amber-400" />
@@ -296,7 +296,7 @@ export default function StudentQuestionBank() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="bg-gradient-to-br from-purple-600/20 to-pink-600/20 rounded-xl p-6 border border-purple-500/30"
+            className="bg-gradient-to-br from-purple-600/20 to-pink-600/20 rounded-md p-6 border border-purple-500/30"
           >
             <div className="flex items-center justify-between mb-2">
               <FiTrendingUp className="w-6 h-6 text-purple-400" />
@@ -311,7 +311,7 @@ export default function StudentQuestionBank() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="bg-slate-800/50 rounded-xl p-6 mb-6 border border-slate-700/50"
+          className="bg-slate-800/50 rounded-md p-6 mb-6 border border-slate-700/50"
         >
           <div className="flex flex-col lg:flex-row gap-4">
             {/* Search */}
@@ -371,7 +371,7 @@ export default function StudentQuestionBank() {
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-slate-800/50 rounded-xl p-8 border border-slate-700/50 text-center"
+            className="bg-slate-800/50 rounded-md p-8 border border-slate-700/50 text-center"
           >
             <div className="mb-6">
               <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center">
@@ -402,7 +402,7 @@ export default function StudentQuestionBank() {
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="bg-slate-800/50 rounded-xl p-12 border border-slate-700/50 text-center"
+                className="bg-slate-800/50 rounded-md p-12 border border-slate-700/50 text-center"
               >
                 <FiHelpCircle className="w-16 h-16 text-slate-600 mx-auto mb-4" />
                 <p className="text-slate-400 text-lg">No questions found matching your filters</p>
@@ -414,7 +414,7 @@ export default function StudentQuestionBank() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
-                  className="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50"
+                  className="bg-slate-800/50 rounded-md p-6 border border-slate-700/50"
                 >
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex-1">

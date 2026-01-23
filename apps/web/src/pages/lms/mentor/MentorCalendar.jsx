@@ -59,14 +59,14 @@ export default function MentorCalendar() {
                 // TODO: Implement new event modal/form
                 alert("Create event feature coming soon");
               }}
-              className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
+              className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
             >
               <FiPlus className="w-5 h-5" />
               New Event
             </button>
           </div>
           
-          <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-lg">
+          <div className="bg-white rounded-md p-6 border border-slate-200 shadow-lg">
             <div className="grid grid-cols-7 gap-2 mb-4">
               {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
                 <div key={day} className="text-center font-semibold text-slate-700 py-2">
@@ -88,7 +88,7 @@ export default function MentorCalendar() {
                   key={event.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="bg-white rounded-xl p-6 border border-slate-200 shadow-lg"
+                  className="bg-white rounded-md p-6 border border-slate-200 shadow-lg"
                 >
                   <div className="flex items-start justify-between">
                     <div>
@@ -145,7 +145,7 @@ export default function MentorCalendar() {
         <h1 className="text-3xl md:text-4xl font-bold text-slate-900 mb-8">
           {view === "meetings" ? "Meetings" : "Availability"}
         </h1>
-        <div className="bg-white rounded-xl p-12 border border-slate-200 shadow-lg text-center">
+        <div className="bg-white rounded-md p-12 border border-slate-200 shadow-lg text-center">
           <FiCalendar className="w-16 h-16 text-slate-300 mx-auto mb-4" />
           <p className="text-slate-600">{view === "meetings" ? "Meetings management" : "Availability settings"} coming soon</p>
         </div>

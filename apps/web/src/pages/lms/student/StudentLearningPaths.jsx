@@ -114,7 +114,7 @@ export default function StudentLearningPaths() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              className="bg-slate-800/50 rounded-xl overflow-hidden border-2 border-slate-700/50 hover:border-blue-500/50 transition-all cursor-pointer"
+              className="bg-slate-800/50 rounded-md overflow-hidden border-2 border-slate-700/50 hover:border-blue-500/50 transition-all cursor-pointer"
               onClick={() => setSelectedPath(path)}
             >
               <div className="h-48 bg-gradient-to-br from-blue-600/20 to-purple-600/20 flex items-center justify-center">
@@ -203,7 +203,7 @@ export default function StudentLearningPaths() {
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-slate-800 rounded-xl p-6 border border-slate-700 max-w-3xl w-full my-8"
+            className="bg-slate-800 rounded-md p-6 border border-slate-700 max-w-3xl w-full my-8"
           >
             <div className="flex items-start justify-between mb-6">
               <div>

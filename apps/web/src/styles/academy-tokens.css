@@ -1,0 +1,58 @@
+/* Academy Design Tokens - Based on Kimi Code Design System */
+
+:root {
+  /* ===== Colors ===== */
+  /* Backgrounds */
+  --bg-primary: #121212;
+  --bg-secondary: #FFFFFF;
+  --bg-level-3: #1A88FF;
+  --bg-level-4: #161717;
+  --bg-level-5: #404040;
+
+  /* Text Colors */
+  --text-primary: #000000;
+  --text-secondary: #FFFFFF;
+  --text-level-3: #1A88FF;
+  --text-level-4: #0000EE;
+  --text-level-5: #121212;
+
+  /* Palette Colors */
+  --palette-black-900: #000000;
+  --palette-white-50: #FAFAF9;
+  --palette-blue-300: #71A5DF;
+  --palette-blue-400: #1A88FF;
+  --palette-blue-500: #0000EE;
+  --palette-dark-gray-900: #121212;
+  --palette-orange-yellow-200: #E9C39F;
+  --palette-orange-yellow-500: #F59E0B;
+  --palette-green-200: #D6FFA4;
+  --palette-green-300: #B6D395;
+  --palette-mixed-700: #404040;
+
+  /* ===== Typography ===== */
+  --font-times: "Times New Roman", serif;
+  --font-apple-system: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-dm: "DM Sans", sans-serif;
+  --font-jetbrains: "JetBrains Mono", monospace;
+
+  /* Font Sizes */
+  --font-size-xs: 12px;
+  --font-size-sm: 13px;
+  --font-size-base: 14px;
+  --font-size-lg: 16px;
+  --font-size-xl: 18px;
+  --font-size-2xl: 20px;
+  --font-size-3xl: 24px;
+  --font-size-4xl: 48px;
+
+  /* ===== Border Radius ===== */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 12px;
+  --radius-xl: 50%;
+  --radius-2xl: 10px;
+  --radius-full: 4px;
+
+  /* ===== Shadows ===== */
+  --shadow-sm: rgba(0, 0, 0, 0.3) 0px 4px 12px 0px;
+}

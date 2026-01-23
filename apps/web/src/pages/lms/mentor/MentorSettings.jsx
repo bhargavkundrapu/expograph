@@ -72,7 +72,7 @@ export default function MentorSettings() {
           <p className="text-slate-600">Manage your profile and preferences</p>
         </motion.div>
 
-        <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-lg mb-8">
+        <div className="bg-white rounded-md p-4 border border-slate-200 shadow-lg mb-8">
           <div className="flex gap-3">
             {tabs.map((tab) => {
               const Icon = tab.icon;
@@ -81,7 +81,7 @@ export default function MentorSettings() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-200 ${
+                  className={`flex items-center gap-3 px-4 py-3 rounded-md font-medium transition-all duration-200 ${
                     isActive
                       ? "bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg"
                       : "bg-white text-slate-700 hover:bg-slate-50 border border-slate-200"
@@ -95,7 +95,7 @@ export default function MentorSettings() {
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl p-8 border border-slate-200 shadow-lg">
+        <div className="bg-white rounded-md p-8 border border-slate-200 shadow-lg">
           {activeTab === "profile" && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -112,7 +112,7 @@ export default function MentorSettings() {
                     type="text"
                     value={settings.fullName}
                     onChange={(e) => setSettings({ ...settings, fullName: e.target.value })}
-                    className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500"
+                    className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500"
                   />
                 </div>
               </div>
@@ -125,7 +125,7 @@ export default function MentorSettings() {
                     type="email"
                     value={settings.email}
                     onChange={(e) => setSettings({ ...settings, email: e.target.value })}
-                    className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500"
+                    className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500"
                   />
                 </div>
               </div>
@@ -138,7 +138,7 @@ export default function MentorSettings() {
                     type="tel"
                     value={settings.phone}
                     onChange={(e) => setSettings({ ...settings, phone: e.target.value })}
-                    className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500"
+                    className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500"
                   />
                 </div>
               </div>
@@ -149,7 +149,7 @@ export default function MentorSettings() {
                   value={settings.bio}
                   onChange={(e) => setSettings({ ...settings, bio: e.target.value })}
                   rows={4}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500"
                   placeholder="Tell us about yourself..."
                 />
               </div>
@@ -171,7 +171,7 @@ export default function MentorSettings() {
                   <select
                     value={settings.timezone}
                     onChange={(e) => setSettings({ ...settings, timezone: e.target.value })}
-                    className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500"
+                    className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500"
                   >
                     <option value="UTC">UTC</option>
                     <option value="America/New_York">Eastern Time</option>
@@ -185,7 +185,7 @@ export default function MentorSettings() {
                 <select
                   value={settings.language}
                   onChange={(e) => setSettings({ ...settings, language: e.target.value })}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500"
                 >
                   <option value="en-US">English (US)</option>
                   <option value="en-GB">English (UK)</option>
@@ -232,7 +232,7 @@ export default function MentorSettings() {
             <button
               onClick={handleSave}
               disabled={saving}
-              className="flex-1 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="flex-1 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {saving ? (
                 <ButtonLoading text="Saving..." size="sm" />
@@ -245,7 +245,7 @@ export default function MentorSettings() {
             </button>
             <button
               onClick={() => navigate("/lms/mentor")}
-              className="px-6 py-3 bg-slate-100 text-slate-700 font-semibold rounded-xl hover:bg-slate-200 transition-colors"
+              className="px-6 py-3 bg-slate-100 text-slate-700 font-semibold rounded-md hover:bg-slate-200 transition-colors"
             >
               Cancel
             </button>

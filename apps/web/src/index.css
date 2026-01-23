@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@import "./styles/academy-tokens.css";
+@import "./styles/academy-premium.css";
 
 /* Blob Animation for Academy Page */
 @keyframes blob {
@@ -45,7 +47,7 @@
 }
 
 *::-webkit-scrollbar-track {
-  background: transparent;
+  background: transparent ;  
   border-radius: 10px;
 }
 

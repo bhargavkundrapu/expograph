@@ -142,7 +142,7 @@ export default function SuperAdminFeatureFlags() {
                 setEditForm({ key: "", enabled: false, config: {} });
                 setConfigInput("{}");
               }}
-              className="px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
+              className="px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
             >
               {showAddForm ? <FiX className="w-5 h-5" /> : <FiPlus className="w-5 h-5" />}
               {showAddForm ? "Cancel" : "Add Flag"}
@@ -162,7 +162,7 @@ export default function SuperAdminFeatureFlags() {
               key={stat.label}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-white rounded-xl p-6 border border-slate-200 shadow-lg"
+              className="bg-white rounded-md p-6 border border-slate-200 shadow-lg"
             >
               <div className={`text-3xl font-bold bg-gradient-to-r ${stat.color} bg-clip-text text-transparent mb-1`}>
                 {stat.value}
@@ -173,7 +173,7 @@ export default function SuperAdminFeatureFlags() {
         </div>
 
         {/* Search */}
-        <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-lg mb-6">
+        <div className="bg-white rounded-md p-6 border border-slate-200 shadow-lg mb-6">
           <div className="relative">
             <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
             <input
@@ -181,7 +181,7 @@ export default function SuperAdminFeatureFlags() {
               placeholder="Search feature flags by key..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500"
+              className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500"
             />
           </div>
         </div>
@@ -191,7 +191,7 @@ export default function SuperAdminFeatureFlags() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white rounded-xl p-8 border border-slate-200 shadow-lg mb-6"
+            className="bg-white rounded-md p-8 border border-slate-200 shadow-lg mb-6"
           >
             <h2 className="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-2">
               <FiFlag className="w-6 h-6 text-indigo-600" />
@@ -209,7 +209,7 @@ export default function SuperAdminFeatureFlags() {
                   onChange={(e) => setEditForm({ ...editForm, key: e.target.value })}
                   placeholder="e.g., enable_client_lab"
                   disabled={!!selectedFlag}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 disabled:bg-slate-100 disabled:cursor-not-allowed font-mono"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 disabled:bg-slate-100 disabled:cursor-not-allowed font-mono"
                 />
                 <p className="text-xs text-slate-500 mt-1">
                   Use lowercase with underscores (snake_case)
@@ -235,7 +235,7 @@ export default function SuperAdminFeatureFlags() {
                   value={configInput}
                   onChange={(e) => setConfigInput(e.target.value)}
                   placeholder='{"option1": "value1", "option2": true}'
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 font-mono text-sm"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 font-mono text-sm"
                 />
                 <p className="text-xs text-slate-500 mt-1">Optional JSON configuration for this feature flag</p>
               </div>
@@ -248,14 +248,14 @@ export default function SuperAdminFeatureFlags() {
                     setEditForm({ key: "", enabled: false, config: {} });
                     setConfigInput("{}");
                   }}
-                  className="px-6 py-3 bg-slate-100 text-slate-700 font-semibold rounded-xl hover:bg-slate-200 transition-colors"
+                  className="px-6 py-3 bg-slate-100 text-slate-700 font-semibold rounded-md hover:bg-slate-200 transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleSaveFlag}
                   disabled={saving || !editForm.key.trim()}
-                  className="px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 min-w-[140px]"
+                  className="px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 min-w-[140px]"
                 >
                   {saving ? (
                     <ButtonLoading text="Saving..." size="sm" />
@@ -272,7 +272,7 @@ export default function SuperAdminFeatureFlags() {
         )}
 
         {/* Flags List */}
-        <div className="bg-white rounded-xl border border-slate-200 shadow-lg overflow-hidden">
+        <div className="bg-white rounded-md border border-slate-200 shadow-lg overflow-hidden">
           {filteredFlags.length === 0 ? (
             <div className="p-12 text-center">
               <FiFlag className="w-16 h-16 text-slate-300 mx-auto mb-4" />

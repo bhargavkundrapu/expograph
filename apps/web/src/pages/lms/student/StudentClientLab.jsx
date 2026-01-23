@@ -101,7 +101,7 @@ export default function StudentClientLab() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 border-2 border-cyan-200/50 shadow-xl"
+            className="bg-white/80 backdrop-blur-sm rounded-md p-8 border-2 border-cyan-200/50 shadow-xl"
           >
             <div className="flex items-start justify-between mb-6">
               <div>
@@ -111,7 +111,7 @@ export default function StudentClientLab() {
                 <p className="text-slate-600">{selectedProject.description}</p>
               </div>
               <div
-                className={`px-4 py-2 rounded-xl border-2 ${
+                className={`px-4 py-2 rounded-md border-2 ${
                   selectedProject.status === "completed"
                     ? "bg-emerald-50 border-emerald-200 text-emerald-600"
                     : selectedProject.status === "in_progress"
@@ -144,7 +144,7 @@ export default function StudentClientLab() {
               {selectedProject.tasks.map((task) => (
                 <div
                   key={task.id}
-                  className="p-4 bg-gradient-to-r from-slate-50 to-cyan-50 rounded-xl border-2 border-slate-200 flex items-center justify-between"
+                  className="p-4 bg-gradient-to-r from-slate-50 to-cyan-50 rounded-md border-2 border-slate-200 flex items-center justify-between"
                 >
                   <div className="flex items-center gap-3">
                     {task.status === "completed" ? (
@@ -191,7 +191,7 @@ export default function StudentClientLab() {
           </motion.div>
           <button
             onClick={() => navigate("/lms/student/projects/create")}
-            className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-semibold rounded-xl hover:from-cyan-600 hover:to-blue-600 transition-all flex items-center gap-2"
+            className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-semibold rounded-md hover:from-cyan-600 hover:to-blue-600 transition-all flex items-center gap-2"
           >
             <FiPlus className="w-5 h-5" />
             New Project
@@ -202,14 +202,14 @@ export default function StudentClientLab() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="bg-white/80 backdrop-blur-sm rounded-2xl p-12 border-2 border-cyan-200/50 text-center"
+            className="bg-white/80 backdrop-blur-sm rounded-md p-12 border-2 border-cyan-200/50 text-center"
           >
             <FiFolder className="w-20 h-20 text-slate-300 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-slate-700 mb-2">No projects yet</h3>
             <p className="text-slate-500 mb-6">Start a new project to showcase your work</p>
             <button
               onClick={() => navigate("/lms/student/projects/create")}
-              className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-semibold rounded-xl hover:from-cyan-600 hover:to-blue-600 transition-all"
+              className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-semibold rounded-md hover:from-cyan-600 hover:to-blue-600 transition-all"
             >
               Create Project
             </button>
@@ -230,10 +230,10 @@ export default function StudentClientLab() {
                     setSelectedProject(project);
                     navigate(`/lms/student/projects/${project.id}`);
                   }}
-                  className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border-2 border-cyan-200/50 hover:border-cyan-400 hover:shadow-xl transition-all cursor-pointer"
+                  className="bg-white/80 backdrop-blur-sm rounded-md p-6 border-2 border-cyan-200/50 hover:border-cyan-400 hover:shadow-xl transition-all cursor-pointer"
                 >
                   <div className="flex items-start justify-between mb-4">
-                    <div className="p-3 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-xl text-white">
+                    <div className="p-3 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-md text-white">
                       <FiFolder className="w-6 h-6" />
                     </div>
                     <div

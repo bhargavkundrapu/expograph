@@ -177,7 +177,7 @@ export default function MentorInternships() {
                 placeholder="Search by student or project..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all"
+                className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all"
               />
             </div>
           </div>
@@ -185,14 +185,14 @@ export default function MentorInternships() {
           {loading ? (
             <div className="space-y-4">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="bg-white rounded-xl p-6 border border-slate-200 animate-pulse">
+                <div key={i} className="bg-white rounded-md p-6 border border-slate-200 animate-pulse">
                   <div className="h-6 w-48 bg-slate-200 rounded mb-4"></div>
                   <div className="h-4 w-64 bg-slate-200 rounded"></div>
                 </div>
               ))}
             </div>
           ) : filteredDeliverables.length === 0 ? (
-            <div className="bg-white rounded-xl p-12 border border-slate-200 text-center">
+            <div className="bg-white rounded-md p-12 border border-slate-200 text-center">
               <FiLayers className="w-16 h-16 text-slate-300 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-slate-900 mb-2">No deliverables found</h3>
               <p className="text-slate-600">No internship deliverables awaiting review</p>
@@ -205,7 +205,7 @@ export default function MentorInternships() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.05 }}
-                  className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-all"
+                  className="bg-white rounded-md p-6 border border-slate-200 shadow-sm hover:shadow-md transition-all"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
@@ -272,7 +272,7 @@ export default function MentorInternships() {
                     </div>
                     <button
                       onClick={() => navigate(`/lms/mentor/internships/deliverables/${deliverable.id}/review`)}
-                      className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
+                      className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
                     >
                       <FiEye className="w-5 h-5" />
                       Review
@@ -291,7 +291,7 @@ export default function MentorInternships() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
         <div className="max-w-4xl mx-auto">
-          <div className="bg-white rounded-2xl p-8 border border-slate-200 shadow-lg">
+          <div className="bg-white rounded-md p-8 border border-slate-200 shadow-lg">
             <div className="flex items-center justify-between mb-8">
               <div>
                 <h2 className="text-2xl font-bold text-slate-900 mb-2">
@@ -378,7 +378,7 @@ export default function MentorInternships() {
                     <select
                       value={reviewForm.status}
                       onChange={(e) => setReviewForm({ ...reviewForm, status: e.target.value })}
-                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500"
+                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500"
                     >
                       <option value="reviewed">Reviewed</option>
                       <option value="approved">Approved</option>
@@ -395,7 +395,7 @@ export default function MentorInternships() {
                       onChange={(e) => setReviewForm({ ...reviewForm, notes: e.target.value })}
                       rows={6}
                       placeholder="Provide detailed review feedback..."
-                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500"
+                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500"
                       required
                     />
                   </div>
@@ -407,7 +407,7 @@ export default function MentorInternships() {
               <button
                 onClick={handleReview}
                 disabled={saving || !reviewForm.notes.trim()}
-                className="flex-1 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="flex-1 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {saving ? (
                   <ButtonLoading text="Submitting..." size="sm" />
@@ -420,7 +420,7 @@ export default function MentorInternships() {
               </button>
               <button
                 onClick={() => navigate("/lms/mentor/internships/deliverables")}
-                className="px-6 py-3 bg-slate-100 text-slate-700 font-semibold rounded-xl hover:bg-slate-200 transition-colors"
+                className="px-6 py-3 bg-slate-100 text-slate-700 font-semibold rounded-md hover:bg-slate-200 transition-colors"
               >
                 Cancel
               </button>

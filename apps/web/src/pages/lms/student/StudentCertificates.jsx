@@ -100,10 +100,10 @@ export default function StudentCertificates() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 border-2 border-cyan-200/50 shadow-xl"
+            className="bg-white/80 backdrop-blur-sm rounded-md p-8 border-2 border-cyan-200/50 shadow-xl"
           >
             {/* Certificate Preview */}
-            <div className="bg-gradient-to-br from-cyan-50 via-blue-50 to-indigo-50 rounded-2xl p-12 border-4 border-cyan-300 mb-6 text-center">
+            <div className="bg-gradient-to-br from-cyan-50 via-blue-50 to-indigo-50 rounded-md p-12 border-4 border-cyan-300 mb-6 text-center">
               <div className="mb-6">
                 <FiAward className="w-24 h-24 text-cyan-600 mx-auto mb-4" />
                 <h1 className="text-4xl font-bold text-slate-800 mb-2">Certificate of Completion</h1>
@@ -126,14 +126,14 @@ export default function StudentCertificates() {
             <div className="flex gap-4">
               <button
                 onClick={() => handleDownload(selectedCertificate.certificate_id)}
-                className="flex-1 px-6 py-4 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-semibold rounded-xl hover:from-cyan-600 hover:to-blue-600 transition-all flex items-center justify-center gap-2"
+                className="flex-1 px-6 py-4 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-semibold rounded-md hover:from-cyan-600 hover:to-blue-600 transition-all flex items-center justify-center gap-2"
               >
                 <FiDownload className="w-5 h-5" />
                 Download PDF
               </button>
               <button
                 onClick={() => handleShare(selectedCertificate)}
-                className="flex-1 px-6 py-4 bg-white border-2 border-slate-200 text-slate-700 font-semibold rounded-xl hover:bg-slate-50 transition-all flex items-center justify-center gap-2"
+                className="flex-1 px-6 py-4 bg-white border-2 border-slate-200 text-slate-700 font-semibold rounded-md hover:bg-slate-50 transition-all flex items-center justify-center gap-2"
               >
                 <FiShare2 className="w-5 h-5" />
                 Share
@@ -163,14 +163,14 @@ export default function StudentCertificates() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="bg-white/80 backdrop-blur-sm rounded-2xl p-12 border-2 border-cyan-200/50 text-center"
+            className="bg-white/80 backdrop-blur-sm rounded-md p-12 border-2 border-cyan-200/50 text-center"
           >
             <FiAward className="w-20 h-20 text-slate-300 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-slate-700 mb-2">No certificates yet</h3>
             <p className="text-slate-500">Complete courses to earn certificates</p>
             <button
               onClick={() => navigate("/lms/student/courses")}
-              className="mt-6 px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-semibold rounded-xl hover:from-cyan-600 hover:to-blue-600 transition-all"
+              className="mt-6 px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-semibold rounded-md hover:from-cyan-600 hover:to-blue-600 transition-all"
             >
               Browse Courses
             </button>
@@ -186,10 +186,10 @@ export default function StudentCertificates() {
                   setSelectedCertificate(certificate);
                   navigate(`/lms/student/certificates/${certificate.id}`);
                 }}
-                className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border-2 border-cyan-200/50 hover:border-cyan-400 hover:shadow-xl transition-all cursor-pointer group"
+                className="bg-white/80 backdrop-blur-sm rounded-md p-6 border-2 border-cyan-200/50 hover:border-cyan-400 hover:shadow-xl transition-all cursor-pointer group"
               >
                 <div className="text-center mb-6">
-                  <div className="inline-block p-4 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-2xl mb-4">
+                  <div className="inline-block p-4 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-md mb-4">
                     <FiAward className="w-12 h-12 text-white" />
                   </div>
                   <h3 className="font-bold text-slate-800 mb-2">{certificate.title}</h3>
@@ -216,7 +216,7 @@ export default function StudentCertificates() {
                       setSelectedCertificate(certificate);
                       navigate(`/lms/student/certificates/${certificate.id}`);
                     }}
-                    className="flex-1 px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-semibold rounded-xl hover:from-cyan-600 hover:to-blue-600 transition-all text-sm"
+                    className="flex-1 px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-semibold rounded-md hover:from-cyan-600 hover:to-blue-600 transition-all text-sm"
                   >
                     View
                   </button>
@@ -225,7 +225,7 @@ export default function StudentCertificates() {
                       e.stopPropagation();
                       handleDownload(certificate.certificate_id);
                     }}
-                    className="px-4 py-2 bg-white border-2 border-slate-200 text-slate-700 rounded-xl hover:bg-slate-50 transition-all"
+                    className="px-4 py-2 bg-white border-2 border-slate-200 text-slate-700 rounded-md hover:bg-slate-50 transition-all"
                     title="Download"
                   >
                     <FiDownload className="w-5 h-5" />

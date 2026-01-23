@@ -127,10 +127,10 @@ export default function MentorStudents() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
               onClick={() => navigate("/lms/mentor/students/list")}
-              className="bg-white rounded-2xl p-8 border border-slate-200 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
+              className="bg-white rounded-md p-8 border border-slate-200 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
             >
               <div className="flex items-center justify-between mb-6">
-                <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white group-hover:scale-110 transition-transform">
+                <div className="w-16 h-16 rounded-md bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white group-hover:scale-110 transition-transform">
                   <FiUsers className="w-8 h-8" />
                 </div>
                 <div className="text-right">
@@ -176,7 +176,7 @@ export default function MentorStudents() {
                 placeholder="Search by name or email..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all"
+                className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all"
               />
             </div>
           </div>
@@ -184,7 +184,7 @@ export default function MentorStudents() {
           {loading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="bg-white rounded-xl p-6 border border-slate-200 animate-pulse">
+                <div key={i} className="bg-white rounded-md p-6 border border-slate-200 animate-pulse">
                   <div className="h-12 w-12 bg-slate-200 rounded-full mb-4"></div>
                   <div className="h-4 w-32 bg-slate-200 rounded mb-2"></div>
                   <div className="h-4 w-48 bg-slate-200 rounded"></div>
@@ -192,7 +192,7 @@ export default function MentorStudents() {
               ))}
             </div>
           ) : filteredMentees.length === 0 ? (
-            <div className="bg-white rounded-xl p-12 border border-slate-200 text-center">
+            <div className="bg-white rounded-md p-12 border border-slate-200 text-center">
               <FiUsers className="w-16 h-16 text-slate-300 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-slate-900 mb-2">No mentees found</h3>
               <p className="text-slate-600">
@@ -207,7 +207,7 @@ export default function MentorStudents() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.05 }}
-                  className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300"
+                  className="bg-white rounded-md p-6 border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300"
                 >
                   <div className="flex items-start gap-4 mb-4">
                     <div className="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white font-semibold text-lg flex-shrink-0">
@@ -246,7 +246,7 @@ export default function MentorStudents() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
         <div className="max-w-4xl mx-auto">
-          <div className="bg-white rounded-2xl p-8 border border-slate-200 shadow-lg">
+          <div className="bg-white rounded-md p-8 border border-slate-200 shadow-lg">
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center gap-4">
                 <div className="w-16 h-16 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white font-bold text-2xl">
@@ -268,7 +268,7 @@ export default function MentorStudents() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-              <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-xl p-6 border border-emerald-100">
+              <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-md p-6 border border-emerald-100">
                 <div className="flex items-center gap-3 mb-2">
                   <FiBriefcase className="w-6 h-6 text-emerald-600" />
                   <h3 className="text-sm font-semibold text-slate-700">Assignments</h3>
@@ -277,7 +277,7 @@ export default function MentorStudents() {
                 <div className="text-xs text-slate-600 mt-1">Active assignments</div>
               </div>
 
-              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-100">
+              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-md p-6 border border-blue-100">
                 <div className="flex items-center gap-3 mb-2">
                   <FiTrendingUp className="w-6 h-6 text-blue-600" />
                   <h3 className="text-sm font-semibold text-slate-700">Progress</h3>
@@ -286,7 +286,7 @@ export default function MentorStudents() {
                 <div className="text-xs text-slate-600 mt-1">Overall completion</div>
               </div>
 
-              <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-6 border border-purple-100">
+              <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-md p-6 border border-purple-100">
                 <div className="flex items-center gap-3 mb-2">
                   <FiBarChart2 className="w-6 h-6 text-purple-600" />
                   <h3 className="text-sm font-semibold text-slate-700">Engagement</h3>
@@ -316,14 +316,14 @@ export default function MentorStudents() {
               <div className="flex items-center gap-4 pt-6 border-t border-slate-200">
                 <button
                   onClick={() => navigate("/lms/mentor/communications")}
-                  className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"
+                  className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"
                 >
                   <FiMessageSquare className="w-5 h-5" />
                   Send Message
                 </button>
                 <button
                   onClick={() => navigate(`/lms/mentor/students/${mentee.id}/progress`)}
-                  className="px-6 py-3 bg-slate-100 text-slate-700 font-semibold rounded-xl hover:bg-slate-200 transition-colors flex items-center gap-2"
+                  className="px-6 py-3 bg-slate-100 text-slate-700 font-semibold rounded-md hover:bg-slate-200 transition-colors flex items-center gap-2"
                 >
                   <FiBarChart2 className="w-5 h-5" />
                   View Progress
@@ -340,7 +340,7 @@ export default function MentorStudents() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
         <div className="max-w-4xl mx-auto">
-          <div className="bg-white rounded-2xl p-8 border border-slate-200 shadow-lg">
+          <div className="bg-white rounded-md p-8 border border-slate-200 shadow-lg">
             <div className="flex items-center justify-between mb-8">
               <h2 className="text-2xl font-bold text-slate-900">Progress Report</h2>
               <button

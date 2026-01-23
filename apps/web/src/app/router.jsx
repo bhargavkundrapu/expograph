@@ -5,6 +5,7 @@ import MentorLayout from "./layouts/MentorLayout";
 import StudentLayout from "./layouts/StudentLayout";
 
 import AcademyPage from "../pages/academy/AcademyPage";
+import CoursesPage from "../pages/academy/CoursesPage";
 import SolutionsPage from "../pages/solutions/SolutionsPage";
 import LoginPage from "../pages/auth/LoginPage";
 
@@ -32,6 +33,7 @@ import SuperAdminStudents from "../pages/lms/superadmin/SuperAdminStudents";
 import SuperAdminMentors from "../pages/lms/superadmin/SuperAdminMentors";
 import SuperAdminPlayground from "../pages/lms/superadmin/SuperAdminPlayground";
 import SuperAdminSettings from "../pages/lms/superadmin/SuperAdminSettings";
+import SuperAdminPresentation from "../pages/lms/superadmin/SuperAdminPresentation";
 import StudentCourses from "../pages/lms/student/StudentCourses";
 import StudentCourseTree from "../pages/lms/student/StudentCourseTree";
 import StudentLesson from "../pages/lms/student/StudentLesson";
@@ -79,6 +81,7 @@ export const router = createBrowserRouter([
     children: [
       { path: "/", element: <AcademyPage /> },
       { path: "/academy", element: <AcademyPage /> },
+      { path: "/courses", element: <CoursesPage /> },
       { path: "/solutions", element: <SolutionsPage /> },
       { path: "/login", element: <PublicOnly><LoginPage /></PublicOnly> },
     ],
@@ -205,6 +208,13 @@ export const router = createBrowserRouter([
           { path: "playground/templates/:id/edit", element: <SuperAdminPlayground /> },
           { path: "playground/templates/:id/details", element: <SuperAdminPlayground /> },
           { path: "playground/categories", element: <SuperAdminPlayground /> },
+          
+          // Presentations - Nested Routes
+          { path: "presentations", element: <SuperAdminPresentation /> },
+          { path: "presentations/create", element: <SuperAdminPresentation /> },
+          { path: "presentations/:id", element: <SuperAdminPresentation /> },
+          { path: "presentations/:id/edit", element: <SuperAdminPresentation /> },
+          { path: "presentations/:id/view", element: <SuperAdminPresentation /> },
           
           // Feature Flags - Nested Routes
           { path: "feature-flags", element: <SuperAdminFeatureFlags /> },

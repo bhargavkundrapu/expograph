@@ -125,10 +125,10 @@ export default function StudentReferrals() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border-2 border-cyan-200/50 shadow-lg"
+            className="bg-white/80 backdrop-blur-sm rounded-md p-6 border-2 border-cyan-200/50 shadow-lg"
           >
             <div className="flex items-center justify-between mb-4">
-              <div className="p-3 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-xl text-white">
+              <div className="p-3 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-md text-white">
                 <FiUsers className="w-6 h-6" />
               </div>
               <span className="text-3xl font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
@@ -142,10 +142,10 @@ export default function StudentReferrals() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border-2 border-emerald-200/50 shadow-lg"
+            className="bg-white/80 backdrop-blur-sm rounded-md p-6 border-2 border-emerald-200/50 shadow-lg"
           >
             <div className="flex items-center justify-between mb-4">
-              <div className="p-3 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-xl text-white">
+              <div className="p-3 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-md text-white">
                 <FiCheckCircle className="w-6 h-6" />
               </div>
               <span className="text-3xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
@@ -159,10 +159,10 @@ export default function StudentReferrals() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border-2 border-amber-200/50 shadow-lg"
+            className="bg-white/80 backdrop-blur-sm rounded-md p-6 border-2 border-amber-200/50 shadow-lg"
           >
             <div className="flex items-center justify-between mb-4">
-              <div className="p-3 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl text-white">
+              <div className="p-3 bg-gradient-to-br from-amber-500 to-orange-500 rounded-md text-white">
                 <FiClock className="w-6 h-6" />
               </div>
               <span className="text-3xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
@@ -176,10 +176,10 @@ export default function StudentReferrals() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border-2 border-purple-200/50 shadow-lg"
+            className="bg-white/80 backdrop-blur-sm rounded-md p-6 border-2 border-purple-200/50 shadow-lg"
           >
             <div className="flex items-center justify-between mb-4">
-              <div className="p-3 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl text-white">
+              <div className="p-3 bg-gradient-to-br from-purple-500 to-pink-500 rounded-md text-white">
                 <FiCheckCircle className="w-6 h-6" />
               </div>
               <span className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
@@ -195,11 +195,11 @@ export default function StudentReferrals() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border-2 border-cyan-200/50 shadow-lg mb-8"
+          className="bg-white/80 backdrop-blur-sm rounded-md p-6 border-2 border-cyan-200/50 shadow-lg mb-8"
         >
           <h2 className="text-xl font-bold text-slate-800 mb-4">Your Referral Link</h2>
           <div className="flex gap-4">
-            <div className="flex-1 p-4 bg-gradient-to-r from-cyan-50 to-blue-50 border-2 border-cyan-200 rounded-xl flex items-center gap-3">
+            <div className="flex-1 p-4 bg-gradient-to-r from-cyan-50 to-blue-50 border-2 border-cyan-200 rounded-md flex items-center gap-3">
               <FiLink className="w-5 h-5 text-cyan-600" />
               <input
                 type="text"
@@ -210,14 +210,14 @@ export default function StudentReferrals() {
             </div>
             <button
               onClick={handleCopyLink}
-              className="px-6 py-4 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-semibold rounded-xl hover:from-cyan-600 hover:to-blue-600 transition-all flex items-center gap-2"
+              className="px-6 py-4 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-semibold rounded-md hover:from-cyan-600 hover:to-blue-600 transition-all flex items-center gap-2"
             >
               <FiCopy className="w-5 h-5" />
               Copy
             </button>
             <button
               onClick={handleShare}
-              className="px-6 py-4 bg-white border-2 border-slate-200 text-slate-700 font-semibold rounded-xl hover:bg-slate-50 transition-all flex items-center gap-2"
+              className="px-6 py-4 bg-white border-2 border-slate-200 text-slate-700 font-semibold rounded-md hover:bg-slate-50 transition-all flex items-center gap-2"
             >
               <FiShare2 className="w-5 h-5" />
               Share
@@ -230,7 +230,7 @@ export default function StudentReferrals() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
-          className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border-2 border-cyan-200/50 shadow-lg"
+          className="bg-white/80 backdrop-blur-sm rounded-md p-6 border-2 border-cyan-200/50 shadow-lg"
         >
           <h2 className="text-xl font-bold text-slate-800 mb-6">Referral History</h2>
           {referrals.length === 0 ? (
@@ -244,10 +244,10 @@ export default function StudentReferrals() {
               {referrals.map((referral) => (
                 <div
                   key={referral.id}
-                  className="p-4 bg-gradient-to-r from-slate-50 to-cyan-50 rounded-xl border-2 border-slate-200 flex items-center justify-between"
+                  className="p-4 bg-gradient-to-r from-slate-50 to-cyan-50 rounded-md border-2 border-slate-200 flex items-center justify-between"
                 >
                   <div className="flex items-center gap-4">
-                    <div className="p-3 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-xl text-white">
+                    <div className="p-3 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-md text-white">
                       <FiUsers className="w-5 h-5" />
                     </div>
                     <div>
@@ -260,7 +260,7 @@ export default function StudentReferrals() {
                   </div>
                   <div className="flex items-center gap-4">
                     <div
-                      className={`px-4 py-2 rounded-xl border-2 ${
+                      className={`px-4 py-2 rounded-md border-2 ${
                         referral.status === "successful"
                           ? "bg-emerald-50 border-emerald-200 text-emerald-600"
                           : "bg-amber-50 border-amber-200 text-amber-600"
@@ -269,7 +269,7 @@ export default function StudentReferrals() {
                       <span className="font-semibold capitalize">{referral.status}</span>
                     </div>
                     {referral.reward && (
-                      <div className="px-4 py-2 bg-gradient-to-r from-purple-50 to-pink-50 border-2 border-purple-200 rounded-xl">
+                      <div className="px-4 py-2 bg-gradient-to-r from-purple-50 to-pink-50 border-2 border-purple-200 rounded-md">
                         <span className="font-bold text-purple-600">{referral.reward}</span>
                       </div>
                     )}

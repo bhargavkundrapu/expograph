@@ -80,12 +80,12 @@ export default function StudentCourseTree() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
         <div className="max-w-7xl mx-auto">
-          <div className="bg-white rounded-xl p-12 border border-slate-200 text-center">
+          <div className="bg-white rounded-md p-12 border border-slate-200 text-center">
             <FiBookOpen className="w-16 h-16 text-slate-300 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-slate-900 mb-2">Course not found</h3>
             <button
               onClick={() => navigate("/lms/student/courses")}
-              className="mt-4 px-6 py-3 bg-blue-500 text-white font-semibold rounded-xl hover:bg-blue-600 transition-colors"
+              className="mt-4 px-6 py-3 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 transition-colors"
             >
               Back to Courses
             </button>
@@ -114,7 +114,7 @@ export default function StudentCourseTree() {
         {/* Modules List */}
         <div className="space-y-4">
           {modules.length === 0 ? (
-            <div className="bg-white rounded-xl p-12 border border-slate-200 text-center">
+            <div className="bg-white rounded-md p-12 border border-slate-200 text-center">
               <FiBookOpen className="w-16 h-16 text-slate-300 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-slate-900 mb-2">No modules available</h3>
               <p className="text-slate-600">This course doesn't have any modules yet</p>
@@ -133,7 +133,7 @@ export default function StudentCourseTree() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
-                  className={`bg-white rounded-xl border-2 transition-all ${
+                  className={`bg-white rounded-md border-2 transition-all ${
                     status === "completed"
                       ? "border-emerald-500 bg-emerald-50/30"
                       : status === "in_progress"

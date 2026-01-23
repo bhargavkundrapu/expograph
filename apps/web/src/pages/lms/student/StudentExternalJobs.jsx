@@ -324,7 +324,7 @@ export default function StudentExternalJobs() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-gradient-to-br from-blue-600/20 to-purple-600/20 rounded-xl p-4 border border-blue-500/30"
+            className="bg-gradient-to-br from-blue-600/20 to-purple-600/20 rounded-md p-4 border border-blue-500/30"
           >
             <div className="flex items-center justify-between">
               <div>
@@ -339,7 +339,7 @@ export default function StudentExternalJobs() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-gradient-to-br from-emerald-600/20 to-teal-600/20 rounded-xl p-4 border border-emerald-500/30"
+            className="bg-gradient-to-br from-emerald-600/20 to-teal-600/20 rounded-md p-4 border border-emerald-500/30"
           >
             <div className="flex items-center justify-between">
               <div>
@@ -354,7 +354,7 @@ export default function StudentExternalJobs() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="bg-gradient-to-br from-amber-600/20 to-orange-600/20 rounded-xl p-4 border border-amber-500/30"
+            className="bg-gradient-to-br from-amber-600/20 to-orange-600/20 rounded-md p-4 border border-amber-500/30"
           >
             <div className="flex items-center justify-between">
               <div>
@@ -371,7 +371,7 @@ export default function StudentExternalJobs() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="bg-slate-800/50 rounded-xl p-6 mb-6 border border-slate-700/50"
+          className="bg-slate-800/50 rounded-md p-6 mb-6 border border-slate-700/50"
         >
           <div className="flex flex-col lg:flex-row gap-4">
             {/* Search */}
@@ -433,7 +433,7 @@ export default function StudentExternalJobs() {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="bg-slate-800/50 rounded-xl p-12 border border-slate-700/50 text-center"
+              className="bg-slate-800/50 rounded-md p-12 border border-slate-700/50 text-center"
             >
               <FiBriefcase className="w-16 h-16 text-slate-600 mx-auto mb-4" />
               <p className="text-slate-400 text-lg">No jobs found matching your criteria</p>
@@ -446,7 +446,7 @@ export default function StudentExternalJobs() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className={`bg-slate-800/50 rounded-xl p-6 border-2 transition-all cursor-pointer hover:border-blue-500/50 ${
+                className={`bg-slate-800/50 rounded-md p-6 border-2 transition-all cursor-pointer hover:border-blue-500/50 ${
                   job.featured ? "border-yellow-500/50" : "border-slate-700/50"
                 }`}
                 onClick={() => setSelectedJob(job)}
@@ -525,7 +525,7 @@ export default function StudentExternalJobs() {
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-slate-800 rounded-xl p-6 border border-slate-700 max-w-3xl w-full my-8"
+            className="bg-slate-800 rounded-md p-6 border border-slate-700 max-w-3xl w-full my-8"
           >
             <div className="flex items-start justify-between mb-6">
               <div className="flex-1">

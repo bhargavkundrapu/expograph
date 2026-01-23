@@ -205,7 +205,7 @@ export default function SuperAdminLeads() {
               key={stat.label}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-white rounded-xl p-6 border border-slate-200 shadow-lg"
+              className="bg-white rounded-md p-6 border border-slate-200 shadow-lg"
             >
               <div className={`text-3xl font-bold bg-gradient-to-r ${stat.color} bg-clip-text text-transparent mb-1`}>
                 {stat.value}
@@ -216,7 +216,7 @@ export default function SuperAdminLeads() {
         </div>
 
         {/* View Toggle & Search */}
-        <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-lg mb-6">
+        <div className="bg-white rounded-md p-6 border border-slate-200 shadow-lg mb-6">
           <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
             <div className="flex items-center gap-3 flex-1 w-full md:w-auto">
               <div className="relative flex-1 md:w-80">
@@ -281,7 +281,7 @@ export default function SuperAdminLeads() {
                   animate={{ opacity: 1, x: 0 }}
                   className="flex-shrink-0 w-80"
                 >
-                  <div className="bg-white rounded-xl border border-slate-200 shadow-lg">
+                  <div className="bg-white rounded-md border border-slate-200 shadow-lg">
                     <div className={`p-4 border-b border-slate-200 rounded-t-xl ${STATUS_COLORS[status]}`}>
                       <div className="flex items-center justify-between">
                         <h3 className="font-semibold capitalize">{status}</h3>
@@ -333,7 +333,7 @@ export default function SuperAdminLeads() {
 
         {/* List View */}
         {view === "list" && (
-          <div className="bg-white rounded-xl border border-slate-200 shadow-lg overflow-hidden">
+          <div className="bg-white rounded-md border border-slate-200 shadow-lg overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-gradient-to-r from-blue-50 to-indigo-50">
@@ -406,7 +406,7 @@ export default function SuperAdminLeads() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white rounded-xl p-8 border border-slate-200 shadow-lg"
+            className="bg-white rounded-md p-8 border border-slate-200 shadow-lg"
           >
             <div className="mb-6">
               <button
@@ -426,7 +426,7 @@ export default function SuperAdminLeads() {
                 <select
                   value={editForm.status}
                   onChange={(e) => setEditForm({ ...editForm, status: e.target.value })}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500"
                 >
                   {LEAD_STATUSES.map((status) => (
                     <option key={status} value={status}>
@@ -443,21 +443,21 @@ export default function SuperAdminLeads() {
                   value={editForm.notes}
                   onChange={(e) => setEditForm({ ...editForm, notes: e.target.value })}
                   placeholder="Add notes about this lead..."
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500"
                 />
               </div>
 
               <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-200">
                 <button
                   onClick={() => navigate("/lms/superadmin/leads/list")}
-                  className="px-6 py-3 bg-slate-100 text-slate-700 font-semibold rounded-xl hover:bg-slate-200 transition-colors"
+                  className="px-6 py-3 bg-slate-100 text-slate-700 font-semibold rounded-md hover:bg-slate-200 transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={() => handleUpdateLead(selectedLead.id, editForm)}
                   disabled={saving}
-                  className="px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 min-w-[140px]"
+                  className="px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 min-w-[140px]"
                 >
                   {saving ? (
                     <ButtonLoading text="Saving..." size="sm" />
@@ -478,7 +478,7 @@ export default function SuperAdminLeads() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white rounded-xl p-8 border border-slate-200 shadow-lg"
+            className="bg-white rounded-md p-8 border border-slate-200 shadow-lg"
           >
             <div className="mb-6">
               <button
@@ -528,7 +528,7 @@ export default function SuperAdminLeads() {
               {selectedLead.notes && (
                 <div>
                   <label className="block text-sm font-semibold text-slate-900 mb-2">Notes</label>
-                  <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 text-slate-700 whitespace-pre-wrap">
+                  <div className="p-4 bg-slate-50 rounded-md border border-slate-200 text-slate-700 whitespace-pre-wrap">
                     {selectedLead.notes}
                   </div>
                 </div>
@@ -537,7 +537,7 @@ export default function SuperAdminLeads() {
               <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-200">
                 <button
                   onClick={() => openEdit(selectedLead)}
-                  className="px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
+                  className="px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
                 >
                   <FiEdit2 className="w-4 h-4" />
                   Edit Lead

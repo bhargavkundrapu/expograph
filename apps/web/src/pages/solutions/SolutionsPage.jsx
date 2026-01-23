@@ -118,21 +118,21 @@ export default function SolutionsPage() {
             <div className="flex items-center gap-4">
               <Link
                 to="/academy"
-                className="px-6 py-2.5 text-slate-700 font-semibold rounded-xl hover:bg-slate-100 transition-all duration-300"
+                className="px-6 py-2.5 text-slate-700 font-semibold rounded-md hover:bg-slate-100 transition-all duration-300"
               >
                 Academy
               </Link>
               {token ? (
                 <Link
                   to={role === "Student" ? "/lms/student" : role === "SuperAdmin" ? "/lms/superadmin" : "/lms/admin"}
-                  className="px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                  className="px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition-all duration-300"
                 >
                   Dashboard
                 </Link>
               ) : (
                 <Link
                   to="/login"
-                  className="px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                  className="px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition-all duration-300"
                 >
                   Login
                 </Link>
@@ -212,7 +212,7 @@ export default function SolutionsPage() {
               <motion.button
                 whileHover={{ scale: 1.05, boxShadow: "0 20px 40px -12px rgba(99, 102, 241, 0.5)" }}
                 whileTap={{ scale: 0.95 }}
-                className="px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group relative overflow-hidden"
+                className="px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition-all duration-300 group relative overflow-hidden"
               >
                 <span className="relative z-10 flex items-center gap-2">
                   Get a Quote
@@ -227,7 +227,7 @@ export default function SolutionsPage() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => navigate("/academy")}
-                className="px-8 py-4 bg-white text-slate-700 font-semibold rounded-xl shadow-md hover:shadow-lg border border-slate-200 transition-all duration-300 flex items-center gap-2"
+                className="px-8 py-4 bg-white text-slate-700 font-semibold rounded-md shadow-md hover:shadow-lg border border-slate-200 transition-all duration-300 flex items-center gap-2"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
@@ -241,7 +241,7 @@ export default function SolutionsPage() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.9, duration: 0.8 }}
-              className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-8 p-8 bg-white/50 backdrop-blur-sm rounded-2xl border border-slate-200/50 shadow-xl"
+              className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-8 p-8 bg-white/50 backdrop-blur-sm rounded-md border border-slate-200/50 shadow-xl"
             >
               {stats.map((stat, idx) => (
                 <motion.div
@@ -294,7 +294,7 @@ export default function SolutionsPage() {
                 whileHover={{ y: -8 }}
                 className="group relative"
               >
-                <div className="relative bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-200 hover:shadow-2xl transition-all duration-500">
+                <div className="relative bg-white rounded-md shadow-xl overflow-hidden border border-slate-200 hover:shadow-2xl transition-all duration-500">
                   {/* Image with overlay */}
                   <div className="relative h-64 overflow-hidden">
                     <div className={`absolute inset-0 bg-gradient-to-br ${solution.accent} opacity-0 group-hover:opacity-20 transition-opacity duration-500`}></div>
@@ -359,7 +359,7 @@ export default function SolutionsPage() {
                     <motion.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      className={`w-full py-3 bg-gradient-to-r ${solution.accent} text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group/btn`}
+                      className={`w-full py-3 bg-gradient-to-r ${solution.accent} text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition-all duration-300 group/btn`}
                     >
                       <span className="flex items-center justify-center gap-2">
                         Learn More
@@ -406,8 +406,8 @@ export default function SolutionsPage() {
                 whileHover={{ y: -8 }}
                 className="relative group"
               >
-                <div className="h-full p-8 bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 border border-slate-200">
-                  <div className={`w-16 h-16 mb-6 bg-gradient-to-br ${service.gradient} rounded-2xl flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                <div className="h-full p-8 bg-white rounded-md shadow-lg hover:shadow-2xl transition-all duration-500 border border-slate-200">
+                  <div className={`w-16 h-16 mb-6 bg-gradient-to-br ${service.gradient} rounded-md flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300`}>
                     {service.icon}
                   </div>
                   <h3 className="text-xl font-bold text-slate-900 mb-3">
@@ -450,7 +450,7 @@ export default function SolutionsPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1 }}
-                className="bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden"
+                className="bg-white rounded-md shadow-md border border-slate-200 overflow-hidden"
               >
                 <button
                   onClick={() => setExpandedFaq(expandedFaq === idx ? null : idx)}
@@ -516,7 +516,7 @@ export default function SolutionsPage() {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="px-10 py-5 bg-white text-indigo-600 font-bold rounded-xl shadow-2xl hover:shadow-3xl transition-all duration-300 text-lg"
+                  className="px-10 py-5 bg-white text-indigo-600 font-bold rounded-md shadow-2xl hover:shadow-3xl transition-all duration-300 text-lg"
                 >
                   Schedule a Consultation
                 </motion.button>
@@ -524,7 +524,7 @@ export default function SolutionsPage() {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => navigate("/academy")}
-                  className="px-10 py-5 bg-white/10 backdrop-blur-sm text-white font-bold rounded-xl border-2 border-white hover:bg-white/20 transition-all duration-300 text-lg flex items-center gap-2"
+                  className="px-10 py-5 bg-white/10 backdrop-blur-sm text-white font-bold rounded-md border-2 border-white hover:bg-white/20 transition-all duration-300 text-lg flex items-center gap-2"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />

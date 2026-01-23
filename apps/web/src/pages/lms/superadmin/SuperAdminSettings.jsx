@@ -154,7 +154,7 @@ export default function SuperAdminSettings() {
     return (
       <button
         onClick={() => onClick(tab.id)}
-        className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-200 ${
+        className={`flex items-center gap-3 px-4 py-3 rounded-md font-medium transition-all duration-200 ${
           isActive
             ? "bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg"
             : "bg-white text-slate-700 hover:bg-slate-50 border border-slate-200"
@@ -184,7 +184,7 @@ export default function SuperAdminSettings() {
         </motion.div>
 
         {/* Tabs Navigation */}
-        <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-lg mb-8">
+        <div className="bg-white rounded-md p-4 border border-slate-200 shadow-lg mb-8">
           <div className="flex flex-wrap gap-3">
             {tabs.map((tab) => (
               <TabButton key={tab.id} tab={tab} isActive={activeTab === tab.id} onClick={setActiveTab} />
@@ -193,7 +193,7 @@ export default function SuperAdminSettings() {
         </div>
 
         {/* Tab Content */}
-        <div className="bg-white rounded-2xl p-8 border border-slate-200 shadow-lg">
+        <div className="bg-white rounded-md p-8 border border-slate-200 shadow-lg">
           {/* General Settings Tab */}
           {activeTab === "general" && (
             <motion.div
@@ -218,7 +218,7 @@ export default function SuperAdminSettings() {
                         value={settings.tenantName}
                         onChange={(e) => setSettings({ ...settings, tenantName: e.target.value })}
                         placeholder="Organization Name"
-                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
+                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
                       />
                     </div>
 
@@ -229,7 +229,7 @@ export default function SuperAdminSettings() {
                         value={settings.tenantSlug}
                         onChange={(e) => setSettings({ ...settings, tenantSlug: e.target.value })}
                         placeholder="organization-slug"
-                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
+                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
                       />
                     </div>
                   </div>
@@ -240,7 +240,7 @@ export default function SuperAdminSettings() {
                       <select
                         value={settings.timezone}
                         onChange={(e) => setSettings({ ...settings, timezone: e.target.value })}
-                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
+                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
                       >
                         <option value="UTC">UTC</option>
                         <option value="America/New_York">Eastern Time (US)</option>
@@ -260,7 +260,7 @@ export default function SuperAdminSettings() {
                       <select
                         value={settings.locale}
                         onChange={(e) => setSettings({ ...settings, locale: e.target.value })}
-                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
+                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
                       >
                         <option value="en-US">English (US)</option>
                         <option value="en-GB">English (UK)</option>
@@ -280,7 +280,7 @@ export default function SuperAdminSettings() {
                       <select
                         value={settings.dateFormat}
                         onChange={(e) => setSettings({ ...settings, dateFormat: e.target.value })}
-                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
+                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
                       >
                         <option value="MM/DD/YYYY">MM/DD/YYYY</option>
                         <option value="DD/MM/YYYY">DD/MM/YYYY</option>
@@ -293,7 +293,7 @@ export default function SuperAdminSettings() {
                       <select
                         value={settings.timeFormat}
                         onChange={(e) => setSettings({ ...settings, timeFormat: e.target.value })}
-                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
+                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
                       >
                         <option value="12h">12-hour</option>
                         <option value="24h">24-hour</option>
@@ -305,7 +305,7 @@ export default function SuperAdminSettings() {
                       <select
                         value={settings.firstDayOfWeek}
                         onChange={(e) => setSettings({ ...settings, firstDayOfWeek: e.target.value })}
-                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
+                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
                       >
                         <option value="monday">Monday</option>
                         <option value="sunday">Sunday</option>
@@ -318,7 +318,7 @@ export default function SuperAdminSettings() {
                     <select
                       value={settings.currency}
                       onChange={(e) => setSettings({ ...settings, currency: e.target.value })}
-                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
+                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
                     >
                       <option value="USD">USD ($)</option>
                       <option value="EUR">EUR (€)</option>
@@ -356,7 +356,7 @@ export default function SuperAdminSettings() {
                         value={settings.logoUrl}
                         onChange={(e) => setSettings({ ...settings, logoUrl: e.target.value })}
                         placeholder="https://..."
-                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
+                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
                       />
                       <p className="text-xs text-slate-500 mt-1">Recommended: 200x60px PNG with transparent background</p>
                     </div>
@@ -368,7 +368,7 @@ export default function SuperAdminSettings() {
                         value={settings.faviconUrl}
                         onChange={(e) => setSettings({ ...settings, faviconUrl: e.target.value })}
                         placeholder="https://..."
-                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
+                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
                       />
                       <p className="text-xs text-slate-500 mt-1">Recommended: 32x32px ICO or PNG</p>
                     </div>
@@ -389,7 +389,7 @@ export default function SuperAdminSettings() {
                           value={settings.primaryColor}
                           onChange={(e) => setSettings({ ...settings, primaryColor: e.target.value })}
                           placeholder="#3b82f6"
-                          className="flex-1 px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all font-mono"
+                          className="flex-1 px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all font-mono"
                         />
                       </div>
                     </div>
@@ -408,7 +408,7 @@ export default function SuperAdminSettings() {
                           value={settings.secondaryColor}
                           onChange={(e) => setSettings({ ...settings, secondaryColor: e.target.value })}
                           placeholder="#8b5cf6"
-                          className="flex-1 px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all font-mono"
+                          className="flex-1 px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all font-mono"
                         />
                       </div>
                     </div>
@@ -421,7 +421,7 @@ export default function SuperAdminSettings() {
                       value={settings.siteTitle}
                       onChange={(e) => setSettings({ ...settings, siteTitle: e.target.value })}
                       placeholder="Learning Management System"
-                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
+                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
                     />
                   </div>
 
@@ -432,7 +432,7 @@ export default function SuperAdminSettings() {
                       value={settings.siteDescription}
                       onChange={(e) => setSettings({ ...settings, siteDescription: e.target.value })}
                       placeholder="Brief description of your LMS platform"
-                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
+                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
                     />
                   </div>
                 </div>
@@ -454,7 +454,7 @@ export default function SuperAdminSettings() {
                 </h2>
 
                 <div className="space-y-6">
-                  <div className="bg-gradient-to-br from-red-50 to-orange-50 rounded-xl p-6 border border-red-100">
+                  <div className="bg-gradient-to-br from-red-50 to-orange-50 rounded-md p-6 border border-red-100">
                     <h3 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
                       <FiShield className="w-5 h-5 text-red-600" />
                       Multi-Factor Authentication
@@ -483,7 +483,7 @@ export default function SuperAdminSettings() {
                       onChange={(e) => setSettings({ ...settings, sessionTimeout: parseInt(e.target.value) || 3600 })}
                       min="300"
                       max="86400"
-                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
+                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
                     />
                     <p className="text-xs text-slate-500 mt-1">
                       User sessions will expire after this duration (default: 3600 seconds = 1 hour)
@@ -505,7 +505,7 @@ export default function SuperAdminSettings() {
                           }
                           min="6"
                           max="128"
-                          className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
+                          className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
                         />
                       </div>
 
@@ -593,7 +593,7 @@ export default function SuperAdminSettings() {
                 </h2>
 
                 <div className="space-y-6">
-                  <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-100">
+                  <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-md p-6 border border-blue-100">
                     <h3 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
                       <FiLink className="w-5 h-5 text-blue-600" />
                       Single Sign-On (SSO)
@@ -615,7 +615,7 @@ export default function SuperAdminSettings() {
                           <select
                             value={settings.ssoProvider}
                             onChange={(e) => setSettings({ ...settings, ssoProvider: e.target.value })}
-                            className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
+                            className="w-full px-4 py-3 bg-white border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
                           >
                             <option value="">Select provider</option>
                             <option value="saml">SAML 2.0</option>
@@ -633,7 +633,7 @@ export default function SuperAdminSettings() {
                             value={settings.ssoClientId}
                             onChange={(e) => setSettings({ ...settings, ssoClientId: e.target.value })}
                             placeholder="SSO Client ID"
-                            className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all font-mono text-sm"
+                            className="w-full px-4 py-3 bg-white border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all font-mono text-sm"
                           />
                         </div>
 
@@ -644,7 +644,7 @@ export default function SuperAdminSettings() {
                             value={settings.ssoClientSecret}
                             onChange={(e) => setSettings({ ...settings, ssoClientSecret: e.target.value })}
                             placeholder="SSO Client Secret"
-                            className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all font-mono text-sm"
+                            className="w-full px-4 py-3 bg-white border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all font-mono text-sm"
                           />
                         </div>
                       </div>
@@ -660,7 +660,7 @@ export default function SuperAdminSettings() {
                         value={settings.webhookUrl}
                         onChange={(e) => setSettings({ ...settings, webhookUrl: e.target.value })}
                         placeholder="https://your-domain.com/webhook"
-                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all font-mono text-sm"
+                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all font-mono text-sm"
                       />
                       <p className="text-xs text-slate-500 mt-1">
                         Receive real-time events (user created, course completed, etc.)
@@ -680,7 +680,7 @@ export default function SuperAdminSettings() {
                         onChange={(e) => setSettings({ ...settings, apiKeyExpiryDays: parseInt(e.target.value) || 90 })}
                         min="1"
                         max="365"
-                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
+                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
                       />
                       <p className="text-xs text-slate-500 mt-1">API keys will expire after this many days</p>
                     </div>
@@ -712,7 +712,7 @@ export default function SuperAdminSettings() {
                         value={settings.emailFromName}
                         onChange={(e) => setSettings({ ...settings, emailFromName: e.target.value })}
                         placeholder="LMS Platform"
-                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
+                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
                       />
                     </div>
 
@@ -723,7 +723,7 @@ export default function SuperAdminSettings() {
                         value={settings.emailFromAddress}
                         onChange={(e) => setSettings({ ...settings, emailFromAddress: e.target.value })}
                         placeholder="noreply@example.com"
-                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
+                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
                       />
                     </div>
                   </div>
@@ -735,7 +735,7 @@ export default function SuperAdminSettings() {
                       value={settings.emailReplyTo}
                       onChange={(e) => setSettings({ ...settings, emailReplyTo: e.target.value })}
                       placeholder="support@example.com"
-                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
+                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
                     />
                   </div>
 
@@ -856,7 +856,7 @@ export default function SuperAdminSettings() {
                             value={settings.cdnUrl}
                             onChange={(e) => setSettings({ ...settings, cdnUrl: e.target.value })}
                             placeholder="https://cdn.example.com"
-                            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
+                            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
                           />
                         </div>
                       )}
@@ -873,7 +873,7 @@ export default function SuperAdminSettings() {
                           }
                           min="1"
                           max="1000"
-                          className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
+                          className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
                         />
                       </div>
                     </div>
@@ -911,7 +911,7 @@ export default function SuperAdminSettings() {
                     loadSettings();
                   }
                 }}
-                className="px-6 py-3 bg-slate-100 text-slate-700 font-semibold rounded-xl hover:bg-slate-200 transition-colors flex items-center gap-2"
+                className="px-6 py-3 bg-slate-100 text-slate-700 font-semibold rounded-md hover:bg-slate-200 transition-colors flex items-center gap-2"
               >
                 <FiX className="w-5 h-5" />
                 Reset
@@ -919,7 +919,7 @@ export default function SuperAdminSettings() {
               <button
                 onClick={handleSaveSettings}
                 disabled={saving}
-                className="px-8 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                className="px-8 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               >
                 {saving ? (
                   <ButtonLoading text="Saving..." size="sm" />

@@ -147,7 +147,7 @@ export default function StudentDiscussions() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
         <div className="max-w-4xl mx-auto">
-          <div className="bg-white rounded-2xl p-8 border border-slate-200 shadow-lg">
+          <div className="bg-white rounded-md p-8 border border-slate-200 shadow-lg">
             {/* Header */}
             <div className="flex items-center justify-between mb-6">
               <button
@@ -162,7 +162,7 @@ export default function StudentDiscussions() {
             </div>
 
             {/* Original Post */}
-            <div className="bg-slate-50 rounded-xl p-6 mb-6 border border-slate-200">
+            <div className="bg-slate-50 rounded-md p-6 mb-6 border border-slate-200">
               <div className="flex items-start gap-4">
                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-semibold">
                   {selectedDiscussion.author_name?.charAt(0)?.toUpperCase() || "U"}
@@ -193,7 +193,7 @@ export default function StudentDiscussions() {
             </div>
 
             {/* AI Clarify Doubt Section */}
-            <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-6 mb-6 border border-purple-200">
+            <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-md p-6 mb-6 border border-purple-200">
               <div className="flex items-center gap-3 mb-4">
                 <FiZap className="w-6 h-6 text-purple-600" />
                 <h3 className="text-lg font-bold text-slate-900">AI Clarify Doubt</h3>
@@ -216,7 +216,7 @@ export default function StudentDiscussions() {
               <h3 className="text-lg font-bold text-slate-900">Replies ({selectedDiscussion.replies?.length || 0})</h3>
               {selectedDiscussion.replies && selectedDiscussion.replies.length > 0 ? (
                 selectedDiscussion.replies.map((reply, index) => (
-                  <div key={reply.id || index} className="bg-slate-50 rounded-xl p-4 border border-slate-200">
+                  <div key={reply.id || index} className="bg-slate-50 rounded-md p-4 border border-slate-200">
                     <div className="flex items-start gap-3">
                       <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-blue-500 flex items-center justify-center text-white text-xs font-semibold">
                         {reply.author_name?.charAt(0)?.toUpperCase() || "U"}
@@ -287,7 +287,7 @@ export default function StudentDiscussions() {
           </div>
           <button
             onClick={() => setShowCreateModal(true)}
-            className="px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
+            className="px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
           >
             <FiPlus className="w-5 h-5" />
             Create Discussion
@@ -303,20 +303,20 @@ export default function StudentDiscussions() {
               placeholder="Search discussions..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
+              className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
             />
           </div>
         </div>
 
         {/* Discussions List */}
         {filteredDiscussions.length === 0 ? (
-          <div className="bg-white rounded-xl p-12 border border-slate-200 text-center">
+          <div className="bg-white rounded-md p-12 border border-slate-200 text-center">
             <FiMessageSquare className="w-16 h-16 text-slate-300 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-slate-900 mb-2">No discussions found</h3>
             <p className="text-slate-600 mb-6">Be the first to start a discussion!</p>
             <button
               onClick={() => setShowCreateModal(true)}
-              className="px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all"
+              className="px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-md hover:from-blue-600 hover:to-blue-700 transition-all"
             >
               Create Discussion
             </button>
@@ -330,7 +330,7 @@ export default function StudentDiscussions() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
                 onClick={() => setSelectedDiscussion(discussion)}
-                className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-all cursor-pointer"
+                className="bg-white rounded-md p-6 border border-slate-200 shadow-sm hover:shadow-md transition-all cursor-pointer"
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
@@ -385,7 +385,7 @@ export default function StudentDiscussions() {
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="bg-white rounded-2xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+              className="bg-white rounded-md p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto"
             >
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-bold text-slate-900">Create Discussion</h2>
@@ -407,7 +407,7 @@ export default function StudentDiscussions() {
                     value={newDiscussion.discussion_name}
                     onChange={(e) => setNewDiscussion({ ...newDiscussion, discussion_name: e.target.value })}
                     placeholder="Enter discussion title..."
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500"
                   />
                 </div>
 
@@ -420,7 +420,7 @@ export default function StudentDiscussions() {
                     onChange={(e) => setNewDiscussion({ ...newDiscussion, problem: e.target.value })}
                     placeholder="Describe your question or problem..."
                     rows={6}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 resize-none"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 resize-none"
                   />
                 </div>
               </div>
@@ -429,7 +429,7 @@ export default function StudentDiscussions() {
                 <button
                   onClick={handleCreateDiscussion}
                   disabled={creating || !newDiscussion.discussion_name.trim() || !newDiscussion.problem.trim()}
-                  className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-md hover:from-blue-600 hover:to-blue-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   {creating ? (
                     <ButtonLoading text="Creating..." size="sm" />
@@ -442,7 +442,7 @@ export default function StudentDiscussions() {
                 </button>
                 <button
                   onClick={() => setShowCreateModal(false)}
-                  className="px-6 py-3 bg-slate-100 text-slate-700 font-semibold rounded-xl hover:bg-slate-200 transition-colors"
+                  className="px-6 py-3 bg-slate-100 text-slate-700 font-semibold rounded-md hover:bg-slate-200 transition-colors"
                 >
                   Cancel
                 </button>

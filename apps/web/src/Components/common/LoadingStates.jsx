@@ -47,7 +47,7 @@ export function SkeletonCard({ count = 3 }) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: idx * 0.1 }}
-          className="bg-white rounded-xl p-6 border border-slate-200 shadow-lg"
+          className="bg-white rounded-md p-6 border border-slate-200 shadow-lg"
         >
           <div className="animate-pulse space-y-4">
             <div className="h-6 bg-slate-200 rounded w-3/4"></div>
@@ -129,7 +129,7 @@ export function ActionLoading({ message = "Processing..." }) {
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        className="bg-white rounded-2xl p-8 shadow-2xl max-w-sm w-full mx-4"
+        className="bg-white rounded-md p-8 shadow-2xl max-w-sm w-full mx-4"
       >
         <div className="text-center space-y-4">
           <motion.div
@@ -188,7 +188,7 @@ export function InlineSpinner({ size = "md", color = "text-indigo-600" }) {
 // Skeleton form loader
 export function SkeletonForm() {
   return (
-    <div className="bg-white rounded-xl p-8 border border-slate-200 shadow-lg space-y-6 animate-pulse">
+    <div className="bg-white rounded-md p-8 border border-slate-200 shadow-lg space-y-6 animate-pulse">
       <div className="h-8 bg-slate-200 rounded w-1/3"></div>
       <div className="space-y-4">
         <div className="h-4 bg-slate-200 rounded w-1/4"></div>

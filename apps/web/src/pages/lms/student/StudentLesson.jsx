@@ -20,7 +20,10 @@ import {
   FiMessageSquare,
   FiArrowLeft,
   FiX,
+  FiLayers,
 } from "react-icons/fi";
+import SlideDeckViewer from "../../../Components/presentation/SlideDeckViewer";
+import { SLIDES as htmlBasicSlides, SLIDE_COUNT as htmlBasicSlideCount } from "../../../data/slides/htmlBasicElements.jsx";
 
 export default function StudentLesson() {
   const navigate = useNavigate();
@@ -29,7 +32,7 @@ export default function StudentLesson() {
   const [loading, setLoading] = useState(true);
   const [lesson, setLesson] = useState(null);
   const [moduleLessons, setModuleLessons] = useState([]);
-  const [activeTab, setActiveTab] = useState("cheatsheet"); // cheatsheet, mcqs, practice
+  const [activeTab, setActiveTab] = useState("slides"); // slides, cheatsheet, mcqs, practice
   const [completed, setCompleted] = useState(false);
   const [videoReady, setVideoReady] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -227,11 +230,11 @@ export default function StudentLesson() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
         <div className="max-w-7xl mx-auto">
-          <div className="bg-white rounded-xl p-12 border border-slate-200 text-center">
+          <div className="bg-white rounded-md p-12 border border-slate-200 text-center">
             <h3 className="text-xl font-semibold text-slate-900 mb-2">Lesson not found</h3>
             <button
               onClick={() => navigate(`/lms/student/courses/${courseSlug}`)}
-              className="mt-4 px-6 py-3 bg-blue-500 text-white font-semibold rounded-xl hover:bg-blue-600 transition-colors"
+              className="mt-4 px-6 py-3 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 transition-colors"
             >
               Back to Course
             </button>
@@ -312,7 +315,7 @@ export default function StudentLesson() {
 
             {/* Video Player */}
             {lesson.video_provider === "cloudflare_stream" && lesson.video_id ? (
-              <div className="mb-8 rounded-2xl border-2 border-cyan-200/50 bg-gradient-to-br from-slate-900 to-slate-800 overflow-hidden shadow-2xl shadow-cyan-500/20">
+              <div className="mb-8 rounded-md border-2 border-cyan-200/50 bg-gradient-to-br from-slate-900 to-slate-800 overflow-hidden shadow-2xl shadow-cyan-500/20">
                 <div className="aspect-video bg-black relative">
                   {videoTokenLoading ? (
                     <div className="absolute inset-0 flex items-center justify-center bg-black/90 text-white">
@@ -337,7 +340,7 @@ export default function StudentLesson() {
                         <p className="text-sm text-gray-300 mb-6">{videoError}</p>
                         <button
                           onClick={() => lesson?.id && fetchVideoToken(lesson.id)}
-                          className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-semibold rounded-xl hover:from-cyan-600 hover:to-blue-600 transition-all shadow-lg"
+                          className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-semibold rounded-md hover:from-cyan-600 hover:to-blue-600 transition-all shadow-lg"
                         >
                           Retry
                         </button>
@@ -354,7 +357,7 @@ export default function StudentLesson() {
                 </div>
               </div>
             ) : lesson.video_provider === "youtube" && lesson.video_id ? (
-              <div className="mb-6 rounded-2xl border border-slate-200 bg-slate-900 overflow-hidden shadow-xl">
+              <div className="mb-6 rounded-md border border-slate-200 bg-slate-900 overflow-hidden shadow-xl">
                 <div className="aspect-video bg-black">
                   <iframe
                     src={`https://www.youtube.com/embed/${lesson.video_id}`}
@@ -366,7 +369,7 @@ export default function StudentLesson() {
                 </div>
               </div>
             ) : lesson.video_provider === "vimeo" && lesson.video_id ? (
-              <div className="mb-6 rounded-2xl border border-slate-200 bg-slate-900 overflow-hidden shadow-xl">
+              <div className="mb-6 rounded-md border border-slate-200 bg-slate-900 overflow-hidden shadow-xl">
                 <div className="aspect-video bg-black">
                   <iframe
                     src={`https://player.vimeo.com/video/${lesson.video_id}`}
@@ -378,7 +381,7 @@ export default function StudentLesson() {
                 </div>
               </div>
             ) : lesson.video_id && lesson.video_id.startsWith("http") ? (
-              <div className="mb-6 rounded-2xl border border-slate-200 bg-slate-900 overflow-hidden shadow-xl">
+              <div className="mb-6 rounded-md border border-slate-200 bg-slate-900 overflow-hidden shadow-xl">
                 <div className="aspect-video bg-black">
                   <video
                     ref={videoRef}
@@ -392,7 +395,7 @@ export default function StudentLesson() {
                 </div>
               </div>
             ) : (
-              <div className="mb-6 rounded-2xl border border-slate-200 bg-slate-50 p-12 text-center">
+              <div className="mb-6 rounded-md border border-slate-200 bg-slate-50 p-12 text-center">
                 <FiPlay className="w-16 h-16 mx-auto mb-4 text-slate-400" />
                 <p className="text-slate-600">No video available for this lesson</p>
                 {lesson.video_id && (
@@ -405,7 +408,7 @@ export default function StudentLesson() {
             <div className="mb-8">
               <button
                 onClick={() => navigate("/lms/student/discussions")}
-                className="px-8 py-4 bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 text-white font-semibold rounded-xl hover:from-cyan-600 hover:via-blue-600 hover:to-indigo-600 transition-all flex items-center gap-2 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40"
+                className="px-8 py-4 bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 text-white font-semibold rounded-md hover:from-cyan-600 hover:via-blue-600 hover:to-indigo-600 transition-all flex items-center gap-2 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40"
               >
                 <FiMessageSquare className="w-5 h-5" />
                 Start My Discussion
@@ -414,7 +417,7 @@ export default function StudentLesson() {
 
             {/* Slides Section */}
             {resources.filter((r) => r.type === "slides").length > 0 && (
-              <div className="mb-6 bg-white rounded-xl border border-slate-200 p-6">
+              <div className="mb-6 bg-white rounded-md border border-slate-200 p-6">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-lg font-bold text-slate-900">Slides</h3>
                   <div className="flex items-center gap-2">
@@ -463,9 +466,10 @@ export default function StudentLesson() {
             )}
 
             {/* Lesson Tabs */}
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl border-2 border-cyan-200/50 overflow-hidden shadow-lg">
+            <div className="bg-white/80 backdrop-blur-sm rounded-md border-2 border-cyan-200/50 overflow-hidden shadow-lg">
               <div className="flex border-b border-cyan-100">
                 {[
+                  { id: "slides", label: "Slides", icon: FiLayers },
                   { id: "cheatsheet", label: "Cheatsheet", icon: FiFileText },
                   { id: "mcqs", label: "MCQs", icon: FiHelpCircle },
                   { id: "practice", label: "Practice", icon: FiCode },
@@ -489,6 +493,27 @@ export default function StudentLesson() {
               </div>
 
               <div className="p-6">
+                {/* Slides Tab */}
+                {activeTab === "slides" && (
+                  <div>
+                    {/* Always show slides for now - can be made conditional later */}
+                    {htmlBasicSlides && htmlBasicSlides.length > 0 ? (
+                      <SlideDeckViewer slides={htmlBasicSlides} slideCount={htmlBasicSlideCount} />
+                    ) : (
+                      <div className="text-center py-12">
+                        <FiLayers className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+                        <p className="text-slate-600 text-lg mb-2">No slides available</p>
+                        <p className="text-slate-500 text-sm">Slides data not loaded</p>
+                        <div className="mt-6 p-4 bg-red-50 rounded-lg border border-red-200">
+                          <p className="text-sm text-red-800">Debug Info:</p>
+                          <p className="text-xs text-red-600">Slides array length: {htmlBasicSlides?.length || 0}</p>
+                          <p className="text-xs text-red-600">Slide count: {htmlBasicSlideCount || "N/A"}</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 {/* Cheatsheet Tab */}
                 {activeTab === "cheatsheet" && (
                   <div>
@@ -501,7 +526,7 @@ export default function StudentLesson() {
                           .map((resource, index) => (
                             <div
                               key={resource.id || index}
-                              className="p-5 bg-gradient-to-r from-cyan-50 to-blue-50 rounded-xl border-2 border-cyan-200/50 hover:border-cyan-400 hover:shadow-md transition-all cursor-pointer group"
+                              className="p-5 bg-gradient-to-r from-cyan-50 to-blue-50 rounded-md border-2 border-cyan-200/50 hover:border-cyan-400 hover:shadow-md transition-all cursor-pointer group"
                               onClick={() => {
                                 if (resource.url) {
                                   window.open(resource.url, "_blank");
@@ -560,7 +585,7 @@ export default function StudentLesson() {
                         )}
                         <button
                           onClick={handleRetest}
-                          className="px-6 py-3 bg-blue-500 text-white font-semibold rounded-xl hover:bg-blue-600 transition-colors"
+                          className="px-6 py-3 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 transition-colors"
                         >
                           Retest
                         </button>
@@ -585,7 +610,7 @@ export default function StudentLesson() {
                             {currentMcq.options?.map((option, optIndex) => (
                               <label
                                 key={optIndex}
-                                className={`flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all ${
+                                className={`flex items-center gap-3 p-4 rounded-md border-2 cursor-pointer transition-all ${
                                   mcqAnswers[currentMcq.id] === option
                                     ? "border-cyan-500 bg-gradient-to-r from-cyan-50 to-blue-50 shadow-md"
                                     : "border-cyan-200 hover:border-cyan-300 hover:bg-cyan-50/50"
@@ -607,7 +632,7 @@ export default function StudentLesson() {
                         <button
                           onClick={handleMcqNext}
                           disabled={!mcqAnswers[currentMcq.id]}
-                          className="w-full px-6 py-4 bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 text-white font-semibold rounded-xl hover:from-cyan-600 hover:via-blue-600 hover:to-indigo-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-blue-500/30 hover:shadow-xl"
+                          className="w-full px-6 py-4 bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 text-white font-semibold rounded-md hover:from-cyan-600 hover:via-blue-600 hover:to-indigo-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-blue-500/30 hover:shadow-xl"
                         >
                           {mcqCurrentIndex < mcqs.length - 1 ? "Next Question" : "Submit"}
                         </button>
@@ -624,7 +649,7 @@ export default function StudentLesson() {
                     ) : (
                       <div className="space-y-6">
                         {practiceTasks.map((task, index) => (
-                          <div key={task.id || index} className="p-6 bg-gradient-to-br from-teal-50 to-cyan-50 rounded-2xl border-2 border-teal-200/50 shadow-md hover:shadow-lg transition-all">
+                          <div key={task.id || index} className="p-6 bg-gradient-to-br from-teal-50 to-cyan-50 rounded-md border-2 border-teal-200/50 shadow-md hover:shadow-lg transition-all">
                             <div className="flex items-start justify-between mb-4">
                               <h4 className="text-lg font-bold bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent">{task.title || `Practice Task ${index + 1}`}</h4>
                               <button
@@ -637,7 +662,7 @@ export default function StudentLesson() {
                             </div>
                             <p className="text-slate-700 mb-4">{task.description}</p>
                             {task.desired_output && (
-                              <div className="mb-4 p-4 bg-white/80 rounded-xl border border-teal-200">
+                              <div className="mb-4 p-4 bg-white/80 rounded-md border border-teal-200">
                                 <p className="text-sm font-semibold text-teal-700 mb-2">Desired Output:</p>
                                 <pre className="text-sm text-slate-700 whitespace-pre-wrap">{task.desired_output}</pre>
                               </div>
@@ -654,7 +679,7 @@ export default function StudentLesson() {
                             )}
                             <button
                               onClick={() => navigate(`/lms/student/playground?task=${task.id}`)}
-                              className="px-6 py-3 bg-gradient-to-r from-teal-500 to-cyan-500 text-white font-semibold rounded-xl hover:from-teal-600 hover:to-cyan-600 transition-all shadow-md hover:shadow-lg"
+                              className="px-6 py-3 bg-gradient-to-r from-teal-500 to-cyan-500 text-white font-semibold rounded-md hover:from-teal-600 hover:to-cyan-600 transition-all shadow-md hover:shadow-lg"
                             >
                               Start Practice
                             </button>
@@ -675,7 +700,7 @@ export default function StudentLesson() {
             <button
               onClick={handleMarkComplete}
               disabled={completed}
-              className={`w-full px-6 py-4 font-semibold rounded-xl transition-all mb-6 shadow-lg ${
+              className={`w-full px-6 py-4 font-semibold rounded-md transition-all mb-6 shadow-lg ${
                 completed
                   ? "bg-gradient-to-r from-emerald-400 to-teal-400 text-white cursor-not-allowed shadow-emerald-500/30"
                   : "bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 text-white hover:from-cyan-600 hover:via-blue-600 hover:to-indigo-600 shadow-blue-500/30 hover:shadow-xl"
@@ -692,7 +717,7 @@ export default function StudentLesson() {
             </button>
 
             <div className="space-y-6">
-              <div className="bg-gradient-to-br from-cyan-50 to-blue-50 rounded-xl p-5 border-2 border-cyan-200/50">
+              <div className="bg-gradient-to-br from-cyan-50 to-blue-50 rounded-md p-5 border-2 border-cyan-200/50">
                 <h3 className="text-lg font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent mb-4">Progress</h3>
                 <div className="space-y-3">
                   <div>
@@ -714,11 +739,11 @@ export default function StudentLesson() {
                 </div>
               </div>
 
-              <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl p-5 border-2 border-indigo-200/50">
+              <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-md p-5 border-2 border-indigo-200/50">
                 <h3 className="text-lg font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-4">Notes</h3>
                 <textarea
                   placeholder="Add your notes here..."
-                  className="w-full px-4 py-3 bg-white/80 border-2 border-indigo-200/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-400 resize-none transition-all"
+                  className="w-full px-4 py-3 bg-white/80 border-2 border-indigo-200/50 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-400 resize-none transition-all"
                   rows={6}
                 />
               </div>
@@ -733,7 +758,7 @@ export default function StudentLesson() {
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-2xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+            className="bg-white rounded-md p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto"
           >
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold text-slate-900">{selectedResource.title}</h2>

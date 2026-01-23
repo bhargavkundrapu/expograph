@@ -112,7 +112,7 @@ export default function StudentWorkshops() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 border-2 border-cyan-200/50 shadow-xl"
+            className="bg-white/80 backdrop-blur-sm rounded-md p-8 border-2 border-cyan-200/50 shadow-xl"
           >
             <div className="flex items-start justify-between mb-6">
               <div>
@@ -122,7 +122,7 @@ export default function StudentWorkshops() {
                 <p className="text-lg text-slate-700">by {selectedWorkshop.instructor}</p>
               </div>
               {isRegistered && (
-                <div className="px-4 py-2 bg-emerald-50 border-2 border-emerald-200 rounded-xl flex items-center gap-2 text-emerald-600">
+                <div className="px-4 py-2 bg-emerald-50 border-2 border-emerald-200 rounded-md flex items-center gap-2 text-emerald-600">
                   <FiCheckCircle className="w-5 h-5" />
                   <span className="font-semibold">Registered</span>
                 </div>
@@ -130,24 +130,24 @@ export default function StudentWorkshops() {
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-              <div className="p-4 bg-gradient-to-r from-cyan-50 to-blue-50 rounded-xl border-2 border-cyan-200">
+              <div className="p-4 bg-gradient-to-r from-cyan-50 to-blue-50 rounded-md border-2 border-cyan-200">
                 <FiCalendar className="w-5 h-5 text-cyan-600 mb-2" />
                 <p className="text-sm text-slate-600 mb-1">Date</p>
                 <p className="font-semibold text-slate-800">
                   {new Date(selectedWorkshop.date).toLocaleDateString()}
                 </p>
               </div>
-              <div className="p-4 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl border-2 border-emerald-200">
+              <div className="p-4 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-md border-2 border-emerald-200">
                 <FiClock className="w-5 h-5 text-emerald-600 mb-2" />
                 <p className="text-sm text-slate-600 mb-1">Duration</p>
                 <p className="font-semibold text-slate-800">{selectedWorkshop.duration}</p>
               </div>
-              <div className="p-4 bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl border-2 border-amber-200">
+              <div className="p-4 bg-gradient-to-r from-amber-50 to-orange-50 rounded-md border-2 border-amber-200">
                 <FiMapPin className="w-5 h-5 text-amber-600 mb-2" />
                 <p className="text-sm text-slate-600 mb-1">Location</p>
                 <p className="font-semibold text-slate-800">{selectedWorkshop.location}</p>
               </div>
-              <div className="p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border-2 border-purple-200">
+              <div className="p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-md border-2 border-purple-200">
                 <FiUsers className="w-5 h-5 text-purple-600 mb-2" />
                 <p className="text-sm text-slate-600 mb-1">Seats</p>
                 <p className="font-semibold text-slate-800">
@@ -168,7 +168,7 @@ export default function StudentWorkshops() {
                   {selectedWorkshop.topics.map((topic, index) => (
                     <span
                       key={index}
-                      className="px-4 py-2 bg-gradient-to-r from-cyan-50 to-blue-50 border-2 border-cyan-200 rounded-xl text-sm font-semibold text-cyan-700"
+                      className="px-4 py-2 bg-gradient-to-r from-cyan-50 to-blue-50 border-2 border-cyan-200 rounded-md text-sm font-semibold text-cyan-700"
                     >
                       {topic}
                     </span>
@@ -180,7 +180,7 @@ export default function StudentWorkshops() {
                 <button
                   onClick={() => handleRegister(selectedWorkshop.id)}
                   disabled={isFull}
-                  className={`w-full px-6 py-4 font-semibold rounded-xl transition-all shadow-lg ${
+                  className={`w-full px-6 py-4 font-semibold rounded-md transition-all shadow-lg ${
                     isFull
                       ? "bg-slate-300 text-slate-500 cursor-not-allowed"
                       : "bg-gradient-to-r from-cyan-500 to-blue-500 text-white hover:from-cyan-600 hover:to-blue-600"
@@ -214,7 +214,7 @@ export default function StudentWorkshops() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="bg-white/80 backdrop-blur-sm rounded-2xl p-12 border-2 border-cyan-200/50 text-center"
+            className="bg-white/80 backdrop-blur-sm rounded-md p-12 border-2 border-cyan-200/50 text-center"
           >
             <FiCalendar className="w-20 h-20 text-slate-300 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-slate-700 mb-2">No workshops available</h3>
@@ -234,10 +234,10 @@ export default function StudentWorkshops() {
                     setSelectedWorkshop(workshop);
                     navigate(`/lms/student/workshops/${workshop.id}`);
                   }}
-                  className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border-2 border-cyan-200/50 hover:border-cyan-400 hover:shadow-xl transition-all cursor-pointer"
+                  className="bg-white/80 backdrop-blur-sm rounded-md p-6 border-2 border-cyan-200/50 hover:border-cyan-400 hover:shadow-xl transition-all cursor-pointer"
                 >
                   <div className="flex items-start justify-between mb-4">
-                    <div className="p-3 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-xl text-white">
+                    <div className="p-3 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-md text-white">
                       <FiCalendar className="w-6 h-6" />
                     </div>
                     {isRegistered && (
@@ -275,7 +275,7 @@ export default function StudentWorkshops() {
                       setSelectedWorkshop(workshop);
                       navigate(`/lms/student/workshops/${workshop.id}`);
                     }}
-                    className="w-full px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-semibold rounded-xl hover:from-cyan-600 hover:to-blue-600 transition-all"
+                    className="w-full px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-semibold rounded-md hover:from-cyan-600 hover:to-blue-600 transition-all"
                   >
                     {isRegistered ? "View Details" : isFull ? "Full" : "Register"}
                   </button>

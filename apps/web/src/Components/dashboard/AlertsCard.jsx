@@ -42,7 +42,7 @@ const alertStyles = {
 export default function AlertsCard({ alerts = [] }) {
   if (alerts.length === 0) {
     return (
-      <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
+      <div className="bg-white rounded-md p-6 border border-slate-200 shadow-sm">
         <h3 className="text-lg font-semibold text-slate-900 mb-4">System Alerts</h3>
         <p className="text-slate-500 text-sm">All systems operational</p>
       </div>
@@ -50,7 +50,7 @@ export default function AlertsCard({ alerts = [] }) {
   }
 
   return (
-    <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
+    <div className="bg-white rounded-md p-6 border border-slate-200 shadow-sm">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-semibold text-slate-900">System Alerts</h3>
         {alerts.length > 0 && (

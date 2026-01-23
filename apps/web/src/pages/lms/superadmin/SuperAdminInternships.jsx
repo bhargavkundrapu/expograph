@@ -399,10 +399,10 @@ export default function SuperAdminInternships() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
               onClick={() => navigate("/lms/superadmin/internships/list")}
-              className="bg-white rounded-2xl p-8 border border-slate-200 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
+              className="bg-white rounded-md p-8 border border-slate-200 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
             >
               <div className="flex items-center justify-between mb-6">
-                <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center text-white group-hover:scale-110 transition-transform">
+                <div className="w-16 h-16 rounded-md bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center text-white group-hover:scale-110 transition-transform">
                   <FiLayers className="w-8 h-8" />
                 </div>
                 <div className="text-right">
@@ -434,10 +434,10 @@ export default function SuperAdminInternships() {
                 setSkillInput("");
                 navigate("/lms/superadmin/internships/projects/create");
               }}
-              className="bg-white rounded-2xl p-8 border border-slate-200 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
+              className="bg-white rounded-md p-8 border border-slate-200 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
             >
               <div className="flex items-center justify-between mb-6">
-                <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white group-hover:scale-110 transition-transform">
+                <div className="w-16 h-16 rounded-md bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white group-hover:scale-110 transition-transform">
                   <FiPlus className="w-8 h-8" />
                 </div>
               </div>
@@ -483,7 +483,7 @@ export default function SuperAdminInternships() {
                 setSkillInput("");
                 navigate("/lms/superadmin/internships/projects/create");
               }}
-              className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"
+              className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"
             >
               <FiPlus className="w-5 h-5" />
               Create Project
@@ -499,7 +499,7 @@ export default function SuperAdminInternships() {
                 placeholder="Search by title, track, difficulty, or status..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500 transition-all"
+                className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500 transition-all"
               />
             </div>
           </div>
@@ -508,7 +508,7 @@ export default function SuperAdminInternships() {
           {loading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div key={i} className="bg-white rounded-xl p-6 border border-slate-200 animate-pulse">
+                <div key={i} className="bg-white rounded-md p-6 border border-slate-200 animate-pulse">
                   <div className="h-12 w-12 bg-slate-200 rounded-full mb-4"></div>
                   <div className="h-4 w-32 bg-slate-200 rounded mb-2"></div>
                   <div className="h-4 w-48 bg-slate-200 rounded"></div>
@@ -516,7 +516,7 @@ export default function SuperAdminInternships() {
               ))}
             </div>
           ) : filteredProjects.length === 0 ? (
-            <div className="bg-white rounded-xl p-12 border border-slate-200 text-center">
+            <div className="bg-white rounded-md p-12 border border-slate-200 text-center">
               <FiLayers className="w-16 h-16 text-slate-300 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-slate-900 mb-2">No projects found</h3>
               <p className="text-slate-600">
@@ -531,7 +531,7 @@ export default function SuperAdminInternships() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.05 }}
-                  className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300"
+                  className="bg-white rounded-md p-6 border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300"
                 >
                   <div className="flex items-start gap-4 mb-4">
                     <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center text-white font-semibold text-lg flex-shrink-0">
@@ -612,7 +612,7 @@ export default function SuperAdminInternships() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
         <div className="max-w-4xl mx-auto">
-          <div className="bg-white rounded-2xl p-8 border border-slate-200 shadow-lg">
+          <div className="bg-white rounded-md p-8 border border-slate-200 shadow-lg">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold text-slate-900">Create New Project</h2>
               <button
@@ -633,7 +633,7 @@ export default function SuperAdminInternships() {
                   value={addForm.title}
                   onChange={(e) => setAddForm({ ...addForm, title: e.target.value })}
                   placeholder="e.g., Full Stack Developer Internship"
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500 transition-all"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500 transition-all"
                 />
               </div>
 
@@ -644,7 +644,7 @@ export default function SuperAdminInternships() {
                   value={addForm.slug}
                   onChange={(e) => setAddForm({ ...addForm, slug: e.target.value })}
                   placeholder="auto-generated from title if not provided"
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500 transition-all"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500 transition-all"
                 />
               </div>
 
@@ -656,7 +656,7 @@ export default function SuperAdminInternships() {
                     value={addForm.track}
                     onChange={(e) => setAddForm({ ...addForm, track: e.target.value })}
                     placeholder="e.g., Web Development, Data Science"
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500 transition-all"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500 transition-all"
                   />
                 </div>
                 <div>
@@ -664,7 +664,7 @@ export default function SuperAdminInternships() {
                   <select
                     value={addForm.difficulty}
                     onChange={(e) => setAddForm({ ...addForm, difficulty: e.target.value })}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500 transition-all"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500 transition-all"
                   >
                     <option value="">Select difficulty</option>
                     <option value="beginner">Beginner</option>
@@ -683,7 +683,7 @@ export default function SuperAdminInternships() {
                   value={addForm.brief}
                   onChange={(e) => setAddForm({ ...addForm, brief: e.target.value })}
                   placeholder="Project brief, requirements, what students will learn..."
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500 transition-all"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500 transition-all"
                 />
               </div>
 
@@ -727,7 +727,7 @@ export default function SuperAdminInternships() {
                 <select
                   value={addForm.status}
                   onChange={(e) => setAddForm({ ...addForm, status: e.target.value })}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500 transition-all"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500 transition-all"
                 >
                   <option value="draft">Draft</option>
                   <option value="published">Published</option>
@@ -739,14 +739,14 @@ export default function SuperAdminInternships() {
                 <button
                   onClick={handleAddProject}
                   disabled={saving || !addForm.title || !addForm.brief}
-                  className="flex-1 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="flex-1 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   <FiSave className="w-5 h-5" />
                   {saving ? "Creating..." : "Create Project"}
                 </button>
                 <button
                   onClick={() => navigate("/lms/superadmin/internships/list")}
-                  className="px-6 py-3 bg-slate-100 text-slate-700 font-semibold rounded-xl hover:bg-slate-200 transition-colors"
+                  className="px-6 py-3 bg-slate-100 text-slate-700 font-semibold rounded-md hover:bg-slate-200 transition-colors"
                 >
                   Cancel
                 </button>
@@ -763,7 +763,7 @@ export default function SuperAdminInternships() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
         <div className="max-w-4xl mx-auto">
-          <div className="bg-white rounded-2xl p-8 border border-slate-200 shadow-lg">
+          <div className="bg-white rounded-md p-8 border border-slate-200 shadow-lg">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold text-slate-900">Edit Project</h2>
               <button
@@ -784,7 +784,7 @@ export default function SuperAdminInternships() {
                   value={editForm.title}
                   onChange={(e) => setEditForm({ ...editForm, title: e.target.value })}
                   placeholder="e.g., Full Stack Developer Internship"
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500 transition-all"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500 transition-all"
                 />
               </div>
 
@@ -795,7 +795,7 @@ export default function SuperAdminInternships() {
                   value={editForm.slug}
                   onChange={(e) => setEditForm({ ...editForm, slug: e.target.value })}
                   placeholder="auto-generated from title if not provided"
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500 transition-all"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500 transition-all"
                 />
               </div>
 
@@ -807,7 +807,7 @@ export default function SuperAdminInternships() {
                     value={editForm.track}
                     onChange={(e) => setEditForm({ ...editForm, track: e.target.value })}
                     placeholder="e.g., Web Development, Data Science"
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500 transition-all"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500 transition-all"
                   />
                 </div>
                 <div>
@@ -815,7 +815,7 @@ export default function SuperAdminInternships() {
                   <select
                     value={editForm.difficulty}
                     onChange={(e) => setEditForm({ ...editForm, difficulty: e.target.value })}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500 transition-all"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500 transition-all"
                   >
                     <option value="">Select difficulty</option>
                     <option value="beginner">Beginner</option>
@@ -834,7 +834,7 @@ export default function SuperAdminInternships() {
                   value={editForm.brief}
                   onChange={(e) => setEditForm({ ...editForm, brief: e.target.value })}
                   placeholder="Project brief, requirements, what students will learn..."
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500 transition-all"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500 transition-all"
                 />
               </div>
 
@@ -878,7 +878,7 @@ export default function SuperAdminInternships() {
                 <select
                   value={editForm.status}
                   onChange={(e) => setEditForm({ ...editForm, status: e.target.value })}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500 transition-all"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500 transition-all"
                 >
                   <option value="draft">Draft</option>
                   <option value="published">Published</option>
@@ -890,7 +890,7 @@ export default function SuperAdminInternships() {
                 <button
                   onClick={handleEditProject}
                   disabled={saving || !editForm.title || !editForm.brief}
-                  className="flex-1 px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="flex-1 px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   {saving ? (
                     <ButtonLoading text="Saving..." size="sm" />
@@ -903,7 +903,7 @@ export default function SuperAdminInternships() {
                 </button>
                 <button
                   onClick={() => navigate("/lms/superadmin/internships/list")}
-                  className="px-6 py-3 bg-slate-100 text-slate-700 font-semibold rounded-xl hover:bg-slate-200 transition-colors"
+                  className="px-6 py-3 bg-slate-100 text-slate-700 font-semibold rounded-md hover:bg-slate-200 transition-colors"
                 >
                   Cancel
                 </button>
@@ -922,7 +922,7 @@ export default function SuperAdminInternships() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
         <div className="max-w-6xl mx-auto">
-          <div className="bg-white rounded-2xl p-8 border border-slate-200 shadow-lg">
+          <div className="bg-white rounded-md p-8 border border-slate-200 shadow-lg">
             {/* Header */}
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center gap-4">

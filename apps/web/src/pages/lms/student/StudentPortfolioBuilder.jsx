@@ -185,7 +185,7 @@ export default function StudentPortfolioBuilder() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="bg-white rounded-xl p-8 lg:p-12 shadow-2xl"
+            className="bg-white rounded-md p-8 lg:p-12 shadow-2xl"
           >
             {/* Hero Section */}
             <div className="text-center mb-12">
@@ -263,7 +263,7 @@ export default function StudentPortfolioBuilder() {
                 {portfolioData.projects.map((project) => (
                   <div
                     key={project.id}
-                    className="border-2 border-slate-200 rounded-xl overflow-hidden hover:shadow-lg transition-shadow"
+                    className="border-2 border-slate-200 rounded-md overflow-hidden hover:shadow-lg transition-shadow"
                   >
                     {project.imageUrl && (
                       <img
@@ -324,7 +324,7 @@ export default function StudentPortfolioBuilder() {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50"
+                className="bg-slate-800/50 rounded-md p-4 border border-slate-700/50"
               >
                 <span className="text-slate-400 text-sm mb-2 block">Template:</span>
                 <div className="flex gap-2">
@@ -349,7 +349,7 @@ export default function StudentPortfolioBuilder() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                className="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50"
+                className="bg-slate-800/50 rounded-md p-6 border border-slate-700/50"
               >
                 <h2 className="text-xl font-semibold text-white mb-4">Personal Information</h2>
                 <div className="space-y-4">
@@ -430,7 +430,7 @@ export default function StudentPortfolioBuilder() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50"
+                className="bg-slate-800/50 rounded-md p-6 border border-slate-700/50"
               >
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-xl font-semibold text-white">Skills</h2>
@@ -465,7 +465,7 @@ export default function StudentPortfolioBuilder() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50"
+                className="bg-slate-800/50 rounded-md p-6 border border-slate-700/50"
               >
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-xl font-semibold text-white flex items-center gap-2">
@@ -539,7 +539,7 @@ export default function StudentPortfolioBuilder() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.4 }}
-              className="bg-white rounded-xl p-6 shadow-xl sticky top-4 h-fit"
+              className="bg-white rounded-md p-6 shadow-xl sticky top-4 h-fit"
             >
               <h3 className="text-lg font-semibold text-slate-900 mb-4">Live Preview</h3>
               <div className="space-y-4">
@@ -580,7 +580,7 @@ export default function StudentPortfolioBuilder() {
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="bg-slate-800 rounded-xl p-6 border border-slate-700 max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+              className="bg-slate-800 rounded-md p-6 border border-slate-700 max-w-2xl w-full max-h-[90vh] overflow-y-auto"
             >
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-xl font-semibold text-white">Add/Edit Project</h3>

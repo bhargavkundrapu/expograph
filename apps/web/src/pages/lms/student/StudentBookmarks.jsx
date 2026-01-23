@@ -127,7 +127,7 @@ export default function StudentBookmarks() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border-2 border-cyan-200/50 shadow-lg mb-8"
+          className="bg-white/80 backdrop-blur-sm rounded-md p-6 border-2 border-cyan-200/50 shadow-lg mb-8"
         >
           <div className="flex flex-col md:flex-row gap-4">
             {/* Search */}
@@ -138,7 +138,7 @@ export default function StudentBookmarks() {
                 placeholder="Search bookmarks..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 bg-gradient-to-r from-cyan-50 to-blue-50 border-2 border-cyan-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-400 text-slate-700"
+                className="w-full pl-12 pr-4 py-3 bg-gradient-to-r from-cyan-50 to-blue-50 border-2 border-cyan-200 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-400 text-slate-700"
               />
               {searchQuery && (
                 <button
@@ -157,7 +157,7 @@ export default function StudentBookmarks() {
                 <button
                   key={type}
                   onClick={() => setFilter(type)}
-                  className={`px-4 py-2 rounded-xl font-semibold transition-all ${
+                  className={`px-4 py-2 rounded-md font-semibold transition-all ${
                     filter === type
                       ? "bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-md"
                       : "bg-slate-100 text-slate-600 hover:bg-slate-200"
@@ -175,7 +175,7 @@ export default function StudentBookmarks() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="bg-white/80 backdrop-blur-sm rounded-2xl p-12 border-2 border-cyan-200/50 text-center"
+            className="bg-white/80 backdrop-blur-sm rounded-md p-12 border-2 border-cyan-200/50 text-center"
           >
             <FiBookmark className="w-20 h-20 text-slate-300 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-slate-700 mb-2">No bookmarks found</h3>
@@ -196,7 +196,7 @@ export default function StudentBookmarks() {
                   key={type}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="bg-white/80 backdrop-blur-sm rounded-2xl border-2 border-cyan-200/50 shadow-lg overflow-hidden"
+                  className="bg-white/80 backdrop-blur-sm rounded-md border-2 border-cyan-200/50 shadow-lg overflow-hidden"
                 >
                   <div className={`bg-gradient-to-r ${colorGradient} p-4 flex items-center gap-3`}>
                     <div className="p-2 bg-white/20 rounded-lg backdrop-blur-sm">
@@ -211,7 +211,7 @@ export default function StudentBookmarks() {
                     {items.map((bookmark) => (
                       <div
                         key={bookmark.id}
-                        className="flex items-start gap-4 p-4 bg-gradient-to-r from-slate-50 to-cyan-50 rounded-xl border-2 border-slate-200 hover:border-cyan-300 hover:shadow-md transition-all group"
+                        className="flex items-start gap-4 p-4 bg-gradient-to-r from-slate-50 to-cyan-50 rounded-md border-2 border-slate-200 hover:border-cyan-300 hover:shadow-md transition-all group"
                       >
                         <div className={`p-3 bg-gradient-to-br ${colorGradient} rounded-lg text-white flex-shrink-0`}>
                           <Icon className="w-5 h-5" />

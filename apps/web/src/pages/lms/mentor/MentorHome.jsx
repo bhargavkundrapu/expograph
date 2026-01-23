@@ -268,10 +268,10 @@ export default function MentorHome() {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => navigate("/lms/mentor/submissions/queue")}
-            className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-all cursor-pointer"
+            className="bg-white rounded-md p-6 border border-slate-200 shadow-sm hover:shadow-md transition-all cursor-pointer"
           >
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center text-white">
+              <div className="w-12 h-12 rounded-md bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center text-white">
                 <FiFileText className="w-6 h-6" />
               </div>
               <div>
@@ -285,10 +285,10 @@ export default function MentorHome() {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => navigate("/lms/mentor/students")}
-            className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-all cursor-pointer"
+            className="bg-white rounded-md p-6 border border-slate-200 shadow-sm hover:shadow-md transition-all cursor-pointer"
           >
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white">
+              <div className="w-12 h-12 rounded-md bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white">
                 <FiUsers className="w-6 h-6" />
               </div>
               <div>
@@ -302,10 +302,10 @@ export default function MentorHome() {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => navigate("/lms/mentor/communications")}
-            className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-all cursor-pointer"
+            className="bg-white rounded-md p-6 border border-slate-200 shadow-sm hover:shadow-md transition-all cursor-pointer"
           >
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white">
+              <div className="w-12 h-12 rounded-md bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white">
                 <FiMessageSquare className="w-6 h-6" />
               </div>
               <div>
@@ -319,10 +319,10 @@ export default function MentorHome() {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => navigate("/lms/mentor/calendar")}
-            className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-all cursor-pointer"
+            className="bg-white rounded-md p-6 border border-slate-200 shadow-sm hover:shadow-md transition-all cursor-pointer"
           >
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center text-white">
+              <div className="w-12 h-12 rounded-md bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center text-white">
                 <FiCalendar className="w-6 h-6" />
               </div>
               <div>

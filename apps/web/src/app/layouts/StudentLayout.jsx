@@ -118,7 +118,7 @@ export default function StudentLayout() {
                   exit={{ opacity: 0, x: -20 }}
                   className="flex items-center gap-3"
                 >
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg">
+                  <div className="w-10 h-10 rounded-md bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg">
                     E
                   </div>
                   <span className="text-white font-bold text-xl">ExpoGraph</span>
@@ -188,7 +188,7 @@ export default function StudentLayout() {
                     key={item.path}
                     to={item.path}
                     className={`
-                      group relative flex items-center gap-3 px-3 py-2.5 rounded-xl
+                      group relative flex items-center gap-3 px-3 py-2.5 rounded-md
                       transition-all duration-200
                       ${
                         active
@@ -214,7 +214,7 @@ export default function StudentLayout() {
                     {active && !sidebarCollapsed && (
                       <motion.div
                         layoutId="activeIndicator"
-                        className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10 rounded-xl -z-10"
+                        className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10 rounded-md -z-10"
                         transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                       />
                     )}
@@ -285,7 +285,7 @@ export default function StudentLayout() {
         </motion.aside>
 
         {/* Main Content */}
-        <div className="flex-1 flex flex-col overflow-hidden lg:rounded-tl-2xl bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 shadow-xl relative z-10">
+        <div className="flex-1 flex flex-col overflow-hidden lg:rounded-tl-lg bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 shadow-xl relative z-10">
           {/* Mobile Header */}
           <div className="lg:hidden h-16 bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 border-b border-slate-700/50 flex items-center justify-between px-4">
             <button

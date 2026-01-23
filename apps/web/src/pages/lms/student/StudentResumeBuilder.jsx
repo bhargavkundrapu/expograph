@@ -208,7 +208,7 @@ export default function StudentResumeBuilder() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50"
+              className="bg-slate-800/50 rounded-md p-4 border border-slate-700/50"
             >
               <div className="flex items-center justify-between mb-4">
                 <span className="text-slate-400">Template:</span>
@@ -252,7 +252,7 @@ export default function StudentResumeBuilder() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50"
+              className="bg-slate-800/50 rounded-md p-6 border border-slate-700/50"
             >
               <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
                 <FiUser className="w-5 h-5 text-blue-400" />
@@ -323,7 +323,7 @@ export default function StudentResumeBuilder() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50"
+              className="bg-slate-800/50 rounded-md p-6 border border-slate-700/50"
             >
               <h2 className="text-xl font-semibold text-white mb-4">Professional Summary</h2>
               <textarea
@@ -340,7 +340,7 @@ export default function StudentResumeBuilder() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50"
+              className="bg-slate-800/50 rounded-md p-6 border border-slate-700/50"
             >
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-xl font-semibold text-white flex items-center gap-2">
@@ -412,7 +412,7 @@ export default function StudentResumeBuilder() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
-              className="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50"
+              className="bg-slate-800/50 rounded-md p-6 border border-slate-700/50"
             >
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-xl font-semibold text-white flex items-center gap-2">
@@ -491,7 +491,7 @@ export default function StudentResumeBuilder() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6 }}
-              className="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50"
+              className="bg-slate-800/50 rounded-md p-6 border border-slate-700/50"
             >
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-xl font-semibold text-white flex items-center gap-2">
@@ -542,7 +542,7 @@ export default function StudentResumeBuilder() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.7 }}
-            className="bg-white rounded-xl p-8 shadow-2xl"
+            className="bg-white rounded-md p-8 shadow-2xl"
           >
             <div className="mb-6">
               <h3 className="text-2xl font-bold text-slate-900 mb-1">

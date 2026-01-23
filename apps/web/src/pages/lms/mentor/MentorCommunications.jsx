@@ -54,7 +54,7 @@ export default function MentorCommunications() {
         <div className="max-w-7xl mx-auto">
           <h1 className="text-3xl md:text-4xl font-bold text-slate-900 mb-8">Messages</h1>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-1 bg-white rounded-xl p-6 border border-slate-200 shadow-lg">
+            <div className="lg:col-span-1 bg-white rounded-md p-6 border border-slate-200 shadow-lg">
               <div className="mb-4">
                 <div className="relative">
                   <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -83,7 +83,7 @@ export default function MentorCommunications() {
                 ))}
               </div>
             </div>
-            <div className="lg:col-span-2 bg-white rounded-xl p-6 border border-slate-200 shadow-lg">
+            <div className="lg:col-span-2 bg-white rounded-md p-6 border border-slate-200 shadow-lg">
               {selectedMessage ? (
                 <div>
                   <div className="flex items-center justify-between mb-4">
@@ -113,7 +113,7 @@ export default function MentorCommunications() {
                         // TODO: Implement send reply functionality
                         alert("Send reply feature coming soon");
                       }}
-                      className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
+                      className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
                     >
                       <FiSend className="w-5 h-5" />
                       Send Reply
@@ -146,7 +146,7 @@ export default function MentorCommunications() {
                 key={alert.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className={`bg-white rounded-xl p-6 border border-slate-200 shadow-lg ${
+                className={`bg-white rounded-md p-6 border border-slate-200 shadow-lg ${
                   alert.type === "warning" ? "border-amber-200 bg-amber-50" : "border-blue-200 bg-blue-50"
                 }`}
               >
@@ -181,7 +181,7 @@ export default function MentorCommunications() {
                 key={notif.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className={`bg-white rounded-xl p-6 border border-slate-200 shadow-lg ${
+                className={`bg-white rounded-md p-6 border border-slate-200 shadow-lg ${
                   !notif.read ? "border-emerald-200 bg-emerald-50" : ""
                 }`}
               >

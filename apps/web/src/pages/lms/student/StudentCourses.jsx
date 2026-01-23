@@ -70,13 +70,13 @@ export default function StudentCourses() {
               placeholder="Search courses..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 bg-white/80 backdrop-blur-sm border-2 border-cyan-200/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-400 transition-all shadow-md"
+              className="w-full pl-12 pr-4 py-3 bg-white/80 backdrop-blur-sm border-2 border-cyan-200/50 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-400 transition-all shadow-md"
             />
           </div>
           <select
             value={filterLevel}
             onChange={(e) => setFilterLevel(e.target.value)}
-            className="px-4 py-3 bg-white/80 backdrop-blur-sm border-2 border-cyan-200/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-400 shadow-md"
+            className="px-4 py-3 bg-white/80 backdrop-blur-sm border-2 border-cyan-200/50 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-400 shadow-md"
           >
             <option value="all">All Levels</option>
             <option value="beginner">Beginner</option>
@@ -87,7 +87,7 @@ export default function StudentCourses() {
 
         {/* Courses Grid */}
         {filteredCourses.length === 0 ? (
-          <div className="bg-white rounded-xl p-12 border border-slate-200 text-center">
+          <div className="bg-white rounded-md p-12 border border-slate-200 text-center">
             <FiBookOpen className="w-16 h-16 text-slate-300 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-slate-900 mb-2">No courses found</h3>
             <p className="text-slate-600">You haven't enrolled in any courses yet</p>
@@ -100,7 +100,7 @@ export default function StudentCourses() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
-                className="bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-lg transition-all overflow-hidden"
+                className="bg-white rounded-md border border-slate-200 shadow-sm hover:shadow-lg transition-all overflow-hidden"
               >
                 <div className="h-48 bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-500 relative">
                   <div className="absolute inset-0 bg-black/10"></div>
@@ -156,7 +156,7 @@ export default function StudentCourses() {
                   {/* CTA Button */}
                   <button
                     onClick={() => navigate(`/lms/student/courses/${course.slug}`)}
-                    className="w-full px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
+                    className="w-full px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-md hover:from-blue-600 hover:to-blue-700 transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
                   >
                     <FiPlay className="w-5 h-5" />
                     {course.progress > 0 ? "Continue Learning" : "Open Course"}

@@ -1,0 +1,350 @@
+/* Parallax Slider Styles */
+:root {
+  --bg-clr: rgba(11, 15, 39, 0.83);
+  --txt-clr: #fff;
+  --anim-spd: 750ms;
+  --num-of-slides: 3;
+}
+
+.parallax-slider-cont {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.parallax-slider {
+  position: relative;
+  height: 100%;
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+  cursor: all-scroll;
+  user-select: none;
+}
+
+.parallax-slider.animation {
+  transition: transform var(--anim-spd) ease-in-out;
+}
+
+.parallax-slider.animation .parallax-slide__darkbg {
+  transition: transform var(--anim-spd) ease-in-out;
+}
+
+.parallax-slider.animation .parallax-slide__text {
+  transition: transform var(--anim-spd) ease-in-out;
+}
+
+.parallax-slider.animation .parallax-slide__letter {
+  transition: transform var(--anim-spd) ease-in-out;
+}
+
+.parallax-slide {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.parallax-slide--1 {
+  left: 0%;
+}
+
+.parallax-slide--2 {
+  left: 100%;
+}
+
+.parallax-slide--3 {
+  left: 200%;
+}
+
+.parallax-slide__darkbg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+  z-index: 10;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+
+.parallax-slide--1__darkbg {
+  left: 0%;
+  background: url('https://res.cloudinary.com/da2wrgabu/image/upload/v1769067288/ChatGPT_Image_Jan_22_2026_01_02_14_PM_lr2qk1.png') center center no-repeat;
+  background-size: cover;
+  background-position: 0px center, 0px center;
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+}
+
+.parallax-slide--1__darkbg:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--bg-clr);
+}
+
+.parallax-slide--2__darkbg {
+  left: -50%;
+  background: url('https://res.cloudinary.com/da2wrgabu/image/upload/v1769067281/ChatGPT_Image_Jan_22_2026_01_04_05_PM_d4aphh.png') center center no-repeat;
+  background-size: cover;
+  background-position: 0px center, 0px center;
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+}
+
+.parallax-slide--2__darkbg:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--bg-clr);
+}
+
+.parallax-slide--3__darkbg {
+  left: -100%;
+  background: url('https://res.cloudinary.com/da2wrgabu/image/upload/v1769067287/ChatGPT_Image_Jan_22_2026_01_03_29_PM_ycd1ei.png') center center no-repeat;
+  background-size: cover;
+  background-position: 0px center, 0px center;
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+}
+
+.parallax-slide--3__darkbg:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--bg-clr);
+}
+
+.parallax-slide__text-wrapper {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  z-index: 15;
+}
+
+.parallax-slide__letter {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform: translate3d(0, 0, 0);
+  -webkit-text-fill-color: transparent !important;
+  -webkit-background-clip: text !important;
+  font-size: 50vw;
+  font-weight: 800;
+  color: #000;
+  z-index: 2;
+  will-change: transform;
+  user-select: none;
+}
+
+.parallax-slide--1__letter {
+  background: url('https://res.cloudinary.com/da2wrgabu/image/upload/v1769067288/ChatGPT_Image_Jan_22_2026_01_02_14_PM_lr2qk1.png') center center no-repeat;
+  background-size: cover;
+  background-position: 0px center, 0px center;
+}
+
+.parallax-slide--2__letter {
+  background: url('https://res.cloudinary.com/da2wrgabu/image/upload/v1769067281/ChatGPT_Image_Jan_22_2026_01_04_05_PM_d4aphh.png') center center no-repeat;
+  background-size: cover;
+  background-position: 0px center, 0px center;
+}
+
+.parallax-slide--3__letter {
+  background: url('https://res.cloudinary.com/da2wrgabu/image/upload/v1769067287/ChatGPT_Image_Jan_22_2026_01_03_29_PM_ycd1ei.png') center center no-repeat;
+  background-size: cover;
+  background-position: center center;
+}
+
+.parallax-slide__text {
+  font-size: 8vw;
+  font-weight: 800;
+  text-transform: uppercase;
+  transform: translate3d(0, 0, 0);
+  letter-spacing: 12px;
+  color: var(--txt-clr);
+  will-change: transform;
+  user-select: none;
+}
+
+.parallax-slide__text:nth-child(odd) {
+  z-index: 2;
+}
+
+.parallax-slide__text:nth-child(even) {
+  z-index: 1;
+}
+
+.parallax-slide__text--small {
+  font-size: 12vw;
+}
+
+.parallax-nav {
+  position: absolute;
+  bottom: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+  list-style-type: none;
+  z-index: 10;
+  display: flex;
+  padding: 0;
+  margin: 0;
+}
+
+.parallax-nav__slide {
+  position: relative;
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 400px) {
+  .parallax-nav__slide {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+.parallax-nav__slide:hover:after {
+  transform: translate(-50%, -50%) scale(1, 1);
+  opacity: 1;
+}
+
+.parallax-nav__slide:after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0, 0);
+  width: 75%;
+  height: 75%;
+  border-radius: 50%;
+  background-color: #fff;
+  opacity: 0;
+  transition: 300ms;
+}
+
+.parallax-nav__slide--1 {
+  margin-left: 0;
+}
+
+.parallax-nav-active:after {
+  transform: translate(-50%, -50%) scale(1, 1);
+  opacity: 1;
+}
+
+.parallax-side-nav {
+  position: absolute;
+  width: 10%;
+  height: 100%;
+  top: 0;
+  z-index: 20;
+  cursor: pointer;
+  opacity: 0;
+  transition: 300ms;
+}
+
+.parallax-side-nav:hover {
+  opacity: 0.1;
+}
+
+.parallax-side-nav--right {
+  right: 0;
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgb(238, 215, 255) 100%);
+}
+
+.parallax-side-nav--left {
+  left: 0;
+  background-image: linear-gradient(to left, rgba(255, 255, 255, 0) 0%, rgb(238, 215, 255) 100%);
+}
+
+/* Compact Slider Styles for Hero Section */
+.parallax-slider-cont--compact {
+  height: 100vh;
+  width: 100%;
+  margin: 0 auto;
+  border-radius: 0;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  border: none;
+}
+
+.parallax-slider--compact {
+  height: 100%;
+  cursor: default;
+}
+
+.parallax-slide--compact .parallax-slide__letter {
+  font-size: 25vw;
+}
+
+.parallax-slide--compact .parallax-slide__text {
+  font-size: 4vw;
+  letter-spacing: 8px;
+}
+
+.parallax-slide--compact .parallax-slide__text--small {
+  font-size: 6vw;
+}
+
+.parallax-nav--compact {
+  bottom: 20px;
+}
+
+@media screen and (max-width: 768px) {
+  .parallax-slider-cont--compact {
+    height: 100vh;
+  }
+  
+  .parallax-slide--compact .parallax-slide__letter {
+    font-size: 30vw;
+  }
+  
+  .parallax-slide--compact .parallax-slide__text {
+    font-size: 5vw;
+    letter-spacing: 4px;
+  }
+  
+  .parallax-slide--compact .parallax-slide__text--small {
+    font-size: 7vw;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .parallax-slider-cont--compact {
+    height: 100vh;
+  }
+  
+  .parallax-slide--compact .parallax-slide__letter {
+    font-size: 35vw;
+  }
+  
+  .parallax-slide--compact .parallax-slide__text {
+    font-size: 6vw;
+    letter-spacing: 2px;
+  }
+}
