@@ -766,7 +766,7 @@ export default function AcademyPage() {
       </header>
 
       {/* Hero Section — Interactive 3D Robot */}
-      <section className="relative w-screen h-screen overflow-hidden">
+      <section className="relative w-screen h-screen overflow-hidden bg-black" style={{ backgroundColor: "#000000" }}>
         <InteractiveRobotSpline
           scene="https://prod.spline.design/PyzDhpQ9E5f1E3MT/scene.splinecode"
           className="absolute inset-0 z-0" 
@@ -838,8 +838,9 @@ export default function AcademyPage() {
       </section>
 
       {/* Learn & Get Knowledge Section (HeroSection) */}
-      <section id="learn" style={{ backgroundColor: "var(--bg-primary)" }}>
+      <section id="learn" style={{ backgroundColor: "#000000" }}>
         <HeroSection
+          className="!bg-black"
           title={
             <>
               A new way to learn <br /> & get knowledge
