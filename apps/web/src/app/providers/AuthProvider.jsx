@@ -189,6 +189,27 @@ export function AuthProvider({ children }) {
     setStatus("guest");
   }
 
+  function updateUser(updatedUser) {
+    setUser(updatedUser);
+    // Update in session storage
+    if (updatedUser) {
+      const stored = readStoredSession();
+      if (stored.token) {
+        saveSession({
+          token: stored.token,
+          role: stored.role,
+          permissions: stored.permissions,
+          user: updatedUser,
+          tenant: stored.tenant,
+          role: stored.role,
+          permissions: stored.permissions,
+          user: updatedUser,
+          tenant: stored.tenant,
+        });
+      }
+    }
+  }
+
   const value = useMemo(
     () => ({
       status,
@@ -200,6 +221,7 @@ export function AuthProvider({ children }) {
       tenant,
       login,
       logout,
+      updateUser,
     }),
     [status, token, role, permissions, permissionsLoading, user, tenant]
   );

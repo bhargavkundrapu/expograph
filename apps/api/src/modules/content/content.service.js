@@ -47,14 +47,30 @@ async function createModuleSmart({ tenantId, courseId, title, slug, position, cr
   throw new HttpError(500, "Could not create unique module slug");
 }
 
-async function createLessonSmart({ tenantId, moduleId, title, slug, summary, position, createdBy }) {
+async function createLessonSmart({ tenantId, moduleId, title, slug, summary, position, goal, video_url, prompts, success_image_url, pdf_url = null, createdBy }) {
   const base = slug ? slugify(slug) : slugify(title);
   if (!base) throw new HttpError(400, "Invalid title/slug");
+
+  const pdfUrl = pdf_url ?? null;
 
   for (let i = 0; i < 5; i++) {
     const candidate = i === 0 ? base : `${base}-${Math.random().toString(16).slice(2, 6)}`;
     try {
-      return await repo.createLesson({ tenantId, moduleId, title, slug: candidate, summary, position, status: "draft", createdBy });
+      return await repo.createLesson({ 
+        tenantId, 
+        moduleId, 
+        title, 
+        slug: candidate, 
+        summary, 
+        position, 
+        goal,
+        video_url,
+        prompts,
+        success_image_url,
+        pdf_url: pdfUrl,
+        status: "draft", 
+        createdBy 
+      });
     } catch (e) {
       if (isUniqueViolation(e)) continue;
       throw e;

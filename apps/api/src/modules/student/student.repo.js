@@ -3,8 +3,122 @@ const { query } = require("../../db/query");
 
 // Dashboard & Home
 async function getSchedule({ tenantId, userId }) {
-  // Mock implementation - replace with actual schedule logic
-  return [];
+  try {
+    // Get lessons from enrolled courses with progress
+    const lessonsResult = await query(
+      `SELECT 
+        l.id as lesson_id,
+        l.title as lesson_title,
+        l.slug as lesson_slug,
+        l.duration_seconds,
+        c.id as course_id,
+        c.title as course_title,
+        c.slug as course_slug,
+        cm.id as module_id,
+        cm.title as module_title,
+        cm.slug as module_slug,
+        cm.position as module_position,
+        l.position as lesson_position,
+        lp.completed_at,
+        lp.watch_seconds,
+        l.duration_seconds as total_duration
+      FROM courses c
+      JOIN course_modules cm ON cm.course_id = c.id AND cm.status = 'published'
+      JOIN lessons l ON l.module_id = cm.id AND l.status = 'published'
+      LEFT JOIN lesson_progress lp ON lp.lesson_id = l.id AND lp.user_id = $1
+      WHERE c.tenant_id = $2 AND c.status = 'published'
+      ORDER BY c.id, cm.position ASC, l.position ASC
+      LIMIT 20`,
+      [userId, tenantId]
+    );
+
+    // Get practice tasks from lessons
+    const practiceResult = await query(
+      `SELECT 
+        pt.id as task_id,
+        pt.title as task_title,
+        pt.lesson_id,
+        l.slug as lesson_slug,
+        c.slug as course_slug,
+        cm.slug as module_slug,
+        l.title as lesson_title,
+        s.id as submission_id,
+        s.status as submission_status,
+        s.attempt_no
+      FROM practice_tasks pt
+      JOIN lessons l ON l.id = pt.lesson_id AND l.tenant_id = pt.tenant_id
+      JOIN course_modules cm ON cm.id = l.module_id AND cm.tenant_id = l.tenant_id
+      JOIN courses c ON c.id = cm.course_id AND c.tenant_id = cm.tenant_id
+      LEFT JOIN submissions s ON s.task_id = pt.id AND s.user_id = $1
+      WHERE pt.tenant_id = $2 
+        AND c.status = 'published' 
+        AND cm.status = 'published' 
+        AND l.status = 'published'
+      ORDER BY c.id, cm.position ASC, l.position ASC, pt.sort_order ASC
+      LIMIT 20`,
+      [userId, tenantId]
+    );
+
+    const schedule = [];
+
+    // Process lessons
+    lessonsResult.rows.forEach((row) => {
+      const completed = !!row.completed_at;
+      const progress = completed ? 100 : (row.watch_seconds && row.total_duration 
+        ? Math.min(Math.round((row.watch_seconds / row.total_duration) * 100), 99)
+        : 0);
+      
+      const durationMins = row.duration_seconds ? Math.round(row.duration_seconds / 60) : 0;
+      const hours = Math.floor(durationMins / 60);
+      const mins = durationMins % 60;
+      const duration = hours > 0 ? `${hours} Hr ${mins} Mins` : `${mins} Mins`;
+
+      schedule.push({
+        id: `lesson_${row.lesson_id}`,
+        title: row.lesson_title,
+        activityType: "LEARNING",
+        progress: progress,
+        completed: completed ? 1 : 0,
+        total: 1,
+        duration: duration,
+        courseSlug: row.course_slug,
+        moduleSlug: row.module_slug,
+        lessonSlug: row.lesson_slug,
+        type: "lesson",
+        order: (row.module_position || 0) * 1000 + (row.lesson_position || 0),
+      });
+    });
+
+    // Process practice tasks
+    practiceResult.rows.forEach((row) => {
+      const completed = row.submission_status === 'approved' || row.submission_status === 'completed';
+      const progress = completed ? 100 : (row.submission_id ? 50 : 0);
+      
+      schedule.push({
+        id: `practice_${row.task_id}`,
+        title: row.task_title,
+        activityType: "PRACTICE",
+        progress: progress,
+        completed: completed ? 1 : 0,
+        total: 1,
+        duration: "25 Mins", // Default duration for practice tasks
+        courseSlug: row.course_slug,
+        moduleSlug: row.module_slug,
+        lessonSlug: row.lesson_slug,
+        taskId: row.task_id,
+        type: "practice",
+        order: schedule.length + 1, // Append after lessons
+      });
+    });
+
+    // Sort by order
+    schedule.sort((a, b) => a.order - b.order);
+
+    return schedule;
+  } catch (error) {
+    console.error("Error in getSchedule:", error);
+    return [];
+  }
 }
 
 async function getCurrentCourse({ tenantId, userId }) {
@@ -282,8 +396,13 @@ async function enhanceLessonWithData({ tenantId, userId, lesson, moduleLessons }
       title: lessonRow.lesson_title || lessonRow.title,
       slug: lessonRow.lesson_slug || lessonRow.slug,
       summary: lessonRow.summary,
+      goal: lessonRow.goal,
       video_provider: lessonRow.video_provider,
       video_id: lessonRow.video_id,
+      video_url: lessonRow.video_url,
+      prompts: lessonRow.prompts,
+      success_image_url: lessonRow.success_image_url,
+      pdf_url: lessonRow.pdf_url,
       duration_seconds: lessonRow.duration_seconds,
       completed,
     },

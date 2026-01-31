@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../../../app/providers/AuthProvider";
 import { apiFetch } from "../../../services/api";
-import { PageLoading, ButtonLoading } from "../../../Components/common/LoadingStates";
+import { GenericPageSkeleton } from "../../../Components/common/SkeletonLoaders";
+import { ButtonLoading } from "../../../Components/common/LoadingStates";
 import {
   FiHelpCircle,
   FiSearch,
@@ -232,7 +233,7 @@ export default function StudentQuestionBank() {
   };
 
   if (loading) {
-    return <PageLoading />;
+    return <GenericPageSkeleton />;
   }
 
   return (

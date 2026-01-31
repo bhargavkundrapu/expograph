@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useAuth } from "../../../app/providers/AuthProvider";
 import { apiFetch } from "../../../services/api";
-import { PageLoading } from "../../../Components/common/LoadingStates";
+import { GenericPageSkeleton } from "../../../Components/common/SkeletonLoaders";
 import {
   FiExternalLink,
   FiSearch,
@@ -299,7 +299,7 @@ export default function StudentExternalJobs() {
   };
 
   if (loading) {
-    return <PageLoading />;
+    return <GenericPageSkeleton />;
   }
 
   return (

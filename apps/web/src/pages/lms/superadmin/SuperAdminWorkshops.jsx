@@ -266,12 +266,46 @@ export default function SuperAdminWorkshops() {
     }
   };
 
+  const handleUpdateWorkshopStatus = async (workshopId, status) => {
+    try {
+      await apiFetch(`/api/v1/admin/workshops/${workshopId}`, {
+        method: "PATCH",
+        token,
+        body: { status },
+      });
+      await fetchWorkshops();
+      if (selectedWorkshop?.id === workshopId) {
+        setSelectedWorkshop({ ...selectedWorkshop, status });
+      }
+    } catch (error) {
+      alert(error?.message || "Failed to update workshop status");
+    }
+  };
+
+  const handleInlineEditWorkshop = async (workshopId, field, value) => {
+    try {
+      await apiFetch(`/api/v1/admin/workshops/${workshopId}`, {
+        method: "PATCH",
+        token,
+        body: { [field]: value },
+      });
+      await fetchWorkshops();
+      if (selectedWorkshop?.id === workshopId) {
+        setSelectedWorkshop({ ...selectedWorkshop, [field]: value });
+      }
+    } catch (error) {
+      alert(error?.message || "Failed to update workshop");
+    }
+  };
+
   const getStatusColor = (status) => {
     switch (status) {
       case "published":
         return "bg-emerald-100 text-emerald-700";
       case "draft":
         return "bg-slate-100 text-slate-700";
+      case "unpublished":
+        return "bg-red-100 text-red-700";
       case "cancelled":
         return "bg-red-100 text-red-700";
       case "completed":
@@ -460,33 +494,71 @@ export default function SuperAdminWorkshops() {
                         {workshop.title?.charAt(0)?.toUpperCase() || "W"}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h3 className="text-lg font-bold text-slate-900 truncate mb-1">
-                          {workshop.title || "Untitled Workshop"}
-                        </h3>
+                        <input
+                          type="text"
+                          value={workshop.title || ""}
+                          onChange={(e) => handleInlineEditWorkshop(workshop.id, "title", e.target.value)}
+                          onBlur={(e) => handleInlineEditWorkshop(workshop.id, "title", e.target.value)}
+                          className="text-lg font-bold text-slate-900 bg-transparent border-0 border-b-2 border-transparent hover:border-orange-300 focus:border-orange-500 focus:outline-none px-1 py-0.5 w-full mb-1"
+                          placeholder="Untitled Workshop"
+                        />
                         <div className="flex items-center gap-2 text-xs text-slate-500 mb-2">
                           {getModeIcon(workshop.mode)}
-                          <span className="capitalize">{workshop.mode}</span>
+                          <select
+                            value={workshop.mode || "offline"}
+                            onChange={(e) => handleInlineEditWorkshop(workshop.id, "mode", e.target.value)}
+                            className="capitalize bg-transparent border-0 text-xs text-slate-500 cursor-pointer focus:outline-none"
+                          >
+                            <option value="offline">Offline</option>
+                            <option value="online">Online</option>
+                            <option value="hybrid">Hybrid</option>
+                          </select>
                           {workshop.location && (
                             <>
                               <span>•</span>
-                              <span className="truncate">{workshop.location}</span>
+                              <input
+                                type="text"
+                                value={workshop.location || ""}
+                                onChange={(e) => handleInlineEditWorkshop(workshop.id, "location", e.target.value)}
+                                onBlur={(e) => handleInlineEditWorkshop(workshop.id, "location", e.target.value)}
+                                className="truncate bg-transparent border-0 border-b border-transparent hover:border-orange-300 focus:border-orange-500 focus:outline-none px-1 py-0 text-xs"
+                              />
                             </>
                           )}
                         </div>
                         {startsAt && (
                           <div className="flex items-center gap-1 text-xs text-slate-600">
                             <FiClock className="w-3 h-3" />
-                            <span>{startsAt.toLocaleDateString()} {startsAt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                            <input
+                              type="datetime-local"
+                              value={workshop.starts_at ? new Date(workshop.starts_at).toISOString().slice(0, 16) : ""}
+                              onChange={(e) => handleInlineEditWorkshop(workshop.id, "starts_at", e.target.value)}
+                              className="bg-transparent border-0 border-b border-transparent hover:border-orange-300 focus:border-orange-500 focus:outline-none px-1 py-0 text-xs"
+                            />
                           </div>
                         )}
                       </div>
                     </div>
-                    <div className="flex items-center justify-between mb-4">
-                      <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getStatusColor(workshop.status)}`}>
-                        {workshop.status}
-                      </span>
+                    <div className="flex items-center justify-between mb-4 gap-2">
+                      <select
+                        onChange={(e) => handleUpdateWorkshopStatus(workshop.id, e.target.value)}
+                        value={workshop.status || "draft"}
+                        className={`px-2 py-1 rounded-full text-xs font-semibold border-0 cursor-pointer focus:outline-none focus:ring-2 focus:ring-orange-500/50 ${getStatusColor(workshop.status)}`}
+                      >
+                        <option value="draft">Draft</option>
+                        <option value="published">Published</option>
+                        <option value="unpublished">Unpublished</option>
+                        <option value="cancelled">Cancelled</option>
+                        <option value="completed">Completed</option>
+                      </select>
                       {workshop.capacity > 0 && (
-                        <span className="text-xs text-slate-500">Capacity: {workshop.capacity}</span>
+                        <input
+                          type="number"
+                          value={workshop.capacity || 0}
+                          onChange={(e) => handleInlineEditWorkshop(workshop.id, "capacity", parseInt(e.target.value) || 0)}
+                          onBlur={(e) => handleInlineEditWorkshop(workshop.id, "capacity", parseInt(e.target.value) || 0)}
+                          className="text-xs text-slate-500 bg-transparent border-0 border-b border-transparent hover:border-orange-300 focus:border-orange-500 focus:outline-none px-1 py-0 w-20 text-right"
+                        />
                       )}
                     </div>
                     <div className="flex items-center gap-2">

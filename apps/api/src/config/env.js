@@ -16,14 +16,19 @@ const env = {
   PORT: Number(process.env.PORT ?? 4000),
 
   DATABASE_URL: (() => {
-    const url = process.env.DATABASE_URL;
+    let url = process.env.DATABASE_URL;
     if (!url || url.trim() === "" || url.includes("your_database_url") || url.includes("username:password") || url.includes("localhost:5432/database_name")) {
       console.error("\n\n🚨 ERROR: DATABASE_URL is missing or contains placeholder values!");
       console.error("Please create apps/api/.env file with a valid PostgreSQL connection string.");
       console.error("Example: DATABASE_URL=postgresql://username:password@localhost:5432/expograph\n\n");
       throw new Error("DATABASE_URL is missing or invalid. Please update apps/api/.env file.");
     }
-    return url.trim();
+    url = url.trim();
+    // Strip channel_binding - can cause ECONNRESET with pg over Neon
+    if (url.includes("channel_binding")) {
+      url = url.replace(/[?&]channel_binding=[^&]*/g, "").replace(/\?&/, "?");
+    }
+    return url;
   })(),
 
   JWT_SECRET: (() => {

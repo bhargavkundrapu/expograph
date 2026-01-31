@@ -31,6 +31,11 @@ import {
 } from "react-icons/fi";
 import "../../styles/academy-tokens.css";
 import "../../styles/parallax-slider.css";
+import IsoLevelWarp from "../../Components/ui/isometric-wave-grid-background";
+import { InteractiveRobotSpline } from "../../Components/ui/interactive-3d-robot";
+import HeroSection from "../../Components/ui/hero-section-9";
+import UiverseCard from "../../Components/ui/uiverse-card";
+import { FiUsers as Users, FiBriefcase as Briefcase, FiLink as LinkIcon } from "react-icons/fi";
 
 export default function AcademyPage() {
   const { token, role } = useAuth();
@@ -760,121 +765,130 @@ export default function AcademyPage() {
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section
-        style={{
-          padding: "120px 24px",
-          textAlign: "center",
-          backgroundColor: "var(--bg-primary)",
-        }}
-      >
-        <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            style={{
-              fontSize: "var(--font-size-4xl)",
-              fontWeight: "700",
-              color: "var(--text-secondary)",
-              marginBottom: "24px",
-              fontFamily: "var(--font-dm)",
-              lineHeight: "1.2",
-            }}
-          >
-            ExpoGraph
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            style={{
-              fontSize: "var(--font-size-xl)",
-              color: "rgba(255, 255, 255, 0.7)",
-              marginBottom: "40px",
-              maxWidth: "800px",
-              margin: "0 auto 40px",
-              lineHeight: "1.6",
-              fontFamily: "var(--font-dm)",
-            }}
-          >
-            A coding-focused academy engineered to drop into any dev workflow, answer faster and more reliably, and get programming tasks done in record time.
-          </motion.p>
-          
-          {/* Parallax Slider in Hero */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            style={{
-              marginTop: "60px",
-              marginBottom: "40px",
-            }}
-          >
-            <ParallaxSlider isCompact={true} />
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            style={{ display: "flex", gap: "16px", justifyContent: "center", flexWrap: "wrap" }}
-          >
-            <button
-              onClick={() => {
-                document.getElementById("courses-section")?.scrollIntoView({ behavior: "smooth" });
-              }}
-              style={{
-                padding: "12px 24px",
-                backgroundColor: "var(--bg-primary)",
-                color: "var(--text-secondary)",
-                border: "1px solid rgba(255, 255, 255, 0.2)",
-                borderRadius: "var(--radius-full)",
-                fontSize: "var(--font-size-base)",
-                fontFamily: "var(--font-dm)",
-                fontWeight: "600",
-                cursor: "pointer",
-                transition: "all 0.2s",
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.backgroundColor = "var(--bg-level-4)";
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.backgroundColor = "var(--bg-primary)";
-              }}
+      {/* Hero Section — Interactive 3D Robot */}
+      <section className="relative w-screen h-screen overflow-hidden">
+        <InteractiveRobotSpline
+          scene="https://prod.spline.design/PyzDhpQ9E5f1E3MT/scene.splinecode"
+          className="absolute inset-0 z-0" 
+        />
+
+        {/* Overlay Content — Left-aligned so heading sits beside the 3D visual, not on top */}
+        <div className="
+          absolute inset-0 z-10
+          flex items-start
+          pt-24 sm:pt-28 md:pt-32 lg:pt-36 xl:pt-40
+          px-6 sm:px-8 md:px-12 lg:px-16 xl:px-24
+          pointer-events-none
+        ">
+          {/* Left-side Text Block (max ~55% width so 3D has room) */}
+          <div className="
+            text-left
+            text-white
+            drop-shadow-lg
+            w-full max-w-xl lg:max-w-2xl
+            pr-4
+          ">
+            <motion.h1
+              initial={{ opacity: 0, x: -24 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              className="
+                text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl
+                font-bold
+                leading-tight
+                mb-6
+              "
+              style={{ fontFamily: '"Google Sans Flex", "Google Sans", sans-serif' }}
             >
-              Explore Courses
-            </button>
-            <button
-              onClick={() => {
+              Transform Your Career with ExpoGraph Academy
+            </motion.h1>
+
+            {/* Action Buttons */}
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+              className="flex gap-3 sm:gap-4 flex-wrap pointer-events-auto"
+            >
+              <button
+                onClick={() => {
+                  document.getElementById("courses-section")?.scrollIntoView({ behavior: "smooth" });
+                }}
+                className="px-6 py-3 bg-white/10 text-white border border-white/20 rounded-full text-base font-semibold cursor-pointer transition-all hover:bg-white/20"
+                style={{ fontFamily: "var(--font-dm)" }}
+              >
+                Explore Courses
+              </button>
+              <button
+                onClick={() => {
+                  if (token) {
+                    navigate("/lms/student/courses");
+                  } else {
+                    navigate("/login");
+                  }
+                }}
+                className="px-6 py-3 bg-white/20 text-white border-none rounded-full text-base font-semibold cursor-pointer transition-all hover:opacity-90"
+                style={{ fontFamily: "var(--font-dm)" }}
+              >
+                Get Started
+              </button>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Learn & Get Knowledge Section (HeroSection) */}
+      <section id="learn" style={{ backgroundColor: "var(--bg-primary)" }}>
+        <HeroSection
+          title={
+            <>
+              A new way to learn <br /> & get knowledge
+            </>
+          }
+          subtitle="ExpoGraph Academy is here for you with various courses & materials from skilled tutors all around the world."
+          actions={[
+            {
+              text: "Join the Class",
+              onClick: () => {
                 if (token) {
                   navigate("/lms/student/courses");
                 } else {
                   navigate("/login");
                 }
-              }}
-              style={{
-                padding: "12px 24px",
-                backgroundColor: "var(--bg-level-3)",
-                color: "var(--text-secondary)",
-                border: "none",
-                borderRadius: "var(--radius-full)",
-                fontSize: "var(--font-size-base)",
-                fontFamily: "var(--font-dm)",
-                fontWeight: "600",
-                cursor: "pointer",
-                transition: "all 0.2s",
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.opacity = "0.9";
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.opacity = "1";
-              }}
-            >
-              Get Started
-            </button>
-          </motion.div>
-        </div>
+              },
+              variant: "default",
+            },
+            {
+              text: "Learn more",
+              onClick: () => {
+                document.getElementById("features")?.scrollIntoView({ behavior: "smooth" });
+              },
+              variant: "outline",
+            },
+          ]}
+          stats={[
+            {
+              value: "15,2K",
+              label: "Active students",
+              icon: <Users className="h-5 w-5 text-muted-foreground" />,
+            },
+            {
+              value: "4,5K",
+              label: "Tutors",
+              icon: <Briefcase className="h-5 w-5 text-muted-foreground" />,
+            },
+            {
+              value: "Resources",
+              label: "",
+              icon: <LinkIcon className="h-5 w-5 text-muted-foreground" />,
+            },
+          ]}
+          images={[
+            "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=2071&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1543269865-cbf427effbad?q=80&w=2070&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=2070&auto=format&fit=crop",
+          ]}
+        />
       </section>
 
       {/* One Subscription Section */}
@@ -1629,6 +1643,17 @@ export default function AcademyPage() {
             </button>
           </form>
         </div>
+      </section>
+
+      {/* Social / Connect section — before footer (UIVERSE 3D UI card), fits viewport */}
+      <section
+        style={{
+          minHeight: "100vh",
+          backgroundColor: "#000000",
+          borderTop: "1px solid rgba(255, 255, 255, 0.08)",
+        }}
+      >
+        <UiverseCard />
       </section>
 
       {/* Footer */}

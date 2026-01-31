@@ -18,6 +18,17 @@ async function listCoursesAdmin({ tenantId }) {
      ORDER BY created_at DESC`,
     [tenantId]
   );
+  if (rows.length === 0) return rows;
+  const courseIds = rows.map(r => r.id);
+  const { rows: counts } = await query(
+    `SELECT course_id, COUNT(*)::int AS module_count
+     FROM course_modules
+     WHERE tenant_id = $1 AND course_id = ANY($2::uuid[])
+     GROUP BY course_id`,
+    [tenantId, courseIds]
+  );
+  const countByCourse = Object.fromEntries((counts || []).map(c => [c.course_id, c.module_count]));
+  rows.forEach(c => { c.module_count = countByCourse[c.id] ?? 0; });
   return rows;
 }
 
@@ -52,12 +63,27 @@ async function createModule({ tenantId, courseId, title, slug, position, status,
   return rows[0];
 }
 
-async function createLesson({ tenantId, moduleId, title, slug, summary, position, status, createdBy }) {
+async function createLesson({ tenantId, moduleId, title, slug, summary, position, goal, video_url, prompts, success_image_url, pdf_url = null, status, createdBy }) {
+  const pdfUrlValue = pdf_url ?? null;
   const { rows } = await query(
-    `INSERT INTO lessons (tenant_id, module_id, title, slug, summary, position, status, created_by)
-     VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
+    `INSERT INTO lessons (tenant_id, module_id, title, slug, summary, position, goal, video_url, prompts, success_image_url, pdf_url, status, created_by)
+     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)
      RETURNING *`,
-    [tenantId, moduleId, title, slug, summary ?? null, position ?? 0, status ?? "draft", createdBy ?? null]
+    [
+      tenantId, 
+      moduleId, 
+      title, 
+      slug, 
+      summary ?? null, 
+      position ?? 0, 
+      goal ?? null,
+      video_url ?? null,
+      prompts ? JSON.stringify(prompts) : null,
+      success_image_url ?? null,
+      pdfUrlValue,
+      status ?? "draft", 
+      createdBy ?? null
+    ]
   );
   return rows[0];
 }
@@ -136,9 +162,32 @@ async function getCourseTreeAdmin({ tenantId, courseId }) {
   let lessons = [];
   if (moduleIds.length) {
     lessons = (await query(
-      `SELECT * FROM lessons WHERE tenant_id=$1 AND module_id = ANY($2::uuid[]) ORDER BY position ASC, created_at ASC`,
+      `SELECT id, module_id, title, slug, summary, position, goal, video_url, prompts, success_image_url, pdf_url, video_provider, video_id, duration_seconds, status, created_at, updated_at FROM lessons WHERE tenant_id=$1 AND module_id = ANY($2::uuid[]) ORDER BY position ASC, created_at ASC`,
       [tenantId, moduleIds]
     )).rows;
+
+    // Parse prompts JSONB for each lesson
+    lessons = lessons.map(lesson => {
+      if (lesson.prompts && typeof lesson.prompts === 'string') {
+        try {
+          lesson.prompts = JSON.parse(lesson.prompts);
+        } catch (e) {
+          lesson.prompts = null;
+        }
+      }
+      return lesson;
+    });
+
+    // Attach lessons to each module for frontend
+    const lessonsByModule = new Map();
+    for (const l of lessons) {
+      const key = String(l.module_id);
+      if (!lessonsByModule.has(key)) lessonsByModule.set(key, []);
+      lessonsByModule.get(key).push(l);
+    }
+    for (const m of modules) {
+      m.lessons = lessonsByModule.get(String(m.id)) || [];
+    }
   }
 
   return { course, modules, lessons };
@@ -166,13 +215,25 @@ async function getPublishedCourseTreeBySlug({ tenantId, courseSlug }) {
   let lessons = [];
   if (moduleIds.length) {
     lessons = (await query(
-      `SELECT id, module_id, title, slug, summary, position
+      `SELECT id, module_id, title, slug, summary, position, goal, video_url, prompts, success_image_url, pdf_url
        FROM lessons
        WHERE tenant_id=$1 AND module_id = ANY($2::uuid[]) AND status='published'
        ORDER BY position ASC, created_at ASC`,
       [tenantId, moduleIds]
     )).rows;
   }
+
+  // Parse prompts JSONB for each lesson
+  lessons = lessons.map(lesson => {
+    if (lesson.prompts && typeof lesson.prompts === 'string') {
+      try {
+        lesson.prompts = JSON.parse(lesson.prompts);
+      } catch (e) {
+        lesson.prompts = null;
+      }
+    }
+    return lesson;
+  });
 
   // Group lessons by module_id
   const lessonsByModule = new Map();
@@ -199,7 +260,8 @@ async function getPublishedLessonBySlugs({ tenantId, courseSlug, moduleSlug, les
         c.id AS course_id, c.title AS course_title, c.slug AS course_slug,
         m.id AS module_id, m.title AS module_title, m.slug AS module_slug,
         l.id AS lesson_id, l.title AS lesson_title, l.slug AS lesson_slug, l.summary,
-        l.video_provider, l.video_id, l.duration_seconds
+        l.video_provider, l.video_id, l.duration_seconds,
+        l.goal, l.video_url, l.prompts, l.success_image_url, l.pdf_url
      FROM courses c
      JOIN course_modules m ON m.course_id = c.id AND m.tenant_id = c.tenant_id
      JOIN lessons l ON l.module_id = m.id AND l.tenant_id = m.tenant_id
@@ -213,6 +275,15 @@ async function getPublishedLessonBySlugs({ tenantId, courseSlug, moduleSlug, les
 
   const row = rows[0] ?? null;
   if (!row) return null;
+
+  // Parse prompts JSONB if it exists
+  if (row.prompts && typeof row.prompts === 'string') {
+    try {
+      row.prompts = JSON.parse(row.prompts);
+    } catch (e) {
+      row.prompts = null;
+    }
+  }
 
   const resources = (await query(
     `SELECT id, type, title, url, body, sort_order
@@ -302,6 +373,11 @@ async function updateLesson({ tenantId, lessonId, patch, updatedBy }) {
   if (patch.position !== undefined) { fields.push(`position=$${i++}`); values.push(patch.position); }
   if (patch.video_provider !== undefined) { fields.push(`video_provider=$${i++}`); values.push(patch.video_provider); }
   if (patch.video_id !== undefined) { fields.push(`video_id=$${i++}`); values.push(patch.video_id); }
+  if (patch.goal !== undefined) { fields.push(`goal=$${i++}`); values.push(patch.goal || null); }
+  if (patch.video_url !== undefined) { fields.push(`video_url=$${i++}`); values.push(patch.video_url || null); }
+  if (patch.prompts !== undefined) { fields.push(`prompts=$${i++}`); values.push(patch.prompts ? JSON.stringify(patch.prompts) : null); }
+  if (patch.success_image_url !== undefined) { fields.push(`success_image_url=$${i++}`); values.push(patch.success_image_url || null); }
+  if (patch.pdf_url !== undefined) { fields.push(`pdf_url=$${i++}`); values.push(patch.pdf_url || null); }
 
 
 

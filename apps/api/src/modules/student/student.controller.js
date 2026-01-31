@@ -4,6 +4,7 @@ const { HttpError } = require("../../utils/httpError");
 const repo = require("./student.repo");
 const contentRepo = require("../content/content.repo");
 const progressRepo = require("../progress/progress.repo");
+const usersRepo = require("../users/users.repo");
 const { query } = require("../../db/query");
 const z = require("zod");
 
@@ -20,6 +21,12 @@ const ReplySchema = z.object({
 const BookmarkSchema = z.object({
   type: z.enum(["mcq", "practice", "lesson", "discussion"]),
   item_id: z.string().uuid(),
+});
+
+const UpdateProfileSchema = z.object({
+  fullName: z.string().min(1).optional(),
+  email: z.string().email().optional(),
+  phone: z.string().optional(),
 });
 
 // Dashboard & Home
@@ -229,6 +236,47 @@ const deleteBookmark = asyncHandler(async (req, res) => {
   res.json({ ok: true });
 });
 
+// Profile
+const updateProfile = asyncHandler(async (req, res) => {
+  const { userId } = req.auth;
+  const parsed = UpdateProfileSchema.safeParse(req.body);
+  
+  if (!parsed.success) {
+    throw new HttpError(400, "Invalid input", parsed.error.flatten());
+  }
+  
+  // Check email uniqueness if updating email
+  if (parsed.data.email) {
+    const existing = await usersRepo.findUserByEmail(parsed.data.email);
+    if (existing && existing.id !== userId) {
+      throw new HttpError(409, "Email already in use");
+    }
+  }
+  
+  const updated = await usersRepo.updateStudentDetails({
+    userId,
+    fullName: parsed.data.fullName,
+    email: parsed.data.email,
+    phone: parsed.data.phone,
+  });
+  
+  if (!updated) {
+    throw new HttpError(404, "User not found");
+  }
+  
+  // Return updated user data in the format expected by frontend
+  res.json({
+    ok: true,
+    data: {
+      id: updated.id,
+      email: updated.email,
+      fullName: updated.full_name, // Convert snake_case to camelCase
+      full_name: updated.full_name, // Keep both for compatibility
+      phone: updated.phone || null,
+    },
+  });
+});
+
 module.exports = {
   getSchedule,
   getCurrentCourse,
@@ -246,4 +294,5 @@ module.exports = {
   listBookmarks,
   createBookmark,
   deleteBookmark,
+  updateProfile,
 };

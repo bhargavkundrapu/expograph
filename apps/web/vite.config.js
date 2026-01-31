@@ -17,6 +17,11 @@ export default defineConfig({
       usePolling: false,
       interval: 100,
     },
+    hmr: {
+      protocol: 'ws',
+      host: 'localhost',
+      port: 5173,
+    },
   },
   resolve: {
     alias: {
@@ -29,5 +34,9 @@ export default defineConfig({
       '@/contexts': path.resolve(__dirname, './src/contexts'),
       '@/lib': path.resolve(__dirname, './src/lib'),
     },
+  },
+  optimizeDeps: {
+    include: ['@splinetool/react-spline'],
+    force: true, // Force re-optimization on next start
   },
 })

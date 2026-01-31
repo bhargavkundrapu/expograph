@@ -16,7 +16,8 @@ CREATE TABLE IF NOT EXISTS discussions (
 );
 
 CREATE INDEX IF NOT EXISTS discussions_tenant_idx ON discussions(tenant_id, created_at DESC);
-CREATE INDEX IF NOT EXISTS discussions_author_idx ON discussions(tenant_id, author_id);
+CREATE INDEX IF NOT EXISTS discussions_author_idx ON di
+scussions(tenant_id, author_id);
 
 -- Discussion replies
 CREATE TABLE IF NOT EXISTS discussion_replies (

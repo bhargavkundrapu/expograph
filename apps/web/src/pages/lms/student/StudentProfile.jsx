@@ -1,22 +1,71 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useAuth } from "../../../app/providers/AuthProvider";
+import { apiFetch } from "../../../services/api";
 import { FiUser, FiMail, FiPhone, FiEdit, FiSave, FiX } from "react-icons/fi";
 
 export default function StudentProfile() {
-  const { user } = useAuth();
+  const { user, token, updateUser } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState({
-    full_name: user?.full_name || "",
+    fullName: user?.fullName || user?.full_name || "",
     email: user?.email || "",
     phone: user?.phone || "",
     bio: user?.bio || "",
   });
 
+  // Update form data when user changes
+  useEffect(() => {
+    setFormData({
+      fullName: user?.fullName || user?.full_name || "",
+      email: user?.email || "",
+      phone: user?.phone || "",
+      bio: user?.bio || "",
+    });
+  }, [user]);
+
   const handleSave = async () => {
-    // Mock save - replace with actual API call
-    alert("Profile updated successfully!");
-    setIsEditing(false);
+    if (!token) return;
+    
+    try {
+      setSaving(true);
+      const response = await apiFetch("/api/v1/student/profile", {
+        token,
+        method: "PATCH",
+        body: {
+          fullName: formData.fullName,
+          email: formData.email,
+          phone: formData.phone || undefined,
+        },
+      });
+      
+      if (response?.data) {
+        // Update user in AuthProvider
+        if (updateUser) {
+          updateUser({
+            ...user,
+            fullName: response.data.fullName || response.data.full_name,
+            full_name: response.data.fullName || response.data.full_name,
+            email: response.data.email,
+            phone: response.data.phone,
+          });
+        }
+        setIsEditing(false);
+        // Update formData to reflect saved changes
+        setFormData({
+          fullName: response.data.fullName || response.data.full_name || "",
+          email: response.data.email || "",
+          phone: response.data.phone || "",
+          bio: formData.bio, // Keep bio as is since it's not updated
+        });
+      }
+    } catch (error) {
+      console.error("Failed to update profile:", error);
+      alert(error?.message || "Failed to update profile. Please try again.");
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -50,10 +99,11 @@ export default function StudentProfile() {
                 </button>
                 <button
                   onClick={handleSave}
-                  className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-semibold rounded-md hover:from-cyan-600 hover:to-blue-600 transition-all flex items-center gap-2"
+                  disabled={saving}
+                  className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-semibold rounded-md hover:from-cyan-600 hover:to-blue-600 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <FiSave className="w-5 h-5" />
-                  Save
+                  {saving ? "Saving..." : "Save"}
                 </button>
               </div>
             )}
@@ -62,10 +112,10 @@ export default function StudentProfile() {
           <div className="space-y-6">
             <div className="flex items-center gap-6">
               <div className="w-24 h-24 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-full flex items-center justify-center text-white text-3xl font-bold">
-                {user?.full_name?.charAt(0) || user?.name?.charAt(0) || "U"}
+                {(user?.fullName || user?.full_name || user?.name || "U")?.charAt(0)?.toUpperCase()}
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-slate-800">{user?.full_name || user?.name || "Student"}</h2>
+                <h2 className="text-2xl font-bold text-slate-800">{user?.fullName || user?.full_name || user?.name || "Student"}</h2>
                 <p className="text-slate-600">{user?.email}</p>
               </div>
             </div>
@@ -76,12 +126,12 @@ export default function StudentProfile() {
                 {isEditing ? (
                   <input
                     type="text"
-                    value={formData.full_name}
-                    onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
+                    value={formData.fullName}
+                    onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                     className="w-full px-4 py-3 bg-gradient-to-r from-cyan-50 to-blue-50 border-2 border-cyan-200 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-400"
                   />
                 ) : (
-                  <p className="px-4 py-3 bg-slate-50 rounded-md text-slate-800">{formData.full_name || "Not set"}</p>
+                  <p className="px-4 py-3 bg-slate-50 rounded-md text-slate-800">{formData.fullName || "Not set"}</p>
                 )}
               </div>
 

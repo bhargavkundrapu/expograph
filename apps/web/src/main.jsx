@@ -5,22 +5,52 @@ import * as Sentry from "@sentry/react";
 import "./index.css";
 import App from "./App.jsx";
 
-// Suppress harmless console errors from third-party services
-// Note: Network tab 404s/500s from Cloudflare Stream analytics and Sentry can't be suppressed via JavaScript,
-// but they're harmless and don't affect functionality. This handler suppresses console.error calls related to these.
+// Suppress harmless console errors from third-party services and browser extensions
 const originalError = console.error;
 console.error = (...args) => {
   const message = String(args[0] || '');
   // Suppress Cloudflare Stream analytics beacon errors
   if (message.includes('cloudflarestream.com') && (message.includes('beacon') || message.includes('404'))) {
-    return; // Silently ignore these harmless analytics errors
+    return;
   }
   // Suppress Sentry/Cloudflare Dash errors (harmless reporting failures)
   if (message.includes('sentry') || message.includes('platform.dash.cloudflare.com')) {
-    return; // Silently ignore Sentry reporting errors
+    return;
+  }
+  // Suppress Chrome extension messaging errors (e.g. "message channel closed before response")
+  if (message.includes('asynchronous response') && message.includes('message channel closed')) {
+    return;
   }
   originalError.apply(console, args);
 };
+
+// Suppress Spline 3D library internal logs (e.g. "updating from 115 to 121", "H0", "BV", etc.)
+function isSplineNoise(args) {
+  const full = args.map((a) => (typeof a === 'object' ? JSON.stringify(a) : String(a))).join(' ');
+  if (full.includes('updating from')) return true;
+  if (args.length === 1) {
+    const a = String(args[0]).trim();
+    if (['H0', 'BV', 'start', 'load', 't'].includes(a)) return true;
+  }
+  return false;
+}
+const originalLog = console.log;
+const originalInfo = console.info;
+const originalDebug = console.debug;
+const originalWarn = console.warn;
+console.log = (...args) => { if (!isSplineNoise(args)) originalLog.apply(console, args); };
+console.info = (...args) => { if (!isSplineNoise(args)) originalInfo.apply(console, args); };
+console.debug = (...args) => { if (!isSplineNoise(args)) originalDebug.apply(console, args); };
+console.warn = (...args) => { if (!isSplineNoise(args)) originalWarn.apply(console, args); };
+
+// Suppress unhandled promise rejections from browser extensions (e.g. React DevTools, ad blockers)
+window.addEventListener('unhandledrejection', (event) => {
+  const msg = event.reason?.message ?? String(event.reason ?? '');
+  if (msg.includes('asynchronous response') && msg.includes('message channel closed')) {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+});
 
 const SENTRY_DSN = import.meta.env.VITE_SENTRY_DSN;
 

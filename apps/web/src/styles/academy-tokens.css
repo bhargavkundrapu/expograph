@@ -33,6 +33,7 @@
   --font-times: "Times New Roman", serif;
   --font-apple-system: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-dm: "DM Sans", sans-serif;
+  --font-google-sans: "Google Sans Flex", "Google Sans", sans-serif;
   --font-jetbrains: "JetBrains Mono", monospace;
 
   /* Font Sizes */
@@ -55,4 +56,24 @@
 
   /* ===== Shadows ===== */
   --shadow-sm: rgba(0, 0, 0, 0.3) 0px 4px 12px 0px;
+
+  /* ===== shadcn/ui semantic tokens (for Components/ui) ===== */
+  --background: var(--bg-primary);
+  --foreground: var(--text-secondary);
+  --card: var(--bg-level-4);
+  --card-foreground: var(--text-secondary);
+  --primary: var(--bg-level-3);
+  --primary-foreground: #ffffff;
+  --secondary: var(--bg-level-4);
+  --secondary-foreground: var(--text-secondary);
+  --muted: var(--bg-level-4);
+  --muted-foreground: rgba(255, 255, 255, 0.7);
+  --accent: var(--bg-level-5);
+  --accent-foreground: var(--text-secondary);
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --border: rgba(255, 255, 255, 0.1);
+  --input: rgba(255, 255, 255, 0.1);
+  --ring: var(--bg-level-3);
+  --radius: var(--radius-md);
 }

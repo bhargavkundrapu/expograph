@@ -1,1014 +1,1400 @@
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../../app/providers/AuthProvider";
 import { apiFetch } from "../../../services/api";
-import { PageLoading, ButtonLoading } from "../../../Components/common/LoadingStates";
+import { ButtonLoading } from "../../../Components/common/LoadingStates";
 import {
   FiBook,
   FiPlus,
-  FiSearch,
   FiEdit2,
-  FiEye,
-  FiX,
-  FiSave,
   FiTrash2,
-  FiChevronRight,
-  FiChevronDown,
-  FiVideo,
+  FiEye,
+  FiEyeOff,
   FiFileText,
-  FiCode,
-  FiHelpCircle,
-  FiImage,
-  FiPlay,
-  FiCheck,
+  FiChevronRight,
   FiArrowLeft,
+  FiCheck,
+  FiX,
+  FiMoreVertical,
+  FiGlobe,
+  FiCode,
+  FiSave,
 } from "react-icons/fi";
 
 export default function SuperAdminCourses() {
   const { token } = useAuth();
   const navigate = useNavigate();
-  const params = useParams();
-  const location = useLocation();
+  const { courseId, moduleId, lessonId } = useParams();
   
-  // Determine view from route
-  const getViewFromPath = () => {
-    const path = location.pathname;
-    const { courseId, moduleId, lessonId } = params;
-    
-    if (lessonId) {
-      if (path.includes("/edit")) return "lesson-edit";
-      return "lesson";
-    }
-    if (moduleId) return "module";
-    if (courseId) return "course";
-    if (path.includes("/create")) return "create";
-    if (path.includes("/list")) return "list";
-    if (path.includes("/cards")) return "cards";
-    return "cards"; // default
-  };
-  
-  const view = getViewFromPath();
-  const [courses, setCourses] = useState([]);
-  const [filteredCourses, setFilteredCourses] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCourse, setSelectedCourse] = useState(null);
-  const [selectedModule, setSelectedModule] = useState(null);
-  const [selectedLesson, setSelectedLesson] = useState(null);
-  const [expandedModules, setExpandedModules] = useState(new Set());
+  const [courses, setCourses] = useState([]);
+  const [modules, setModules] = useState([]);
+  const [lessons, setLessons] = useState([]);
+  const [course, setCourse] = useState(null);
+  const [module, setModule] = useState(null);
   const [saving, setSaving] = useState(false);
-
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(null);
+  const [filterLevel, setFilterLevel] = useState("all");
+  
   // Form states
-  const [courseForm, setCourseForm] = useState({ title: "", description: "", level: "" });
+  const [showCourseForm, setShowCourseForm] = useState(false);
+  const [showModuleForm, setShowModuleForm] = useState(false);
+  const [showEditCourseModal, setShowEditCourseModal] = useState(false);
+  const [showEditModuleModal, setShowEditModuleModal] = useState(false);
+  const [editingCourse, setEditingCourse] = useState(null);
+  const [editingModule, setEditingModule] = useState(null);
+  const [courseForm, setCourseForm] = useState({ title: "", description: "", level: "beginner" });
   const [moduleForm, setModuleForm] = useState({ title: "" });
-  const [lessonForm, setLessonForm] = useState({ title: "", summary: "" });
-  const [lessonDetails, setLessonDetails] = useState({
-    videoProvider: "",
-    videoId: "",
-    videoUrl: "",
-    lessonContent: "",
-    cheatsheets: [],
-    practices: [],
-    mcqs: [],
-    slides: [],
-  });
+  const [courseEditForm, setCourseEditForm] = useState({ title: "", description: "", level: "beginner" });
+  const [moduleEditForm, setModuleEditForm] = useState({ title: "" });
+
+  // Determine current view
+  const getCurrentView = () => {
+    const path = window.location.pathname;
+    if (lessonId) return "lesson";
+    if (moduleId && path.includes("/modules/") && !path.includes("/lessons/create") && !(path.includes("/lessons/") && path.includes("/edit"))) return "modules";
+    if (courseId && path.includes("/courses/") && !path.includes("/modules/")) return "course";
+    if (path.includes("/list")) return "course-list";
+    return "main";
+  };
+
+  const view = getCurrentView();
+
+  // Filter courses by level (for course-list view)
+  const filteredCourses =
+    filterLevel === "all"
+      ? courses
+      : courses.filter((c) => (c.level || "beginner") === filterLevel);
+
+  useEffect(() => {
+    if (!token) return;
+    
+    if (view === "main" || view === "course-list") {
+      fetchCourses();
+    } else if (view === "course" && courseId) {
+      fetchCourseModules();
+    } else if (view === "modules" && courseId && moduleId) {
+      fetchModuleLessons();
+    }
+  }, [token, view, courseId, moduleId]);
 
   const fetchCourses = async () => {
     try {
       setLoading(true);
       const res = await apiFetch("/api/v1/admin/courses", { token });
-      
-      // Handle both response formats: { ok: true, data: [...] } or direct array
-      if (res?.ok && res?.data) {
-        setCourses(Array.isArray(res.data) ? res.data : []);
-      } else if (Array.isArray(res)) {
-        setCourses(res);
-      } else {
-        setCourses([]);
-      }
+      setCourses(Array.isArray(res?.data) ? res.data : []);
     } catch (error) {
-      // Don't show alert for permission errors, just log
-      if (error?.status !== 403) {
-        console.error("Failed to fetch courses:", error);
-      }
+      console.error("Failed to fetch courses:", error);
       setCourses([]);
     } finally {
       setLoading(false);
     }
   };
 
-  // Fetch courses
-  useEffect(() => {
-    if (!token) return;
-    fetchCourses();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token]);
-
-  // Filter courses
-  useEffect(() => {
-    if (!searchQuery.trim()) {
-      setFilteredCourses(courses);
-    } else {
-      const filtered = courses.filter(
-        (course) =>
-          course.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          course.description?.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-      setFilteredCourses(filtered);
+  const fetchCourseModules = async () => {
+    try {
+      setLoading(true);
+      const res = await apiFetch(`/api/v1/admin/courses/${courseId}/tree`, { token });
+      const tree = res?.data ?? res ?? {};
+      setCourse(tree.course ?? tree);
+      setModules(Array.isArray(tree.modules) ? tree.modules : []);
+    } catch (error) {
+      console.error("Failed to fetch course modules:", error);
+    } finally {
+      setLoading(false);
     }
-  }, [searchQuery, courses]);
+  };
 
-  // Load course/module/lesson data when route params change
-  useEffect(() => {
-    if (!token || !params.courseId || courses.length === 0) return;
+  const fetchModuleLessons = async () => {
+    try {
+      setLoading(true);
+      const res = await apiFetch(`/api/v1/admin/courses/${courseId}/tree`, { token });
+      const tree = res?.data ?? res ?? {};
+      setCourse(tree.course ?? tree);
+      const mods = Array.isArray(tree.modules) ? tree.modules : [];
+      const foundModule = mods.find(m => String(m.id) === String(moduleId));
+      setModule(foundModule ?? null);
+      setLessons(Array.isArray(foundModule?.lessons) ? foundModule.lessons : []);
+    } catch (error) {
+      console.error("Failed to fetch module lessons:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    const loadCourseData = async () => {
-      const course = courses.find((c) => String(c.id) === String(params.courseId));
-      if (!course) return;
-
-      if (params.moduleId) {
-        // Loading module view
-        const tree = await fetchCourseTree(course.id);
-        if (tree) {
-          const module = tree.modules?.find((m) => String(m.id) === String(params.moduleId));
-          if (module) {
-            const moduleLessons = tree.lessons?.filter((l) => String(l.module_id) === String(params.moduleId)) || [];
-            setSelectedCourse({ ...course, modules: tree.modules || [], lessons: tree.lessons || [] });
-            setSelectedModule({ ...module, lessons: moduleLessons });
-            
-            if (params.lessonId) {
-              // Loading lesson view
-              const lesson = moduleLessons.find((l) => String(l.id) === String(params.lessonId));
-              if (lesson) {
-                await openLesson(lesson);
-              }
+  const fetchLesson = async () => {
+    try {
+      setLoading(true);
+      const treeRes = await apiFetch(`/api/v1/admin/courses/${courseId}/tree`, { token });
+      if (treeRes?.data) {
+        setCourse(treeRes.data.course || treeRes.data);
+        const foundModule = treeRes.data.modules?.find(m => String(m.id) === String(moduleId));
+        setModule(foundModule);
+        const foundLesson = foundModule?.lessons?.find(l => String(l.id) === String(lessonId));
+        if (foundLesson) {
+          // Parse prompts if it's a string
+          if (foundLesson.prompts && typeof foundLesson.prompts === 'string') {
+            try {
+              foundLesson.prompts = JSON.parse(foundLesson.prompts);
+            } catch (e) {
+              foundLesson.prompts = null;
             }
           }
+          setLesson(foundLesson);
         }
-      } else if (view === "course" || view === "create") {
-        // Just course view - load course tree
-        const tree = await fetchCourseTree(course.id);
-        if (tree) {
-          setSelectedCourse({ ...course, modules: tree.modules || [], lessons: tree.lessons || [] });
-        }
-      }
-    };
-
-    loadCourseData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [params.courseId, params.moduleId, params.lessonId, courses.length, view, token]);
-
-  const fetchCourseTree = async (courseId) => {
-    try {
-      const res = await apiFetch(`/api/v1/admin/courses/${courseId}/tree`, { token });
-      if (res?.ok) {
-        return res.data;
       }
     } catch (error) {
-      console.error("Failed to fetch course tree:", error);
+      console.error("Failed to fetch lesson:", error);
+    } finally {
+      setLoading(false);
     }
-    return null;
   };
 
   const handleCreateCourse = async () => {
-    if (!courseForm.title) {
+    if (!courseForm.title.trim()) {
       alert("Course title is required");
       return;
     }
-
     try {
       setSaving(true);
       const res = await apiFetch("/api/v1/admin/courses", {
         method: "POST",
         token,
-        body: courseForm,
+        body: { title: courseForm.title.trim(), description: courseForm.description?.trim() || undefined, level: courseForm.level },
       });
-
-      if (res?.ok) {
+      if (res && (res.ok === true || res.data?.id)) {
+        setShowCourseForm(false);
+        setCourseForm({ title: "", description: "", level: "beginner" });
         await fetchCourses();
-        navigate("/lms/superadmin/courses/list");
-        setCourseForm({ title: "", description: "", level: "" });
+      } else {
+        alert(res?.error || "Failed to create course");
       }
     } catch (error) {
-      alert(error?.message || "Failed to create course");
+      console.error("Failed to create course:", error);
+      alert(error?.message || error?.payload?.error || "Failed to create course");
     } finally {
       setSaving(false);
     }
   };
 
   const handleCreateModule = async () => {
-    if (!moduleForm.title || !selectedCourse) {
+    if (!moduleForm.title.trim()) {
       alert("Module title is required");
       return;
     }
-
     try {
       setSaving(true);
-      const res = await apiFetch(`/api/v1/admin/courses/${selectedCourse.id}/modules`, {
+      const res = await apiFetch(`/api/v1/admin/courses/${courseId}/modules`, {
         method: "POST",
         token,
-        body: moduleForm,
+        body: { title: moduleForm.title.trim() },
       });
-
-      if (res?.ok) {
-        const tree = await fetchCourseTree(selectedCourse.id);
-        if (tree) {
-          setSelectedCourse({ ...selectedCourse, modules: tree.modules, lessons: tree.lessons });
-        }
+      if (res && (res.ok === true || res.data?.id)) {
+        setShowModuleForm(false);
         setModuleForm({ title: "" });
+        await fetchCourseModules();
+      } else {
+        alert(res?.error || "Failed to create module");
       }
     } catch (error) {
-      alert(error?.message || "Failed to create module");
+      console.error("Failed to create module:", error);
+      alert(error?.message || error?.payload?.error || "Failed to create module");
     } finally {
       setSaving(false);
     }
   };
 
-  const handleCreateLesson = async () => {
-    if (!lessonForm.title || !selectedModule) {
-      alert("Lesson title is required");
+  const openEditCourse = (c) => {
+    setEditingCourse(c);
+    setCourseEditForm({
+      title: c.title || "",
+      description: c.description || "",
+      level: c.level || "beginner",
+    });
+    setShowEditCourseModal(true);
+    setShowDeleteConfirm(null);
+  };
+
+  const handleUpdateCourse = async () => {
+    if (!editingCourse?.id || !courseEditForm.title.trim()) {
+      alert("Course title is required");
       return;
     }
-
     try {
       setSaving(true);
-      const res = await apiFetch(`/api/v1/admin/modules/${selectedModule.id}/lessons`, {
-        method: "POST",
-        token,
-        body: lessonForm,
-      });
-
-      if (res?.ok) {
-        const tree = await fetchCourseTree(selectedCourse.id);
-        if (tree) {
-          setSelectedCourse({ ...selectedCourse, modules: tree.modules, lessons: tree.lessons });
-        }
-        setLessonForm({ title: "", summary: "" });
-        navigate(`/lms/superadmin/courses/${selectedCourse.id}/modules/${module.id}`);
-      }
-    } catch (error) {
-      alert(error?.message || "Failed to create lesson");
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const handleSaveLessonDetails = async () => {
-    if (!selectedLesson) return;
-
-    try {
-      setSaving(true);
-      // Update lesson basic info
-      await apiFetch(`/api/v1/admin/lessons/${selectedLesson.id}`, {
+      const res = await apiFetch(`/api/v1/admin/courses/${editingCourse.id}`, {
         method: "PATCH",
         token,
         body: {
-          title: lessonForm.title,
-          summary: lessonForm.summary,
-          video_provider: lessonDetails.videoProvider || null,
-          video_id: lessonDetails.videoId || null,
+          title: courseEditForm.title.trim(),
+          description: courseEditForm.description?.trim() || undefined,
+          level: courseEditForm.level,
         },
       });
-
-      alert("Lesson details saved successfully!");
+      if (res && (res.ok === true || res.data?.id)) {
+        setShowEditCourseModal(false);
+        setEditingCourse(null);
+        await fetchCourses();
+        if (courseId === editingCourse.id) await fetchCourseModules();
+      } else {
+        alert(res?.error || "Failed to update course");
+      }
     } catch (error) {
-      alert(error?.message || "Failed to save lesson details");
+      alert(error?.message || error?.payload?.error || "Failed to update course");
     } finally {
       setSaving(false);
     }
   };
 
-  const openCourse = async (course) => {
-    const tree = await fetchCourseTree(course.id);
-    if (tree) {
-      setSelectedCourse({ ...course, modules: tree.modules || [], lessons: tree.lessons || [] });
-      navigate(`/lms/superadmin/courses/${course.id}`);
+  const openEditModule = (m) => {
+    setEditingModule(m);
+    setModuleEditForm({ title: m.title || "" });
+    setShowEditModuleModal(true);
+    setShowDeleteConfirm(null);
+  };
+
+  const handleUpdateModule = async () => {
+    if (!editingModule?.id || !moduleEditForm.title.trim()) {
+      alert("Module title is required");
+      return;
     }
-  };
-
-  const openModule = (module) => {
-    const moduleLessons = selectedCourse?.lessons?.filter((l) => l.module_id === module.id) || [];
-    setSelectedModule({ ...module, lessons: moduleLessons });
-    navigate(`/lms/superadmin/courses/${selectedCourse.id}/modules/${module.id}`);
-  };
-
-  const openLesson = async (lesson) => {
     try {
-      setLoading(true);
-      // Ensure we have the module context - if not, find it from the course
-      if (!selectedModule && selectedCourse) {
-        const module = selectedCourse.modules?.find(m => m.id === lesson.module_id);
-        if (module) {
-          const moduleLessons = selectedCourse?.lessons?.filter((l) => l.module_id === module.id) || [];
-          setSelectedModule({ ...module, lessons: moduleLessons });
-        }
-      }
-
-      // Fetch lesson details including resources, practice, mcqs, slides
-      // Gracefully handle errors (e.g., if tables don't exist yet)
-      const [resourcesRes, practiceRes, mcqsRes, slidesRes] = await Promise.all([
-        apiFetch(`/api/v1/admin/lessons/${lesson.id}/resources`, { token }).catch(() => {
-          return { ok: false, data: [] };
-        }),
-        apiFetch(`/api/v1/admin/lessons/${lesson.id}/practice`, { token }).catch(() => {
-          return { ok: false, data: [] };
-        }),
-        apiFetch(`/api/v1/admin/lessons/${lesson.id}/mcqs`, { token }).catch(() => {
-          return { ok: false, data: [] };
-        }),
-        apiFetch(`/api/v1/admin/lessons/${lesson.id}/slides`, { token }).catch(() => {
-          return { ok: false, data: [] };
-        }),
-      ]);
-
-      setSelectedLesson(lesson);
-      setLessonForm({ title: lesson.title || "", summary: lesson.summary || "" });
-      setLessonDetails({
-        videoProvider: lesson.video_provider || "",
-        videoId: lesson.video_id || "",
-        videoUrl: "",
-        lessonContent: lesson.summary || "",
-        cheatsheets: resourcesRes?.ok ? resourcesRes.data.filter((r) => r.type === "cheatsheet") : [],
-        practices: practiceRes?.ok ? practiceRes.data : [],
-        mcqs: mcqsRes?.ok ? mcqsRes.data : [],
-        slides: slidesRes?.ok ? slidesRes.data : [],
+      setSaving(true);
+      const res = await apiFetch(`/api/v1/admin/modules/${editingModule.id}`, {
+        method: "PATCH",
+        token,
+        body: { title: moduleEditForm.title.trim() },
       });
-      navigate(`/lms/superadmin/courses/${selectedCourse.id}/modules/${selectedModule?.id || lesson.module_id}/lessons/${lesson.id}`);
+      if (res && (res.ok === true || res.data?.id)) {
+        setShowEditModuleModal(false);
+        setEditingModule(null);
+        await fetchCourseModules();
+        if (moduleId === editingModule.id) await fetchModuleLessons();
+      } else {
+        alert(res?.error || "Failed to update module");
+      }
     } catch (error) {
-      // Silently handle errors - they're already caught in Promise.all
+      alert(error?.message || error?.payload?.error || "Failed to update module");
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   };
 
-  const toggleModule = (moduleId) => {
-    const newExpanded = new Set(expandedModules);
-    if (newExpanded.has(moduleId)) {
-      newExpanded.delete(moduleId);
-    } else {
-      newExpanded.add(moduleId);
-    }
-    setExpandedModules(newExpanded);
-  };
-
-  const handleDeleteCourse = async (courseId, e) => {
-    e?.stopPropagation();
-    if (!confirm("Are you sure you want to delete this course? This will also delete all modules and lessons.")) {
-      return;
-    }
-
+  const handleDelete = async (type, id) => {
     try {
-      await apiFetch(`/api/v1/admin/courses/${courseId}`, { method: "DELETE", token });
-      await fetchCourses();
-      if (selectedCourse?.id === courseId) {
-        navigate("/lms/superadmin/courses/list");
-        setSelectedCourse(null);
+      setSaving(true);
+      const endpoints = {
+        course: `/api/v1/admin/courses/${id}`,
+        module: `/api/v1/admin/modules/${id}`,
+        lesson: `/api/v1/admin/lessons/${id}`,
+      };
+      const endpoint = endpoints[type];
+      if (!endpoint) return;
+      await apiFetch(endpoint, { method: "DELETE", token });
+      setShowDeleteConfirm(null);
+      if (type === "course") {
+        navigate("/lms/superadmin/courses");
+        await fetchCourses();
+      } else if (type === "module") {
+        await fetchCourseModules();
+      } else if (type === "lesson") {
+        await fetchModuleLessons();
       }
     } catch (error) {
-      alert(error?.message || "Failed to delete course");
+      console.error("Failed to delete:", error);
+      alert(error?.message || error?.payload?.error || "Failed to delete");
+    } finally {
+      setSaving(false);
     }
   };
 
-  const handleDeleteModule = async (moduleId, e) => {
-    e?.stopPropagation();
-    if (!confirm("Are you sure you want to delete this module? This will also delete all lessons in this module.")) {
-      return;
-    }
-
+  const handleStatusChange = async (type, id, status) => {
     try {
-      await apiFetch(`/api/v1/admin/modules/${moduleId}`, { method: "DELETE", token });
-      const tree = await fetchCourseTree(selectedCourse.id);
-      if (tree) {
-        setSelectedCourse({ ...selectedCourse, modules: tree.modules || [], lessons: tree.lessons || [] });
-      }
-      if (selectedModule?.id === moduleId) {
-        navigate(`/lms/superadmin/courses/${selectedCourse.id}`);
-        setSelectedModule(null);
-      }
+      setSaving(true);
+      const endpoints = {
+        course: `/api/v1/admin/courses/${id}/status`,
+        module: `/api/v1/admin/modules/${id}/status`,
+        lesson: `/api/v1/admin/lessons/${id}/status`,
+      };
+      const endpoint = endpoints[type];
+      if (!endpoint) return;
+      await apiFetch(endpoint, { method: "PATCH", token, body: { status } });
+      setShowDeleteConfirm(null);
+      if (type === "course") await fetchCourses();
+      else if (type === "module") await fetchCourseModules();
+      else if (type === "lesson") await fetchModuleLessons();
     } catch (error) {
-      alert(error?.message || "Failed to delete module");
+      console.error("Failed to update status:", error);
+      alert(error?.message || error?.payload?.error || "Failed to update status");
+    } finally {
+      setSaving(false);
     }
   };
 
-  const handleDeleteLesson = async (lessonId, e) => {
-    e?.stopPropagation();
-    if (!confirm("Are you sure you want to delete this lesson? This will also delete all resources, practice tasks, MCQs, and slides.")) {
-      return;
-    }
-
-    try {
-      await apiFetch(`/api/v1/admin/lessons/${lessonId}`, { method: "DELETE", token });
-      const tree = await fetchCourseTree(selectedCourse.id);
-      if (tree) {
-        setSelectedCourse({ ...selectedCourse, modules: tree.modules || [], lessons: tree.lessons || [] });
-        const moduleLessons = tree.lessons?.filter((l) => l.module_id === selectedModule.id) || [];
-        setSelectedModule({ ...selectedModule, lessons: moduleLessons });
-      }
-      if (selectedLesson?.id === lessonId) {
-        navigate(`/lms/superadmin/courses/${selectedCourse.id}/modules/${module.id}`);
-        setSelectedLesson(null);
-      }
-    } catch (error) {
-      alert(error?.message || "Failed to delete lesson");
-    }
-  };
-
-  // Cards View
-  if (view === "cards") {
+  const getStatusBadge = (status) => {
+    const statusColors = {
+      published: "bg-green-100 text-green-700",
+      unpublished: "bg-yellow-100 text-yellow-700",
+      draft: "bg-slate-100 text-slate-700",
+    };
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
-        <div className="max-w-7xl mx-auto">
-          <motion.h1
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-3xl md:text-4xl font-bold text-slate-900 mb-8"
-          >
-            Courses Management
-          </motion.h1>
+      <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusColors[status] || statusColors.draft}`}>
+        {status?.toUpperCase() || "DRAFT"}
+      </span>
+    );
+  };
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+  const getCourseIcon = (course, index) => {
+    if (course.title?.toLowerCase().includes('website') || course.title?.toLowerCase().includes('web')) {
+      return <FiGlobe className="w-6 h-6 text-blue-500" />;
+    }
+    if (course.title?.toLowerCase().includes('programming') || course.title?.toLowerCase().includes('code')) {
+      return <FiCode className="w-6 h-6 text-blue-500" />;
+    }
+    return <FiBook className="w-6 h-6 text-blue-500" />;
+  };
+
+  // Main View - All Courses Card + Create Course Card
+  if (view === "main") {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50 p-8">
+        <div className="max-w-7xl mx-auto">
+          {/* Header */}
+          <div className="mb-8">
+            <p className="text-xs uppercase tracking-wider text-slate-500 mb-1">COURSES MANAGEMENT</p>
+            <h1 className="text-3xl md:text-4xl font-bold text-slate-900">Manage Courses</h1>
+          </div>
+
+          {/* Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {/* All Courses Card */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
+            <div
               onClick={() => navigate("/lms/superadmin/courses/list")}
-              className="bg-white rounded-md p-8 border border-slate-200 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
+              className="bg-white rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition-all cursor-pointer overflow-hidden group"
             >
-              <div className="flex items-center justify-between mb-6">
-                <div className="w-16 h-16 rounded-md bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white group-hover:scale-110 transition-transform">
-                  <FiBook className="w-8 h-8" />
-                </div>
-                <div className="text-right">
-                  <div className="text-3xl font-bold text-slate-900">
-                    {loading ? "..." : courses.length}
+              <div className="p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-200 transition-colors">
+                    <FiBook className="w-6 h-6 text-blue-600" />
                   </div>
-                  <div className="text-sm text-slate-600">Total Courses</div>
+                  <div>
+                    <p className="text-xs uppercase tracking-wider text-slate-500">ALL COURSES</p>
+                    <h3 className="text-lg font-bold text-slate-900">View All Courses</h3>
+                  </div>
+                </div>
+                <p className="text-sm text-slate-600 mb-4">Browse and manage all your courses</p>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center text-blue-600 font-medium">
+                    <span className="text-sm">View Courses</span>
+                    <FiChevronRight className="w-4 h-4 ml-2" />
+                  </div>
+                  <div className="text-2xl font-bold text-slate-900">
+                    {courses.length}
+                  </div>
                 </div>
               </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-2">All Courses</h3>
-              <p className="text-slate-600">View and manage all courses, modules, and lessons</p>
-            </motion.div>
+            </div>
 
             {/* Create Course Card */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              onClick={() => {
-                setCourseForm({ title: "", description: "", level: "" });
-                navigate("/lms/superadmin/courses/create");
-              }}
-              className="bg-white rounded-md p-8 border border-slate-200 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
+            <div
+              onClick={() => setShowCourseForm(true)}
+              className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg border-2 border-dashed border-blue-300 hover:border-blue-400 transition-all cursor-pointer overflow-hidden group"
             >
-              <div className="flex items-center justify-between mb-6">
-                <div className="w-16 h-16 rounded-md bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white group-hover:scale-110 transition-transform">
-                  <FiPlus className="w-8 h-8" />
+              <div className="p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center group-hover:bg-blue-600 transition-colors">
+                    <FiPlus className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-xs uppercase tracking-wider text-blue-600">CREATE NEW</p>
+                    <h3 className="text-lg font-bold text-slate-900">Create Course</h3>
+                  </div>
+                </div>
+                <p className="text-sm text-slate-600 mb-4">Start building a new course</p>
+                <div className="flex items-center text-blue-600 font-medium">
+                  <span className="text-sm">Create Now</span>
+                  <FiChevronRight className="w-4 h-4 ml-2" />
                 </div>
               </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-2">Create Course</h3>
-              <p className="text-slate-600">Create a new course and start building your curriculum</p>
-            </motion.div>
+            </div>
           </div>
+        </div>
+
+        {/* Create Course Modal */}
+        {showCourseForm && (
+          <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="p-6 border-b border-slate-200">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-xl font-bold text-slate-900">Create New Course</h2>
+                  <button
+                    onClick={() => {
+                      setShowCourseForm(false);
+                      setCourseForm({ title: "", description: "", level: "beginner" });
+                    }}
+                    className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+                  >
+                    <FiX className="w-5 h-5 text-slate-600" />
+                  </button>
+                </div>
+              </div>
+              <div className="p-6 space-y-4">
+                <div>
+                  <label className="block text-sm font-semibold text-slate-900 mb-2">
+                    Course Title <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={courseForm.title}
+                    onChange={(e) => setCourseForm({ ...courseForm, title: e.target.value })}
+                    placeholder="Enter course title"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500"
+                    autoFocus
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-900 mb-2">Description</label>
+                  <textarea
+                    value={courseForm.description}
+                    onChange={(e) => setCourseForm({ ...courseForm, description: e.target.value })}
+                    placeholder="Enter course description"
+                    rows={4}
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 resize-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-900 mb-2">Level</label>
+                  <select
+                    value={courseForm.level}
+                    onChange={(e) => setCourseForm({ ...courseForm, level: e.target.value })}
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500"
+                  >
+                    <option value="beginner">Beginner</option>
+                    <option value="intermediate">Intermediate</option>
+                    <option value="advanced">Advanced</option>
+                  </select>
+                </div>
+              </div>
+              <div className="p-6 border-t border-slate-200 flex items-center justify-end gap-3">
+                <button
+                  onClick={() => {
+                    setShowCourseForm(false);
+                    setCourseForm({ title: "", description: "", level: "beginner" });
+                  }}
+                  className="px-4 py-2 text-slate-700 hover:bg-slate-100 rounded-md transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleCreateCourse}
+                  disabled={saving || !courseForm.title.trim()}
+                  className="px-6 py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                >
+                  {saving ? <ButtonLoading text="Creating..." size="sm" /> : "Create Course"}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-slate-600">Loading...</p>
         </div>
       </div>
     );
   }
 
-  // List View
-  if (view === "list") {
+  // Courses List View
+  if (view === "course-list" || (view === "course" && !courseId)) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
+      <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50 p-8">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <button
-                onClick={() => navigate("/lms/superadmin/courses")}
-                className="text-slate-600 hover:text-slate-900 mb-2 flex items-center gap-2"
-              >
-                <FiArrowLeft className="w-4 h-4" />
-                <span>Back</span>
-              </button>
-              <h1 className="text-3xl md:text-4xl font-bold text-slate-900">
-                All Courses ({filteredCourses.length})
-              </h1>
-            </div>
-            <button
-              onClick={() => {
-                setCourseForm({ title: "", description: "", level: "" });
-                navigate("/lms/superadmin/courses/create");
-              }}
-              className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"
-            >
-              <FiPlus className="w-5 h-5" />
-              Create Course
-            </button>
-          </div>
-
-          {/* Search */}
           <div className="mb-8">
-            <div className="relative">
-              <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-              <input
-                type="text"
-                placeholder="Search courses..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
-              />
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <button
+                  onClick={() => navigate("/lms/superadmin/courses")}
+                  className="flex items-center gap-2 text-slate-600 hover:text-slate-900 mb-2"
+                >
+                  <FiArrowLeft className="w-4 h-4" />
+                  <span>Back</span>
+                </button>
+                <p className="text-xs uppercase tracking-wider text-slate-500 mb-1">ALL COURSES</p>
+                <h1 className="text-3xl md:text-4xl font-bold text-slate-900">Courses</h1>
+              </div>
+              <button
+                onClick={() => setShowCourseForm(true)}
+                className="px-4 py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 flex items-center gap-2"
+              >
+                <FiPlus className="w-4 h-4" />
+                Create Course
+              </button>
+            </div>
+            
+            {/* Level Filter */}
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-slate-600">Filter by level:</span>
+              <button
+                onClick={() => setFilterLevel("all")}
+                className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
+                  filterLevel === "all" 
+                    ? "bg-blue-600 text-white" 
+                    : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                }`}
+              >
+                All
+              </button>
+              <button
+                onClick={() => setFilterLevel("beginner")}
+                className={`px-3 py-1 rounded-md text-sm font-medium transition-colors capitalize ${
+                  filterLevel === "beginner" 
+                    ? "bg-blue-600 text-white" 
+                    : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                }`}
+              >
+                Beginner
+              </button>
+              <button
+                onClick={() => setFilterLevel("intermediate")}
+                className={`px-3 py-1 rounded-md text-sm font-medium transition-colors capitalize ${
+                  filterLevel === "intermediate" 
+                    ? "bg-blue-600 text-white" 
+                    : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                }`}
+              >
+                Intermediate
+              </button>
+              <button
+                onClick={() => setFilterLevel("advanced")}
+                className={`px-3 py-1 rounded-md text-sm font-medium transition-colors capitalize ${
+                  filterLevel === "advanced" 
+                    ? "bg-blue-600 text-white" 
+                    : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                }`}
+              >
+                Advanced
+              </button>
             </div>
           </div>
 
           {/* Courses Grid */}
-          {loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div key={i} className="bg-white rounded-md p-6 border border-slate-200 animate-pulse">
-                  <div className="h-12 w-12 bg-slate-200 rounded-md mb-4"></div>
-                  <div className="h-4 w-32 bg-slate-200 rounded mb-2"></div>
-                  <div className="h-4 w-48 bg-slate-200 rounded"></div>
-                </div>
-              ))}
-            </div>
-          ) : filteredCourses.length === 0 ? (
-            <div className="bg-white rounded-md p-12 border border-slate-200 text-center">
+          {filteredCourses.length === 0 ? (
+            <div className="bg-white rounded-lg p-12 border border-slate-200 text-center shadow-sm">
               <FiBook className="w-16 h-16 text-slate-300 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-slate-900 mb-2">No courses found</h3>
-              <p className="text-slate-600">
-                {searchQuery ? "Try a different search term" : "Get started by creating your first course"}
-              </p>
+              <p className="text-slate-600 mb-4">Create your first course to get started</p>
+              <button
+                onClick={() => setShowCourseForm(true)}
+                className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700"
+              >
+                Create Course
+              </button>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredCourses.map((course, index) => (
-                <motion.div
+                <div
                   key={course.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.05 }}
-                  onClick={() => openCourse(course)}
-                  className="bg-white rounded-md p-6 border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer"
+                  onClick={() => navigate(`/lms/superadmin/courses/${course.id}`)}
+                  className="bg-white rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition-all cursor-pointer overflow-visible relative"
                 >
-                  <div className="flex items-start gap-4 mb-4">
-                    <div className="w-12 h-12 rounded-md bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold text-lg flex-shrink-0">
-                      <FiBook className="w-6 h-6" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-lg font-bold text-slate-900 truncate">{course.title}</h3>
-                      <p className="text-sm text-slate-600 mt-1 line-clamp-2">{course.description || "No description"}</p>
-                      {course.level && (
-                        <span className="inline-block mt-2 px-2 py-1 bg-blue-50 text-blue-600 text-xs font-semibold rounded">
-                          {course.level}
-                        </span>
+                  <div className="p-6">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center gap-3 flex-1 min-w-0">
+                        <div className="w-10 h-10 flex items-center justify-center flex-shrink-0">
+                          {getCourseIcon(course, index)}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="text-lg font-bold text-slate-900 truncate">{course.title || "Untitled Course"}</h3>
+                          <div className="flex items-center gap-2 mt-1">
+                            {getStatusBadge(course.status)}
+                            <span className="text-xs text-slate-500 capitalize">{course.level || "beginner"}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1 flex-shrink-0" onClick={(e) => e.stopPropagation()}>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (confirm("Are you sure you want to delete this course? This will remove all modules and lessons.")) {
+                              handleDelete("course", course.id);
+                            }
+                          }}
+                          className="p-2 hover:bg-red-50 rounded-lg transition-colors text-slate-500 hover:text-red-600"
+                          title="Delete course"
+                        >
+                          <FiTrash2 className="w-5 h-5" />
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setShowDeleteConfirm(showDeleteConfirm === course.id ? null : course.id);
+                          }}
+                          className="p-2 hover:bg-slate-100 rounded-lg transition-colors relative z-20"
+                          title="More options"
+                        >
+                          <FiMoreVertical className="w-5 h-5 text-slate-600" />
+                        </button>
+                      </div>
+                      {showDeleteConfirm === course.id && (
+                        <div className="absolute right-4 top-16 bg-white border border-slate-200 rounded-lg shadow-xl z-[100] min-w-[200px] py-1">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              navigate(`/lms/superadmin/courses/${course.id}`);
+                              setShowDeleteConfirm(null);
+                            }}
+                            className="w-full px-4 py-2 text-left hover:bg-slate-50 flex items-center gap-2 text-slate-700"
+                          >
+                            <FiChevronRight className="w-4 h-4" />
+                            View Modules
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              openEditCourse(course);
+                            }}
+                            className="w-full px-4 py-2 text-left hover:bg-slate-50 flex items-center gap-2 text-slate-700"
+                          >
+                            <FiEdit2 className="w-4 h-4" />
+                            Edit
+                          </button>
+                          <div className="border-t border-slate-200">
+                            {course.status === "published" ? (
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleStatusChange("course", course.id, "unpublished");
+                                  setShowDeleteConfirm(null);
+                                }}
+                                className="w-full px-4 py-2 text-left hover:bg-slate-50 flex items-center gap-2 text-slate-700"
+                              >
+                                <FiEyeOff className="w-4 h-4" />
+                                Unpublish
+                              </button>
+                            ) : (
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleStatusChange("course", course.id, "published");
+                                  setShowDeleteConfirm(null);
+                                }}
+                                className="w-full px-4 py-2 text-left hover:bg-slate-50 flex items-center gap-2 text-slate-700"
+                              >
+                                <FiEye className="w-4 h-4" />
+                                Publish
+                              </button>
+                            )}
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleStatusChange("course", course.id, "draft");
+                                setShowDeleteConfirm(null);
+                              }}
+                              className="w-full px-4 py-2 text-left hover:bg-slate-50 flex items-center gap-2 text-slate-700"
+                            >
+                              <FiFileText className="w-4 h-4" />
+                              Set as Draft
+                            </button>
+                          </div>
+                          <div className="border-t border-slate-200">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                if (confirm("Are you sure you want to delete this course?")) {
+                                  handleDelete("course", course.id);
+                                }
+                                setShowDeleteConfirm(null);
+                              }}
+                              className="w-full px-4 py-2 text-left hover:bg-red-50 flex items-center gap-2 text-red-600"
+                            >
+                              <FiTrash2 className="w-4 h-4" />
+                              Delete
+                            </button>
+                          </div>
+                        </div>
                       )}
                     </div>
-                  </div>
-                  <div className="flex items-center justify-between pt-4 border-t border-slate-100">
-                    <span
-                      className={`px-2 py-1 rounded text-xs font-semibold ${
-                        course.status === "published"
-                          ? "bg-emerald-100 text-emerald-700"
-                          : "bg-slate-100 text-slate-700"
-                      }`}
-                    >
-                      {course.status}
-                    </span>
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={(e) => handleDeleteCourse(course.id, e)}
-                        className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                        title="Delete course"
-                      >
-                        <FiTrash2 className="w-4 h-4" />
-                      </button>
-                      <FiChevronRight className="w-5 h-5 text-slate-400" />
+                    <p className="text-sm text-slate-500 mb-4 line-clamp-2">
+                      {course.description || "No description"}
+                    </p>
+                    <div className="flex items-center justify-between text-sm text-slate-500">
+                      <span>{course.module_count ?? course.modules?.length ?? 0} Modules</span>
+                      <span className="capitalize">{course.level || "beginner"}</span>
                     </div>
                   </div>
-                </motion.div>
+                </div>
               ))}
             </div>
           )}
         </div>
-      </div>
-    );
-  }
 
-  // Create Course View
-  if (view === "create") {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
-        <div className="max-w-2xl mx-auto">
-          <div className="bg-white rounded-md p-8 border border-slate-200 shadow-lg">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-slate-900">Create New Course</h2>
-              <button
-                onClick={() => navigate("/lms/superadmin/courses/list")}
-                className="p-2 rounded-lg hover:bg-slate-100 transition-colors"
-              >
-                <FiX className="w-6 h-6 text-slate-600" />
-              </button>
-            </div>
-
-            <div className="space-y-6">
-              <div>
-                <label className="block text-sm font-semibold text-slate-900 mb-2">
-                  Course Title <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={courseForm.title}
-                  onChange={(e) => setCourseForm({ ...courseForm, title: e.target.value })}
-                  placeholder="Enter course title"
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
-                />
+        {/* Create Course Modal - Same as main view */}
+        {showCourseForm && (
+          <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="p-6 border-b border-slate-200">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-xl font-bold text-slate-900">Create New Course</h2>
+                  <button
+                    onClick={() => {
+                      setShowCourseForm(false);
+                      setCourseForm({ title: "", description: "", level: "beginner" });
+                    }}
+                    className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+                  >
+                    <FiX className="w-5 h-5 text-slate-600" />
+                  </button>
+                </div>
               </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-slate-900 mb-2">Description</label>
-                <textarea
-                  value={courseForm.description}
-                  onChange={(e) => setCourseForm({ ...courseForm, description: e.target.value })}
-                  placeholder="Enter course description"
-                  rows={4}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
-                />
+              <div className="p-6 space-y-4">
+                <div>
+                  <label className="block text-sm font-semibold text-slate-900 mb-2">
+                    Course Title <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={courseForm.title}
+                    onChange={(e) => setCourseForm({ ...courseForm, title: e.target.value })}
+                    placeholder="Enter course title"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500"
+                    autoFocus
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-900 mb-2">Description</label>
+                  <textarea
+                    value={courseForm.description}
+                    onChange={(e) => setCourseForm({ ...courseForm, description: e.target.value })}
+                    placeholder="Enter course description"
+                    rows={4}
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 resize-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-900 mb-2">Level</label>
+                  <select
+                    value={courseForm.level}
+                    onChange={(e) => setCourseForm({ ...courseForm, level: e.target.value })}
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500"
+                  >
+                    <option value="beginner">Beginner</option>
+                    <option value="intermediate">Intermediate</option>
+                    <option value="advanced">Advanced</option>
+                  </select>
+                </div>
               </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-slate-900 mb-2">Level</label>
-                <select
-                  value={courseForm.level}
-                  onChange={(e) => setCourseForm({ ...courseForm, level: e.target.value })}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
-                >
-                  <option value="">Select level</option>
-                  <option value="Beginner">Beginner</option>
-                  <option value="Intermediate">Intermediate</option>
-                  <option value="Advanced">Advanced</option>
-                </select>
-              </div>
-
-              <div className="flex items-center gap-4 pt-4">
+              <div className="p-6 border-t border-slate-200 flex items-center justify-end gap-3">
                 <button
-                  onClick={handleCreateCourse}
-                  disabled={saving || !courseForm.title}
-                  className="flex-1 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                >
-                  {saving ? (
-                    <ButtonLoading text="Creating..." size="sm" />
-                  ) : (
-                    <>
-                      <FiSave className="w-5 h-5" />
-                      Create Course
-                    </>
-                  )}
-                </button>
-                <button
-                  onClick={() => navigate("/lms/superadmin/courses/list")}
-                  className="px-6 py-3 bg-slate-100 text-slate-700 font-semibold rounded-md hover:bg-slate-200 transition-colors"
+                  onClick={() => {
+                    setShowCourseForm(false);
+                    setCourseForm({ title: "", description: "", level: "beginner" });
+                  }}
+                  className="px-4 py-2 text-slate-700 hover:bg-slate-100 rounded-md transition-colors"
                 >
                   Cancel
+                </button>
+                <button
+                  onClick={handleCreateCourse}
+                  disabled={saving || !courseForm.title.trim()}
+                  className="px-6 py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                >
+                  {saving ? <ButtonLoading text="Creating..." size="sm" /> : "Create Course"}
                 </button>
               </div>
             </div>
           </div>
-        </div>
+        )}
+
+        {/* Edit Course Modal (course list view) */}
+        {showEditCourseModal && editingCourse && (
+          <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="p-6 border-b border-slate-200">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-xl font-bold text-slate-900">Edit Course</h2>
+                  <button onClick={() => { setShowEditCourseModal(false); setEditingCourse(null); }} className="p-2 hover:bg-slate-100 rounded-lg"><FiX className="w-5 h-5 text-slate-600" /></button>
+                </div>
+              </div>
+              <div className="p-6 space-y-4">
+                <div>
+                  <label className="block text-sm font-semibold text-slate-900 mb-2">Course Title <span className="text-red-500">*</span></label>
+                  <input type="text" value={courseEditForm.title} onChange={(e) => setCourseEditForm((f) => ({ ...f, title: e.target.value }))} placeholder="Enter course title" className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50" />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-900 mb-2">Description</label>
+                  <textarea value={courseEditForm.description} onChange={(e) => setCourseEditForm((f) => ({ ...f, description: e.target.value }))} placeholder="Enter course description" rows={4} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 resize-none" />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-900 mb-2">Level</label>
+                  <select value={courseEditForm.level} onChange={(e) => setCourseEditForm((f) => ({ ...f, level: e.target.value }))} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50">
+                    <option value="beginner">Beginner</option>
+                    <option value="intermediate">Intermediate</option>
+                    <option value="advanced">Advanced</option>
+                  </select>
+                </div>
+              </div>
+              <div className="p-6 border-t border-slate-200 flex items-center justify-end gap-3">
+                <button onClick={() => { setShowEditCourseModal(false); setEditingCourse(null); }} className="px-4 py-2 text-slate-700 hover:bg-slate-100 rounded-md">Cancel</button>
+                <button onClick={handleUpdateCourse} disabled={saving || !courseEditForm.title.trim()} className="px-6 py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 disabled:opacity-50 flex items-center gap-2">
+                  {saving ? <ButtonLoading text="Saving..." size="sm" /> : <><FiSave className="w-4 h-4" /> Save</>}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
 
-  // Course View (shows modules)
-  if (view === "course" && selectedCourse) {
-    const modules = selectedCourse.modules || [];
-    const lessons = selectedCourse.lessons || [];
-
+  // Modules List View (when courseId is present)
+  if (view === "course" && courseId) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
+      <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50 p-8">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="mb-8">
             <button
               onClick={() => navigate("/lms/superadmin/courses/list")}
-              className="text-slate-600 hover:text-slate-900 mb-4 flex items-center gap-2"
+              className="flex items-center gap-2 text-slate-600 hover:text-slate-900 mb-4"
             >
               <FiArrowLeft className="w-4 h-4" />
               <span>Back to Courses</span>
             </button>
             <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-3xl md:text-4xl font-bold text-slate-900">{selectedCourse.title}</h1>
-                <p className="text-slate-600 mt-2">{selectedCourse.description || "No description"}</p>
+                <p className="text-xs uppercase tracking-wider text-slate-500 mb-1">MODULES</p>
+                <h1 className="text-3xl md:text-4xl font-bold text-slate-900">{course?.title || "Course"}</h1>
+                {getStatusBadge(course?.status)}
               </div>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
                 <button
-                  onClick={() => handleDeleteCourse(selectedCourse.id)}
-                  className="px-4 py-2 bg-red-50 text-red-600 font-semibold rounded-md hover:bg-red-100 transition-all duration-300 flex items-center gap-2"
+                  onClick={() => course && openEditCourse(course)}
+                  className="px-4 py-2 bg-slate-100 text-slate-700 font-semibold rounded-md hover:bg-slate-200 flex items-center gap-2"
+                >
+                  <FiEdit2 className="w-4 h-4" />
+                  Edit Course
+                </button>
+                <button
+                  onClick={() => {
+                    if (course?.id && confirm("Are you sure you want to delete this course? This will remove all modules and lessons.")) {
+                      handleDelete("course", course.id);
+                    }
+                  }}
+                  className="px-4 py-2 bg-red-50 text-red-600 font-semibold rounded-md hover:bg-red-100 flex items-center gap-2"
+                  title="Delete course"
                 >
                   <FiTrash2 className="w-4 h-4" />
                   Delete Course
                 </button>
                 <button
-                  onClick={() => {
-                    setModuleForm({ title: "" });
-                    navigate(`/lms/superadmin/courses/${selectedCourse.id}/modules/create`);
-                  }}
-                  className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"
+                  onClick={() => setShowModuleForm(true)}
+                  className="px-4 py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 flex items-center gap-2"
                 >
-                  <FiPlus className="w-5 h-5" />
-                  Add Module
+                  <FiPlus className="w-4 h-4" />
+                  Create Module
                 </button>
               </div>
             </div>
           </div>
 
-          {/* Modules List */}
+          {/* Modules Grid */}
           {modules.length === 0 ? (
-            <div className="bg-white rounded-md p-12 border border-slate-200 text-center">
-              <FiBook className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-slate-900 mb-2">No modules yet</h3>
-              <p className="text-slate-600 mb-4">Create your first module to start building the course</p>
+            <div className="bg-white rounded-lg p-12 border border-slate-200 text-center shadow-sm">
+              <FiFileText className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-slate-900 mb-2">No modules found</h3>
+              <p className="text-slate-600 mb-4">Create your first module to get started</p>
               <button
-                onClick={() => {
-                  setModuleForm({ title: "" });
-                    navigate(`/lms/superadmin/courses/${selectedCourse.id}/modules/create`);
-                }}
-                className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-md"
+                onClick={() => setShowModuleForm(true)}
+                className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700"
               >
                 Create Module
               </button>
             </div>
           ) : (
-            <div className="space-y-4">
-              {modules.map((module) => {
-                const moduleLessons = lessons.filter((l) => l.module_id === module.id);
-                const isExpanded = expandedModules.has(module.id);
-
-                return (
-                  <motion.div
-                    key={module.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="bg-white rounded-md border border-slate-200 shadow-sm overflow-hidden"
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {modules.map((module, index) => (
+                <div
+                  key={module.id}
+                  className="bg-white rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition-all overflow-visible relative"
+                >
+                  <div 
+                    onClick={() => navigate(`/lms/superadmin/courses/${courseId}/modules/${module.id}`)}
+                    className="p-6 cursor-pointer"
                   >
-                    <div
-                      className="p-6 cursor-pointer hover:bg-slate-50 transition-colors"
-                      onClick={() => toggleModule(module.id)}
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                          {isExpanded ? (
-                            <FiChevronDown className="w-5 h-5 text-slate-400" />
-                          ) : (
-                            <FiChevronRight className="w-5 h-5 text-slate-400" />
-                          )}
-                          <h3 className="text-lg font-bold text-slate-900">{module.title}</h3>
-                          <span className="px-2 py-1 bg-blue-50 text-blue-600 text-xs font-semibold rounded">
-                            {moduleLessons.length} lessons
-                          </span>
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center gap-3 flex-1 min-w-0">
+                        <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <FiFileText className="w-5 h-5 text-purple-600" />
                         </div>
-                        <div className="flex items-center gap-2">
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              openModule(module);
-                            }}
-                            className="px-4 py-2 bg-blue-50 text-blue-600 font-medium rounded-lg hover:bg-blue-100 transition-colors flex items-center gap-2"
-                          >
-                            <FiEye className="w-4 h-4" />
-                            View
-                          </button>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleDeleteModule(module.id, e);
-                            }}
-                            className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                            title="Delete module"
-                          >
-                            <FiTrash2 className="w-4 h-4" />
-                          </button>
+                        <div className="min-w-0 flex-1">
+                          <h3 className="text-lg font-bold text-slate-900 truncate">
+                            {index + 1}. {module.title || "Untitled Module"}
+                          </h3>
+                          {getStatusBadge(module.status)}
                         </div>
                       </div>
-                    </div>
-
-                    <AnimatePresence>
-                      {isExpanded && (
-                        <motion.div
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: "auto", opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
-                          className="overflow-hidden"
+                      <div className="flex items-center gap-1 flex-shrink-0" onClick={(e) => e.stopPropagation()}>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (confirm("Are you sure you want to delete this module? This will remove all lessons in it.")) {
+                              handleDelete("module", module.id);
+                            }
+                          }}
+                          className="p-2 hover:bg-red-50 rounded-lg transition-colors text-slate-500 hover:text-red-600"
+                          title="Delete module"
                         >
-                          <div className="px-6 pb-4 border-t border-slate-100">
-                            {moduleLessons.length === 0 ? (
-                              <div className="py-8 text-center text-slate-500">
-                                No lessons in this module
-                              </div>
-                            ) : (
-                              <div className="space-y-2 pt-4">
-                                {moduleLessons.map((lesson) => (
-                                  <div
-                                    key={lesson.id}
-                                    onClick={() => openLesson(lesson)}
-                                    className="flex items-center justify-between p-3 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors"
-                                  >
-                                    <div className="flex items-center gap-3">
-                                      <FiPlay className="w-4 h-4 text-slate-400" />
-                                      <span className="text-sm font-medium text-slate-900">{lesson.title}</span>
-                                    </div>
-                                    <FiChevronRight className="w-4 h-4 text-slate-400" />
-                                  </div>
-                                ))}
-                              </div>
-                            )}
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </motion.div>
-                );
-              })}
+                          <FiTrash2 className="w-5 h-5" />
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setShowDeleteConfirm(showDeleteConfirm === module.id ? null : module.id);
+                          }}
+                          className="p-2 hover:bg-slate-100 rounded-lg transition-colors relative z-20"
+                          title="More options"
+                        >
+                          <FiMoreVertical className="w-5 h-5 text-slate-600" />
+                        </button>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between text-sm text-slate-500">
+                      <span>{module.lessons?.length || 0} Lessons</span>
+                      <span className="flex items-center gap-1">
+                        View Lessons
+                        <FiChevronRight className="w-4 h-4" />
+                      </span>
+                    </div>
+                  </div>
+                  
+                  {/* Module Actions Menu */}
+                  {showDeleteConfirm === module.id && (
+                    <div className="absolute right-4 top-16 bg-white border border-slate-200 rounded-lg shadow-xl z-[100] min-w-[200px] py-1">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/lms/superadmin/courses/${courseId}/modules/${module.id}`);
+                          setShowDeleteConfirm(null);
+                        }}
+                        className="w-full px-4 py-2 text-left hover:bg-slate-50 flex items-center gap-2 text-slate-700"
+                      >
+                        <FiChevronRight className="w-4 h-4" />
+                        View Lessons
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openEditModule(module);
+                        }}
+                        className="w-full px-4 py-2 text-left hover:bg-slate-50 flex items-center gap-2 text-slate-700"
+                      >
+                        <FiEdit2 className="w-4 h-4" />
+                        Edit
+                      </button>
+                      <div className="border-t border-slate-200">
+                        {module.status === "published" ? (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleStatusChange("module", module.id, "unpublished");
+                              setShowDeleteConfirm(null);
+                            }}
+                            className="w-full px-4 py-2 text-left hover:bg-slate-50 flex items-center gap-2 text-slate-700"
+                          >
+                            <FiEyeOff className="w-4 h-4" />
+                            Unpublish
+                          </button>
+                        ) : (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleStatusChange("module", module.id, "published");
+                              setShowDeleteConfirm(null);
+                            }}
+                            className="w-full px-4 py-2 text-left hover:bg-slate-50 flex items-center gap-2 text-slate-700"
+                          >
+                            <FiEye className="w-4 h-4" />
+                            Publish
+                          </button>
+                        )}
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleStatusChange("module", module.id, "draft");
+                            setShowDeleteConfirm(null);
+                          }}
+                          className="w-full px-4 py-2 text-left hover:bg-slate-50 flex items-center gap-2 text-slate-700"
+                        >
+                          <FiFileText className="w-4 h-4" />
+                          Set as Draft
+                        </button>
+                      </div>
+                      <div className="border-t border-slate-200">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (confirm("Are you sure you want to delete this module?")) {
+                              handleDelete("module", module.id);
+                            }
+                            setShowDeleteConfirm(null);
+                          }}
+                          className="w-full px-4 py-2 text-left hover:bg-red-50 flex items-center gap-2 text-red-600"
+                        >
+                          <FiTrash2 className="w-4 h-4" />
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
           )}
         </div>
-      </div>
-    );
-  }
 
-  // Create Module View
-  if (view === "create-module" && selectedCourse) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
-        <div className="max-w-2xl mx-auto">
-          <div className="bg-white rounded-md p-8 border border-slate-200 shadow-lg">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <button
-                  onClick={() => navigate(`/lms/superadmin/courses/${selectedCourse.id}`)}
-                  className="text-slate-600 hover:text-slate-900 mb-2 flex items-center gap-2"
-                >
-                  <FiArrowLeft className="w-4 h-4" />
-                  <span>Back</span>
-                </button>
-                <h2 className="text-2xl font-bold text-slate-900">Create Module</h2>
-                <p className="text-slate-600 mt-1">Course: {selectedCourse.title}</p>
+        {/* Create Module Modal */}
+        {showModuleForm && (
+          <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-lg max-w-lg w-full">
+              <div className="p-6 border-b border-slate-200">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-xl font-bold text-slate-900">Create New Module</h2>
+                  <button
+                    onClick={() => {
+                      setShowModuleForm(false);
+                      setModuleForm({ title: "" });
+                    }}
+                    className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+                  >
+                    <FiX className="w-5 h-5 text-slate-600" />
+                  </button>
+                </div>
               </div>
-              <button
-                onClick={() => navigate(`/lms/superadmin/courses/${selectedCourse.id}`)}
-                className="p-2 rounded-lg hover:bg-slate-100 transition-colors"
-              >
-                <FiX className="w-6 h-6 text-slate-600" />
-              </button>
-            </div>
-
-            <div className="space-y-6">
-              <div>
-                <label className="block text-sm font-semibold text-slate-900 mb-2">
-                  Module Title <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={moduleForm.title}
-                  onChange={(e) => setModuleForm({ ...moduleForm, title: e.target.value })}
-                  placeholder="Enter module title"
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
-                />
+              <div className="p-6 space-y-4">
+                <div>
+                  <label className="block text-sm font-semibold text-slate-900 mb-2">
+                    Module Title <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={moduleForm.title}
+                    onChange={(e) => setModuleForm({ ...moduleForm, title: e.target.value })}
+                    placeholder="Enter module title"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500"
+                    autoFocus
+                  />
+                </div>
               </div>
-
-              <div className="flex items-center gap-4 pt-4">
+              <div className="p-6 border-t border-slate-200 flex items-center justify-end gap-3">
                 <button
-                  onClick={handleCreateModule}
-                  disabled={saving || !moduleForm.title}
-                  className="flex-1 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                >
-                  {saving ? (
-                    <ButtonLoading text="Creating..." size="sm" />
-                  ) : (
-                    <>
-                      <FiSave className="w-5 h-5" />
-                      Create Module
-                    </>
-                  )}
-                </button>
-                <button
-                  onClick={() => navigate(`/lms/superadmin/courses/${selectedCourse.id}`)}
-                  className="px-6 py-3 bg-slate-100 text-slate-700 font-semibold rounded-md hover:bg-slate-200 transition-colors"
+                  onClick={() => {
+                    setShowModuleForm(false);
+                    setModuleForm({ title: "" });
+                  }}
+                  className="px-4 py-2 text-slate-700 hover:bg-slate-100 rounded-md transition-colors"
                 >
                   Cancel
+                </button>
+                <button
+                  onClick={handleCreateModule}
+                  disabled={saving || !moduleForm.title.trim()}
+                  className="px-6 py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                >
+                  {saving ? <ButtonLoading text="Creating..." size="sm" /> : "Create Module"}
                 </button>
               </div>
             </div>
           </div>
-        </div>
+        )}
+
+        {/* Edit Module Modal */}
+        {showEditModuleModal && editingModule && (
+          <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-lg max-w-lg w-full">
+              <div className="p-6 border-b border-slate-200">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-xl font-bold text-slate-900">Edit Module</h2>
+                  <button
+                    onClick={() => { setShowEditModuleModal(false); setEditingModule(null); }}
+                    className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+                  >
+                    <FiX className="w-5 h-5 text-slate-600" />
+                  </button>
+                </div>
+              </div>
+              <div className="p-6 space-y-4">
+                <div>
+                  <label className="block text-sm font-semibold text-slate-900 mb-2">Module Title <span className="text-red-500">*</span></label>
+                  <input
+                    type="text"
+                    value={moduleEditForm.title}
+                    onChange={(e) => setModuleEditForm((f) => ({ ...f, title: e.target.value }))}
+                    placeholder="Enter module title"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500"
+                  />
+                </div>
+              </div>
+              <div className="p-6 border-t border-slate-200 flex items-center justify-end gap-3">
+                <button
+                  onClick={() => { setShowEditModuleModal(false); setEditingModule(null); }}
+                  className="px-4 py-2 text-slate-700 hover:bg-slate-100 rounded-md"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleUpdateModule}
+                  disabled={saving || !moduleEditForm.title.trim()}
+                  className="px-6 py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 disabled:opacity-50 flex items-center gap-2"
+                >
+                  {saving ? <ButtonLoading text="Saving..." size="sm" /> : <><FiSave className="w-4 h-4" /> Save</>}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Edit Course Modal (also in modules view so "Edit Course" works here) */}
+        {showEditCourseModal && editingCourse && (
+          <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="p-6 border-b border-slate-200">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-xl font-bold text-slate-900">Edit Course</h2>
+                  <button onClick={() => { setShowEditCourseModal(false); setEditingCourse(null); }} className="p-2 hover:bg-slate-100 rounded-lg"><FiX className="w-5 h-5 text-slate-600" /></button>
+                </div>
+              </div>
+              <div className="p-6 space-y-4">
+                <div>
+                  <label className="block text-sm font-semibold text-slate-900 mb-2">Course Title <span className="text-red-500">*</span></label>
+                  <input type="text" value={courseEditForm.title} onChange={(e) => setCourseEditForm((f) => ({ ...f, title: e.target.value }))} placeholder="Enter course title" className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50" />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-900 mb-2">Description</label>
+                  <textarea value={courseEditForm.description} onChange={(e) => setCourseEditForm((f) => ({ ...f, description: e.target.value }))} placeholder="Enter course description" rows={4} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 resize-none" />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-900 mb-2">Level</label>
+                  <select value={courseEditForm.level} onChange={(e) => setCourseEditForm((f) => ({ ...f, level: e.target.value }))} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50">
+                    <option value="beginner">Beginner</option>
+                    <option value="intermediate">Intermediate</option>
+                    <option value="advanced">Advanced</option>
+                  </select>
+                </div>
+              </div>
+              <div className="p-6 border-t border-slate-200 flex items-center justify-end gap-3">
+                <button onClick={() => { setShowEditCourseModal(false); setEditingCourse(null); }} className="px-4 py-2 text-slate-700 hover:bg-slate-100 rounded-md">Cancel</button>
+                <button onClick={handleUpdateCourse} disabled={saving || !courseEditForm.title.trim()} className="px-6 py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 disabled:opacity-50 flex items-center gap-2">
+                  {saving ? <ButtonLoading text="Saving..." size="sm" /> : <><FiSave className="w-4 h-4" /> Save</>}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
 
-  // Module View (shows lessons)
-  if (view === "module" && selectedModule && selectedCourse) {
-    const moduleLessons = selectedModule.lessons || [];
-
+  // Lessons List View (when moduleId is present)
+  if (view === "modules" && moduleId) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
+      <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50 p-8">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="mb-8">
             <button
-              onClick={() => navigate(`/lms/superadmin/courses/${selectedCourse.id}`)}
-              className="text-slate-600 hover:text-slate-900 mb-4 flex items-center gap-2"
+              onClick={() => navigate(`/lms/superadmin/courses/${courseId}`)}
+              className="flex items-center gap-2 text-slate-600 hover:text-slate-900 mb-4"
             >
               <FiArrowLeft className="w-4 h-4" />
-              <span>Back to Course</span>
+              <span>Back to Modules</span>
             </button>
             <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-3xl md:text-4xl font-bold text-slate-900">{selectedModule.title}</h1>
-                <p className="text-slate-600 mt-2">Course: {selectedCourse.title}</p>
+                <p className="text-xs uppercase tracking-wider text-slate-500 mb-1">LESSONS</p>
+                <h1 className="text-3xl md:text-4xl font-bold text-slate-900">{module?.title || "Module"}</h1>
+                {getStatusBadge(module?.status)}
               </div>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
                 <button
-                  onClick={() => handleDeleteModule(selectedModule.id)}
-                  className="px-4 py-2 bg-red-50 text-red-600 font-semibold rounded-md hover:bg-red-100 transition-all duration-300 flex items-center gap-2"
+                  onClick={() => module && openEditModule(module)}
+                  className="px-4 py-2 bg-slate-100 text-slate-700 font-semibold rounded-md hover:bg-slate-200 flex items-center gap-2"
+                >
+                  <FiEdit2 className="w-4 h-4" />
+                  Edit Module
+                </button>
+                <button
+                  onClick={async () => {
+                    if (moduleId && confirm("Are you sure you want to delete this module? This will remove all lessons in it.")) {
+                      await handleDelete("module", moduleId);
+                      navigate(`/lms/superadmin/courses/${courseId}`);
+                    }
+                  }}
+                  className="px-4 py-2 bg-red-50 text-red-600 font-semibold rounded-md hover:bg-red-100 flex items-center gap-2"
+                  title="Delete module"
                 >
                   <FiTrash2 className="w-4 h-4" />
                   Delete Module
                 </button>
                 <button
-                  onClick={() => {
-                    setLessonForm({ title: "", summary: "" });
-                    navigate(`/lms/superadmin/courses/${selectedCourse.id}/modules/${selectedModule.id}/lessons/create`);
-                  }}
-                  className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"
+                  onClick={() => navigate(`/lms/superadmin/courses/${courseId}/modules/${moduleId}/lessons/create`)}
+                  className="px-4 py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 flex items-center gap-2"
                 >
-                  <FiPlus className="w-5 h-5" />
-                  Add Lesson
+                  <FiPlus className="w-4 h-4" />
+                  Create Lesson
                 </button>
               </div>
             </div>
           </div>
 
-          {/* Lessons List */}
-          {moduleLessons.length === 0 ? (
-            <div className="bg-white rounded-md p-12 border border-slate-200 text-center">
-              <FiPlay className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-slate-900 mb-2">No lessons yet</h3>
-              <p className="text-slate-600 mb-4">Create your first lesson for this module</p>
+          {/* Lessons Grid */}
+          {lessons.length === 0 ? (
+            <div className="bg-white rounded-lg p-12 border border-slate-200 text-center shadow-sm">
+              <FiFileText className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-slate-900 mb-2">No lessons found</h3>
+              <p className="text-slate-600 mb-4">Create your first lesson to get started</p>
               <button
-                onClick={() => {
-                  setLessonForm({ title: "", summary: "" });
-                  navigate(`/lms/superadmin/courses/${selectedCourse.id}/modules/${selectedModule.id}/lessons/create`);
-                }}
-                className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-md"
+                onClick={() => navigate(`/lms/superadmin/courses/${courseId}/modules/${moduleId}/lessons/create`)}
+                className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700"
               >
                 Create Lesson
               </button>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {moduleLessons.map((lesson, index) => (
-                <motion.div
+              {lessons.map((lesson, index) => (
+                <div
                   key={lesson.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.05 }}
-                  onClick={() => openLesson(lesson)}
-                  className="bg-white rounded-md p-6 border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer"
+                  className="bg-white rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition-all overflow-hidden relative"
                 >
-                  <div className="flex items-start gap-4 mb-4">
-                    <div className="w-12 h-12 rounded-md bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center text-white flex-shrink-0">
-                      <FiPlay className="w-6 h-6" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-lg font-bold text-slate-900 truncate">{lesson.title}</h3>
-                      {lesson.summary && (
-                        <p className="text-sm text-slate-600 mt-1 line-clamp-2">{lesson.summary}</p>
-                      )}
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between pt-4 border-t border-slate-100">
-                    <span
-                      className={`px-2 py-1 rounded text-xs font-semibold ${
-                        lesson.status === "published"
-                          ? "bg-emerald-100 text-emerald-700"
-                          : "bg-slate-100 text-slate-700"
-                      }`}
-                    >
-                      {lesson.status}
-                    </span>
-                    <div className="flex items-center gap-2">
+                  <div 
+                    onClick={() => navigate(`/lms/superadmin/courses/${courseId}/modules/${moduleId}/lessons/${lesson.id}`)}
+                    className="p-6 cursor-pointer"
+                  >
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
+                          <FiFileText className="w-5 h-5 text-indigo-600" />
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-bold text-slate-900">
+                            {index + 1}. {lesson.title || "Untitled Lesson"}
+                          </h3>
+                          {getStatusBadge(lesson.status)}
+                        </div>
+                      </div>
                       <button
-                        onClick={(e) => handleDeleteLesson(lesson.id, e)}
-                        className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                        title="Delete lesson"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setShowDeleteConfirm(showDeleteConfirm === lesson.id ? null : lesson.id);
+                        }}
+                        className="p-2 hover:bg-slate-100 rounded-lg transition-colors relative z-20"
                       >
-                        <FiTrash2 className="w-4 h-4" />
+                        <FiMoreVertical className="w-5 h-5 text-slate-600" />
                       </button>
-                      <FiChevronRight className="w-5 h-5 text-slate-400" />
+                    </div>
+                    {lesson.summary && (
+                      <p className="text-sm text-slate-500 mb-4 line-clamp-2">{lesson.summary}</p>
+                    )}
+                    <div className="flex items-center justify-between text-sm text-slate-500">
+                      <span>{lesson.duration_seconds ? `${Math.round(lesson.duration_seconds / 60)} mins` : "No duration"}</span>
+                      <span className="flex items-center gap-1">
+                        View Details
+                        <FiChevronRight className="w-4 h-4" />
+                      </span>
                     </div>
                   </div>
-                </motion.div>
+
+                  {/* Lesson Actions Menu */}
+                  {showDeleteConfirm === lesson.id && (
+                    <div className="absolute right-4 top-16 bg-white border border-slate-200 rounded-lg shadow-lg z-50 min-w-[200px]">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/lms/superadmin/courses/${courseId}/modules/${moduleId}/lessons/${lesson.id}`);
+                          setShowDeleteConfirm(null);
+                        }}
+                        className="w-full px-4 py-2 text-left hover:bg-slate-50 flex items-center gap-2 text-slate-700"
+                      >
+                        <FiChevronRight className="w-4 h-4" />
+                        View Details
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/lms/superadmin/courses/${courseId}/modules/${moduleId}/lessons/${lesson.id}/edit`);
+                          setShowDeleteConfirm(null);
+                        }}
+                        className="w-full px-4 py-2 text-left hover:bg-slate-50 flex items-center gap-2 text-slate-700"
+                      >
+                        <FiEdit2 className="w-4 h-4" />
+                        Edit
+                      </button>
+                      <div className="border-t border-slate-200">
+                        {lesson.status === "published" ? (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleStatusChange("lesson", lesson.id, "unpublished");
+                              setShowDeleteConfirm(null);
+                            }}
+                            className="w-full px-4 py-2 text-left hover:bg-slate-50 flex items-center gap-2 text-slate-700"
+                          >
+                            <FiEyeOff className="w-4 h-4" />
+                            Unpublish
+                          </button>
+                        ) : (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleStatusChange("lesson", lesson.id, "published");
+                              setShowDeleteConfirm(null);
+                            }}
+                            className="w-full px-4 py-2 text-left hover:bg-slate-50 flex items-center gap-2 text-slate-700"
+                          >
+                            <FiEye className="w-4 h-4" />
+                            Publish
+                          </button>
+                        )}
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleStatusChange("lesson", lesson.id, "draft");
+                            setShowDeleteConfirm(null);
+                          }}
+                          className="w-full px-4 py-2 text-left hover:bg-slate-50 flex items-center gap-2 text-slate-700"
+                        >
+                          <FiFileText className="w-4 h-4" />
+                          Set as Draft
+                        </button>
+                      </div>
+                      <div className="border-t border-slate-200">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (confirm("Are you sure you want to delete this lesson?")) {
+                              handleDelete("lesson", lesson.id);
+                            }
+                            setShowDeleteConfirm(null);
+                          }}
+                          className="w-full px-4 py-2 text-left hover:bg-red-50 flex items-center gap-2 text-red-600"
+                        >
+                          <FiTrash2 className="w-4 h-4" />
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
               ))}
             </div>
           )}
@@ -1017,1172 +1403,6 @@ export default function SuperAdminCourses() {
     );
   }
 
-  // Create Lesson View
-  if (view === "create-lesson" && selectedModule) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
-        <div className="max-w-2xl mx-auto">
-          <div className="bg-white rounded-md p-8 border border-slate-200 shadow-lg">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <button
-                  onClick={() => navigate(`/lms/superadmin/courses/${selectedCourse.id}/modules/${selectedModule.id}`)}
-                  className="text-slate-600 hover:text-slate-900 mb-2 flex items-center gap-2"
-                >
-                  <FiArrowLeft className="w-4 h-4" />
-                  <span>Back</span>
-                </button>
-                <h2 className="text-2xl font-bold text-slate-900">Create Lesson</h2>
-                <p className="text-slate-600 mt-1">Module: {selectedModule.title}</p>
-              </div>
-              <button
-                onClick={() => navigate(`/lms/superadmin/courses/${selectedCourse.id}/modules/${selectedModule.id}`)}
-                className="p-2 rounded-lg hover:bg-slate-100 transition-colors"
-              >
-                <FiX className="w-6 h-6 text-slate-600" />
-              </button>
-            </div>
-
-            <div className="space-y-6">
-              <div>
-                <label className="block text-sm font-semibold text-slate-900 mb-2">
-                  Lesson Title <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={lessonForm.title}
-                  onChange={(e) => setLessonForm({ ...lessonForm, title: e.target.value })}
-                  placeholder="Enter lesson title"
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-slate-900 mb-2">Summary</label>
-                <textarea
-                  value={lessonForm.summary}
-                  onChange={(e) => setLessonForm({ ...lessonForm, summary: e.target.value })}
-                  placeholder="Enter lesson summary"
-                  rows={4}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
-                />
-              </div>
-
-              <div className="flex items-center gap-4 pt-4">
-                <button
-                  onClick={handleCreateLesson}
-                  disabled={saving || !lessonForm.title}
-                  className="flex-1 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                >
-                  {saving ? (
-                    <ButtonLoading text="Creating..." size="sm" />
-                  ) : (
-                    <>
-                      <FiSave className="w-5 h-5" />
-                      Create Lesson
-                    </>
-                  )}
-                </button>
-                <button
-                  onClick={() => navigate(`/lms/superadmin/courses/${selectedCourse.id}/modules/${selectedModule.id}`)}
-                  className="px-6 py-3 bg-slate-100 text-slate-700 font-semibold rounded-md hover:bg-slate-200 transition-colors"
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Lesson Editor View (comprehensive)
-  if (view === "lesson" && selectedLesson) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
-        <div className="max-w-7xl mx-auto">
-          {/* Header */}
-          <div className="mb-8">
-            <button
-              onClick={async () => {
-                if (selectedModule && selectedCourse) {
-                  // Refresh the course tree to get latest data
-                  const tree = await fetchCourseTree(selectedCourse.id);
-                  if (tree) {
-                    const updatedCourse = { ...selectedCourse, modules: tree.modules || [], lessons: tree.lessons || [] };
-                    setSelectedCourse(updatedCourse);
-                    
-                    // Find the module and restore it with lessons
-                    const module = tree.modules?.find(m => m.id === selectedModule.id);
-                    if (module) {
-                      const moduleLessons = tree.lessons?.filter((l) => l.module_id === module.id) || [];
-                      setSelectedModule({ ...module, lessons: moduleLessons });
-                    }
-                  }
-                  navigate(`/lms/superadmin/courses/${selectedCourse.id}/modules/${module.id}`);
-                } else if (selectedCourse && selectedLesson) {
-                  // If module context is lost, find it from the lesson's module_id
-                  const tree = await fetchCourseTree(selectedCourse.id);
-                  if (tree) {
-                    const module = tree.modules?.find(m => m.id === selectedLesson.module_id);
-                    if (module) {
-                      const moduleLessons = tree.lessons?.filter((l) => l.module_id === module.id) || [];
-                      setSelectedModule({ ...module, lessons: moduleLessons });
-                      setSelectedCourse({ ...selectedCourse, modules: tree.modules || [], lessons: tree.lessons || [] });
-                      navigate(`/lms/superadmin/courses/${selectedCourse.id}/modules/${module.id}`);
-                    } else {
-                      navigate(`/lms/superadmin/courses/${selectedCourse.id}`);
-                    }
-                  } else {
-                    navigate(`/lms/superadmin/courses/${selectedCourse.id}`);
-                  }
-                } else {
-                  navigate(`/lms/superadmin/courses/${selectedCourse.id}`);
-                }
-              }}
-              className="text-slate-600 hover:text-slate-900 mb-4 flex items-center gap-2"
-            >
-              <FiArrowLeft className="w-4 h-4" />
-              <span>Back to Module</span>
-            </button>
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-3xl md:text-4xl font-bold text-slate-900">{selectedLesson.title}</h1>
-                <p className="text-slate-600 mt-2">{selectedLesson.summary || "No summary"}</p>
-              </div>
-              <div className="flex items-center gap-3">
-                <button
-                  onClick={() => handleDeleteLesson(selectedLesson.id)}
-                  className="px-4 py-2 bg-red-50 text-red-600 font-semibold rounded-md hover:bg-red-100 transition-all duration-300 flex items-center gap-2"
-                >
-                  <FiTrash2 className="w-4 h-4" />
-                  Delete Lesson
-                </button>
-                <button
-                  onClick={handleSaveLessonDetails}
-                  disabled={saving}
-                  className="px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-                >
-                  {saving ? (
-                    <ButtonLoading text="Saving..." size="sm" />
-                  ) : (
-                    <>
-                      <FiSave className="w-5 h-5" />
-                      Save All Changes
-                    </>
-                  )}
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* Lesson Details Tabs */}
-          <div className="bg-white rounded-md border border-slate-200 shadow-lg overflow-hidden">
-            {/* Basic Info */}
-            <div className="p-6 border-b border-slate-200">
-              <h2 className="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
-                <FiFileText className="w-5 h-5" />
-                Lesson Details
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-semibold text-slate-900 mb-2">Title</label>
-                  <input
-                    type="text"
-                    value={lessonForm.title}
-                    onChange={(e) => setLessonForm({ ...lessonForm, title: e.target.value })}
-                    className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-slate-900 mb-2">Summary</label>
-                  <input
-                    type="text"
-                    value={lessonForm.summary}
-                    onChange={(e) => setLessonForm({ ...lessonForm, summary: e.target.value })}
-                    className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Video Details */}
-            <div className="p-6 border-b border-slate-200">
-              <h2 className="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
-                <FiVideo className="w-5 h-5" />
-                Video Details
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-sm font-semibold text-slate-900 mb-2">Video Provider</label>
-                  <input
-                    type="text"
-                    value={lessonDetails.videoProvider}
-                    onChange={(e) =>
-                      setLessonDetails({ ...lessonDetails, videoProvider: e.target.value })
-                    }
-                    placeholder="e.g., cloudflare_stream"
-                    className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-slate-900 mb-2">Video ID</label>
-                  <input
-                    type="text"
-                    value={lessonDetails.videoId}
-                    onChange={(e) => setLessonDetails({ ...lessonDetails, videoId: e.target.value })}
-                    placeholder="Video identifier"
-                    className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-slate-900 mb-2">Video URL</label>
-                  <input
-                    type="url"
-                    value={lessonDetails.videoUrl}
-                    onChange={(e) => setLessonDetails({ ...lessonDetails, videoUrl: e.target.value })}
-                    placeholder="https://..."
-                    className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Cheatsheets */}
-            <CheatsheetsSection
-              lessonId={selectedLesson.id}
-              cheatsheets={lessonDetails.cheatsheets}
-              token={token}
-              onUpdate={async () => {
-                const res = await apiFetch(`/api/v1/admin/lessons/${selectedLesson.id}/resources`, { token });
-                if (res?.ok) {
-                  setLessonDetails({
-                    ...lessonDetails,
-                    cheatsheets: res.data.filter((r) => r.type === "cheatsheet"),
-                  });
-                }
-              }}
-            />
-
-            {/* Practice Tasks */}
-            <PracticeSection
-              lessonId={selectedLesson.id}
-              practices={lessonDetails.practices}
-              token={token}
-              onUpdate={async () => {
-                const res = await apiFetch(`/api/v1/admin/lessons/${selectedLesson.id}/practice`, { token });
-                if (res?.ok) {
-                  setLessonDetails({ ...lessonDetails, practices: res.data });
-                }
-              }}
-            />
-
-            {/* MCQs */}
-            <McqsSection
-              lessonId={selectedLesson.id}
-              mcqs={lessonDetails.mcqs}
-              token={token}
-              onUpdate={async () => {
-                const res = await apiFetch(`/api/v1/admin/lessons/${selectedLesson.id}/mcqs`, { token });
-                if (res?.ok) {
-                  setLessonDetails({ ...lessonDetails, mcqs: res.data });
-                }
-              }}
-            />
-
-            {/* Slides */}
-            <SlidesSection
-              lessonId={selectedLesson.id}
-              slides={lessonDetails.slides}
-              token={token}
-              onUpdate={async () => {
-                const res = await apiFetch(`/api/v1/admin/lessons/${selectedLesson.id}/slides`, { token });
-                if (res?.ok) {
-                  setLessonDetails({ ...lessonDetails, slides: res.data });
-                }
-              }}
-            />
-          </div>
-        </div>
-      </div>
-    );
-  }
-
+  // Lesson view is now handled by SuperAdminViewLesson component
   return null;
-}
-
-// Cheatsheets Component
-function CheatsheetsSection({ lessonId, cheatsheets, token, onUpdate }) {
-  const [editingId, setEditingId] = useState(null);
-  const [form, setForm] = useState({ title: "", url: "" });
-  const [saving, setSaving] = useState(false);
-
-  const handleAdd = async () => {
-    if (!form.title || !form.url) {
-      alert("Title and URL are required");
-      return;
-    }
-
-    try {
-      setSaving(true);
-      await apiFetch(`/api/v1/admin/lessons/${lessonId}/resources`, {
-        method: "POST",
-        token,
-        body: { type: "cheatsheet", title: form.title, url: form.url },
-      });
-      setForm({ title: "", url: "" });
-      onUpdate();
-    } catch (error) {
-      alert("Failed to add cheatsheet");
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const handleUpdate = async (id) => {
-    try {
-      setSaving(true);
-      await apiFetch(`/api/v1/admin/resources/${id}`, {
-        method: "PATCH",
-        token,
-        body: form,
-      });
-      setEditingId(null);
-      setForm({ title: "", url: "" });
-      onUpdate();
-    } catch (error) {
-      alert("Failed to update cheatsheet");
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const handleDelete = async (id) => {
-    if (!confirm("Delete this cheatsheet?")) return;
-    try {
-      await apiFetch(`/api/v1/admin/resources/${id}`, { method: "DELETE", token });
-      onUpdate();
-    } catch (error) {
-      alert("Failed to delete cheatsheet");
-    }
-  };
-
-  return (
-    <div className="p-6 border-b border-slate-200">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-          <FiFileText className="w-5 h-5" />
-          Cheatsheets ({cheatsheets.length})
-        </h2>
-        <button
-          onClick={() => {
-            setForm({ title: "", url: "" });
-            setEditingId("new");
-          }}
-          className="px-4 py-2 bg-emerald-50 text-emerald-600 font-medium rounded-lg hover:bg-emerald-100 flex items-center gap-2"
-        >
-          <FiPlus className="w-4 h-4" />
-          Add
-        </button>
-      </div>
-
-      {editingId === "new" && (
-        <div className="mb-4 p-4 bg-slate-50 rounded-lg">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <input
-              type="text"
-              placeholder="Cheatsheet title"
-              value={form.title}
-              onChange={(e) => setForm({ ...form, title: e.target.value })}
-              className="px-4 py-2 border border-slate-200 rounded-lg"
-            />
-            <input
-              type="url"
-              placeholder="URL"
-              value={form.url}
-              onChange={(e) => setForm({ ...form, url: e.target.value })}
-              className="px-4 py-2 border border-slate-200 rounded-lg"
-            />
-          </div>
-          <div className="flex gap-2">
-            <button
-              onClick={handleAdd}
-              disabled={saving}
-              className="px-4 py-2 bg-emerald-600 text-white rounded-lg disabled:opacity-50"
-            >
-              Save
-            </button>
-            <button
-              onClick={() => setEditingId(null)}
-              className="px-4 py-2 bg-slate-200 rounded-lg"
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      )}
-
-      <div className="space-y-2">
-        {cheatsheets.map((item) => (
-          <div key={item.id} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-            {editingId === item.id ? (
-              <div className="flex-1 grid grid-cols-2 gap-2">
-                <input
-                  type="text"
-                  value={form.title}
-                  onChange={(e) => setForm({ ...form, title: e.target.value })}
-                  className="px-3 py-1 border rounded"
-                />
-                <input
-                  type="url"
-                  value={form.url}
-                  onChange={(e) => setForm({ ...form, url: e.target.value })}
-                  className="px-3 py-1 border rounded"
-                />
-              </div>
-            ) : (
-              <div className="flex-1">
-                <div className="font-medium">{item.title}</div>
-                <div className="text-sm text-slate-600">{item.url}</div>
-              </div>
-            )}
-            <div className="flex gap-2">
-              {editingId === item.id ? (
-                <>
-                  <button
-                    onClick={() => handleUpdate(item.id)}
-                    className="p-2 text-emerald-600 hover:bg-emerald-50 rounded"
-                  >
-                    <FiCheck className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={() => {
-                      setEditingId(null);
-                      setForm({ title: "", url: "" });
-                    }}
-                    className="p-2 text-slate-600 hover:bg-slate-100 rounded"
-                  >
-                    <FiX className="w-4 h-4" />
-                  </button>
-                </>
-              ) : (
-                <>
-                  <button
-                    onClick={() => {
-                      setEditingId(item.id);
-                      setForm({ title: item.title, url: item.url });
-                    }}
-                    className="p-2 text-blue-600 hover:bg-blue-50 rounded"
-                  >
-                    <FiEdit2 className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={() => handleDelete(item.id)}
-                    className="p-2 text-red-600 hover:bg-red-50 rounded"
-                  >
-                    <FiTrash2 className="w-4 h-4" />
-                  </button>
-                </>
-              )}
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-// Practice Section Component
-function PracticeSection({ lessonId, practices, token, onUpdate }) {
-  const [editingId, setEditingId] = useState(null);
-  const [form, setForm] = useState({ title: "", prompt: "", language: "", starterCode: "", expectedOutput: "" });
-  const [saving, setSaving] = useState(false);
-
-  const handleAdd = async () => {
-    if (!form.title || !form.prompt) {
-      alert("Title and prompt are required");
-      return;
-    }
-
-    try {
-      setSaving(true);
-      await apiFetch(`/api/v1/admin/lessons/${lessonId}/practice`, {
-        method: "POST",
-        token,
-        body: form,
-      });
-      setForm({ title: "", prompt: "", language: "", starterCode: "", expectedOutput: "" });
-      onUpdate();
-    } catch (error) {
-      alert("Failed to add practice");
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const handleUpdate = async (id) => {
-    try {
-      setSaving(true);
-      await apiFetch(`/api/v1/admin/practice/${id}`, {
-        method: "PATCH",
-        token,
-        body: form,
-      });
-      setEditingId(null);
-      setForm({ title: "", prompt: "", language: "", starterCode: "", expectedOutput: "" });
-      onUpdate();
-    } catch (error) {
-      alert("Failed to update practice");
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const handleDelete = async (id) => {
-    if (!confirm("Delete this practice task?")) return;
-    try {
-      await apiFetch(`/api/v1/admin/practice/${id}`, { method: "DELETE", token });
-      onUpdate();
-    } catch (error) {
-      alert("Failed to delete practice");
-    }
-  };
-
-  return (
-    <div className="p-6 border-b border-slate-200">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-          <FiCode className="w-5 h-5" />
-          Practice Tasks ({practices.length})
-        </h2>
-        <button
-          onClick={() => {
-            setForm({ title: "", prompt: "", language: "", starterCode: "", expectedOutput: "" });
-            setEditingId("new");
-          }}
-          className="px-4 py-2 bg-emerald-50 text-emerald-600 font-medium rounded-lg hover:bg-emerald-100 flex items-center gap-2"
-        >
-          <FiPlus className="w-4 h-4" />
-          Add
-        </button>
-      </div>
-
-      {editingId === "new" && (
-        <div className="mb-4 p-4 bg-slate-50 rounded-lg space-y-4">
-          <input
-            type="text"
-            placeholder="Practice title"
-            value={form.title}
-            onChange={(e) => setForm({ ...form, title: e.target.value })}
-            className="w-full px-4 py-2 border border-slate-200 rounded-lg"
-          />
-          <textarea
-            placeholder="Prompt/Description"
-            value={form.prompt}
-            onChange={(e) => setForm({ ...form, prompt: e.target.value })}
-            rows={3}
-            className="w-full px-4 py-2 border border-slate-200 rounded-lg"
-          />
-          <div className="grid grid-cols-2 gap-4">
-            <input
-              type="text"
-              placeholder="Language (e.g., javascript)"
-              value={form.language}
-              onChange={(e) => setForm({ ...form, language: e.target.value })}
-              className="px-4 py-2 border border-slate-200 rounded-lg"
-            />
-            <input
-              type="text"
-              placeholder="Expected output"
-              value={form.expectedOutput}
-              onChange={(e) => setForm({ ...form, expectedOutput: e.target.value })}
-              className="px-4 py-2 border border-slate-200 rounded-lg"
-            />
-          </div>
-          <textarea
-            placeholder="Starter code"
-            value={form.starterCode}
-            onChange={(e) => setForm({ ...form, starterCode: e.target.value })}
-            rows={4}
-            className="w-full px-4 py-2 border border-slate-200 rounded-lg font-mono text-sm"
-          />
-          <div className="flex gap-2">
-            <button
-              onClick={handleAdd}
-              disabled={saving}
-              className="px-4 py-2 bg-emerald-600 text-white rounded-lg disabled:opacity-50"
-            >
-              Save
-            </button>
-            <button
-              onClick={() => setEditingId(null)}
-              className="px-4 py-2 bg-slate-200 rounded-lg"
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      )}
-
-      <div className="space-y-2">
-        {practices.map((item) => (
-          <div key={item.id} className="p-4 bg-slate-50 rounded-lg">
-            {editingId === item.id ? (
-              <div className="space-y-4">
-                <input
-                  type="text"
-                  value={form.title}
-                  onChange={(e) => setForm({ ...form, title: e.target.value })}
-                  className="w-full px-3 py-2 border rounded"
-                />
-                <textarea
-                  value={form.prompt}
-                  onChange={(e) => setForm({ ...form, prompt: e.target.value })}
-                  rows={3}
-                  className="w-full px-3 py-2 border rounded"
-                />
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => handleUpdate(item.id)}
-                    className="px-4 py-2 bg-emerald-600 text-white rounded"
-                  >
-                    Save
-                  </button>
-                  <button
-                    onClick={() => {
-                      setEditingId(null);
-                      setForm({ title: "", prompt: "", language: "", starterCode: "", expectedOutput: "" });
-                    }}
-                    className="px-4 py-2 bg-slate-200 rounded"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <div className="font-medium">{item.title}</div>
-                  <div className="text-sm text-slate-600 mt-1">{item.prompt}</div>
-                  {item.language && (
-                    <span className="inline-block mt-2 px-2 py-1 bg-blue-50 text-blue-600 text-xs rounded">
-                      {item.language}
-                    </span>
-                  )}
-                </div>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => {
-                      setEditingId(item.id);
-                      setForm({
-                        title: item.title,
-                        prompt: item.prompt,
-                        language: item.language,
-                        starterCode: item.starter_code,
-                        expectedOutput: item.expected_output,
-                      });
-                    }}
-                    className="p-2 text-blue-600 hover:bg-blue-50 rounded"
-                  >
-                    <FiEdit2 className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={() => handleDelete(item.id)}
-                    className="p-2 text-red-600 hover:bg-red-50 rounded"
-                  >
-                    <FiTrash2 className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-// MCQs Section Component
-function McqsSection({ lessonId, mcqs, token, onUpdate }) {
-  const [editingId, setEditingId] = useState(null);
-  const [form, setForm] = useState({ question: "", options: [{ text: "", isCorrect: false }], explanation: "" });
-  const [saving, setSaving] = useState(false);
-
-  const handleAddOption = () => {
-    setForm({
-      ...form,
-      options: [...form.options, { text: "", isCorrect: false }],
-    });
-  };
-
-  const handleUpdateOption = (index, field, value) => {
-    const newOptions = [...form.options];
-    newOptions[index] = { ...newOptions[index], [field]: value };
-    setForm({ ...form, options: newOptions });
-  };
-
-  const handleRemoveOption = (index) => {
-    const newOptions = form.options.filter((_, i) => i !== index);
-    setForm({ ...form, options: newOptions });
-  };
-
-  const handleAdd = async () => {
-    if (!form.question || form.options.length < 2) {
-      alert("Question and at least 2 options are required");
-      return;
-    }
-
-    try {
-      setSaving(true);
-      await apiFetch(`/api/v1/admin/lessons/${lessonId}/mcqs`, {
-        method: "POST",
-        token,
-        body: form,
-      });
-      setForm({ question: "", options: [{ text: "", isCorrect: false }], explanation: "" });
-      setEditingId(null);
-      onUpdate();
-    } catch (error) {
-      alert("Failed to add MCQ");
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const handleUpdate = async (id) => {
-    try {
-      setSaving(true);
-      await apiFetch(`/api/v1/admin/mcqs/${id}`, {
-        method: "PATCH",
-        token,
-        body: form,
-      });
-      setEditingId(null);
-      setForm({ question: "", options: [{ text: "", isCorrect: false }], explanation: "" });
-      onUpdate();
-    } catch (error) {
-      alert("Failed to update MCQ");
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const handleDelete = async (id) => {
-    if (!confirm("Delete this MCQ?")) return;
-    try {
-      await apiFetch(`/api/v1/admin/mcqs/${id}`, { method: "DELETE", token });
-      onUpdate();
-    } catch (error) {
-      alert("Failed to delete MCQ");
-    }
-  };
-
-  return (
-    <div className="p-6 border-b border-slate-200">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-          <FiHelpCircle className="w-5 h-5" />
-          MCQs ({mcqs.length})
-        </h2>
-        <button
-          onClick={() => {
-            setForm({ question: "", options: [{ text: "", isCorrect: false }], explanation: "" });
-            setEditingId("new");
-          }}
-          className="px-4 py-2 bg-emerald-50 text-emerald-600 font-medium rounded-lg hover:bg-emerald-100 flex items-center gap-2"
-        >
-          <FiPlus className="w-4 h-4" />
-          Add
-        </button>
-      </div>
-
-      {editingId === "new" && (
-        <div className="mb-4 p-4 bg-slate-50 rounded-lg space-y-4">
-          <textarea
-            placeholder="Question"
-            value={form.question}
-            onChange={(e) => setForm({ ...form, question: e.target.value })}
-            rows={2}
-            className="w-full px-4 py-2 border border-slate-200 rounded-lg"
-          />
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <label className="text-sm font-semibold">Options</label>
-              <button
-                onClick={handleAddOption}
-                className="text-sm text-blue-600 hover:text-blue-700"
-              >
-                + Add Option
-              </button>
-            </div>
-            {form.options.map((option, index) => (
-              <div key={index} className="flex items-center gap-2">
-                <input
-                  type="text"
-                  placeholder={`Option ${index + 1}`}
-                  value={option.text}
-                  onChange={(e) => handleUpdateOption(index, "text", e.target.value)}
-                  className="flex-1 px-3 py-2 border rounded"
-                />
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={option.isCorrect}
-                    onChange={(e) => handleUpdateOption(index, "isCorrect", e.target.checked)}
-                  />
-                  <span className="text-sm">Correct</span>
-                </label>
-                {form.options.length > 1 && (
-                  <button
-                    onClick={() => handleRemoveOption(index)}
-                    className="p-2 text-red-600 hover:bg-red-50 rounded"
-                  >
-                    <FiX className="w-4 h-4" />
-                  </button>
-                )}
-              </div>
-            ))}
-          </div>
-          <textarea
-            placeholder="Explanation (optional)"
-            value={form.explanation}
-            onChange={(e) => setForm({ ...form, explanation: e.target.value })}
-            rows={2}
-            className="w-full px-4 py-2 border border-slate-200 rounded-lg"
-          />
-          <div className="flex gap-2">
-            <button
-              onClick={handleAdd}
-              disabled={saving}
-              className="px-4 py-2 bg-emerald-600 text-white rounded-lg disabled:opacity-50"
-            >
-              Save
-            </button>
-            <button
-              onClick={() => {
-                setEditingId(null);
-                setForm({ question: "", options: [{ text: "", isCorrect: false }], explanation: "" });
-              }}
-              className="px-4 py-2 bg-slate-200 rounded-lg"
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      )}
-
-      <div className="space-y-4">
-        {mcqs.map((item) => {
-          const options = typeof item.options === "string" ? JSON.parse(item.options) : item.options;
-          return (
-            <div key={item.id} className="p-4 bg-slate-50 rounded-lg">
-              {editingId === item.id ? (
-                <div className="space-y-4">
-                  <textarea
-                    value={form.question}
-                    onChange={(e) => setForm({ ...form, question: e.target.value })}
-                    rows={2}
-                    className="w-full px-3 py-2 border rounded"
-                  />
-                  <div className="space-y-2">
-                    {form.options.map((option, index) => (
-                      <div key={index} className="flex items-center gap-2">
-                        <input
-                          type="text"
-                          value={option.text}
-                          onChange={(e) => handleUpdateOption(index, "text", e.target.value)}
-                          className="flex-1 px-3 py-2 border rounded"
-                        />
-                        <label className="flex items-center gap-2">
-                          <input
-                            type="checkbox"
-                            checked={option.isCorrect}
-                            onChange={(e) => handleUpdateOption(index, "isCorrect", e.target.checked)}
-                          />
-                          <span className="text-sm">Correct</span>
-                        </label>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => handleUpdate(item.id)}
-                      className="px-4 py-2 bg-emerald-600 text-white rounded"
-                    >
-                      Save
-                    </button>
-                    <button
-                      onClick={() => {
-                        setEditingId(null);
-                        setForm({ question: "", options: [{ text: "", isCorrect: false }], explanation: "" });
-                      }}
-                      className="px-4 py-2 bg-slate-200 rounded"
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="font-medium mb-2">{item.question}</div>
-                    <div className="space-y-1">
-                      {options.map((opt, idx) => (
-                        <div
-                          key={idx}
-                          className={`text-sm p-2 rounded ${
-                            opt.isCorrect ? "bg-emerald-50 text-emerald-700" : "bg-slate-100"
-                          }`}
-                        >
-                          {opt.text} {opt.isCorrect && <FiCheck className="inline w-4 h-4 ml-2" />}
-                        </div>
-                      ))}
-                    </div>
-                    {item.explanation && (
-                      <div className="text-sm text-slate-600 mt-2 italic">{item.explanation}</div>
-                    )}
-                  </div>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => {
-                        setEditingId(item.id);
-                        setForm({
-                          question: item.question,
-                          options: options,
-                          explanation: item.explanation || "",
-                        });
-                      }}
-                      className="p-2 text-blue-600 hover:bg-blue-50 rounded"
-                    >
-                      <FiEdit2 className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(item.id)}
-                      className="p-2 text-red-600 hover:bg-red-50 rounded"
-                    >
-                      <FiTrash2 className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-// Slides Section Component
-function SlidesSection({ lessonId, slides, token, onUpdate }) {
-  const [editingId, setEditingId] = useState(null);
-  const [form, setForm] = useState({ title: "", content: "", slideNumber: 0, imageUrl: "" });
-  const [saving, setSaving] = useState(false);
-
-  const handleAdd = async () => {
-    if (!form.title) {
-      alert("Title is required");
-      return;
-    }
-
-    try {
-      setSaving(true);
-      await apiFetch(`/api/v1/admin/lessons/${lessonId}/slides`, {
-        method: "POST",
-        token,
-        body: form,
-      });
-      setForm({ title: "", content: "", slideNumber: slides.length, imageUrl: "" });
-      setEditingId(null);
-      onUpdate();
-    } catch (error) {
-      alert("Failed to add slide");
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const handleUpdate = async (id) => {
-    try {
-      setSaving(true);
-      await apiFetch(`/api/v1/admin/slides/${id}`, {
-        method: "PATCH",
-        token,
-        body: form,
-      });
-      setEditingId(null);
-      setForm({ title: "", content: "", slideNumber: 0, imageUrl: "" });
-      onUpdate();
-    } catch (error) {
-      alert("Failed to update slide");
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const handleDelete = async (id) => {
-    if (!confirm("Delete this slide?")) return;
-    try {
-      await apiFetch(`/api/v1/admin/slides/${id}`, { method: "DELETE", token });
-      onUpdate();
-    } catch (error) {
-      alert("Failed to delete slide");
-    }
-  };
-
-  return (
-    <div className="p-6">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-          <FiImage className="w-5 h-5" />
-          Slides ({slides.length})
-        </h2>
-        <button
-          onClick={() => {
-            setForm({ title: "", content: "", slideNumber: slides.length, imageUrl: "" });
-            setEditingId("new");
-          }}
-          className="px-4 py-2 bg-emerald-50 text-emerald-600 font-medium rounded-lg hover:bg-emerald-100 flex items-center gap-2"
-        >
-          <FiPlus className="w-4 h-4" />
-          Add
-        </button>
-      </div>
-
-      {editingId === "new" && (
-        <div className="mb-4 p-4 bg-slate-50 rounded-lg space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <input
-              type="text"
-              placeholder="Slide title"
-              value={form.title}
-              onChange={(e) => setForm({ ...form, title: e.target.value })}
-              className="px-4 py-2 border border-slate-200 rounded-lg"
-            />
-            <input
-              type="number"
-              placeholder="Slide number"
-              value={form.slideNumber}
-              onChange={(e) => setForm({ ...form, slideNumber: parseInt(e.target.value) || 0 })}
-              className="px-4 py-2 border border-slate-200 rounded-lg"
-            />
-          </div>
-          <input
-            type="url"
-            placeholder="Image URL"
-            value={form.imageUrl}
-            onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
-            className="w-full px-4 py-2 border border-slate-200 rounded-lg"
-          />
-          <textarea
-            placeholder="Slide content (Markdown/HTML)"
-            value={form.content}
-            onChange={(e) => setForm({ ...form, content: e.target.value })}
-            rows={6}
-            className="w-full px-4 py-2 border border-slate-200 rounded-lg font-mono text-sm"
-          />
-          <div className="flex gap-2">
-            <button
-              onClick={handleAdd}
-              disabled={saving}
-              className="px-4 py-2 bg-emerald-600 text-white rounded-lg disabled:opacity-50"
-            >
-              Save
-            </button>
-            <button
-              onClick={() => {
-                setEditingId(null);
-                setForm({ title: "", content: "", slideNumber: 0, imageUrl: "" });
-              }}
-              className="px-4 py-2 bg-slate-200 rounded-lg"
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      )}
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {slides.map((item) => (
-          <div key={item.id} className="p-4 bg-slate-50 rounded-lg">
-            {editingId === item.id ? (
-              <div className="space-y-4">
-                <input
-                  type="text"
-                  value={form.title}
-                  onChange={(e) => setForm({ ...form, title: e.target.value })}
-                  className="w-full px-3 py-2 border rounded"
-                />
-                <textarea
-                  value={form.content}
-                  onChange={(e) => setForm({ ...form, content: e.target.value })}
-                  rows={4}
-                  className="w-full px-3 py-2 border rounded"
-                />
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => handleUpdate(item.id)}
-                    className="px-4 py-2 bg-emerald-600 text-white rounded"
-                  >
-                    Save
-                  </button>
-                  <button
-                    onClick={() => {
-                      setEditingId(null);
-                      setForm({ title: "", content: "", slideNumber: 0, imageUrl: "" });
-                    }}
-                    className="px-4 py-2 bg-slate-200 rounded"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div>
-                <div className="flex items-start justify-between mb-2">
-                  <div className="flex-1">
-                    <div className="font-medium">{item.title}</div>
-                    <div className="text-xs text-slate-500">Slide #{item.slide_number}</div>
-                  </div>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => {
-                        setEditingId(item.id);
-                        setForm({
-                          title: item.title,
-                          content: item.content,
-                          slideNumber: item.slide_number,
-                          imageUrl: item.image_url,
-                        });
-                      }}
-                      className="p-2 text-blue-600 hover:bg-blue-50 rounded"
-                    >
-                      <FiEdit2 className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(item.id)}
-                      className="p-2 text-red-600 hover:bg-red-50 rounded"
-                    >
-                      <FiTrash2 className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-                {item.image_url && (
-                  <img
-                    src={item.image_url}
-                    alt={item.title}
-                    className="w-full h-32 object-cover rounded mt-2"
-                  />
-                )}
-                {item.content && (
-                  <div className="text-sm text-slate-600 mt-2 line-clamp-3">{item.content}</div>
-                )}
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
 }

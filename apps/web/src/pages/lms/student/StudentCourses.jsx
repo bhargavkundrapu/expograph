@@ -3,16 +3,17 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../app/providers/AuthProvider";
 import { apiFetch } from "../../../services/api";
-import { PageLoading } from "../../../Components/common/LoadingStates";
+import { StudentCoursesSkeleton } from "../../../Components/common/SkeletonLoaders";
 import {
+  FiCheck,
+  FiGlobe,
+  FiCode,
   FiBookOpen,
-  FiPlay,
-  FiSearch,
-  FiTrendingUp,
-  FiAward,
-  FiClock,
-  FiBarChart2,
+  FiX,
+  FiChevronRight,
+  FiChevronDown,
 } from "react-icons/fi";
+import { AnimatePresence } from "framer-motion";
 
 export default function StudentCourses() {
   const navigate = useNavigate();
@@ -21,6 +22,10 @@ export default function StudentCourses() {
   const [courses, setCourses] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterLevel, setFilterLevel] = useState("all");
+  const [selectedCourse, setSelectedCourse] = useState(null);
+  const [courseDetails, setCourseDetails] = useState(null);
+  const [loadingDetails, setLoadingDetails] = useState(false);
+  const [expandedTopics, setExpandedTopics] = useState(new Set());
 
   useEffect(() => {
     if (!token) return;
@@ -40,6 +45,55 @@ export default function StudentCourses() {
     }
   };
 
+  const fetchCourseDetails = async (courseSlug) => {
+    try {
+      setLoadingDetails(true);
+      const res = await apiFetch(`/api/v1/student/courses/${courseSlug}`, { token }).catch(() => ({ data: null }));
+      if (res?.data?.course) {
+        setCourseDetails(res.data.course);
+      } else if (res?.course) {
+        setCourseDetails(res.course);
+      }
+    } catch (error) {
+      console.error("Failed to fetch course details:", error);
+      setCourseDetails(null);
+    } finally {
+      setLoadingDetails(false);
+    }
+  };
+
+  const handleCourseClick = async (course) => {
+    setSelectedCourse(course);
+    await fetchCourseDetails(course.slug);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedCourse(null);
+    setCourseDetails(null);
+    setExpandedTopics(new Set());
+  };
+
+  const toggleTopic = (topicId) => {
+    const newExpanded = new Set(expandedTopics);
+    if (newExpanded.has(topicId)) {
+      newExpanded.delete(topicId);
+    } else {
+      newExpanded.add(topicId);
+    }
+    setExpandedTopics(newExpanded);
+  };
+
+  const formatDuration = (seconds) => {
+    if (!seconds) return "0 Mins";
+    const mins = Math.round(seconds / 60);
+    return `${mins} Mins`;
+  };
+
+  const isTopicCompleted = (module) => {
+    if (!module.lessons || module.lessons.length === 0) return false;
+    return module.lessons.every((lesson) => lesson.completed);
+  };
+
   const filteredCourses = courses.filter((course) => {
     const matchesSearch =
       course.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -48,125 +102,376 @@ export default function StudentCourses() {
     return matchesSearch && matchesLevel;
   });
 
+  // Calculate overall progress
+  const overallProgress = courses.length > 0
+    ? Math.round(courses.reduce((sum, course) => sum + (course.progress || 0), 0) / courses.length)
+    : 0;
+
+  // Calculate total duration (assuming each course has duration)
+  const totalDuration = courses.reduce((sum, course) => {
+    const duration = course.duration || course.estimated_duration || 0;
+    return sum + (typeof duration === 'number' ? duration : 0);
+  }, 0);
+
   if (loading) {
-    return <PageLoading />;
+    return <StudentCoursesSkeleton />;
   }
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-cyan-50 via-blue-50 to-indigo-50 p-8">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-600 bg-clip-text text-transparent mb-3">My Courses</h1>
-          <p className="text-slate-600 text-lg">Continue your learning journey</p>
-        </div>
+  // Circular Progress Component
+  const CircularProgress = ({ percentage, size = 40 }) => {
+    const radius = (size - 8) / 2;
+    const circumference = 2 * Math.PI * radius;
+    const offset = circumference - (percentage / 100) * circumference;
 
-        {/* Search and Filter */}
-        <div className="mb-8 flex flex-col md:flex-row gap-4">
-          <div className="relative flex-1">
-            <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-cyan-500" />
-            <input
-              type="text"
-              placeholder="Search courses..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 bg-white/80 backdrop-blur-sm border-2 border-cyan-200/50 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-400 transition-all shadow-md"
-            />
+    return (
+      <div className="relative" style={{ width: size, height: size }}>
+        <svg className="transform -rotate-90" width={size} height={size}>
+          <circle
+            cx={size / 2}
+            cy={size / 2}
+            r={radius}
+            stroke="#e2e8f0"
+            strokeWidth="4"
+            fill="none"
+          />
+          <circle
+            cx={size / 2}
+            cy={size / 2}
+            r={radius}
+            stroke="#06b6d4"
+            strokeWidth="4"
+            fill="none"
+            strokeDasharray={circumference}
+            strokeDashoffset={offset}
+            strokeLinecap="round"
+            className="transition-all duration-500"
+          />
+        </svg>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <span className="text-xs font-semibold text-slate-700">{percentage}%</span>
+        </div>
+      </div>
+    );
+  };
+
+  // Get course icon based on course data
+  const getCourseIcon = (course, index) => {
+    if (course.progress === 100) {
+      return <FiCheck className="w-6 h-6 text-green-500" />;
+    }
+    // You can customize icons based on course type or use default
+    if (course.title?.toLowerCase().includes('website') || course.title?.toLowerCase().includes('web')) {
+      return <FiGlobe className="w-6 h-6 text-blue-500" />;
+    }
+    if (course.title?.toLowerCase().includes('programming') || course.title?.toLowerCase().includes('code')) {
+      return <FiCode className="w-6 h-6 text-blue-500" />;
+    }
+    return <FiBookOpen className="w-6 h-6 text-blue-500" />;
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-50 p-8">
+      <div className="max-w-7xl mx-auto">
+        {/* Header Section */}
+        <div className="mb-8">
+          <div className="flex items-start justify-between mb-4">
+    <div>
+              <p className="text-xs uppercase tracking-wider text-slate-500 mb-1">MY LEARNINGS</p>
+              <h1 className="text-3xl md:text-4xl font-bold text-slate-900 mb-2">
+                {courses.length > 0 ? courses[0]?.learning_path_name || "My Learning Path" : "My Learnings"}
+              </h1>
+              {totalDuration > 0 && (
+                <p className="text-sm text-slate-500">{totalDuration} days</p>
+              )}
+            </div>
+            {courses.length > 0 && (
+              <div className="flex items-center gap-3">
+                <div className="w-48 bg-slate-200 rounded-full h-2">
+                  <div
+                    className="bg-blue-500 rounded-full h-2 transition-all duration-500"
+                    style={{ width: `${overallProgress}%` }}
+                  />
+                </div>
+                <span className="text-sm text-slate-500 font-medium">{overallProgress}%</span>
+              </div>
+            )}
           </div>
-          <select
-            value={filterLevel}
-            onChange={(e) => setFilterLevel(e.target.value)}
-            className="px-4 py-3 bg-white/80 backdrop-blur-sm border-2 border-cyan-200/50 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-400 shadow-md"
-          >
-            <option value="all">All Levels</option>
-            <option value="beginner">Beginner</option>
-            <option value="intermediate">Intermediate</option>
-            <option value="advanced">Advanced</option>
-          </select>
         </div>
 
         {/* Courses Grid */}
         {filteredCourses.length === 0 ? (
-          <div className="bg-white rounded-md p-12 border border-slate-200 text-center">
+          <div className="bg-white rounded-lg p-12 border border-slate-200 text-center shadow-sm">
             <FiBookOpen className="w-16 h-16 text-slate-300 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-slate-900 mb-2">No courses found</h3>
             <p className="text-slate-600">You haven't enrolled in any courses yet</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredCourses.map((course, index) => (
-              <motion.div
-                key={course.id || index}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.05 }}
-                className="bg-white rounded-md border border-slate-200 shadow-sm hover:shadow-lg transition-all overflow-hidden"
-              >
-                <div className="h-48 bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-500 relative">
-                  <div className="absolute inset-0 bg-black/10"></div>
-                  <div className="absolute top-4 right-4">
-                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                      course.level === "beginner" ? "bg-emerald-500 text-white" :
-                      course.level === "intermediate" ? "bg-amber-500 text-white" :
-                      "bg-red-500 text-white"
-                    }`}>
-                      {course.level || "Beginner"}
-                    </span>
-                  </div>
-                  <div className="absolute bottom-4 left-4 right-4">
-                    <h3 className="text-xl font-bold text-white mb-1">{course.title || "Untitled Course"}</h3>
-                  </div>
-                </div>
+            {filteredCourses.map((course, index) => {
+              const progress = course.progress || 0;
+              const isCompleted = progress === 100;
+              const topicsCount = course.modules_count || course.topics_count || course.lessons_count || 0;
+              const technologies = course.technologies || course.tags || [];
 
-                <div className="p-6">
-                  <p className="text-slate-600 text-sm mb-4 line-clamp-2">
-                    {course.description || "No description available"}
-                  </p>
+              return (
+                <motion.div
+                  key={course.id || index}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.05 }}
+                  onClick={() => handleCourseClick(course)}
+                  className="bg-white rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition-all cursor-pointer overflow-hidden"
+                >
+                  <div className="p-6">
+                    {/* Top Section */}
+                    <div className="flex items-start justify-between mb-4">
+                      {/* Left: Course Code/Icon */}
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 flex items-center justify-center">
+                          {getCourseIcon(course, index)}
+                        </div>
+                        {course.code && (
+                          <span className="text-sm font-bold text-blue-600">{course.code}</span>
+                        )}
+                      </div>
 
-                  {/* Progress Bar */}
-                  <div className="mb-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-semibold text-slate-900">Progress</span>
-                      <span className="text-sm text-slate-600">{course.progress || 0}%</span>
+                      {/* Right: Status/Progress */}
+                      <div className="flex items-center gap-2">
+                        {isCompleted ? (
+                          <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center">
+                            <FiCheck className="w-5 h-5 text-white" />
+                          </div>
+                        ) : (
+                          <CircularProgress percentage={progress} size={40} />
+                        )}
+                      </div>
                     </div>
-                    <div className="w-full bg-slate-200 rounded-full h-2">
-                      <div
-                        className="bg-gradient-to-r from-blue-500 to-blue-600 rounded-full h-2 transition-all duration-500"
-                        style={{ width: `${course.progress || 0}%` }}
-                      />
-                    </div>
-                  </div>
 
-                  {/* Course Stats */}
-                  <div className="flex items-center gap-4 text-sm text-slate-600 mb-4">
-                    {course.modules_count && (
-                      <div className="flex items-center gap-1">
-                        <FiBookOpen className="w-4 h-4" />
-                        {course.modules_count} modules
+                    {/* Course Label */}
+                    <p className="text-xs uppercase tracking-wider text-slate-500 mb-2">COURSE</p>
+
+                    {/* Course Title */}
+                    <h3 className="text-lg font-bold text-slate-900 mb-2">
+                      {index + 1}. {course.title || "Untitled Course"}
+                    </h3>
+
+                    {/* Description */}
+                    <p className="text-sm text-slate-500 mb-4 line-clamp-2">
+                      {course.description || "No description available"}
+                    </p>
+
+                    {/* Topics Count */}
+                    <p className="text-sm text-slate-500 mb-4">
+                      {topicsCount} {topicsCount === 1 ? 'Topic' : 'Topics'}
+                    </p>
+
+                    {/* Technology Tags */}
+                    {technologies.length > 0 && (
+                      <div className="flex flex-wrap gap-2">
+                        {technologies.slice(0, 3).map((tech, techIndex) => (
+                          <span
+                            key={techIndex}
+                            className="px-3 py-1 bg-slate-100 rounded-full text-xs text-slate-700 font-medium"
+                          >
+                            {typeof tech === 'string' ? tech.toUpperCase() : tech.name?.toUpperCase() || tech}
+                          </span>
+                        ))}
                       </div>
                     )}
-                    {course.duration && (
-                      <div className="flex items-center gap-1">
-                        <FiClock className="w-4 h-4" />
-                        {course.duration}
-                      </div>
-                    )}
                   </div>
-
-                  {/* CTA Button */}
-                  <button
-                    onClick={() => navigate(`/lms/student/courses/${course.slug}`)}
-                    className="w-full px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-md hover:from-blue-600 hover:to-blue-700 transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
-                  >
-                    <FiPlay className="w-5 h-5" />
-                    {course.progress > 0 ? "Continue Learning" : "Open Course"}
-                  </button>
-                </div>
-              </motion.div>
-            ))}
+                </motion.div>
+              );
+            })}
           </div>
         )}
       </div>
+
+      {/* Course Details Modal */}
+      <AnimatePresence>
+        {selectedCourse && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={handleCloseModal}
+              className="fixed inset-0 bg-black/50 z-50"
+            />
+
+            {/* Modal */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="fixed inset-0 z-50 flex items-center justify-center p-4"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+                {/* Header */}
+                <div className="p-6 border-b border-slate-200 relative">
+                  <button
+                    onClick={handleCloseModal}
+                    className="absolute top-6 right-6 w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 transition-colors"
+                  >
+                    <FiX className="w-5 h-5 text-slate-600" />
+                  </button>
+
+                  <div className="pr-12">
+                    {selectedCourse.code && (
+                      <p className="text-sm font-semibold text-blue-500 mb-1">{selectedCourse.code}</p>
+                    )}
+                    <p className="text-xs uppercase tracking-wider text-slate-500 mb-1">COURSE</p>
+                    <h2 className="text-2xl font-bold text-slate-900">
+                      {selectedCourse.title || "Untitled Course"}
+                    </h2>
+                  </div>
+                </div>
+
+                {/* Content */}
+                <div className="flex-1 overflow-y-auto p-6">
+                  {loadingDetails ? (
+                    <div className="space-y-3 animate-pulse">
+                      {[1, 2, 3].map((i) => (
+                        <div key={i} className="bg-white border border-slate-200 rounded-lg shadow-sm p-4">
+                          <div className="flex items-center gap-4">
+                            <div className="w-6 h-6 bg-slate-200 rounded-full"></div>
+                            <div className="flex-1">
+                              <div className="h-3 bg-slate-200 rounded w-16 mb-2"></div>
+                              <div className="h-5 bg-slate-200 rounded w-48"></div>
+                            </div>
+                            <div className="w-5 h-5 bg-slate-200 rounded"></div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : courseDetails && courseDetails.modules ? (
+                    <div className="space-y-3">
+                      {courseDetails.modules.map((module, index) => {
+                        const isExpanded = expandedTopics.has(module.id);
+                        const isCompleted = isTopicCompleted(module);
+                        const hasLessons = module.lessons && module.lessons.length > 0;
+
+                        return (
+                          <div
+                            key={module.id || index}
+                            className="bg-white border border-slate-200 rounded-lg shadow-sm overflow-hidden"
+                          >
+                            {/* Topic Header */}
+                            <div
+                              onClick={() => hasLessons && toggleTopic(module.id)}
+                              className={`p-4 flex items-center gap-4 cursor-pointer hover:bg-slate-50 transition-colors ${
+                                hasLessons ? 'cursor-pointer' : ''
+                              }`}
+                            >
+                              {/* Completion Indicator */}
+                              <div className="flex-shrink-0">
+                                {isCompleted ? (
+                                  <div className="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center">
+                                    <FiCheck className="w-4 h-4 text-white" />
+                                  </div>
+                                ) : (
+                                  <div className="w-6 h-6 rounded-full border-2 border-slate-300"></div>
+                                )}
+                              </div>
+
+                              {/* Topic Info */}
+                              <div className="flex-1 min-w-0">
+                                <p className="text-xs uppercase tracking-wider text-slate-500 mb-1">TOPIC</p>
+                                <h3 className="text-base font-bold text-slate-900">
+                                  {module.title || `Topic ${index + 1}`}
+                                </h3>
+                              </div>
+
+                              {/* Chevron */}
+                              {hasLessons && (
+                                <div className="flex-shrink-0">
+                                  {isExpanded ? (
+                                    <FiChevronDown className="w-5 h-5 text-slate-600" />
+                                  ) : (
+                                    <FiChevronRight className="w-5 h-5 text-slate-600" />
+                                  )}
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Expanded Lessons */}
+                            {isExpanded && hasLessons && (
+                              <div className="border-t border-slate-200 bg-slate-50">
+                                <div className="pl-12 pr-4 py-3">
+                                  <div className="space-y-3">
+                                    {module.lessons.map((lesson, lessonIndex) => {
+                                      const isLessonCompleted = lesson.completed;
+                                      return (
+                                        <div
+                                          key={lesson.id || lessonIndex}
+                                          className="flex items-start gap-3 relative"
+                                        >
+                                          {/* Connecting Line */}
+                                          {lessonIndex < module.lessons.length - 1 && (
+                                            <div className="absolute left-2 top-6 bottom-0 w-0.5 bg-slate-300"></div>
+                                          )}
+
+                                          {/* Lesson Completion Indicator */}
+                                          <div className="flex-shrink-0 mt-1">
+                                            {isLessonCompleted ? (
+                                              <div className="w-4 h-4 rounded-full bg-green-500 flex items-center justify-center">
+                                                <FiCheck className="w-2.5 h-2.5 text-white" />
+                                              </div>
+                                            ) : (
+                                              <div className="w-4 h-4 rounded-full border-2 border-slate-300"></div>
+                                            )}
+                                          </div>
+
+                                          {/* Book Icon */}
+                                          <div className="flex-shrink-0 mt-1">
+                                            <FiBookOpen className="w-4 h-4 text-slate-500" />
+                                          </div>
+
+                                          {/* Lesson Info */}
+                                          <div 
+                                            className="flex-1 min-w-0 cursor-pointer"
+                                            onClick={(e) => {
+                                              e.stopPropagation();
+                                              handleCloseModal();
+                                              navigate(`/lms/student/courses/${selectedCourse.slug}/modules/${module.slug}/lessons/${lesson.slug}`);
+                                            }}
+                                          >
+                                            <h4 className="text-sm font-semibold text-slate-900 mb-1 hover:text-blue-600 transition-colors">
+                                              {lesson.title || `Lesson ${lessonIndex + 1}`}
+                                            </h4>
+                                            <div className="flex items-center gap-3 text-xs text-slate-500">
+                                              {lesson.duration_seconds && (
+                                                <span>{formatDuration(lesson.duration_seconds)}</span>
+                                              )}
+                                              <span className="px-2 py-0.5 bg-green-100 text-green-700 rounded-full font-medium">
+                                                Learning
+                                              </span>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className="text-center py-12">
+                      <p className="text-slate-600">No topics available for this course</p>
+                    </div>
+                  )}
+                </div>
+
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

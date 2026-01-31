@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../app/providers/AuthProvider";
 import { apiFetch } from "../../../services/api";
-import { PageLoading } from "../../../Components/common/LoadingStates";
+import { GenericPageSkeleton } from "../../../Components/common/SkeletonLoaders";
 import {
   FiBookmark,
   FiTrash2,
@@ -104,7 +104,7 @@ export default function StudentBookmarks() {
   }, {});
 
   if (loading) {
-    return <PageLoading />;
+    return <GenericPageSkeleton />;
   }
 
   return (

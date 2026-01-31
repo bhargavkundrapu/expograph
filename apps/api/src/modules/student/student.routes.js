@@ -34,4 +34,7 @@ router.get("/bookmarks", ctrl.listBookmarks);
 router.post("/bookmarks", requirePermission("student:write"), ctrl.createBookmark);
 router.delete("/bookmarks/:bookmarkId", requirePermission("student:write"), ctrl.deleteBookmark);
 
+// Profile
+router.patch("/profile", requirePermission("student:write"), ctrl.updateProfile);
+
 module.exports = { router };

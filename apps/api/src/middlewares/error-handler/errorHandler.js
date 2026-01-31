@@ -33,6 +33,15 @@ function errorHandler(err, req, res, next) {
       originalError: err.message,
       hint: "Create apps/api/.env file and add: DATABASE_URL=postgresql://username:password@localhost:5432/database_name"
     };
+  } else if (err.code === "42703" || (err.message && (err.message.includes("column") && err.message.includes("does not exist")))) {
+    message = "Database schema is outdated. Run migrations: cd apps/api && npm run migrate";
+    details = {
+      originalError: err.message,
+      hint: "In the project root, run: npm run migrate (from apps/api) or node scripts/migrate.js from apps/api."
+    };
+  } else if (err.message && (err.message.includes("is not defined") || (err.message.includes("relation") && err.message.includes("does not exist")))) {
+    message = "Database schema may be outdated. Run: cd apps/api && npm run migrate";
+    details = { originalError: err.message };
   }
 
   // Server-side log (Render logs lo visible)

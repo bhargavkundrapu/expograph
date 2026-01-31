@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../../app/providers/AuthProvider";
 import { apiFetch } from "../../../services/api";
-import { PageLoading } from "../../../Components/common/LoadingStates";
+import { GenericPageSkeleton } from "../../../Components/common/SkeletonLoaders";
 import {
   FiUsers,
   FiShare2,
@@ -102,7 +102,7 @@ export default function StudentReferrals() {
   };
 
   if (loading) {
-    return <PageLoading />;
+    return <GenericPageSkeleton />;
   }
 
   return (

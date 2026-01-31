@@ -31,16 +31,33 @@ const UpdateModuleSchema = z.object({
 });
 
 const CreateLessonSchema = z.object({
-  title: z.string().min(2),
+  title: z.string().min(2, "Title must be at least 2 characters"),
   slug: z.string().optional(),
   summary: z.string().optional(),
   position: z.number().int().optional(),
+  goal: z.string().optional(),
+  video_url: z.string().optional().transform((v) => (v && v.trim() ? v.trim() : undefined)),
+  prompts: z.object({
+    prompts: z.string().optional(),
+    commands: z.string().optional(),
+    error_resolve: z.string().optional(),
+  }).optional(),
+  success_image_url: z.string().optional().transform((v) => (v && v.trim() ? v.trim() : undefined)),
+  pdf_url: z.string().optional().transform((v) => (v && v.trim() ? v.trim() : undefined)),
 });
 const UpdateLessonSchema = z.object({
   title: z.string().min(2).optional(),
   summary: z.string().optional(),
   position: z.number().int().optional(),
-
+  goal: z.string().optional(),
+  video_url: z.string().url().optional().or(z.literal("")),
+  prompts: z.object({
+    prompts: z.string().optional(),
+    commands: z.string().optional(),
+    error_resolve: z.string().optional(),
+  }).optional(),
+  success_image_url: z.string().url().optional().or(z.literal("")),
+  pdf_url: z.optional(z.union([z.string().url(), z.literal("")])),
   video_provider: z.string().nullable().optional(),
   video_id: z.string().nullable().optional(),
 });
@@ -49,7 +66,7 @@ const UpdateLessonSchema = z.object({
 
 
 const StatusSchema = z.object({
-  status: z.enum(["draft", "published"]),
+  status: z.enum(["draft", "published", "unpublished"]),
 });
 
 const AddResourceSchema = z.object({
@@ -145,18 +162,10 @@ const updateCourse = asyncHandler(async (req, res) => {
   const parsed = UpdateCourseSchema.safeParse(req.body);
   if (!parsed.success) throw new HttpError(400, "Invalid input", parsed.error.flatten());
 
-  // at least one field should be present
-  if (
-  parsed.data.title === undefined &&
-  parsed.data.summary === undefined &&
-  parsed.data.position === undefined &&
-  parsed.data.video_provider === undefined &&
-  parsed.data.video_id === undefined
-) {
-  throw new HttpError(400, "No fields to update");
-}
-
-
+  const { title, slug, description, level } = parsed.data;
+  if (title === undefined && slug === undefined && description === undefined && level === undefined) {
+    throw new HttpError(400, "No fields to update");
+  }
 
   const updated = await svc.updateCourse({
     tenantId: req.tenant.id,
@@ -240,38 +249,69 @@ const setModuleStatus = asyncHandler(async (req, res) => {
 });
 
 const createLesson = asyncHandler(async (req, res) => {
-  const parsed = CreateLessonSchema.safeParse(req.body);
-  if (!parsed.success) throw new HttpError(400, "Invalid input", parsed.error.flatten());
+  if (!req.tenant?.id) throw new HttpError(400, "Tenant not resolved. Check x-tenant-slug or DEFAULT_TENANT_SLUG.");
+  if (!req.params.moduleId) throw new HttpError(400, "Module ID is required.");
+  if (!req.auth?.userId) throw new HttpError(401, "Authentication required.");
 
+  const parsed = CreateLessonSchema.safeParse(req.body);
+  if (!parsed.success) {
+    const flat = parsed.error.flatten();
+    const firstError = flat.fieldErrors?.title?.[0] || flat.formErrors?.[0] || "Invalid input";
+    if (process.env.NODE_ENV !== "production") {
+      console.error("CreateLesson validation failed:", flat);
+    }
+    throw new HttpError(400, firstError, flat);
+  }
+
+  const data = parsed.data;
   const created = await svc.createLessonSmart({
     tenantId: req.tenant.id,
     moduleId: req.params.moduleId,
-    title: parsed.data.title,
-    slug: parsed.data.slug,
-    summary: parsed.data.summary,
-    position: parsed.data.position ?? 0,
+    title: data.title.trim(),
+    slug: data.slug?.trim() || undefined,
+    summary: data.summary?.trim() || undefined,
+    position: data.position ?? 0,
+    goal: (data.goal && data.goal.trim()) || null,
+    video_url: (data.video_url && String(data.video_url).trim()) || null,
+    prompts: data.prompts ?? null,
+    success_image_url: (data.success_image_url && String(data.success_image_url).trim()) || null,
+    pdf_url: (data.pdf_url && String(data.pdf_url).trim()) || null,
     createdBy: req.auth.userId,
   });
+
+  if (!created || !created.id) throw new HttpError(500, "Lesson creation failed; no record returned.");
+
   delByPrefix(`pub:tenant:${req.tenant.id}:`);
 
+  if (process.env.NODE_ENV !== "production") {
+    console.log("CreateLesson success:", created.id, created.title);
+  }
   res.status(201).json({ ok: true, data: created });
 });
 const updateLesson = asyncHandler(async (req, res) => {
   const parsed = UpdateLessonSchema.safeParse(req.body);
   if (!parsed.success) throw new HttpError(400, "Invalid input", parsed.error.flatten());
 
-  if (parsed.data.title === undefined && parsed.data.summary === undefined && parsed.data.position === undefined) {
+  if (parsed.data.title === undefined && parsed.data.summary === undefined && parsed.data.position === undefined 
+      && parsed.data.goal === undefined && parsed.data.video_url === undefined && parsed.data.prompts === undefined 
+      && parsed.data.success_image_url === undefined && parsed.data.pdf_url === undefined) {
     throw new HttpError(400, "No fields to update");
+  }
+
+  const patch = { ...parsed.data };
+  if (patch.pdf_url !== undefined) {
+    patch.pdf_url = (patch.pdf_url && String(patch.pdf_url).trim()) || null;
   }
 
   const updated = await svc.updateLesson({
     tenantId: req.tenant.id,
     lessonId: req.params.lessonId,
-    patch: parsed.data,
+    patch,
     updatedBy: req.auth.userId,
   });
 
   if (!updated) throw new HttpError(404, "Lesson not found");
+  delByPrefix(`pub:tenant:${req.tenant.id}:`);
   res.json({ ok: true, data: updated });
 });
 const listLessonResourcesAdmin = asyncHandler(async (req, res) => {

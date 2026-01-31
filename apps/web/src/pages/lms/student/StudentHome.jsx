@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../app/providers/AuthProvider";
 import { apiFetch } from "../../../services/api";
-import { PageLoading } from "../../../Components/common/LoadingStates";
-import BannerCarousel from "../../../Components/dashboard/BannerCarousel";
+import { StudentHomeSkeleton } from "../../../Components/common/SkeletonLoaders";
+import WorkshopCarousel from "../../../Components/dashboard/WorkshopCarousel";
 import {
   FiPlay,
   FiCalendar,
@@ -17,6 +16,11 @@ import {
   FiBarChart2,
   FiTarget,
   FiZap,
+  FiChevronRight,
+  FiInfo,
+  FiChevronLeft,
+  FiLock,
+  FiPause,
 } from "react-icons/fi";
 
 export default function StudentHome() {
@@ -33,6 +37,8 @@ export default function StudentHome() {
   });
   const [events, setEvents] = useState([]);
   const [monthlyTracker, setMonthlyTracker] = useState([]);
+  const [trackerView, setTrackerView] = useState("daily"); // "daily" or "weekly"
+  const [currentMonth, setCurrentMonth] = useState(new Date());
 
   useEffect(() => {
     if (!token) return;
@@ -50,17 +56,50 @@ export default function StudentHome() {
         apiFetch("/api/v1/student/progress", { token }).catch(() => ({ data: { completed: 0, streak: 0, consistency: 0 } })),
         apiFetch("/api/v1/student/events", { token }).catch(() => ({ data: [] })),
       ]);
-
-      setSchedule(scheduleRes?.data || []);
+      
+      // Use real schedule data from API, or fallback to mock data for demonstration
+      const scheduleData = scheduleRes?.data || [];
+      
+      // If no schedule data, create mock schedule from current course
+      if (scheduleData.length === 0 && courseRes?.data) {
+        const course = courseRes.data;
+        const mockSchedule = [
+          {
+            id: `schedule-1`,
+            title: course.moduleName || "Continue Learning",
+            courseSlug: course.courseSlug || course.slug,
+            moduleSlug: course.moduleSlug || course.moduleSlug,
+            lessonSlug: course.lessonSlug || course.nextLessonSlug,
+            progress: course.progress || 0,
+            completed: course.completedLessons || 0,
+            total: course.totalLessons || 0,
+            activityType: "LEARNING",
+            duration: course.duration || "30 Mins",
+          },
+        ];
+        setSchedule(mockSchedule);
+      } else {
+        setSchedule(scheduleData);
+      }
+      
       setCurrentCourse(courseRes?.data || null);
       setProgress(progressRes?.data || { completed: 0, streak: 0, consistency: 0 });
       setEvents(eventsRes?.data || []);
 
-      // Generate monthly tracker (mock for now)
-      const tracker = Array.from({ length: 30 }, (_, i) => ({
-        day: i + 1,
-        completed: Math.random() > 0.5,
-      }));
+      // Generate monthly tracker (mock for now) - matching the image
+      const tracker = Array.from({ length: 31 }, (_, i) => {
+        const day = i + 1;
+        // Specific days from the image: 4th, 11th (first row), 5th (second row) = holidays
+        // 7th (second row) = streak freeze
+        if (day === 4 || day === 11 || day === 5) {
+          return { day, status: "holiday" };
+        }
+        if (day === 7) {
+          return { day, status: "streak_freeze" };
+        }
+        // Most days are empty/missed
+        return { day, status: "missed" };
+      });
       setMonthlyTracker(tracker);
     } catch (error) {
       console.error("Failed to fetch dashboard data:", error);
@@ -69,340 +108,509 @@ export default function StudentHome() {
     }
   };
 
-  // Banner carousel items
-  const bannerItems = [
+  // Workshop carousel items
+  const workshopItems = [
     {
-      title: "New Workshop: Advanced React Patterns",
-      description: "Join us this Saturday for an interactive workshop on React best practices.",
-      gradient: "from-blue-600 via-indigo-600 to-purple-600",
-      badge: "Workshop",
+      logo: "make",
+      title: "AI WORKFLOWS & AUTOMATION WORKSHOP USING MAKE.COM",
+      description: "Build AI projects that boost your portfolio!",
+      isLive: true,
       action: {
-        label: "Register Now",
+        label: "Join Now",
         onClick: () => navigate("/lms/student/workshops"),
       },
     },
     {
-      title: "New Podcast Episode Available",
-      description: "Listen to industry experts discuss career growth and tech trends.",
-      gradient: "from-emerald-500 via-teal-500 to-cyan-500",
-      badge: "Podcast",
+      logo: "make",
+      title: "ADVANCED REACT PATTERNS WORKSHOP",
+      description: "Master React best practices and advanced techniques.",
+      isLive: false,
       action: {
-        label: "Listen Now",
-        onClick: () => console.log("Open podcast"),
+        label: "Join Now",
+        onClick: () => navigate("/lms/student/workshops"),
       },
     },
     {
-      title: "Parent Meet Scheduled",
-      description: "Join us for a parent-student meetup this weekend.",
-      gradient: "from-amber-500 via-orange-500 to-red-500",
-      badge: "Event",
+      logo: "make",
+      title: "FULL-STACK DEVELOPMENT BOOTCAMP",
+      description: "Build complete web applications from scratch.",
+      isLive: false,
       action: {
-        label: "View Details",
-        onClick: () => console.log("View parent meet"),
-      },
-    },
-    {
-      title: "New Feature: AI Coach",
-      description: "Get instant help with your coding questions using our AI-powered coach.",
-      gradient: "from-purple-500 via-pink-500 to-rose-500",
-      badge: "New",
-      action: {
-        label: "Try Now",
-        onClick: () => navigate("/lms/student/discussions"),
-      },
-    },
-    {
-      title: "New Internship Opportunities",
-      description: "Check out the latest internship openings from top companies.",
-      gradient: "from-cyan-500 via-blue-500 to-indigo-500",
-      badge: "Internships",
-      action: {
-        label: "Explore",
-        onClick: () => navigate("/lms/student/internships"),
+        label: "Join Now",
+        onClick: () => navigate("/lms/student/workshops"),
       },
     },
   ];
 
   if (loading) {
-    return <PageLoading />;
+    return <StudentHomeSkeleton />;
   }
 
+  const formatMonthYear = (date) => {
+    return date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+  };
+
+  const navigateMonth = (direction) => {
+    setCurrentMonth(prev => {
+      const newDate = new Date(prev);
+      newDate.setMonth(prev.getMonth() + direction);
+      return newDate;
+    });
+  };
+
+  const getDaysInMonth = (date) => {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const days = [];
+    
+    // Add empty cells for days before the first day of the month
+    for (let i = 0; i < firstDay; i++) {
+      days.push(null);
+    }
+    
+    // Add all days of the month
+    for (let day = 1; day <= daysInMonth; day++) {
+      const trackerDay = monthlyTracker.find(t => t.day === day);
+      days.push({
+        day,
+        status: trackerDay?.status || "missed"
+      });
+    }
+    
+    return days;
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-cyan-50 via-blue-50 to-indigo-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Welcome Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="mb-8"
-        >
-          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-600 bg-clip-text text-transparent mb-3">
-            Welcome, {user?.full_name || user?.name || "Student"} 👋
-          </h1>
-          <p className="text-slate-600 text-lg">Continue your learning journey today</p>
-        </motion.div>
-
-        {/* Banner Carousel */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="mb-8"
-        >
-          <BannerCarousel items={bannerItems} />
-        </motion.div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Column - Main Content */}
-          <div className="lg:col-span-2 space-y-8">
-            {/* Your Schedule Section */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="bg-white/80 backdrop-blur-sm rounded-lg p-6 border-2 border-cyan-200/50 shadow-xl"
-            >
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent flex items-center gap-2">
-                  <div className="p-2 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-lg text-white">
-                    <FiCalendar className="w-5 h-5" />
-                  </div>
-                  Your Schedule
-                </h2>
-                <select
-                  value={currentWeek}
-                  onChange={(e) => setCurrentWeek(Number(e.target.value))}
-                  className="px-4 py-2 bg-gradient-to-r from-cyan-50 to-blue-50 border-2 border-cyan-200 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-400 text-sm font-semibold text-cyan-700"
-                >
-                  {[1, 2, 3, 4, 5, 6, 7, 8].map((week) => (
-                    <option key={week} value={week}>
-                      Week {week}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {schedule.length === 0 ? (
-                <div className="text-center py-12">
-                  <FiCalendar className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-                  <p className="text-slate-600">No scheduled items for this week</p>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {schedule.map((item, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center gap-4 p-4 bg-gradient-to-r from-cyan-50 to-blue-50 rounded-md border-2 border-cyan-200/50 hover:border-cyan-400 hover:shadow-md transition-all"
-                    >
-                      <div className="w-12 h-12 rounded-md bg-gradient-to-br from-cyan-500 via-blue-500 to-indigo-500 flex items-center justify-center text-white shadow-md">
-                        <FiBookOpen className="w-6 h-6" />
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-slate-800">{item.title}</h3>
-                        <p className="text-sm text-slate-600">{item.module} • {item.lesson}</p>
-                      </div>
-                      <div className="text-sm font-medium text-cyan-600">
-                        <FiClock className="w-4 h-4 inline mr-1" />
-                        {item.date}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </motion.div>
-
-            {/* Continue Learning Card */}
-            {currentCourse && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                className="bg-gradient-to-br from-cyan-500 via-blue-500 to-indigo-600 rounded-lg p-8 text-white shadow-2xl shadow-blue-500/30"
-              >
-                <div className="flex items-start justify-between mb-6">
-                  <div>
-                    <h2 className="text-3xl font-bold mb-2">Continue Learning</h2>
-                    <p className="text-cyan-100">Pick up where you left off</p>
-                  </div>
-                  <div className="p-3 bg-white/20 rounded-md backdrop-blur-sm">
-                    <FiPlay className="w-8 h-8" />
-                  </div>
-                </div>
-                <div className="mb-6">
-                  <h3 className="text-xl font-semibold mb-1">{currentCourse.courseName}</h3>
-                  <p className="text-cyan-100">{currentCourse.moduleName}</p>
-                  <div className="mt-4 w-full bg-white/30 rounded-full h-3 shadow-inner">
-                    <div
-                      className="bg-white rounded-full h-3 transition-all duration-500 shadow-md"
-                      style={{ width: `${currentCourse.progress || 0}%` }}
-                    />
-                  </div>
-                  <p className="text-sm text-cyan-100 mt-2 font-medium">{currentCourse.progress || 0}% Complete</p>
-                </div>
-                <button
-                  onClick={() => navigate(`/lms/student/courses/${currentCourse.courseSlug}/modules/${currentCourse.moduleSlug}/lessons/${currentCourse.lessonSlug}`)}
-                  className="w-full px-6 py-4 bg-white text-cyan-600 font-bold rounded-md hover:bg-cyan-50 transition-all flex items-center justify-center gap-2 shadow-xl hover:shadow-2xl"
-                >
-                  <FiPlay className="w-5 h-5" />
-                  Resume Learning
-                </button>
-              </motion.div>
-            )}
+    <div className="min-h-screen bg-slate-50">
+      <div className="flex flex-col lg:flex-row gap-6 px-4 sm:px-6 lg:px-6 xl:px-8 py-4 sm:py-6 lg:py-8">
+        {/* Main Content Area - Left Side */}
+        <div className="flex-1 min-w-0 space-y-6 lg:space-y-8">
+          {/* Welcome Header */}
+          <div className="mb-4 sm:mb-6 lg:mb-8">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-slate-900 mb-2 sm:mb-3">
+              Welcome {user?.fullName || user?.full_name || user?.name || "Student"} 👋
+            </h1>
           </div>
 
-          {/* Right Column - Widgets */}
-          <div className="space-y-6">
-            {/* Events Widget */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="bg-white/80 backdrop-blur-sm rounded-md p-6 border-2 border-indigo-200/50 shadow-lg"
-            >
-              <h3 className="text-lg font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-4 flex items-center gap-2">
-                <div className="p-1.5 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-lg text-white">
-                  <FiCalendar className="w-4 h-4" />
-                </div>
-                Upcoming Events
-              </h3>
-              {events.length === 0 ? (
-                <p className="text-sm text-slate-600">No upcoming events</p>
-              ) : (
-                <div className="space-y-3">
-                  {events.slice(0, 3).map((event, index) => (
-                    <div key={index} className="p-3 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg border border-indigo-200/50 hover:shadow-md transition-all">
-                      <p className="font-semibold text-slate-800 text-sm">{event.title}</p>
-                      <p className="text-xs text-indigo-600 mt-1 font-medium">{event.date}</p>
+          {/* Workshop Carousel */}
+          <div className="mb-4 sm:mb-6 lg:mb-8">
+            <WorkshopCarousel items={workshopItems} />
+          </div>
+
+          {/* Your Schedule Section */}
+          <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+            {/* Header with Gradient */}
+            <div className="bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-400 px-4 sm:px-6 py-4 sm:py-5">
+              <p className="text-white/90 text-[10px] sm:text-xs font-medium mb-0.5 sm:mb-1">
+                {currentCourse?.courseName ? currentCourse.courseName.toUpperCase() : schedule[0]?.courseName?.toUpperCase() || "YOUR SCHEDULE"}
+              </p>
+              <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-white">
+                {currentCourse?.moduleName || schedule[0]?.moduleName || schedule[0]?.title || "Continue Learning"}
+              </h2>
+            </div>
+
+            {/* Content Section */}
+            <div className="p-4 sm:p-6">
+                {schedule.length === 0 ? (
+                  <div className="text-center py-12">
+                    <FiCalendar className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+                    <p className="text-slate-600">No scheduled items for this week</p>
+                  </div>
+                ) : (
+                  <div className="relative pl-1 sm:pl-2">
+                    {/* Schedule Items */}
+                    <div className="space-y-4 sm:space-y-6">
+                      {schedule.map((item, index) => {
+                        const isLast = index === schedule.length - 1;
+                        const progress = item.progress || 0;
+                        const isCompleted = progress === 100;
+                        const isInProgress = progress > 0 && progress < 100;
+                        const activityType = item.activityType || "LEARNING";
+                        const isPractice = activityType === "PRACTICE";
+                        
+                        return (
+                          <div key={item.id || index} className="relative flex items-start gap-2 sm:gap-3 md:gap-4 group hover:bg-slate-50 rounded-lg p-2 -m-2 transition-colors">
+                            {/* Timeline Line - connects circles */}
+                            {!isLast && (
+                              <div className="absolute left-[11px] sm:left-[13px] md:left-[15px] top-6 sm:top-7 md:top-8 w-0.5 bg-slate-200" style={{ height: 'calc(100% + 1rem)' }}></div>
+                            )}
+                            
+                            {/* Progress Circle */}
+                            <div className="relative z-10 flex-shrink-0 mt-0.5">
+                              {isCompleted ? (
+                                <div className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 bg-green-500 rounded-full flex items-center justify-center">
+                                  <FiCheckCircle className="w-4 h-4 sm:w-4.5 sm:h-4.5 md:w-5 md:h-5 text-white" />
+                                </div>
+                              ) : isInProgress ? (
+                                <div className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 relative">
+                                  <svg className="w-full h-full transform -rotate-90" viewBox="0 0 32 32">
+                                    <circle
+                                      cx="16"
+                                      cy="16"
+                                      r="14"
+                                      stroke="#e5e7eb"
+                                      strokeWidth="3"
+                                      fill="white"
+                                    />
+                                    <circle
+                                      cx="16"
+                                      cy="16"
+                                      r="14"
+                                      stroke="#22c55e"
+                                      strokeWidth="3"
+                                      fill="none"
+                                      strokeDasharray={`${2 * Math.PI * 14}`}
+                                      strokeDashoffset={`${2 * Math.PI * 14 * (1 - progress / 100)}`}
+                                      strokeLinecap="round"
+                                    />
+                                  </svg>
+                                </div>
+                              ) : (
+                                <div className="w-5 h-5 sm:w-5.5 sm:h-5.5 md:w-6 md:h-6 border-2 border-slate-300 rounded-full bg-white"></div>
+                              )}
+                            </div>
+
+                            {/* Content */}
+                            <div 
+                              className="flex-1 pt-0.5 sm:pt-1 min-w-0 cursor-pointer"
+                              onClick={() => {
+                                // Navigate to lesson if available
+                                if (item.courseSlug && item.moduleSlug && item.lessonSlug) {
+                                  navigate(`/lms/student/courses/${item.courseSlug}/modules/${item.moduleSlug}/lessons/${item.lessonSlug}`);
+                                } else if (item.courseSlug) {
+                                  // Navigate to course if lesson not available
+                                  navigate(`/lms/student/courses/${item.courseSlug}`);
+                                } else if (item.link) {
+                                  // Use custom link if provided
+                                  navigate(item.link);
+                                }
+                              }}
+                            >
+                              <div className="flex items-start justify-between mb-1 sm:mb-2 gap-2">
+                                <div className="flex-1 min-w-0">
+                                  <h3 className="font-bold text-sm sm:text-base text-slate-900 mb-1 break-words hover:text-blue-600 transition-colors">
+                                    {item.title || item.name || "Schedule Item"}
+                                    {isInProgress && item.total && (
+                                      <span className="text-slate-600 font-normal"> ({item.completed || Math.round(progress / 100 * item.total)}/{item.total})</span>
+                                    )}
+                                  </h3>
+                                  <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+                                    {activityType && (
+                                      <span className={`inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 rounded text-[10px] sm:text-xs font-medium text-white ${
+                                        isPractice ? "bg-orange-500" : "bg-teal-500"
+                                      }`}>
+                                        {isPractice ? (
+                                          <>
+                                            <FiCheckCircle className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                                            {activityType}
+                                          </>
+                                        ) : (
+                                          <>
+                                            <FiBookOpen className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                                            {activityType}
+                                          </>
+                                        )}
+                                      </span>
+                                    )}
+                                    {item.duration && (
+                                      <div className="flex items-center gap-1 text-[10px] sm:text-xs text-slate-500">
+                                        <FiClock className="w-2.5 h-2.5 sm:w-3 sm:h-3 flex-shrink-0" />
+                                        <span>{item.duration}</span>
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                                <FiChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-slate-400 flex-shrink-0 mt-0.5 sm:mt-1 group-hover:text-blue-600 transition-colors" />
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
-                  ))}
-                </div>
-              )}
-            </motion.div>
-
-            {/* Learning Consistency */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-              className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-md p-6 border-2 border-emerald-200/50 shadow-lg"
-            >
-              <h3 className="text-lg font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent mb-4 flex items-center gap-2">
-                <div className="p-1.5 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-lg text-white">
-                  <FiTrendingUp className="w-4 h-4" />
-                </div>
-                Learning Consistency
-              </h3>
-              <div className="text-center">
-                <div className="text-5xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent mb-2">{progress.consistency || 85}%</div>
-                <p className="text-sm text-slate-600 font-medium">This month</p>
+                  </div>
+                )}
               </div>
-            </motion.div>
+          </div>
 
-            {/* Monthly Tracker */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 }}
-              className="bg-white rounded-md p-6 border border-slate-200 shadow-lg"
-            >
-              <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
-                <FiBarChart2 className="w-5 h-5 text-purple-600" />
-                Monthly Tracker
-              </h3>
-              <div className="grid grid-cols-7 gap-1">
-                {monthlyTracker.map((day, index) => (
+        </div>
+
+        {/* Right Sidebar - Widgets */}
+        <div className="w-full lg:w-72 xl:w-80 2xl:w-96 flex-shrink-0 space-y-3 sm:space-y-4 md:space-y-6">
+          {/* Events Card */}
+          <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
+            <div className="flex items-center justify-between mb-3 sm:mb-4">
+              <h3 className="text-lg sm:text-xl font-bold text-slate-900">Events</h3>
+                <button
+                  onClick={() => navigate("/lms/student/events")}
+                  className="flex items-center gap-1 text-purple-600 hover:text-purple-700 font-medium text-sm"
+                >
+                  View
+                  <FiChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+            <p className="text-xs sm:text-sm text-slate-600 mb-3 sm:mb-4">Challenges, podcasts & a lot more activities!</p>
+            <div className="flex items-center justify-between flex-wrap gap-2">
+              <div className="flex items-center gap-2">
+                <FiZap className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-500 flex-shrink-0" />
+                <span className="text-xs sm:text-sm font-medium text-slate-900">1 Live Event</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
+                <span className="text-xs sm:text-sm font-medium text-green-600">Live Now</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Leaderboard Card */}
+          <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
+            <div className="flex items-center justify-between mb-3 sm:mb-4">
+              <h3 className="text-lg sm:text-xl font-bold text-slate-900">Leaderboard</h3>
+              <button
+                onClick={() => navigate("/lms/student/leaderboard")}
+                className="flex items-center gap-1 text-purple-600 hover:text-purple-700 font-medium text-xs sm:text-sm"
+              >
+                View
+                <FiChevronRight className="w-3 h-3 sm:w-4 sm:h-4" />
+              </button>
+            </div>
+            <div className="flex items-start gap-3 mb-3 sm:mb-4">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-slate-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <FiLock className="w-5 h-5 sm:w-6 sm:h-6 text-slate-400" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="font-bold text-sm sm:text-base text-slate-900">Earn A Badge</p>
+                <p className="text-xs text-slate-500 mt-1 line-clamp-2">Sir C.R.R. College of Engineerng (SCRRCE)</p>
+              </div>
+            </div>
+            <p className="text-xs sm:text-sm text-slate-900">
+              Rank: Nil (Need <FiZap className="w-3 h-3 sm:w-4 sm:h-4 inline text-yellow-500" /> 100 more)
+            </p>
+          </div>
+
+          {/* Learning Consistency & Monthly Tracker Card */}
+          <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
+            {/* Learning Consistency Section */}
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2 flex-1 min-w-0">
+                <h3 className="text-lg sm:text-xl font-bold text-slate-900 truncate">Learning Consistency</h3>
+                <FiInfo className="w-3 h-3 sm:w-4 sm:h-4 text-slate-400 flex-shrink-0" />
+              </div>
+              <div className="px-2 sm:px-3 py-1 bg-orange-500 rounded-full flex items-center gap-1 flex-shrink-0">
+                <span className="text-white text-[10px] sm:text-xs font-medium">Goal</span>
+                <span className="text-white text-[10px] sm:text-xs">🔥</span>
+                <span className="text-white text-[10px] sm:text-xs font-medium">50</span>
+              </div>
+            </div>
+            <p className="text-xs sm:text-sm text-slate-600 mb-4 sm:mb-6">Track your learning progress and consistency.</p>
+            
+            <div className="grid grid-cols-2 gap-4 sm:gap-6 border-t border-slate-200 pt-4 sm:pt-6 mb-4 sm:mb-6">
+              {/* Current Streak */}
+              <div>
+                <p className="text-xs sm:text-sm font-bold text-slate-900 mb-1 sm:mb-2">Current Streak</p>
+                <div className="flex items-center gap-1 sm:gap-2 mb-2 sm:mb-3">
+                  <span className="text-2xl sm:text-3xl">🔥</span>
+                  <span className="text-2xl sm:text-3xl font-bold text-slate-900">{progress.streak || 0}</span>
+                </div>
+                <div className="inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 sm:py-1 bg-green-500 rounded-lg">
+                  <span className="text-white text-[10px] sm:text-xs font-medium">My Best</span>
+                  <span className="text-white text-[10px] sm:text-xs">🔥</span>
+                  <span className="text-white text-[10px] sm:text-xs font-medium">49</span>
+                </div>
+              </div>
+              
+              {/* Consistency Score */}
+              <div>
+                <p className="text-xs sm:text-sm font-bold text-slate-900 mb-1 sm:mb-2">Consistency Score</p>
+                <div className="flex items-center gap-1 sm:gap-2">
+                  <FiZap className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-500 flex-shrink-0" />
+                  <span className="text-2xl sm:text-3xl font-bold text-slate-900">{progress.consistency || 0}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Monthly Tracker Section */}
+            <div className="flex items-center justify-between mb-3 sm:mb-4 border-t border-slate-200 pt-4 sm:pt-6">
+              <div className="flex items-center gap-2 flex-1 min-w-0">
+                <h3 className="text-lg sm:text-xl font-bold text-slate-900 truncate">Monthly Tracker</h3>
+                  <FiInfo className="w-4 h-4 text-slate-400" />
+                </div>
+              <div className="flex items-center gap-0 bg-slate-100 rounded-full p-0.5 flex-shrink-0">
+                <button
+                  onClick={() => setTrackerView("daily")}
+                  className={`px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-bold transition-colors ${
+                    trackerView === "daily"
+                      ? "bg-slate-600 text-white shadow-sm"
+                      : "text-slate-600 bg-transparent"
+                  }`}
+                >
+                  Daily
+                </button>
+                <button
+                  onClick={() => setTrackerView("weekly")}
+                  className={`px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-bold transition-colors ${
+                    trackerView === "weekly"
+                      ? "bg-slate-600 text-white shadow-sm"
+                      : "text-slate-600 bg-transparent"
+                  }`}
+                >
+                  Weekly
+                </button>
+              </div>
+            </div>
+            
+            <div className="flex items-center justify-between mb-3 sm:mb-4">
+              <span className="text-xs sm:text-sm font-medium text-slate-900">{formatMonthYear(currentMonth)}</span>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => navigateMonth(-1)}
+                    className="p-1 hover:bg-slate-100 rounded"
+                  >
+                    <FiChevronLeft className="w-4 h-4 text-slate-400" />
+                  </button>
+                  <button
+                    onClick={() => navigateMonth(1)}
+                    className="p-1 hover:bg-slate-100 rounded"
+                  >
+                    <FiChevronRight className="w-4 h-4 text-slate-400" />
+                  </button>
+                </div>
+              </div>
+
+            <div className="grid grid-cols-7 gap-0.5 sm:gap-1 mb-3 sm:mb-4">
+              {getDaysInMonth(currentMonth).map((day, index) => {
+                if (!day) {
+                  return (
+                    <div
+                      key={index}
+                      className="aspect-square rounded border border-transparent"
+                    />
+                  );
+                }
+                
+                return (
                   <div
                     key={index}
-                    className={`aspect-square rounded ${
-                      day.completed ? "bg-emerald-500" : "bg-slate-200"
-                    }`}
-                    title={`Day ${day.day}`}
-                  />
-                ))}
-              </div>
-            </motion.div>
-
-            {/* Your Progress Card */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.7 }}
-              className="bg-gradient-to-br from-purple-500 via-pink-500 to-rose-500 rounded-md p-6 text-white shadow-xl"
-            >
-              <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
-                <div className="p-1.5 bg-white/20 rounded-lg backdrop-blur-sm">
-                  <FiTarget className="w-4 h-4" />
-                </div>
-                Your Progress
-              </h3>
-              <div className="space-y-4">
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm text-purple-100 font-medium">Completed</span>
-                    <span className="text-xl font-bold">{progress.completed || 0}%</span>
+                    className="aspect-square rounded border border-slate-200 bg-white flex items-center justify-center relative"
+                  >
+                    {day.status === "holiday" && (
+                      <svg className="absolute inset-0 w-full h-full" style={{ pointerEvents: 'none' }}>
+                        <line
+                          x1="0"
+                          y1="0"
+                          x2="100%"
+                          y2="100%"
+                          stroke="#ef4444"
+                          strokeWidth="1.5"
+                        />
+                      </svg>
+                    )}
+                    {day.status === "achieved" && (
+                      <div className="w-full h-full bg-green-500 rounded"></div>
+                    )}
+                    {day.status === "paused" && (
+                      <FiPause className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-slate-500" />
+                    )}
+                    {day.status === "streak_freeze" && (
+                      <div className="absolute bottom-0.5 sm:bottom-1 left-1/2 transform -translate-x-1/2">
+                        <svg width="6" height="4" className="sm:w-8 sm:h-6" viewBox="0 0 8 6" fill="none">
+                          <path d="M4 0L8 6H0L4 0Z" fill="#3b82f6" />
+                        </svg>
+                      </div>
+                    )}
                   </div>
-                  <div className="w-full bg-white/30 rounded-full h-3 shadow-inner">
-                    <div
-                      className="bg-white rounded-full h-3 transition-all duration-500 shadow-md"
-                      style={{ width: `${progress.completed || 0}%` }}
+                );
+              })}
+            </div>
+
+            {/* Legend */}
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3 md:gap-4 text-[10px] sm:text-xs text-slate-600">
+              <div className="flex items-center gap-1 sm:gap-1.5">
+                <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-slate-200 rounded border border-slate-200 flex-shrink-0"></div>
+                <span>Missed</span>
+              </div>
+              <div className="flex items-center gap-1 sm:gap-1.5">
+                <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-green-500 rounded flex-shrink-0"></div>
+                <span>Achieved</span>
+              </div>
+              <div className="flex items-center gap-1 sm:gap-1.5">
+                <FiPause className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-slate-500 flex-shrink-0" />
+                <span>Paused</span>
+              </div>
+              <div className="flex items-center gap-1 sm:gap-1.5">
+                <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 relative flex items-center justify-center flex-shrink-0">
+                  <svg width="6" height="4" className="sm:w-8 sm:h-6" viewBox="0 0 8 6" fill="none">
+                    <path d="M4 0L8 6H0L4 0Z" fill="#3b82f6" />
+                  </svg>
+                </div>
+                <span>Streak Freeze</span>
+              </div>
+              <div className="flex items-center gap-1 sm:gap-1.5">
+                <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-slate-200 rounded border border-slate-200 relative flex-shrink-0">
+                  <svg className="absolute inset-0 w-full h-full" style={{ pointerEvents: 'none' }}>
+                    <line
+                      x1="0"
+                      y1="0"
+                      x2="100%"
+                      y2="100%"
+                      stroke="#ef4444"
+                      strokeWidth="1.5"
                     />
-                  </div>
+                  </svg>
                 </div>
-                <div className="flex items-center justify-between pt-4 border-t border-white/30">
-                  <div className="flex items-center gap-2">
-                    <FiZap className="w-4 h-4" />
-                    <span className="text-sm font-medium">Streak</span>
-                  </div>
-                  <span className="text-2xl font-bold">{progress.streak || 0} days</span>
+                <span>Holiday</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Your Progress Card */}
+          <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
+            <div className="flex items-center justify-between mb-3 sm:mb-4">
+              <div className="flex items-center gap-2">
+                <h3 className="text-lg sm:text-xl font-bold text-slate-900">Your Progress</h3>
+                <FiInfo className="w-3 h-3 sm:w-4 sm:h-4 text-slate-400 flex-shrink-0" />
+              </div>
+            </div>
+            
+            <div className="mb-4 sm:mb-6">
+              <p className="text-xs sm:text-sm font-medium text-blue-600 mb-2">Completion Meter</p>
+              <div className="flex items-center justify-between">
+                <span className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900">{progress.completed || 44}%</span>
+                <div className="relative w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 flex-shrink-0">
+                  <svg className="transform -rotate-90 w-full h-full">
+                    <circle
+                      cx="50%"
+                      cy="50%"
+                      r="42%"
+                      stroke="#e2e8f0"
+                      strokeWidth="6"
+                      fill="none"
+                    />
+                    <circle
+                      cx="50%"
+                      cy="50%"
+                      r="42%"
+                      stroke="#f59e0b"
+                      strokeWidth="6"
+                      fill="none"
+                      strokeDasharray={`${2 * Math.PI * 0.42}`}
+                      strokeDashoffset={`${2 * Math.PI * 0.42 * (1 - (progress.completed || 44) / 100)}`}
+                      strokeLinecap="round"
+                      style={{ transformOrigin: 'center' }}
+                    />
+                  </svg>
                 </div>
               </div>
-            </motion.div>
+            </div>
 
-            {/* Coach Chat Quick Launcher */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.8 }}
-              className="bg-white/80 backdrop-blur-sm rounded-md p-6 border-2 border-cyan-200/50 shadow-lg"
-            >
-              <h3 className="text-lg font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent mb-4 flex items-center gap-2">
-                <div className="p-1.5 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-lg text-white">
-                  <FiMessageSquare className="w-4 h-4" />
-                </div>
-                AI Coach
-              </h3>
-              <p className="text-sm text-slate-600 mb-4">Get instant help with your questions</p>
-              <button
-                onClick={() => navigate("/lms/student/discussions")}
-                className="w-full px-4 py-3 bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 text-white font-semibold rounded-lg hover:from-cyan-600 hover:via-blue-600 hover:to-indigo-600 transition-all flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
-              >
-                <FiMessageSquare className="w-4 h-4" />
-                Chat with Coach
-              </button>
-            </motion.div>
-
-            {/* Product Tour CTA */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.9 }}
-              className="bg-gradient-to-br from-amber-400 via-orange-500 to-red-500 rounded-md p-6 text-white shadow-xl"
-            >
-              <h3 className="text-lg font-bold mb-2 flex items-center gap-2">
-                <div className="p-1.5 bg-white/20 rounded-lg backdrop-blur-sm">
-                  <FiVideo className="w-4 h-4" />
-                </div>
-                Product Tour
-              </h3>
-              <p className="text-sm text-amber-100 mb-4">Learn how to make the most of your learning platform</p>
-              <button
-                onClick={() => console.log("Start product tour")}
-                className="w-full px-4 py-3 bg-white text-orange-600 font-semibold rounded-lg hover:bg-orange-50 transition-all shadow-md hover:shadow-lg"
-              >
-                Watch Tour
-              </button>
-            </motion.div>
+            <div className="bg-blue-50 rounded-lg p-3 sm:p-4 flex items-center justify-between">
+              <div className="flex-1 min-w-0">
+                <p className="text-xs sm:text-sm font-medium text-slate-900">Pending Units - 141</p>
+                <p className="text-[10px] sm:text-xs text-slate-600 mt-1">View Pending Units</p>
+              </div>
+              <FiChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-slate-600 flex-shrink-0 ml-2" />
+            </div>
           </div>
         </div>
       </div>

@@ -148,14 +148,26 @@ export default function SuperAdminLeads() {
       });
       if (res?.ok) {
         await fetchLeads();
-        navigate("/lms/superadmin/leads/list");
-        setSelectedLead(null);
+        if (view !== "edit") {
+          navigate("/lms/superadmin/leads/list");
+        }
+        if (selectedLead?.id === leadId) {
+          setSelectedLead({ ...selectedLead, ...updates });
+        }
       }
     } catch (error) {
       alert(error?.message || "Failed to update lead");
     } finally {
       setSaving(false);
     }
+  };
+
+  const handleInlineEditLead = async (leadId, field, value) => {
+    await handleUpdateLead(leadId, { [field]: value });
+  };
+
+  const handleUpdateLeadStatus = async (leadId, status) => {
+    await handleUpdateLead(leadId, { status });
   };
 
   const openEdit = (lead) => {
@@ -296,29 +308,80 @@ export default function SuperAdminLeads() {
                           <motion.div
                             key={lead.id}
                             whileHover={{ scale: 1.02 }}
-                            className="bg-slate-50 rounded-lg p-4 border border-slate-200 cursor-pointer hover:shadow-md transition-shadow"
-                            onClick={() => openDetails(lead)}
+                            className="bg-slate-50 rounded-lg p-4 border border-slate-200 hover:shadow-md transition-shadow"
                           >
-                            <div className="font-semibold text-slate-900 mb-1">{lead.name || "Unnamed Lead"}</div>
-                            {lead.email && (
-                              <div className="text-sm text-slate-600 flex items-center gap-1 mb-1">
-                                <FiMail className="w-3 h-3" />
-                                {lead.email}
-                              </div>
-                            )}
-                            {lead.phone && (
-                              <div className="text-sm text-slate-600 flex items-center gap-1 mb-2">
-                                <FiPhone className="w-3 h-3" />
-                                {lead.phone}
-                              </div>
-                            )}
-                            <div className="text-xs text-slate-500">
-                              {lead.source && <span className="capitalize">{lead.source}</span>}
+                            <input
+                              type="text"
+                              value={lead.name || ""}
+                              onChange={(e) => handleInlineEditLead(lead.id, "name", e.target.value)}
+                              onBlur={(e) => handleInlineEditLead(lead.id, "name", e.target.value)}
+                              onClick={(e) => e.stopPropagation()}
+                              className="font-semibold text-slate-900 mb-1 bg-transparent border-0 border-b-2 border-transparent hover:border-indigo-300 focus:border-indigo-500 focus:outline-none px-1 py-0.5 w-full"
+                              placeholder="Unnamed Lead"
+                            />
+                            <div className="text-sm text-slate-600 flex items-center gap-1 mb-1">
+                              <FiMail className="w-3 h-3 flex-shrink-0" />
+                              <input
+                                type="email"
+                                value={lead.email || ""}
+                                onChange={(e) => handleInlineEditLead(lead.id, "email", e.target.value)}
+                                onBlur={(e) => handleInlineEditLead(lead.id, "email", e.target.value)}
+                                onClick={(e) => e.stopPropagation()}
+                                className="bg-transparent border-0 border-b border-transparent hover:border-indigo-300 focus:border-indigo-500 focus:outline-none px-1 py-0 flex-1"
+                                placeholder="Email"
+                              />
+                            </div>
+                            <div className="text-sm text-slate-600 flex items-center gap-1 mb-2">
+                              <FiPhone className="w-3 h-3 flex-shrink-0" />
+                              <input
+                                type="tel"
+                                value={lead.phone || ""}
+                                onChange={(e) => handleInlineEditLead(lead.id, "phone", e.target.value)}
+                                onBlur={(e) => handleInlineEditLead(lead.id, "phone", e.target.value)}
+                                onClick={(e) => e.stopPropagation()}
+                                className="bg-transparent border-0 border-b border-transparent hover:border-indigo-300 focus:border-indigo-500 focus:outline-none px-1 py-0 flex-1"
+                                placeholder="Phone"
+                              />
+                            </div>
+                            <div className="flex items-center justify-between gap-2 mb-2">
+                              <input
+                                type="text"
+                                value={lead.source || ""}
+                                onChange={(e) => handleInlineEditLead(lead.id, "source", e.target.value)}
+                                onBlur={(e) => handleInlineEditLead(lead.id, "source", e.target.value)}
+                                onClick={(e) => e.stopPropagation()}
+                                className="text-xs text-slate-500 capitalize bg-transparent border-0 border-b border-transparent hover:border-indigo-300 focus:border-indigo-500 focus:outline-none px-1 py-0 flex-1"
+                                placeholder="Source"
+                              />
+                              <select
+                                onChange={(e) => {
+                                  e.stopPropagation();
+                                  handleUpdateLeadStatus(lead.id, e.target.value);
+                                }}
+                                value={lead.status || "new"}
+                                onClick={(e) => e.stopPropagation()}
+                                className={`px-2 py-1 rounded-full text-xs font-medium border-0 cursor-pointer focus:outline-none focus:ring-2 focus:ring-indigo-500/50 ${STATUS_COLORS[lead.status] || STATUS_COLORS.new}`}
+                              >
+                                {LEAD_STATUSES.map((s) => (
+                                  <option key={s} value={s}>
+                                    {s.charAt(0).toUpperCase() + s.slice(1)}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+                            <div className="text-xs text-slate-500 flex items-center justify-between">
                               {lead.created_at && (
-                                <span className="ml-2">
-                                  {new Date(lead.created_at).toLocaleDateString()}
-                                </span>
+                                <span>{new Date(lead.created_at).toLocaleDateString()}</span>
                               )}
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  openDetails(lead);
+                                }}
+                                className="text-indigo-600 hover:text-indigo-800 text-xs"
+                              >
+                                View Details →
+                              </button>
                             </div>
                           </motion.div>
                         ))

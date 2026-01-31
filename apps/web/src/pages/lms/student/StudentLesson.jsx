@@ -3,7 +3,8 @@ import { motion } from "framer-motion";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../../app/providers/AuthProvider";
 import { apiFetch } from "../../../services/api";
-import { PageLoading, ButtonLoading } from "../../../Components/common/LoadingStates";
+import { StudentLessonSkeleton } from "../../../Components/common/SkeletonLoaders";
+import { ButtonLoading } from "../../../Components/common/LoadingStates";
 import { Stream } from "@cloudflare/stream-react";
 import {
   FiPlay,
@@ -17,12 +18,16 @@ import {
   FiHelpCircle,
   FiCode,
   FiBookmark,
-  FiMessageSquare,
   FiArrowLeft,
   FiX,
   FiLayers,
+  FiChevronDown,
+  FiMenu,
+  FiTarget,
+  FiImage,
 } from "react-icons/fi";
 import SlideDeckViewer from "../../../Components/presentation/SlideDeckViewer";
+import { CodeBlock } from "../../../Components/ui/code-block";
 import { SLIDES as htmlBasicSlides, SLIDE_COUNT as htmlBasicSlideCount } from "../../../data/slides/htmlBasicElements.jsx";
 
 export default function StudentLesson() {
@@ -50,12 +55,34 @@ export default function StudentLesson() {
   const [videoToken, setVideoToken] = useState(null);
   const [videoError, setVideoError] = useState(null);
   const [videoTokenLoading, setVideoTokenLoading] = useState(false);
+  const [course, setCourse] = useState(null);
+  const [allModules, setAllModules] = useState([]);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [courseExpanded, setCourseExpanded] = useState(true);
+  const [sidebarVisible, setSidebarVisible] = useState(true);
+  const [copiedIndex, setCopiedIndex] = useState(null);
+  const [activePromptTab, setActivePromptTab] = useState(null); // 'prompts' | 'commands' | 'error_resolve'
   const videoRef = useRef(null);
 
+  const setPromptTab = (key) => {
+    setActivePromptTab((prev) => (prev === key ? null : key));
+  };
+
+  const handleCopy = async (text, index) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedIndex(index);
+      setTimeout(() => setCopiedIndex(null), 2000);
+    } catch (err) {
+      console.error("Failed to copy:", err);
+    }
+  };
+
   useEffect(() => {
-    if (!token || !lessonSlug) return;
+    if (!token || !lessonSlug || !courseSlug) return;
     fetchLessonData();
-  }, [token, lessonSlug]);
+    fetchCourseData();
+  }, [token, lessonSlug, courseSlug]);
 
   // Fetch video token if needed for Cloudflare Stream
   useEffect(() => {
@@ -68,13 +95,37 @@ export default function StudentLesson() {
     }
   }, [lesson?.id, lesson?.video_provider, lesson?.video_id, token]);
 
+  const fetchCourseData = async () => {
+    try {
+      const res = await apiFetch(`/api/v1/student/courses/${courseSlug}`, { token }).catch(() => ({ data: null }));
+      if (res?.data?.course) {
+        setCourse(res.data.course);
+        setAllModules(res.data.course.modules || []);
+      } else if (res?.course) {
+        setCourse(res.course);
+        setAllModules(res.course.modules || []);
+      }
+    } catch (error) {
+      console.error("Failed to fetch course data:", error);
+    }
+  };
+
   const fetchLessonData = async () => {
     try {
       setLoading(true);
       const res = await apiFetch(`/api/v1/student/courses/${courseSlug}/modules/${moduleSlug}/lessons/${lessonSlug}`, { token }).catch(() => ({ data: null }));
       
       if (res?.data) {
-        setLesson(res.data.lesson || res.data);
+        const lessonData = res.data.lesson || res.data;
+        // Ensure prompts is parsed if it's a string
+        if (lessonData?.prompts && typeof lessonData.prompts === 'string') {
+          try {
+            lessonData.prompts = JSON.parse(lessonData.prompts);
+          } catch (e) {
+            lessonData.prompts = null;
+          }
+        }
+        setLesson(lessonData);
         setModuleLessons(res.data.moduleLessons || []);
         setResources(res.data.resources || []);
         setMcqs(res.data.mcqs || []);
@@ -215,15 +266,55 @@ export default function StudentLesson() {
 
   const getLessonStatus = (l) => {
     if (l.completed) return "completed";
-    if (l.id === lesson?.id) return "current";
+    if (l.id === lesson?.id || l.slug === lessonSlug) return "current";
     if (l.locked) return "locked";
     return "open";
+  };
+
+  const formatDuration = (seconds) => {
+    if (!seconds) return "0 mins";
+    const hours = Math.floor(seconds / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
+    if (hours > 0) {
+      return `${hours} hour${hours > 1 ? 's' : ''}, ${mins} min${mins !== 1 ? 's' : ''}`;
+    }
+    return `${mins} min${mins !== 1 ? 's' : ''}`;
+  };
+
+  const getTotalCourseDuration = () => {
+    if (!allModules || allModules.length === 0) return "0 mins";
+    let totalSeconds = 0;
+    allModules.forEach(module => {
+      if (module.lessons) {
+        module.lessons.forEach(lesson => {
+          totalSeconds += lesson.duration_seconds || 0;
+        });
+      }
+    });
+    return formatDuration(totalSeconds);
+  };
+
+  // Get all lessons from all modules
+  const getAllLessons = () => {
+    const lessons = [];
+    allModules.forEach(module => {
+      if (module.lessons) {
+        module.lessons.forEach(lesson => {
+          lessons.push({
+            ...lesson,
+            moduleSlug: module.slug,
+            moduleTitle: module.title,
+          });
+        });
+      }
+    });
+    return lessons;
   };
 
   const currentMcq = mcqs[mcqCurrentIndex];
 
   if (loading) {
-    return <PageLoading />;
+    return <StudentLessonSkeleton />;
   }
 
   if (!lesson) {
@@ -244,512 +335,511 @@ export default function StudentLesson() {
     );
   }
 
+  const allLessons = getAllLessons();
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50">
+    <div className="min-h-screen bg-slate-50">
       <div className="flex h-screen overflow-hidden">
-        {/* Left Sidebar - Lessons List */}
-        <div className="w-80 bg-white border-r border-slate-200 overflow-y-auto">
-          <div className="p-6 border-b border-slate-200">
-            <button
-              onClick={() => navigate(`/lms/student/courses/${courseSlug}`)}
-              className="flex items-center gap-2 text-slate-600 hover:text-slate-900 mb-4"
-            >
-              <FiArrowLeft className="w-4 h-4" />
-              <span className="text-sm">Back to Course</span>
-            </button>
-            <h2 className="text-lg font-bold text-slate-900">Lessons</h2>
-          </div>
-          <div className="p-4 space-y-2">
-            {moduleLessons.map((l, index) => {
-              const status = getLessonStatus(l);
-              return (
-                <button
-                  key={l.id || index}
-                  onClick={() => {
-                    if (status !== "locked") {
-                      navigate(`/lms/student/courses/${courseSlug}/modules/${moduleSlug}/lessons/${l.slug}`);
-                    }
-                  }}
-                  disabled={status === "locked"}
-                  className={`w-full text-left p-3 rounded-lg transition-all ${
-                    status === "current"
-                      ? "bg-blue-50 border-2 border-blue-500"
-                      : status === "completed"
-                      ? "bg-emerald-50 border border-emerald-200"
-                      : status === "locked"
-                      ? "bg-slate-50 border border-slate-200 opacity-50 cursor-not-allowed"
-                      : "bg-white border border-slate-200 hover:bg-slate-50"
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    {status === "completed" ? (
-                      <FiCheckCircle className="w-5 h-5 text-emerald-500 flex-shrink-0" />
-                    ) : status === "locked" ? (
-                      <FiLock className="w-5 h-5 text-slate-400 flex-shrink-0" />
-                    ) : (
-                      <div className="w-5 h-5 rounded-full border-2 border-slate-300 flex-shrink-0" />
-                    )}
-                    <div className="flex-1 min-w-0">
-                      <p className={`text-sm font-medium ${
-                        status === "current" ? "text-blue-900" : status === "completed" ? "text-emerald-900" : "text-slate-900"
-                      }`}>
-                        {l.title || `Lesson ${index + 1}`}
-                      </p>
-                      <p className="text-xs text-slate-500">{index + 1}</p>
-                    </div>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Center - Video Player & Content */}
-        <div className="flex-1 overflow-y-auto">
-          <div className="max-w-5xl mx-auto p-8">
-            {/* Lesson Header */}
-            <div className="mb-8">
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-600 bg-clip-text text-transparent mb-3">{lesson.title}</h1>
-              <p className="text-slate-600 text-lg">{lesson.summary}</p>
-            </div>
-
-            {/* Video Player */}
-            {lesson.video_provider === "cloudflare_stream" && lesson.video_id ? (
-              <div className="mb-8 rounded-md border-2 border-cyan-200/50 bg-gradient-to-br from-slate-900 to-slate-800 overflow-hidden shadow-2xl shadow-cyan-500/20">
-                <div className="aspect-video bg-black relative">
-                  {videoTokenLoading ? (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/90 text-white">
-                      <div className="text-center">
-                        <div className="w-16 h-16 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                        <p className="text-lg font-medium">Loading video...</p>
-                      </div>
-                    </div>
-                  ) : videoToken?.iframeUrl ? (
-                    <iframe
-                      src={videoToken.iframeUrl}
-                      title={lesson.title}
-                      className="w-full h-full"
-                      allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
-                      allowFullScreen
-                    />
-                  ) : videoError ? (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/90 text-white p-4">
-                      <div className="text-center max-w-md">
-                        <FiPlay className="w-16 h-16 mx-auto mb-4 text-cyan-400 opacity-50" />
-                        <p className="text-lg font-semibold mb-2">Unable to load video</p>
-                        <p className="text-sm text-gray-300 mb-6">{videoError}</p>
-                        <button
-                          onClick={() => lesson?.id && fetchVideoToken(lesson.id)}
-                          className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-semibold rounded-md hover:from-cyan-600 hover:to-blue-600 transition-all shadow-lg"
-                        >
-                          Retry
-                        </button>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/90 text-white">
-                      <div className="text-center">
-                        <div className="w-16 h-16 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                        <p className="text-lg font-medium">Preparing video...</p>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            ) : lesson.video_provider === "youtube" && lesson.video_id ? (
-              <div className="mb-6 rounded-md border border-slate-200 bg-slate-900 overflow-hidden shadow-xl">
-                <div className="aspect-video bg-black">
-                  <iframe
-                    src={`https://www.youtube.com/embed/${lesson.video_id}`}
-                    title={lesson.title}
-                    className="w-full h-full"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  />
-                </div>
-              </div>
-            ) : lesson.video_provider === "vimeo" && lesson.video_id ? (
-              <div className="mb-6 rounded-md border border-slate-200 bg-slate-900 overflow-hidden shadow-xl">
-                <div className="aspect-video bg-black">
-                  <iframe
-                    src={`https://player.vimeo.com/video/${lesson.video_id}`}
-                    title={lesson.title}
-                    className="w-full h-full"
-                    allow="autoplay; fullscreen; picture-in-picture"
-                    allowFullScreen
-                  />
-                </div>
-              </div>
-            ) : lesson.video_id && lesson.video_id.startsWith("http") ? (
-              <div className="mb-6 rounded-md border border-slate-200 bg-slate-900 overflow-hidden shadow-xl">
-                <div className="aspect-video bg-black">
-                  <video
-                    ref={videoRef}
-                    src={lesson.video_id}
-                    controls
-                    className="w-full h-full"
-                    onPlay={() => setVideoReady(true)}
-                  >
-                    Your browser does not support the video tag.
-                  </video>
-                </div>
-              </div>
-            ) : (
-              <div className="mb-6 rounded-md border border-slate-200 bg-slate-50 p-12 text-center">
-                <FiPlay className="w-16 h-16 mx-auto mb-4 text-slate-400" />
-                <p className="text-slate-600">No video available for this lesson</p>
-                {lesson.video_id && (
-                  <p className="text-sm text-slate-500 mt-2">Video ID: {lesson.video_id}</p>
-                )}
-              </div>
-            )}
-
-            {/* Start Discussion Button */}
-            <div className="mb-8">
+        {/* Left Sidebar - Course Contents (Collapsible) */}
+        {sidebarVisible && (
+          <motion.div
+            initial={{ width: 0, opacity: 0 }}
+            animate={{ width: sidebarCollapsed ? "56px" : "300px", opacity: 1 }}
+            exit={{ width: 0, opacity: 0 }}
+            className="bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 border-r border-slate-900 overflow-hidden flex flex-col flex-shrink-0"
+          >
+          {/* Sidebar Header */}
+          <div className="h-14 px-3 border-b border-slate-700/50 flex items-center justify-between flex-shrink-0">
+            {!sidebarCollapsed && (
               <button
-                onClick={() => navigate("/lms/student/discussions")}
-                className="px-8 py-4 bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 text-white font-semibold rounded-md hover:from-cyan-600 hover:via-blue-600 hover:to-indigo-600 transition-all flex items-center gap-2 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40"
+                onClick={() => navigate(`/lms/student/courses/${courseSlug}`)}
+                className="flex items-center gap-2 text-slate-300 hover:text-white text-sm font-medium transition-colors"
               >
-                <FiMessageSquare className="w-5 h-5" />
-                Start My Discussion
+                <FiChevronLeft className="w-4 h-4" />
+                <span>Contents</span>
+              </button>
+            )}
+            {sidebarCollapsed && (
+              <button
+                onClick={() => navigate(`/lms/student/courses/${courseSlug}`)}
+                className="w-full flex items-center justify-center p-2 text-slate-300 hover:text-white hover:bg-slate-700/30 rounded-md transition-colors"
+                title="Back to Course"
+              >
+                <FiChevronLeft className="w-5 h-5" />
+              </button>
+            )}
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+                className="p-2 text-slate-400 hover:text-white hover:bg-slate-700/30 rounded-md transition-colors"
+                aria-label={sidebarCollapsed ? "Expand" : "Collapse"}
+              >
+                <FiMenu className={`w-5 h-5 transition-transform ${sidebarCollapsed ? "rotate-180" : ""}`} />
+              </button>
+              <button
+                onClick={() => setSidebarVisible(false)}
+                className="p-2 text-slate-400 hover:text-white hover:bg-slate-700/30 rounded-md transition-colors"
+                aria-label="Close sidebar"
+              >
+                <FiX className="w-5 h-5" />
               </button>
             </div>
+          </div>
 
-            {/* Slides Section */}
-            {resources.filter((r) => r.type === "slides").length > 0 && (
-              <div className="mb-6 bg-white rounded-md border border-slate-200 p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-bold text-slate-900">Slides</h3>
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => setSlidesExpanded(!slidesExpanded)}
-                      className="p-2 rounded-lg hover:bg-slate-100"
-                    >
-                      {slidesExpanded ? <FiMinimize2 className="w-5 h-5" /> : <FiMaximize2 className="w-5 h-5" />}
-                    </button>
-                    <label className="flex items-center gap-2 text-sm">
-                      <input
-                        type="checkbox"
-                        checked={autoView}
-                        onChange={(e) => setAutoView(e.target.checked)}
-                        className="rounded"
-                      />
-                      Auto-view
-                    </label>
-                  </div>
+          {/* Course & Lessons */}
+          {!sidebarCollapsed && course && (
+            <div className="flex-1 overflow-y-auto border-t border-slate-700/50">
+              <button
+                type="button"
+                onClick={() => setCourseExpanded(!courseExpanded)}
+                className="w-full px-4 py-3 text-left border-b border-slate-700/50 hover:bg-slate-700/30 transition-colors flex items-center justify-between gap-2"
+              >
+                <div className="min-w-0 flex-1">
+                  <h3 className="text-sm font-semibold text-white truncate">{course.title}</h3>
+                  <p className="text-xs text-slate-400 mt-0.5">{getTotalCourseDuration()}</p>
                 </div>
-                <div className={`${slidesExpanded ? "h-96" : "h-48"} overflow-hidden rounded-lg bg-slate-100 border border-slate-200 relative`}>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <p className="text-slate-600">Slide {currentSlide + 1}</p>
-                  </div>
-                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-lg">
-                    <button
-                      onClick={() => setCurrentSlide(Math.max(0, currentSlide - 1))}
-                      disabled={currentSlide === 0}
-                      className="p-1 disabled:opacity-50"
-                    >
-                      <FiChevronLeft className="w-5 h-5" />
-                    </button>
-                    <span className="text-sm font-medium">
-                      {currentSlide + 1} / {resources.filter((r) => r.type === "slides").length}
-                    </span>
-                    <button
-                      onClick={() => setCurrentSlide(Math.min(resources.filter((r) => r.type === "slides").length - 1, currentSlide + 1))}
-                      disabled={currentSlide >= resources.filter((r) => r.type === "slides").length - 1}
-                      className="p-1 disabled:opacity-50"
-                    >
-                      <FiChevronRight className="w-5 h-5" />
-                    </button>
+                <FiChevronDown className={`w-4 h-4 text-slate-400 flex-shrink-0 transition-transform ${courseExpanded ? "" : "-rotate-90"}`} />
+              </button>
+
+              {courseExpanded && (
+                <div className="py-2 px-2">
+                  {allLessons.map((l, index) => {
+                    const status = getLessonStatus(l);
+                    const isCurrent = status === "current";
+                    return (
+                      <button
+                        key={l.id || index}
+                        type="button"
+                        onClick={() => {
+                          if (status !== "locked") {
+                            navigate(`/lms/student/courses/${courseSlug}/modules/${l.moduleSlug}/lessons/${l.slug}`);
+                          }
+                        }}
+                        disabled={status === "locked"}
+                        className={`w-full text-left px-3 py-2.5 rounded-md flex items-start gap-3 transition-colors border-l-2 ${
+                          isCurrent
+                            ? "bg-gradient-to-r from-blue-600/20 to-purple-600/20 text-white border-blue-500"
+                            : status === "completed"
+                            ? "text-slate-300 hover:text-white hover:bg-slate-700/30 border-transparent"
+                            : status === "locked"
+                            ? "text-slate-500 opacity-60 cursor-not-allowed border-transparent"
+                            : "text-slate-300 hover:text-white hover:bg-slate-700/30 border-transparent"
+                        }`}
+                      >
+                        <div className="flex-shrink-0 mt-0.5">
+                          {status === "completed" ? (
+                            <FiCheckCircle className="w-4 h-4 text-emerald-400" />
+                          ) : (
+                            <div className={`w-4 h-4 rounded-full border-2 flex-shrink-0 ${isCurrent ? "border-white bg-white/20" : "border-slate-500"}`} />
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium truncate">{l.title || `Lesson ${index + 1}`}</p>
+                          {l.duration_seconds && (
+                            <p className={`text-xs mt-0.5 ${isCurrent ? "text-slate-300" : "text-slate-500"}`}>
+                              {formatDuration(l.duration_seconds)}
+                            </p>
+                          )}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          )}
+          </motion.div>
+        )}
+
+        {/* Toggle Sidebar Button - when closed */}
+        {!sidebarVisible && (
+          <button
+            onClick={() => setSidebarVisible(true)}
+            className="fixed left-4 top-4 z-50 w-11 h-11 bg-gradient-to-b from-slate-900 to-slate-800 border border-slate-900 rounded-lg flex items-center justify-center text-white shadow-md hover:bg-slate-700/80 transition-colors"
+            aria-label="Open contents"
+          >
+            <FiMenu className="w-5 h-5" />
+          </button>
+        )}
+
+        {/* Center - Video Player & Content */}
+        <div className="flex-1 overflow-y-auto bg-white">
+          <div className="max-w-6xl mx-auto">
+            {/* Breadcrumb Navigation */}
+            {course && (
+              <div className="px-8 pt-6 pb-4">
+                <div className="flex items-center gap-2 text-sm text-slate-600">
+                  <span className="hover:text-slate-900 cursor-pointer" onClick={() => navigate(`/lms/student/courses/${courseSlug}`)}>
+                    {course.title}
+                  </span>
+                  <span>›</span>
+                  <span className="text-slate-900 font-medium">{lesson?.title}</span>
+                </div>
+              </div>
+            )}
+
+            {/* Learning Goal - at top when present */}
+            {lesson?.goal?.trim() && (
+              <div className="px-8 pb-6">
+                <div className="rounded-lg bg-amber-50 border border-amber-200 p-4 flex items-start gap-3">
+                  <FiTarget className="w-6 h-6 text-amber-600 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <h3 className="text-sm font-semibold text-amber-900 mb-1">Learning goal</h3>
+                    <p className="text-slate-700 whitespace-pre-wrap">{lesson.goal.trim()}</p>
                   </div>
                 </div>
               </div>
             )}
 
-            {/* Lesson Tabs */}
-            <div className="bg-white/80 backdrop-blur-sm rounded-md border-2 border-cyan-200/50 overflow-hidden shadow-lg">
-              <div className="flex border-b border-cyan-100">
-                {[
-                  { id: "slides", label: "Slides", icon: FiLayers },
-                  { id: "cheatsheet", label: "Cheatsheet", icon: FiFileText },
-                  { id: "mcqs", label: "MCQs", icon: FiHelpCircle },
-                  { id: "practice", label: "Practice", icon: FiCode },
-                ].map((tab) => {
-                  const Icon = tab.icon;
-                  return (
-                    <button
-                      key={tab.id}
-                      onClick={() => setActiveTab(tab.id)}
-                      className={`flex-1 px-6 py-4 font-semibold transition-all flex items-center justify-center gap-2 ${
-                        activeTab === tab.id
-                          ? "bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-md"
-                          : "text-slate-600 hover:bg-cyan-50/50"
-                      }`}
-                    >
-                      <Icon className="w-5 h-5" />
-                      {tab.label}
-                    </button>
-                  );
-                })}
+            {/* Summary - when present */}
+            {lesson?.summary?.trim() && (
+              <div className="px-8 pb-6">
+                <div className="rounded-lg bg-slate-50 border border-slate-200 p-4">
+                  <h3 className="text-sm font-semibold text-slate-900 mb-2">What you&apos;ll learn</h3>
+                  <p className="text-slate-700 whitespace-pre-wrap">{lesson.summary.trim()}</p>
+                </div>
               </div>
+            )}
 
-              <div className="p-6">
-                {/* Slides Tab */}
-                {activeTab === "slides" && (
-                  <div>
-                    {/* Always show slides for now - can be made conditional later */}
-                    {htmlBasicSlides && htmlBasicSlides.length > 0 ? (
-                      <SlideDeckViewer slides={htmlBasicSlides} slideCount={htmlBasicSlideCount} />
-                    ) : (
-                      <div className="text-center py-12">
-                        <FiLayers className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-                        <p className="text-slate-600 text-lg mb-2">No slides available</p>
-                        <p className="text-slate-500 text-sm">Slides data not loaded</p>
-                        <div className="mt-6 p-4 bg-red-50 rounded-lg border border-red-200">
-                          <p className="text-sm text-red-800">Debug Info:</p>
-                          <p className="text-xs text-red-600">Slides array length: {htmlBasicSlides?.length || 0}</p>
-                          <p className="text-xs text-red-600">Slide count: {htmlBasicSlideCount || "N/A"}</p>
+            {/* Video Player Section */}
+            <div className="px-8 pb-8">
+
+              {/* Cloudflare Stream Video Player */}
+              {lesson.video_provider === "cloudflare_stream" && lesson.video_id ? (
+                <div className="rounded-lg bg-black overflow-hidden shadow-xl relative">
+                  <div className="aspect-video bg-black relative">
+                    {videoTokenLoading ? (
+                      <div className="absolute inset-0 flex items-center justify-center bg-black text-white">
+                        <div className="text-center">
+                          <div className="w-16 h-16 border-4 border-white border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                          <p className="text-lg font-medium">Loading video...</p>
                         </div>
                       </div>
-                    )}
-                  </div>
-                )}
-
-                {/* Cheatsheet Tab */}
-                {activeTab === "cheatsheet" && (
-                  <div>
-                    {resources.filter((r) => r.type === "cheatsheet" || r.type === "link" || r.type === "text").length === 0 ? (
-                      <p className="text-slate-600 text-center py-8">No cheatsheet resources available</p>
-                    ) : (
-                      <div className="space-y-4">
-                        {resources
-                          .filter((r) => r.type === "cheatsheet" || r.type === "link" || r.type === "text")
-                          .map((resource, index) => (
-                            <div
-                              key={resource.id || index}
-                              className="p-5 bg-gradient-to-r from-cyan-50 to-blue-50 rounded-md border-2 border-cyan-200/50 hover:border-cyan-400 hover:shadow-md transition-all cursor-pointer group"
-                              onClick={() => {
-                                if (resource.url) {
-                                  window.open(resource.url, "_blank");
-                                } else {
-                                  setSelectedResource(resource);
-                                }
-                              }}
-                            >
-                              <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-3">
-                                  <div className="p-2 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-lg text-white group-hover:scale-110 transition-transform">
-                                    <FiFileText className="w-5 h-5" />
-                                  </div>
-                                  <div>
-                                    <h4 className="font-semibold text-slate-800">{resource.title}</h4>
-                                    {resource.url && (
-                                      <p className="text-sm text-slate-600">{resource.url}</p>
-                                    )}
-                                  </div>
-                                </div>
-                                {resource.url && (
-                                  <span className="text-xs font-medium text-cyan-600 group-hover:text-cyan-700">Open →</span>
-                                )}
-                              </div>
-                            </div>
-                          ))}
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {/* MCQs Tab */}
-                {activeTab === "mcqs" && (
-                  <div>
-                    {mcqs.length === 0 ? (
-                      <p className="text-slate-600 text-center py-8">No MCQs available for this lesson</p>
-                    ) : mcqSubmitted ? (
-                      <div className="text-center py-8">
-                        <div className="text-4xl font-bold text-blue-600 mb-4">
-                          {mcqScore.correct} / {mcqScore.total}
-                        </div>
-                        <p className="text-lg text-slate-900 mb-6">Your Score</p>
-                        {wrongAnswers.length > 0 && (
-                          <div className="text-left mb-6">
-                            <h4 className="font-bold text-slate-900 mb-4">Wrong Answers:</h4>
-                            <div className="space-y-4">
-                              {wrongAnswers.map((mcq, index) => (
-                                <div key={mcq.id || index} className="p-4 bg-red-50 border border-red-200 rounded-lg">
-                                  <p className="font-semibold text-slate-900 mb-2">{mcq.question}</p>
-                                  <p className="text-sm text-red-700">Your answer: {mcq.userAnswer}</p>
-                                  <p className="text-sm text-emerald-700">Correct answer: {mcq.correct_answer}</p>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                        <button
-                          onClick={handleRetest}
-                          className="px-6 py-3 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 transition-colors"
-                        >
-                          Retest
-                        </button>
-                      </div>
-                    ) : (
-                      <div>
-                        <div className="mb-6">
-                          <div className="flex items-center justify-between mb-4">
-                            <span className="text-sm font-semibold text-slate-600">
-                              Question {mcqCurrentIndex + 1} of {mcqs.length}
-                            </span>
-                            <button
-                              onClick={() => handleBookmarkMcq(currentMcq.id)}
-                              className="p-2 hover:bg-slate-100 rounded-lg"
-                              title="Bookmark"
-                            >
-                              <FiBookmark className="w-5 h-5 text-slate-600" />
-                            </button>
-                          </div>
-                          <h3 className="text-xl font-bold text-slate-900 mb-6">{currentMcq.question}</h3>
-                          <div className="space-y-3">
-                            {currentMcq.options?.map((option, optIndex) => (
-                              <label
-                                key={optIndex}
-                                className={`flex items-center gap-3 p-4 rounded-md border-2 cursor-pointer transition-all ${
-                                  mcqAnswers[currentMcq.id] === option
-                                    ? "border-cyan-500 bg-gradient-to-r from-cyan-50 to-blue-50 shadow-md"
-                                    : "border-cyan-200 hover:border-cyan-300 hover:bg-cyan-50/50"
-                                }`}
-                              >
-                                <input
-                                  type="radio"
-                                  name={`mcq-${currentMcq.id}`}
-                                  value={option}
-                                  checked={mcqAnswers[currentMcq.id] === option}
-                                  onChange={(e) => handleMcqAnswer(currentMcq.id, e.target.value)}
-                                  className="w-5 h-5 text-cyan-600"
-                                />
-                                <span className="flex-1 font-medium text-slate-700">{option}</span>
-                              </label>
-                            ))}
-                          </div>
-                        </div>
-                        <button
-                          onClick={handleMcqNext}
-                          disabled={!mcqAnswers[currentMcq.id]}
-                          className="w-full px-6 py-4 bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 text-white font-semibold rounded-md hover:from-cyan-600 hover:via-blue-600 hover:to-indigo-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-blue-500/30 hover:shadow-xl"
-                        >
-                          {mcqCurrentIndex < mcqs.length - 1 ? "Next Question" : "Submit"}
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {/* Practice Tab */}
-                {activeTab === "practice" && (
-                  <div>
-                    {practiceTasks.length === 0 ? (
-                      <p className="text-slate-600 text-center py-8">No practice tasks available for this lesson</p>
-                    ) : (
-                      <div className="space-y-6">
-                        {practiceTasks.map((task, index) => (
-                          <div key={task.id || index} className="p-6 bg-gradient-to-br from-teal-50 to-cyan-50 rounded-md border-2 border-teal-200/50 shadow-md hover:shadow-lg transition-all">
-                            <div className="flex items-start justify-between mb-4">
-                              <h4 className="text-lg font-bold bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent">{task.title || `Practice Task ${index + 1}`}</h4>
-                              <button
-                                onClick={() => handleBookmarkPractice(task.id)}
-                                className="p-2 hover:bg-teal-100 rounded-lg transition-colors"
-                                title="Bookmark"
-                              >
-                                <FiBookmark className="w-5 h-5 text-teal-600" />
-                              </button>
-                            </div>
-                            <p className="text-slate-700 mb-4">{task.description}</p>
-                            {task.desired_output && (
-                              <div className="mb-4 p-4 bg-white/80 rounded-md border border-teal-200">
-                                <p className="text-sm font-semibold text-teal-700 mb-2">Desired Output:</p>
-                                <pre className="text-sm text-slate-700 whitespace-pre-wrap">{task.desired_output}</pre>
-                              </div>
-                            )}
-                            {task.required_things && (
-                              <div className="mb-4">
-                                <p className="text-sm font-semibold text-teal-700 mb-2">Required:</p>
-                                <ul className="list-disc list-inside space-y-1 text-sm text-slate-700">
-                                  {task.required_things.map((item, itemIndex) => (
-                                    <li key={itemIndex}>{item}</li>
-                                  ))}
-                                </ul>
-                              </div>
-                            )}
-                            <button
-                              onClick={() => navigate(`/lms/student/playground?task=${task.id}`)}
-                              className="px-6 py-3 bg-gradient-to-r from-teal-500 to-cyan-500 text-white font-semibold rounded-md hover:from-teal-600 hover:to-cyan-600 transition-all shadow-md hover:shadow-lg"
-                            >
-                              Start Practice
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Right Sidebar - Progress & Notes */}
-        <div className="w-80 bg-white/80 backdrop-blur-sm border-l border-cyan-200/50 overflow-y-auto">
-          <div className="p-6">
-            <button
-              onClick={handleMarkComplete}
-              disabled={completed}
-              className={`w-full px-6 py-4 font-semibold rounded-md transition-all mb-6 shadow-lg ${
-                completed
-                  ? "bg-gradient-to-r from-emerald-400 to-teal-400 text-white cursor-not-allowed shadow-emerald-500/30"
-                  : "bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 text-white hover:from-cyan-600 hover:via-blue-600 hover:to-indigo-600 shadow-blue-500/30 hover:shadow-xl"
-              }`}
-            >
-              {completed ? (
-                <>
-                  <FiCheckCircle className="w-5 h-5 inline mr-2" />
-                  Completed
-                </>
-              ) : (
-                "Mark as Complete"
-              )}
-            </button>
-
-            <div className="space-y-6">
-              <div className="bg-gradient-to-br from-cyan-50 to-blue-50 rounded-md p-5 border-2 border-cyan-200/50">
-                <h3 className="text-lg font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent mb-4">Progress</h3>
-                <div className="space-y-3">
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium text-slate-700">Lesson Progress</span>
-                      <span className="text-sm font-bold text-cyan-600">{completed ? "100%" : "0%"}</span>
-                    </div>
-                    <div className="w-full bg-white rounded-full h-3 shadow-inner">
-                      <div
-                        className={`rounded-full h-3 transition-all ${
-                          completed 
-                            ? "bg-gradient-to-r from-emerald-400 to-teal-400" 
-                            : "bg-gradient-to-r from-cyan-400 to-blue-400"
-                        }`}
-                        style={{ width: completed ? "100%" : "0%" }}
+                    ) : videoToken?.iframeUrl ? (
+                      <iframe
+                        src={videoToken.iframeUrl}
+                        title={lesson.title}
+                        className="w-full h-full"
+                        allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
+                        allowFullScreen
                       />
+                    ) : videoError ? (
+                      <div className="absolute inset-0 flex items-center justify-center bg-black text-white p-4">
+                        <div className="text-center max-w-md">
+                          <FiPlay className="w-16 h-16 mx-auto mb-4 opacity-50" />
+                          <p className="text-lg font-semibold mb-2">Unable to load video</p>
+                          <p className="text-sm text-gray-300 mb-6">{videoError}</p>
+                          <button
+                            onClick={() => lesson?.id && fetchVideoToken(lesson.id)}
+                            className="px-6 py-3 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 transition-all"
+                          >
+                            Retry
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center bg-black text-white">
+                        <div className="text-center">
+                          <div className="w-16 h-16 border-4 border-white border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                          <p className="text-lg font-medium">Preparing video...</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ) : lesson.video_provider === "youtube" && lesson.video_id ? (
+                <div className="rounded-lg bg-black overflow-hidden shadow-xl">
+                  <div className="aspect-video bg-black">
+                    <iframe
+                      src={`https://www.youtube.com/embed/${lesson.video_id}`}
+                      title={lesson.title}
+                      className="w-full h-full"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                  </div>
+                </div>
+              ) : lesson.video_provider === "vimeo" && lesson.video_id ? (
+                <div className="rounded-lg bg-black overflow-hidden shadow-xl">
+                  <div className="aspect-video bg-black">
+                    <iframe
+                      src={`https://player.vimeo.com/video/${lesson.video_id}`}
+                      title={lesson.title}
+                      className="w-full h-full"
+                      allow="autoplay; fullscreen; picture-in-picture"
+                      allowFullScreen
+                    />
+                  </div>
+                </div>
+              ) : lesson.video_url ? (
+                <div className="rounded-lg bg-black overflow-hidden shadow-xl">
+                  <div className="aspect-video bg-black">
+                    <video
+                      ref={videoRef}
+                      src={lesson.video_url}
+                      controls
+                      className="w-full h-full"
+                      onPlay={() => setVideoReady(true)}
+                    >
+                      Your browser does not support the video tag.
+                    </video>
+                  </div>
+                </div>
+              ) : lesson.video_id && lesson.video_id.startsWith("http") ? (
+                <div className="rounded-lg bg-black overflow-hidden shadow-xl">
+                  <div className="aspect-video bg-black">
+                    <video
+                      ref={videoRef}
+                      src={lesson.video_id}
+                      controls
+                      className="w-full h-full"
+                      onPlay={() => setVideoReady(true)}
+                    >
+                      Your browser does not support the video tag.
+                    </video>
+                  </div>
+                </div>
+              ) : !lesson.video_url && !lesson.video_provider && !lesson.video_id ? (
+                <div className="rounded-lg bg-slate-100 border border-slate-200 p-8 text-center">
+                  <FiPlay className="w-12 h-12 text-slate-400 mx-auto mb-3" />
+                  <p className="text-slate-600 font-medium">No video in this lesson</p>
+                  <p className="text-sm text-slate-500 mt-1">Review the content below.</p>
+                </div>
+              ) : null}
+
+              {/* Prompts, Commands, Error Resolve – horizontal tabs, terminal-style boxes below video */}
+              {lesson?.prompts && typeof lesson.prompts === 'object' && (lesson.prompts.prompts || lesson.prompts.commands || lesson.prompts.error_resolve) && (
+                <div className="mt-8">
+                  <h3 className="text-sm font-semibold text-slate-700 mb-3 flex items-center gap-2">
+                    <FiCode className="w-4 h-4 text-slate-500" />
+                    Prompts &amp; code
+                  </h3>
+                  <div className="flex flex-wrap gap-2 border-b border-slate-200 pb-0">
+                    {lesson.prompts.prompts && (
+                      <button
+                        type="button"
+                        onClick={() => setPromptTab('prompts')}
+                        className={`px-4 py-3 flex items-center gap-2 rounded-t-lg border-b-2 transition-colors ${
+                          activePromptTab === 'prompts'
+                            ? 'bg-slate-800 text-white border-blue-500'
+                            : 'bg-slate-100 text-slate-700 border-transparent hover:bg-slate-200'
+                        }`}
+                      >
+                        <FiCode className="w-5 h-5 text-blue-500" />
+                        <span className="font-medium">Prompts</span>
+                      </button>
+                    )}
+                    {lesson.prompts.commands && (
+                      <button
+                        type="button"
+                        onClick={() => setPromptTab('commands')}
+                        className={`px-4 py-3 flex items-center gap-2 rounded-t-lg border-b-2 transition-colors ${
+                          activePromptTab === 'commands'
+                            ? 'bg-slate-800 text-white border-purple-500'
+                            : 'bg-slate-100 text-slate-700 border-transparent hover:bg-slate-200'
+                        }`}
+                      >
+                        <FiCode className="w-5 h-5 text-purple-500" />
+                        <span className="font-medium">Commands</span>
+                      </button>
+                    )}
+                    {lesson.prompts.error_resolve && (
+                      <button
+                        type="button"
+                        onClick={() => setPromptTab('error_resolve')}
+                        className={`px-4 py-3 flex items-center gap-2 rounded-t-lg border-b-2 transition-colors ${
+                          activePromptTab === 'error_resolve'
+                            ? 'bg-slate-800 text-white border-red-500'
+                            : 'bg-slate-100 text-slate-700 border-transparent hover:bg-slate-200'
+                        }`}
+                      >
+                        <FiCode className="w-5 h-5 text-red-500" />
+                        <span className="font-medium">Error handling</span>
+                      </button>
+                    )}
+                  </div>
+                  {activePromptTab && (
+                    <CodeBlock
+                      language={
+                        activePromptTab === "prompts"
+                          ? "Prompts"
+                          : activePromptTab === "commands"
+                            ? "Commands"
+                            : "Error handling"
+                      }
+                      content={
+                        activePromptTab === "prompts"
+                          ? lesson.prompts.prompts
+                          : activePromptTab === "commands"
+                            ? lesson.prompts.commands
+                            : lesson.prompts.error_resolve
+                      }
+                      promptPrefix={
+                        activePromptTab === "prompts"
+                          ? ">"
+                          : activePromptTab === "commands"
+                            ? "$"
+                            : "!"
+                      }
+                      variant={
+                        activePromptTab === "prompts"
+                          ? "blue"
+                          : activePromptTab === "commands"
+                            ? "purple"
+                            : "red"
+                      }
+                      onCopy={() =>
+                        handleCopy(
+                          activePromptTab === "prompts"
+                            ? lesson.prompts.prompts
+                            : activePromptTab === "commands"
+                              ? lesson.prompts.commands
+                              : lesson.prompts.error_resolve,
+                          activePromptTab
+                        )
+                      }
+                      copied={copiedIndex === activePromptTab}
+                      className="max-w-full"
+                    />
+                  )}
+                </div>
+              )}
+
+              {/* Success Image */}
+              {lesson?.success_image_url && (
+                <div className="mt-8">
+                  <h3 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
+                    <FiCheckCircle className="w-5 h-5 text-green-600" />
+                    Success Looks Like This
+                  </h3>
+                  <div className="rounded-lg overflow-hidden border border-slate-200 shadow-lg">
+                    <img
+                      src={lesson.success_image_url}
+                      alt="Success example"
+                      className="w-full h-auto"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                        e.target.nextSibling.style.display = 'block';
+                      }}
+                    />
+                    <div className="hidden bg-slate-100 p-8 text-center text-slate-500">
+                      <p>Image failed to load</p>
                     </div>
                   </div>
                 </div>
-              </div>
+              )}
 
-              <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-md p-5 border-2 border-indigo-200/50">
-                <h3 className="text-lg font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-4">Notes</h3>
-                <textarea
-                  placeholder="Add your notes here..."
-                  className="w-full px-4 py-3 bg-white/80 border-2 border-indigo-200/50 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-400 resize-none transition-all"
-                  rows={6}
-                />
+              {/* PDF Presentation */}
+              {lesson?.pdf_url && (
+                <div className="mt-8">
+                  <h3 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
+                    <FiFileText className="w-5 h-5 text-blue-600" />
+                    Presentation
+                  </h3>
+                  <div className="rounded-lg overflow-hidden border border-slate-200 shadow-lg bg-white">
+                    <div className="w-full" style={{ height: '600px' }}>
+                      <iframe
+                        src={`${lesson.pdf_url}#toolbar=0&navpanes=0&scrollbar=0`}
+                        className="w-full h-full"
+                        title="PDF Presentation"
+                        style={{ border: 'none' }}
+                      />
+                    </div>
+                    <div className="p-4 bg-slate-50 border-t border-slate-200">
+                      <a
+                        href={lesson.pdf_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center gap-2"
+                      >
+                        <FiFileText className="w-4 h-4" />
+                        Open PDF in new tab
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Resources (cheatsheets, links, text) */}
+              {resources?.length > 0 && (
+                <div className="mt-8">
+                  <h3 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
+                    <FiLayers className="w-5 h-5 text-slate-600" />
+                    Resources
+                  </h3>
+                  <div className="space-y-3">
+                    {resources.map((res) => (
+                      <div
+                        key={res.id}
+                        className="rounded-lg border border-slate-200 bg-white shadow-sm overflow-hidden"
+                      >
+                        <div className="p-4 flex items-center justify-between gap-4">
+                          <div className="flex items-center gap-3 min-w-0">
+                            <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center flex-shrink-0">
+                              {res.type === "link" ? (
+                                <FiFileText className="w-5 h-5 text-blue-600" />
+                              ) : res.type === "cheatsheet" ? (
+                                <FiCode className="w-5 h-5 text-purple-600" />
+                              ) : (
+                                <FiFileText className="w-5 h-5 text-slate-600" />
+                              )}
+                            </div>
+                            <div className="min-w-0">
+                              <p className="font-medium text-slate-900 truncate">{res.title}</p>
+                              <p className="text-xs text-slate-500 capitalize">{res.type}</p>
+                            </div>
+                          </div>
+                          {res.url ? (
+                            <a
+                              href={res.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex-shrink-0 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700"
+                            >
+                              Open
+                            </a>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={() => setSelectedResource(res)}
+                              className="flex-shrink-0 px-4 py-2 bg-slate-100 text-slate-700 text-sm font-medium rounded-md hover:bg-slate-200"
+                            >
+                              View
+                            </button>
+                          )}
+                        </div>
+                        {res.body && res.type === "text" && (
+                          <div className="px-4 pb-4 pt-0">
+                            <pre className="text-sm text-slate-600 whitespace-pre-wrap font-sans">{res.body}</pre>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Mark as complete - visible at bottom */}
+              <div className="mt-10 pt-8 border-t border-slate-200">
+                {!completed ? (
+                  <button
+                    onClick={handleMarkComplete}
+                    className="px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 flex items-center gap-2"
+                  >
+                    <FiCheckCircle className="w-5 h-5" />
+                    Mark lesson complete
+                  </button>
+                ) : (
+                  <div className="flex items-center gap-2 text-green-700 font-medium">
+                    <FiCheckCircle className="w-5 h-5" />
+                    You completed this lesson
+                  </div>
+                )}
               </div>
             </div>
           </div>
         </div>
+
       </div>
 
       {/* Resource Modal */}
