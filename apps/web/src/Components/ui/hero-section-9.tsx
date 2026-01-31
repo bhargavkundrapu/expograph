@@ -167,36 +167,36 @@ const HeroSection = ({
           />
 
           <motion.div
-            className="absolute left-1/2 top-0 h-48 w-48 -translate-x-1/2 rounded-2xl bg-muted p-2 shadow-lg sm:h-64 sm:w-64"
+            className="absolute left-1/2 top-0 h-48 w-48 -translate-x-1/2 rounded-md bg-muted p-2 shadow-lg sm:h-64 sm:w-64"
             style={{ transformOrigin: "bottom center" }}
             variants={imageVariants}
           >
             <img
               src={images[0]}
               alt="Student learning"
-              className="h-full w-full rounded-xl object-cover"
+              className="h-full w-full rounded-[6px] object-cover"
             />
           </motion.div>
           <motion.div
-            className="absolute right-0 top-1/3 h-40 w-40 rounded-2xl bg-muted p-2 shadow-lg sm:h-56 sm:w-56"
+            className="absolute right-0 top-1/3 h-40 w-40 rounded-md bg-muted p-2 shadow-lg sm:h-56 sm:w-56"
             style={{ transformOrigin: "left center" }}
             variants={imageVariants}
           >
             <img
               src={images[1]}
               alt="Tutor assisting"
-              className="h-full w-full rounded-xl object-cover"
+              className="h-full w-full rounded-[6px] object-cover"
             />
           </motion.div>
           <motion.div
-            className="absolute bottom-0 left-0 h-32 w-32 rounded-2xl bg-muted p-2 shadow-lg sm:h-48 sm:w-48"
+            className="absolute bottom-0 left-0 h-32 w-32 rounded-md bg-muted p-2 shadow-lg sm:h-48 sm:w-48"
             style={{ transformOrigin: "top right" }}
             variants={imageVariants}
           >
             <img
               src={images[2]}
               alt="Collaborative discussion"
-              className="h-full w-full rounded-xl object-cover"
+              className="h-full w-full rounded-[6px] object-cover"
             />
           </motion.div>
         </motion.div>
