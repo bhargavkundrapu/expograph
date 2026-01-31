@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Button, type ButtonProps } from "@/components/ui/button";
+import { Button, type ButtonProps } from "./button";
 import { cn } from "@/lib/utils";
 import React from "react";
 
