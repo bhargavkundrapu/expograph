@@ -5,7 +5,6 @@ import MentorLayout from "./layouts/MentorLayout";
 import StudentLayout from "./layouts/StudentLayout";
 
 import AcademyPage from "../pages/academy/AcademyPage";
-import CoursesPage from "../pages/academy/CoursesPage";
 import SolutionsPage from "../pages/solutions/SolutionsPage";
 import LoginPage from "../pages/auth/LoginPage";
 
@@ -83,7 +82,6 @@ export const router = createBrowserRouter([
     children: [
       { path: "/", element: <AcademyPage /> },
       { path: "/academy", element: <AcademyPage /> },
-      { path: "/courses", element: <CoursesPage /> },
       { path: "/solutions", element: <SolutionsPage /> },
       { path: "/login", element: <PublicOnly><LoginPage /></PublicOnly> },
     ],

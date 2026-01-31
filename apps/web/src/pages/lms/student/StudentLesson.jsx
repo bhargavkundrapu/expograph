@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { motion } from "framer-motion";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../../app/providers/AuthProvider";
@@ -28,6 +28,7 @@ import {
 } from "react-icons/fi";
 import SlideDeckViewer from "../../../Components/presentation/SlideDeckViewer";
 import { CodeBlock } from "../../../Components/ui/code-block";
+import { Tabs } from "../../../Components/ui/vercel-tabs";
 import { SLIDES as htmlBasicSlides, SLIDE_COUNT as htmlBasicSlideCount } from "../../../data/slides/htmlBasicElements.jsx";
 
 export default function StudentLesson() {
@@ -61,12 +62,28 @@ export default function StudentLesson() {
   const [courseExpanded, setCourseExpanded] = useState(true);
   const [sidebarVisible, setSidebarVisible] = useState(true);
   const [copiedIndex, setCopiedIndex] = useState(null);
-  const [activePromptTab, setActivePromptTab] = useState(null); // 'prompts' | 'commands' | 'error_resolve'
+  // Combined content tabs: prompts/code + Success looks like + Slides (PDF)
+  const contentTabs = useMemo(() => {
+    const tabs = [];
+    if (lesson?.prompts && typeof lesson.prompts === "object") {
+      if (lesson.prompts.prompts) tabs.push({ id: "prompts", label: "Prompts" });
+      if (lesson.prompts.commands) tabs.push({ id: "commands", label: "Commands" });
+      if (lesson.prompts.error_resolve) tabs.push({ id: "error_resolve", label: "Error handling" });
+    }
+    if (lesson?.success_image_url) tabs.push({ id: "success", label: "Success looks like" });
+    if (lesson?.pdf_url) tabs.push({ id: "slides", label: "Slides (PDF)" });
+    return tabs;
+  }, [lesson?.prompts, lesson?.success_image_url, lesson?.pdf_url]);
+  const hasContentTabs = contentTabs.length > 0;
+  const [activeContentTab, setActiveContentTab] = useState(null);
   const videoRef = useRef(null);
 
-  const setPromptTab = (key) => {
-    setActivePromptTab((prev) => (prev === key ? null : key));
-  };
+  // Set default content tab when lesson data is ready
+  useEffect(() => {
+    if (hasContentTabs && activeContentTab === null && contentTabs[0]) {
+      setActiveContentTab(contentTabs[0].id);
+    }
+  }, [hasContentTabs, contentTabs, activeContentTab]);
 
   const handleCopy = async (text, index) => {
     try {
@@ -607,156 +624,105 @@ export default function StudentLesson() {
                 </div>
               ) : null}
 
-              {/* Prompts, Commands, Error Resolve – horizontal tabs, terminal-style boxes below video */}
-              {lesson?.prompts && typeof lesson.prompts === 'object' && (lesson.prompts.prompts || lesson.prompts.commands || lesson.prompts.error_resolve) && (
+              {/* Unified tabs: Prompts / Commands / Error handling / Success looks like / Slides (PDF) */}
+              {hasContentTabs && (
                 <div className="mt-8">
-                  <h3 className="text-sm font-semibold text-slate-700 mb-3 flex items-center gap-2">
+                  <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3 flex items-center gap-2">
                     <FiCode className="w-4 h-4 text-slate-500" />
-                    Prompts &amp; code
+                    Lesson content
                   </h3>
-                  <div className="flex flex-wrap gap-2 border-b border-slate-200 pb-0">
-                    {lesson.prompts.prompts && (
-                      <button
-                        type="button"
-                        onClick={() => setPromptTab('prompts')}
-                        className={`px-4 py-3 flex items-center gap-2 rounded-t-lg border-b-2 transition-colors ${
-                          activePromptTab === 'prompts'
-                            ? 'bg-slate-800 text-white border-blue-500'
-                            : 'bg-slate-100 text-slate-700 border-transparent hover:bg-slate-200'
-                        }`}
-                      >
-                        <FiCode className="w-5 h-5 text-blue-500" />
-                        <span className="font-medium">Prompts</span>
-                      </button>
-                    )}
-                    {lesson.prompts.commands && (
-                      <button
-                        type="button"
-                        onClick={() => setPromptTab('commands')}
-                        className={`px-4 py-3 flex items-center gap-2 rounded-t-lg border-b-2 transition-colors ${
-                          activePromptTab === 'commands'
-                            ? 'bg-slate-800 text-white border-purple-500'
-                            : 'bg-slate-100 text-slate-700 border-transparent hover:bg-slate-200'
-                        }`}
-                      >
-                        <FiCode className="w-5 h-5 text-purple-500" />
-                        <span className="font-medium">Commands</span>
-                      </button>
-                    )}
-                    {lesson.prompts.error_resolve && (
-                      <button
-                        type="button"
-                        onClick={() => setPromptTab('error_resolve')}
-                        className={`px-4 py-3 flex items-center gap-2 rounded-t-lg border-b-2 transition-colors ${
-                          activePromptTab === 'error_resolve'
-                            ? 'bg-slate-800 text-white border-red-500'
-                            : 'bg-slate-100 text-slate-700 border-transparent hover:bg-slate-200'
-                        }`}
-                      >
-                        <FiCode className="w-5 h-5 text-red-500" />
-                        <span className="font-medium">Error handling</span>
-                      </button>
-                    )}
-                  </div>
-                  {activePromptTab && (
+                  <Tabs
+                    tabs={contentTabs}
+                    activeTab={activeContentTab}
+                    onTabChange={setActiveContentTab}
+                    className="mb-4"
+                  />
+                  {/* Code blocks (Prompts / Commands / Error handling) */}
+                  {activeContentTab && ["prompts", "commands", "error_resolve"].includes(activeContentTab) && lesson?.prompts && (
                     <CodeBlock
                       language={
-                        activePromptTab === "prompts"
+                        activeContentTab === "prompts"
                           ? "Prompts"
-                          : activePromptTab === "commands"
+                          : activeContentTab === "commands"
                             ? "Commands"
                             : "Error handling"
                       }
                       content={
-                        activePromptTab === "prompts"
+                        activeContentTab === "prompts"
                           ? lesson.prompts.prompts
-                          : activePromptTab === "commands"
+                          : activeContentTab === "commands"
                             ? lesson.prompts.commands
                             : lesson.prompts.error_resolve
                       }
                       promptPrefix={
-                        activePromptTab === "prompts"
+                        activeContentTab === "prompts"
                           ? ">"
-                          : activePromptTab === "commands"
+                          : activeContentTab === "commands"
                             ? "$"
                             : "!"
                       }
                       variant={
-                        activePromptTab === "prompts"
+                        activeContentTab === "prompts"
                           ? "blue"
-                          : activePromptTab === "commands"
+                          : activeContentTab === "commands"
                             ? "purple"
                             : "red"
                       }
                       onCopy={() =>
                         handleCopy(
-                          activePromptTab === "prompts"
+                          activeContentTab === "prompts"
                             ? lesson.prompts.prompts
-                            : activePromptTab === "commands"
+                            : activeContentTab === "commands"
                               ? lesson.prompts.commands
                               : lesson.prompts.error_resolve,
-                          activePromptTab
+                          activeContentTab
                         )
                       }
-                      copied={copiedIndex === activePromptTab}
+                      copied={copiedIndex === activeContentTab}
                       className="max-w-full"
                     />
                   )}
-                </div>
-              )}
-
-              {/* Success Image */}
-              {lesson?.success_image_url && (
-                <div className="mt-8">
-                  <h3 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
-                    <FiCheckCircle className="w-5 h-5 text-green-600" />
-                    Success Looks Like This
-                  </h3>
-                  <div className="rounded-lg overflow-hidden border border-slate-200 shadow-lg">
-                    <img
-                      src={lesson.success_image_url}
-                      alt="Success example"
-                      className="w-full h-auto"
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                        e.target.nextSibling.style.display = 'block';
-                      }}
-                    />
-                    <div className="hidden bg-slate-100 p-8 text-center text-slate-500">
-                      <p>Image failed to load</p>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* PDF Presentation */}
-              {lesson?.pdf_url && (
-                <div className="mt-8">
-                  <h3 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
-                    <FiFileText className="w-5 h-5 text-blue-600" />
-                    Presentation
-                  </h3>
-                  <div className="rounded-lg overflow-hidden border border-slate-200 shadow-lg bg-white">
-                    <div className="w-full" style={{ height: '600px' }}>
-                      <iframe
-                        src={`${lesson.pdf_url}#toolbar=0&navpanes=0&scrollbar=0`}
-                        className="w-full h-full"
-                        title="PDF Presentation"
-                        style={{ border: 'none' }}
+                  {/* Success looks like */}
+                  {activeContentTab === "success" && lesson?.success_image_url && (
+                    <div className="rounded-lg overflow-hidden border border-slate-200 shadow-lg">
+                      <img
+                        src={lesson.success_image_url}
+                        alt="Success example"
+                        className="w-full h-auto"
+                        onError={(e) => {
+                          e.target.style.display = "none";
+                          e.target.nextSibling.style.display = "block";
+                        }}
                       />
+                      <div className="hidden bg-slate-100 p-8 text-center text-slate-500">
+                        <p>Image failed to load</p>
+                      </div>
                     </div>
-                    <div className="p-4 bg-slate-50 border-t border-slate-200">
-                      <a
-                        href={lesson.pdf_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center gap-2"
-                      >
-                        <FiFileText className="w-4 h-4" />
-                        Open PDF in new tab
-                      </a>
+                  )}
+                  {/* Slides (PDF) */}
+                  {activeContentTab === "slides" && lesson?.pdf_url && (
+                    <div className="rounded-lg overflow-hidden border border-slate-200 shadow-lg bg-white">
+                      <div className="w-full" style={{ height: "600px" }}>
+                        <iframe
+                          src={`${lesson.pdf_url}#toolbar=0&navpanes=0&scrollbar=0`}
+                          className="w-full h-full"
+                          title="PDF Presentation"
+                          style={{ border: "none" }}
+                        />
+                      </div>
+                      <div className="p-4 bg-slate-50 border-t border-slate-200">
+                        <a
+                          href={lesson.pdf_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center gap-2"
+                        >
+                          <FiFileText className="w-4 h-4" />
+                          Open PDF in new tab
+                        </a>
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               )}
 
