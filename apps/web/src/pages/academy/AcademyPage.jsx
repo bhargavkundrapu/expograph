@@ -628,145 +628,112 @@ export default function AcademyPage() {
 
   return (
     <div
+      className="min-h-screen relative overflow-x-hidden w-full"
       style={{
         fontFamily: "var(--font-dm)",
         backgroundColor: "var(--bg-primary)",
         color: "var(--text-secondary)",
-        minHeight: "100vh",
-        position: "relative",
       }}
     >
       {/* Header */}
       <header
-        style={{
-          position: "relative",
-          width: "100%",
-          background: "var(--bg-primary)",
-          borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
-          zIndex: 1000,
-        }}
+        className="sticky top-0 left-0 right-0 w-full border-b border-white/10 z-[1000]"
+        style={{ background: "var(--bg-primary)" }}
       >
-        <div
-          style={{
-            maxWidth: "1600px",
-            margin: "0 auto",
-            padding: "16px 24px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
+        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 py-3 sm:py-4 flex items-center justify-between">
           {/* Logo */}
-          <Link to="/" style={{ display: "flex", alignItems: "center", gap: "8px", textDecoration: "none" }}>
+          <Link to="/" className="flex items-center gap-1.5 sm:gap-2 no-underline shrink-0">
             <div
+              className="px-2 py-1 sm:px-3 sm:py-1.5 rounded-full font-bold text-xs sm:text-sm md:text-base"
               style={{
                 backgroundColor: "var(--bg-secondary)",
                 color: "var(--text-primary)",
-                padding: "6px 12px",
-                borderRadius: "var(--radius-full)",
-                fontWeight: "700",
-                fontSize: "var(--font-size-lg)",
                 fontFamily: "var(--font-dm)",
               }}
             >
               EXPOGRAPH
             </div>
             <span
-              style={{
-                color: "var(--text-secondary)",
-                fontSize: "var(--font-size-lg)",
-                fontWeight: "600",
-                fontFamily: "var(--font-dm)",
-              }}
+              className="text-xs sm:text-sm md:text-base font-semibold"
+              style={{ color: "var(--text-secondary)", fontFamily: "var(--font-dm)" }}
             >
               Academy
             </span>
           </Link>
 
-          {/* Navigation */}
-          <nav
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "32px",
-              fontFamily: "var(--font-dm)",
-            }}
-          >
-            <Link
-              to="#features"
-              style={{
-                color: "var(--text-secondary)",
-                textDecoration: "none",
-                fontSize: "var(--font-size-base)",
-                fontFamily: "var(--font-dm)",
-                transition: "opacity 0.2s",
-              }}
-              onMouseEnter={(e) => (e.target.style.opacity = "0.7")}
-              onMouseLeave={(e) => (e.target.style.opacity = "1")}
-            >
-              Features
-            </Link>
-            <Link
-              to="/courses"
-              style={{
-                color: "var(--text-secondary)",
-                textDecoration: "none",
-                fontSize: "var(--font-size-base)",
-                fontFamily: "var(--font-dm)",
-                transition: "opacity 0.2s",
-              }}
-              onMouseEnter={(e) => (e.target.style.opacity = "0.7")}
-              onMouseLeave={(e) => (e.target.style.opacity = "1")}
-            >
-              Courses
-            </Link>
+          {/* Desktop Navigation */}
+          <nav className="hidden lg:flex items-center gap-6 xl:gap-8" style={{ fontFamily: "var(--font-dm)" }}>
+            <Link to="#features" className="text-sm xl:text-base text-inherit no-underline opacity-100 hover:opacity-70 transition-opacity" style={{ color: "var(--text-secondary)" }}>Features</Link>
+            <Link to="/courses" className="text-sm xl:text-base text-inherit no-underline opacity-100 hover:opacity-70 transition-opacity" style={{ color: "var(--text-secondary)" }}>Courses</Link>
             {token ? (
-              <Link
-                to={getHomePath()}
-                style={{
-                  color: "var(--text-secondary)",
-                  textDecoration: "none",
-                  fontSize: "var(--font-size-base)",
-                  fontFamily: "var(--font-dm)",
-                  transition: "opacity 0.2s",
-                }}
-                onMouseEnter={(e) => (e.target.style.opacity = "0.7")}
-                onMouseLeave={(e) => (e.target.style.opacity = "1")}
-              >
-                Dashboard
-              </Link>
+              <Link to={getHomePath()} className="text-sm xl:text-base text-inherit no-underline opacity-100 hover:opacity-70 transition-opacity" style={{ color: "var(--text-secondary)" }}>Dashboard</Link>
             ) : (
               <button
+                type="button"
                 onClick={() => navigate("/login")}
+                className="px-4 py-2 sm:px-5 sm:py-2 rounded-full text-sm font-semibold cursor-pointer transition-colors border border-white/20"
                 style={{
-                  padding: "8px 20px",
                   backgroundColor: "var(--bg-level-4)",
                   color: "var(--text-secondary)",
-                  border: "1px solid rgba(255, 255, 255, 0.2)",
-                  borderRadius: "var(--radius-full)",
-                  fontSize: "var(--font-size-base)",
                   fontFamily: "var(--font-dm)",
-                  fontWeight: "600",
-                  cursor: "pointer",
-                  transition: "all 0.2s",
                 }}
-                onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = "var(--bg-level-5)";
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = "var(--bg-level-4)";
-                }}
+                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "var(--bg-level-5)"; }}
+                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "var(--bg-level-4)"; }}
               >
-                <FiLogIn size={16} style={{ marginRight: "8px", display: "inline" }} />
-                Login
+                <FiLogIn className="inline mr-1.5 sm:mr-2" size={14} /> Login
               </button>
             )}
           </nav>
+
+          {/* Mobile menu button */}
+          <button
+            type="button"
+            aria-label="Toggle menu"
+            onClick={() => setMobileMenuOpen((o) => !o)}
+            className="lg:hidden p-2 rounded-lg border border-white/20 flex items-center justify-center"
+            style={{ color: "var(--text-secondary)", backgroundColor: "var(--bg-level-4)" }}
+          >
+            {mobileMenuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
+          </button>
+        </div>
+
+        {/* Mobile menu overlay */}
+        {mobileMenuOpen && (
+          <div
+            className="lg:hidden fixed inset-0 top-[57px] sm:top-[60px] z-[999] bg-black/80 backdrop-blur-sm"
+            aria-hidden
+            onClick={() => setMobileMenuOpen(false)}
+          />
+        )}
+        <div
+          className={`
+            lg:hidden fixed top-[57px] sm:top-[60px] right-0 bottom-0 w-full max-w-[280px] sm:max-w-[320px] z-[1000]
+            flex flex-col gap-1 p-4 overflow-y-auto
+            border-l border-white/10
+            transition-transform duration-200 ease-out
+            ${mobileMenuOpen ? "translate-x-0" : "translate-x-full"}
+          `}
+          style={{ background: "var(--bg-primary)" }}
+        >
+          <Link to="#features" onClick={() => setMobileMenuOpen(false)} className="py-3 px-4 rounded-lg text-base font-medium hover:bg-white/10 transition-colors" style={{ color: "var(--text-secondary)", fontFamily: "var(--font-dm)" }}>Features</Link>
+          <Link to="/courses" onClick={() => setMobileMenuOpen(false)} className="py-3 px-4 rounded-lg text-base font-medium hover:bg-white/10 transition-colors" style={{ color: "var(--text-secondary)", fontFamily: "var(--font-dm)" }}>Courses</Link>
+          {token ? (
+            <Link to={getHomePath()} onClick={() => setMobileMenuOpen(false)} className="py-3 px-4 rounded-lg text-base font-medium hover:bg-white/10 transition-colors" style={{ color: "var(--text-secondary)", fontFamily: "var(--font-dm)" }}>Dashboard</Link>
+          ) : (
+            <button
+              type="button"
+              onClick={() => { setMobileMenuOpen(false); navigate("/login"); }}
+              className="mt-2 py-3 px-4 rounded-full text-base font-semibold w-full flex items-center justify-center gap-2 border border-white/20"
+              style={{ backgroundColor: "var(--bg-level-4)", color: "var(--text-secondary)", fontFamily: "var(--font-dm)" }}
+            >
+              <FiLogIn size={18} /> Login
+            </button>
+          )}
         </div>
       </header>
 
       {/* Hero Section — Interactive 3D Robot */}
-      <section className="relative w-screen h-screen overflow-hidden bg-black" style={{ backgroundColor: "#000000" }}>
+      <section className="relative w-full min-h-[100dvh] sm:min-h-screen h-screen overflow-hidden bg-black" style={{ backgroundColor: "#000000", maxWidth: "100vw" }}>
         <InteractiveRobotSpline
           scene="https://prod.spline.design/PyzDhpQ9E5f1E3MT/scene.splinecode"
           className="absolute inset-0 z-0" 
@@ -776,28 +743,17 @@ export default function AcademyPage() {
         <div className="
           absolute inset-0 z-10
           flex items-start
-          pt-24 sm:pt-28 md:pt-32 lg:pt-36 xl:pt-40
-          px-6 sm:px-8 md:px-12 lg:px-16 xl:px-24
+          pt-20 sm:pt-24 md:pt-28 lg:pt-32 xl:pt-40
+          px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24
           pointer-events-none
         ">
           {/* Left-side Text Block (max ~55% width so 3D has room) */}
-          <div className="
-            text-left
-            text-white
-            drop-shadow-lg
-            w-full max-w-xl lg:max-w-2xl
-            pr-4
-          ">
+          <div className="text-left text-white drop-shadow-lg w-full max-w-full sm:max-w-xl md:max-w-xl lg:max-w-2xl pr-2 sm:pr-4">
             <motion.h1
               initial={{ opacity: 0, x: -24 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-              className="
-                text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl
-                font-bold
-                leading-tight
-                mb-6
-              "
+              className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-bold leading-tight mb-4 sm:mb-6"
               style={{ fontFamily: '"Google Sans Flex", "Google Sans", sans-serif' }}
             >
               Transform Your Career with ExpoGraph Academy
@@ -808,13 +764,13 @@ export default function AcademyPage() {
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-              className="flex gap-3 sm:gap-4 flex-wrap pointer-events-auto"
+              className="flex gap-2 sm:gap-3 md:gap-4 flex-wrap pointer-events-auto"
             >
               <button
                 onClick={() => {
                   document.getElementById("courses-section")?.scrollIntoView({ behavior: "smooth" });
                 }}
-                className="px-6 py-3 bg-white/10 text-white border border-white/20 rounded-full text-base font-semibold cursor-pointer transition-all hover:bg-white/20"
+                className="px-4 py-2.5 sm:px-5 sm:py-3 md:px-6 md:py-3 bg-white/10 text-white border border-white/20 rounded-full text-sm sm:text-base font-semibold cursor-pointer transition-all hover:bg-white/20"
                 style={{ fontFamily: "var(--font-dm)" }}
               >
                 Explore Courses
@@ -827,7 +783,7 @@ export default function AcademyPage() {
                     navigate("/login");
                   }
                 }}
-                className="px-6 py-3 bg-white/20 text-white border-none rounded-full text-base font-semibold cursor-pointer transition-all hover:opacity-90"
+                className="px-4 py-2.5 sm:px-5 sm:py-3 md:px-6 md:py-3 bg-white/20 text-white border-none rounded-full text-sm sm:text-base font-semibold cursor-pointer transition-all hover:opacity-90"
                 style={{ fontFamily: "var(--font-dm)" }}
               >
                 Get Started
@@ -894,12 +850,10 @@ export default function AcademyPage() {
 
       {/* One Subscription Section */}
       <section
-        style={{
-          padding: "80px 24px",
-          backgroundColor: "var(--bg-level-4)",
-        }}
+        className="py-12 px-4 sm:py-16 sm:px-6 md:py-20 md:px-8 lg:py-24 lg:px-12 xl:px-24"
+        style={{ backgroundColor: "var(--bg-level-4)" }}
       >
-        <div style={{ maxWidth: "1600px", margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "60px", alignItems: "center" }}>
+        <div className="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-12 xl:gap-16 items-center">
           <div>
             <h2
               style={{
@@ -1003,19 +957,18 @@ export default function AcademyPage() {
       </section>
 
       {/* Feature Cards Section */}
-      <section id="features" style={{ padding: "80px 24px", backgroundColor: "var(--bg-primary)" }}>
-        <div style={{ maxWidth: "1600px", margin: "0 auto" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "32px", marginBottom: "80px" }}>
+      <section id="features" className="py-12 px-4 sm:py-16 sm:px-6 md:py-20 md:px-8 lg:py-24 lg:px-12 xl:px-24" style={{ backgroundColor: "var(--bg-primary)" }}>
+        <div className="max-w-[1600px] mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 mb-12 sm:mb-16 md:mb-20 lg:mb-24">
             {/* Unlock Turbo Coding Card */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
+              className="p-6 sm:p-8 md:p-10 rounded-lg sm:rounded-xl"
               style={{
                 background: features[0].gradient,
-                borderRadius: "var(--radius-md)",
-                padding: "40px",
                 boxShadow: "var(--shadow-sm)",
                 color: "var(--text-secondary)",
               }}
@@ -1102,10 +1055,9 @@ export default function AcademyPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.1 }}
+              className="p-6 sm:p-8 md:p-10 rounded-lg sm:rounded-xl"
               style={{
                 background: features[1].gradient,
-                borderRadius: "var(--radius-md)",
-                padding: "40px",
                 boxShadow: "var(--shadow-sm)",
                 color: "var(--text-secondary)",
               }}
@@ -1131,7 +1083,7 @@ export default function AcademyPage() {
               >
                 {features[1].description}
               </p>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px", marginBottom: "24px" }}>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-6">
                 <div
                   style={{
                     backgroundColor: "rgba(0, 0, 0, 0.2)",
@@ -1177,21 +1129,15 @@ export default function AcademyPage() {
       </section>
 
       {/* 3-Step Setup Section */}
-      <section style={{ padding: "80px 24px", backgroundColor: "var(--bg-level-4)" }}>
-        <div style={{ maxWidth: "1600px", margin: "0 auto" }}>
+      <section className="py-12 px-4 sm:py-16 sm:px-6 md:py-20 md:px-8 lg:py-24 lg:px-12 xl:px-24" style={{ backgroundColor: "var(--bg-level-4)" }}>
+        <div className="max-w-[1600px] mx-auto">
           <h2
-            style={{
-              fontSize: "var(--font-size-3xl)",
-              fontWeight: "700",
-              color: "var(--text-secondary)",
-              textAlign: "center",
-              marginBottom: "60px",
-              fontFamily: "var(--font-dm)",
-            }}
+            className="text-2xl sm:text-3xl font-bold text-center mb-8 sm:mb-12 md:mb-16"
+            style={{ color: "var(--text-secondary)", fontFamily: "var(--font-dm)" }}
           >
             3-step setup, start coding in seconds
           </h2>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "32px" }}>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {setupSteps.map((step, index) => (
               <motion.div
                 key={step.step}
@@ -1281,24 +1227,19 @@ export default function AcademyPage() {
       </section>
 
       {/* Courses Section */}
-      <section id="courses-section" style={{ padding: "80px 24px", backgroundColor: "var(--bg-primary)", position: "relative" }}>
-        <div style={{ maxWidth: "1600px", margin: "0 auto", position: "relative", zIndex: 1 }}>
-          <div style={{ textAlign: "center", marginBottom: "60px" }}>
+      <section id="courses-section" className="py-12 px-4 sm:py-16 sm:px-6 md:py-20 md:px-8 lg:py-24 lg:px-12 xl:px-24 relative" style={{ backgroundColor: "var(--bg-primary)" }}>
+        <div className="max-w-[1600px] mx-auto relative z-[1]">
+          <div className="text-center mb-10 sm:mb-12 md:mb-16">
             <h2
-              style={{
-                fontSize: "var(--font-size-4xl)",
-                fontWeight: "700",
-                color: "var(--text-secondary)",
-                marginBottom: "32px",
-                fontFamily: "var(--font-dm)",
-              }}
+              className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 sm:mb-8"
+              style={{ color: "var(--text-secondary)", fontFamily: "var(--font-dm)" }}
             >
               Explore Our Courses
             </h2>
           </div>
 
           {/* Course Cards */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "32px", marginTop: "60px" }}>
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 sm:gap-8 mt-8 sm:mt-12 md:mt-16">
             {courses.map((course, index) => (
               <motion.div
                 key={course.id}
@@ -1306,22 +1247,17 @@ export default function AcademyPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
+                className="p-6 sm:p-8 md:p-10 rounded-lg sm:rounded-xl"
                 style={{
                   backgroundColor: "var(--bg-level-4)",
-                  borderRadius: "var(--radius-md)",
-                  padding: "40px",
                   boxShadow: "var(--shadow-sm)",
                   border: course.highlighted ? "2px solid var(--bg-level-3)" : "1px solid rgba(255, 255, 255, 0.1)",
                 }}
               >
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "16px" }}>
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
                   <h3
-                    style={{
-                      fontSize: "var(--font-size-2xl)",
-                      fontWeight: "700",
-                      color: "var(--text-secondary)",
-                      fontFamily: "var(--font-dm)",
-                    }}
+                    className="text-lg sm:text-xl md:text-2xl font-bold"
+                    style={{ color: "var(--text-secondary)", fontFamily: "var(--font-dm)" }}
                   >
                     {course.name}
                   </h3>
@@ -1375,22 +1311,13 @@ export default function AcademyPage() {
                       ${course.originalPrice}
                     </span>
                   </div>
-                  <div style={{ display: "flex", alignItems: "center", gap: "16px", fontSize: "var(--font-size-sm)", color: "rgba(255, 255, 255, 0.6)", fontFamily: "var(--font-dm)" }}>
-                    <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-                      <FiClock size={14} />
-                      {course.duration}
-                    </span>
-                    <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-                      <FiUsers size={14} />
-                      {course.students}
-                    </span>
-                    <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-                      <FiStar size={14} style={{ color: "#F59E0B" }} />
-                      {course.rating}
-                    </span>
+                  <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-sm text-white/60" style={{ fontFamily: "var(--font-dm)" }}>
+                    <span className="flex items-center gap-1"><FiClock size={14} />{course.duration}</span>
+                    <span className="flex items-center gap-1"><FiUsers size={14} />{course.students}</span>
+                    <span className="flex items-center gap-1"><FiStar size={14} className="text-amber-400" />{course.rating}</span>
                   </div>
                 </div>
-                <ul style={{ listStyle: "none", padding: 0, margin: "32px 0" }}>
+                <ul className="list-none p-0 my-6 sm:my-8" style={{ fontFamily: "var(--font-dm)" }}>
                   {course.features.map((feature, idx) => (
                     <li
                       key={idx}
@@ -1459,21 +1386,15 @@ export default function AcademyPage() {
       </section>
 
       {/* FAQs Section */}
-      <section style={{ padding: "80px 24px", backgroundColor: "var(--bg-level-4)" }}>
-        <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+      <section className="py-12 px-4 sm:py-16 sm:px-6 md:py-20 md:px-8 lg:py-24 lg:px-12 xl:px-24" style={{ backgroundColor: "var(--bg-level-4)" }}>
+        <div className="max-w-[1200px] mx-auto">
           <h2
-            style={{
-              fontSize: "var(--font-size-3xl)",
-              fontWeight: "700",
-              color: "var(--text-secondary)",
-              textAlign: "center",
-              marginBottom: "60px",
-              fontFamily: "var(--font-dm)",
-            }}
+            className="text-2xl sm:text-3xl font-bold text-center mb-8 sm:mb-12 md:mb-16"
+            style={{ color: "var(--text-secondary)", fontFamily: "var(--font-dm)" }}
           >
             Frequently Asked Questions
           </h2>
-          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+          <div className="flex flex-col gap-3 sm:gap-4">
             {faqs.map((faq, index) => (
               <motion.div
                 key={index}
@@ -1538,21 +1459,15 @@ export default function AcademyPage() {
       </section>
 
       {/* Contact Section */}
-      <section style={{ padding: "80px 24px", backgroundColor: "var(--bg-primary)" }}>
-        <div style={{ maxWidth: "800px", margin: "0 auto" }}>
+      <section className="py-12 px-4 sm:py-16 sm:px-6 md:py-20 md:px-8 lg:py-24 lg:px-12 xl:px-24" style={{ backgroundColor: "var(--bg-primary)" }}>
+        <div className="max-w-[800px] mx-auto px-0">
           <h2
-            style={{
-              fontSize: "var(--font-size-3xl)",
-              fontWeight: "700",
-              color: "var(--text-secondary)",
-              textAlign: "center",
-              marginBottom: "40px",
-              fontFamily: "var(--font-dm)",
-            }}
+            className="text-2xl sm:text-3xl font-bold text-center mb-8 sm:mb-10"
+            style={{ color: "var(--text-secondary)", fontFamily: "var(--font-dm)" }}
           >
             Get in Touch
           </h2>
-          <form onSubmit={handleContactSubmit} style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+          <form onSubmit={handleContactSubmit} className="flex flex-col gap-4 sm:gap-6">
             <input
               type="text"
               placeholder="Your Name"
@@ -1648,8 +1563,8 @@ export default function AcademyPage() {
 
       {/* Social / Connect section — before footer (UIVERSE 3D UI card), fits viewport */}
       <section
+        className="min-h-[100dvh] sm:min-h-screen"
         style={{
-          minHeight: "100vh",
           backgroundColor: "#000000",
           borderTop: "1px solid rgba(255, 255, 255, 0.08)",
         }}
@@ -1659,14 +1574,14 @@ export default function AcademyPage() {
 
       {/* Footer */}
       <footer
+        className="py-10 px-4 sm:py-12 sm:px-6 md:py-14 md:px-8 lg:py-16 lg:px-12 xl:px-24 pb-8 sm:pb-10"
         style={{
-          padding: "60px 24px 40px",
           backgroundColor: "var(--bg-level-4)",
           borderTop: "1px solid rgba(255, 255, 255, 0.1)",
         }}
       >
-        <div style={{ maxWidth: "1600px", margin: "0 auto" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "40px", marginBottom: "40px" }}>
+        <div className="max-w-[1600px] mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 lg:gap-12 mb-8 sm:mb-10">
             <div>
               <div
                 style={{
@@ -1918,14 +1833,8 @@ export default function AcademyPage() {
             </div>
           </div>
           <div
-            style={{
-              paddingTop: "40px",
-              borderTop: "1px solid rgba(255, 255, 255, 0.1)",
-              textAlign: "center",
-              color: "rgba(255, 255, 255, 0.5)",
-              fontSize: "var(--font-size-sm)",
-              fontFamily: "var(--font-dm)",
-            }}
+            className="pt-8 sm:pt-10 border-t border-white/10 text-center text-sm text-white/50"
+            style={{ fontFamily: "var(--font-dm)" }}
           >
             © 2024 ExpoGraph Academy. All rights reserved.
           </div>

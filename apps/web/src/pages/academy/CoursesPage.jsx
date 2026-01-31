@@ -84,63 +84,81 @@ export default function CoursesPage() {
 
   return (
     <div
+      className="min-h-screen"
       style={{
         fontFamily: "var(--font-dm)",
         backgroundColor: "var(--bg-primary)",
         color: "var(--text-secondary)",
-        minHeight: "100vh",
-        paddingTop: "80px",
       }}
     >
-      <div style={{ maxWidth: "1600px", margin: "0 auto", padding: "40px 24px" }}>
-        <div style={{ textAlign: "center", marginBottom: "60px" }}>
+      {/* Responsive header for /courses */}
+      <header
+        className="sticky top-0 left-0 right-0 z-[1000] border-b border-white/10 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 py-3 sm:py-4"
+        style={{ background: "var(--bg-primary)" }}
+      >
+        <div className="max-w-[1600px] mx-auto flex items-center justify-between">
+          <Link
+            to="/academy"
+            className="flex items-center gap-1.5 sm:gap-2 no-underline shrink-0"
+          >
+            <div
+              className="px-2 py-1 sm:px-3 sm:py-1.5 rounded-full font-bold text-xs sm:text-sm md:text-base"
+              style={{
+                backgroundColor: "var(--bg-secondary)",
+                color: "var(--text-primary)",
+                fontFamily: "var(--font-dm)",
+              }}
+            >
+              EXPOGRAPH
+            </div>
+            <span className="text-xs sm:text-sm md:text-base font-semibold" style={{ color: "var(--text-secondary)", fontFamily: "var(--font-dm)" }}>
+              Academy
+            </span>
+          </Link>
+          <Link
+            to="/academy#courses-section"
+            className="text-sm sm:text-base opacity-100 hover:opacity-70 transition-opacity"
+            style={{ color: "var(--text-secondary)", fontFamily: "var(--font-dm)", textDecoration: "none" }}
+          >
+            Back to Home
+          </Link>
+        </div>
+      </header>
+
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 py-8 sm:py-10 md:py-12 lg:py-16">
+        <div className="text-center mb-8 sm:mb-10 md:mb-14">
           <h1
-            style={{
-              fontSize: "var(--font-size-4xl)",
-              fontWeight: "700",
-              color: "var(--text-secondary)",
-              marginBottom: "24px",
-              fontFamily: "var(--font-dm)",
-            }}
+            className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6"
+            style={{ color: "var(--text-secondary)", fontFamily: "var(--font-dm)" }}
           >
             Our Courses
           </h1>
           <p
-            style={{
-              fontSize: "var(--font-size-xl)",
-              color: "rgba(255, 255, 255, 0.7)",
-              maxWidth: "600px",
-              margin: "0 auto",
-              fontFamily: "var(--font-dm)",
-            }}
+            className="text-base sm:text-lg md:text-xl max-w-[600px] mx-auto px-2"
+            style={{ color: "rgba(255, 255, 255, 0.7)", fontFamily: "var(--font-dm)" }}
           >
             Choose from our comprehensive course catalog and start your coding journey today.
           </p>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "32px" }}>
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 sm:gap-8">
           {courses.map((course, index) => (
             <motion.div
               key={course.id}
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
+              className="p-6 sm:p-8 md:p-10 rounded-lg sm:rounded-xl"
               style={{
                 backgroundColor: "var(--bg-level-4)",
-                borderRadius: "var(--radius-md)",
-                padding: "40px",
                 boxShadow: "var(--shadow-sm)",
                 border: course.highlighted ? "2px solid var(--bg-level-3)" : "1px solid rgba(255, 255, 255, 0.1)",
               }}
             >
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "16px" }}>
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
                 <h3
-                  style={{
-                    fontSize: "var(--font-size-2xl)",
-                    fontWeight: "700",
-                    color: "var(--text-secondary)",
-                    fontFamily: "var(--font-dm)",
-                  }}
+                  className="text-lg sm:text-xl md:text-2xl font-bold"
+                  style={{ color: "var(--text-secondary)", fontFamily: "var(--font-dm)" }}
                 >
                   {course.name}
                 </h3>
@@ -171,45 +189,22 @@ export default function CoursesPage() {
               >
                 {course.description}
               </p>
-              <div style={{ marginBottom: "16px" }}>
-                <div style={{ display: "flex", alignItems: "baseline", gap: "8px", marginBottom: "8px" }}>
-                  <span
-                    style={{
-                      fontSize: "var(--font-size-3xl)",
-                      fontWeight: "700",
-                      color: "var(--text-secondary)",
-                      fontFamily: "var(--font-dm)",
-                    }}
-                  >
+              <div className="mb-4">
+                <div className="flex items-baseline gap-2 mb-2">
+                  <span className="text-2xl sm:text-3xl font-bold" style={{ color: "var(--text-secondary)", fontFamily: "var(--font-dm)" }}>
                     ${course.price}
                   </span>
-                  <span
-                    style={{
-                      fontSize: "var(--font-size-lg)",
-                      color: "rgba(255, 255, 255, 0.5)",
-                      textDecoration: "line-through",
-                      fontFamily: "var(--font-dm)",
-                    }}
-                  >
+                  <span className="text-base sm:text-lg text-white/50 line-through" style={{ fontFamily: "var(--font-dm)" }}>
                     ${course.originalPrice}
                   </span>
                 </div>
-                <div style={{ display: "flex", alignItems: "center", gap: "16px", fontSize: "var(--font-size-sm)", color: "rgba(255, 255, 255, 0.6)", fontFamily: "var(--font-dm)" }}>
-                  <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-                    <FiClock size={14} />
-                    {course.duration}
-                  </span>
-                  <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-                    <FiUsers size={14} />
-                    {course.students}
-                  </span>
-                  <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-                    <FiStar size={14} style={{ color: "#F59E0B" }} />
-                    {course.rating}
-                  </span>
+                <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-sm text-white/60" style={{ fontFamily: "var(--font-dm)" }}>
+                  <span className="flex items-center gap-1"><FiClock size={14} />{course.duration}</span>
+                  <span className="flex items-center gap-1"><FiUsers size={14} />{course.students}</span>
+                  <span className="flex items-center gap-1"><FiStar size={14} className="text-amber-400" />{course.rating}</span>
                 </div>
               </div>
-              <ul style={{ listStyle: "none", padding: 0, margin: "32px 0" }}>
+              <ul className="list-none p-0 my-6 sm:my-8" style={{ fontFamily: "var(--font-dm)" }}>
                 {course.features.map((feature, idx) => (
                   <li
                     key={idx}
