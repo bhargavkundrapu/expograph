@@ -216,9 +216,9 @@ export default function AcademyPage() {
       </section>
 
       {/* Footer — ExpoGraph flow (TubesBackground) */}
-      <footer className="w-full min-h-[400px] sm:min-h-[50vh] border-t border-black">
-        <TubesBackground className="min-h-[400px] sm:min-h-[50vh] bg-[#0a0a0a]" enableClickInteraction={true}>
-          <div className="flex flex-col items-center justify-center w-full min-h-[400px] sm:min-h-[50vh] gap-6 text-center px-4">
+      <footer className="w-full min-h-[560px] sm:min-h-[70vh] border-t border-black">
+        <TubesBackground className="min-h-[560px] sm:min-h-[70vh] bg-[#0a0a0a]" enableClickInteraction={true}>
+          <div className="flex flex-col items-center justify-center w-full min-h-[560px] sm:min-h-[70vh] gap-6 text-center px-4">
             <div className="space-y-2 pointer-events-auto cursor-default select-none">
               <h2 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tighter text-white drop-shadow-[0_0_20px_rgba(0,0,0,1)]">
                 ExpoGraph flow
