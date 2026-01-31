@@ -151,8 +151,9 @@ int main() {
         };
 
         try {
-          // Safe eval for demo (in production, use a sandboxed environment)
-          eval(code);
+          // Indirect eval to avoid bundler/minification warnings (runs in global scope)
+          const indirectEval = (0, eval);
+          indirectEval(code);
           setOutput(logs.join("\n") || "Code executed successfully (no output)");
         } catch (error) {
           setOutput(`Error: ${error.message}`);
