@@ -2,31 +2,18 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useAuth } from "../../app/providers/AuthProvider";
-import {
-  FiMenu,
-  FiX,
-  FiLogIn,
-  FiMail,
-  FiMessageCircle,
-  FiLinkedin,
-  FiTwitter,
-  FiInstagram,
-  FiYoutube,
-} from "react-icons/fi";
+import { FiMenu, FiX, FiLogIn } from "react-icons/fi";
 import "../../styles/academy-tokens.css";
 import { InteractiveRobotSpline } from "../../Components/ui/interactive-3d-robot";
 import HeroSection from "../../Components/ui/hero-section-9";
 import UiverseCard from "../../Components/ui/uiverse-card";
+import { TubesBackground } from "../../Components/ui/neon-flow";
 import { FiUsers as Users, FiBriefcase as Briefcase, FiLink as LinkIcon } from "react-icons/fi";
 
 export default function AcademyPage() {
   const { token, role } = useAuth();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  const whatsappNumber = "919014110638";
-  const whatsappMessage = encodeURIComponent("Hi, I'm interested in ExpoGraph Academy!");
-  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`;
 
   const getHomePath = () => {
     if (!token) return "/login";
@@ -228,82 +215,21 @@ export default function AcademyPage() {
         <UiverseCard />
       </section>
 
-      {/* Footer */}
-      <footer
-        className="py-10 px-4 sm:py-12 sm:px-6 md:py-14 md:px-8 lg:py-16 lg:px-12 xl:px-24 pb-8 sm:pb-10"
-        style={{
-          backgroundColor: "var(--bg-level-4)",
-          borderTop: "1px solid rgba(255, 255, 255, 0.1)",
-        }}
-      >
-        <div className="max-w-[1600px] mx-auto">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10 lg:gap-12 mb-8 sm:mb-10">
-            <div>
-              <div className="flex items-center gap-2 mb-6" style={{ fontFamily: "var(--font-dm)" }}>
-                <div
-                  className="px-3 py-1.5 rounded-full font-bold text-sm"
-                  style={{
-                    backgroundColor: "var(--bg-secondary)",
-                    color: "var(--text-primary)",
-                  }}
-                >
-                  EXPOGRAPH
-                </div>
-                <span className="text-sm font-semibold" style={{ color: "var(--text-secondary)" }}>Academy</span>
-              </div>
-              <p className="text-sm text-white/70 leading-relaxed" style={{ fontFamily: "var(--font-dm)" }}>
-                Empowering developers with cutting-edge coding education and AI-powered tools.
-              </p>
+      {/* Footer — ExpoGraph flow (TubesBackground) */}
+      <footer className="w-full min-h-[400px] sm:min-h-[50vh] border-t border-black">
+        <TubesBackground className="min-h-[400px] sm:min-h-[50vh] bg-[#0a0a0a]" enableClickInteraction={true}>
+          <div className="flex flex-col items-center justify-center w-full min-h-[400px] sm:min-h-[50vh] gap-6 text-center px-4">
+            <div className="space-y-2 pointer-events-auto cursor-default select-none">
+              <h2 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tighter text-white drop-shadow-[0_0_20px_rgba(0,0,0,1)]">
+                ExpoGraph flow
+              </h2>
             </div>
-            <div>
-              <h4 className="text-base font-semibold mb-4" style={{ color: "var(--text-secondary)", fontFamily: "var(--font-dm)" }}>Resources</h4>
-              <ul className="list-none p-0 flex flex-col gap-3" style={{ fontFamily: "var(--font-dm)" }}>
-                <li>
-                  <Link to="#" className="text-sm text-white/70 no-underline hover:text-white transition-colors">Documentation</Link>
-                </li>
-                <li>
-                  <Link to="#" className="text-sm text-white/70 no-underline hover:text-white transition-colors">Blog</Link>
-                </li>
-                <li>
-                  <Link to="#" className="text-sm text-white/70 no-underline hover:text-white transition-colors">Community</Link>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-base font-semibold mb-4" style={{ color: "var(--text-secondary)", fontFamily: "var(--font-dm)" }}>Contact</h4>
-              <ul className="list-none p-0 flex flex-col gap-3" style={{ fontFamily: "var(--font-dm)" }}>
-                <li>
-                  <a href="mailto:kundrapubhargav@gmail.com" className="text-sm text-white/70 no-underline hover:text-white transition-colors flex items-center gap-2">
-                    <FiMail size={16} /> kundrapubhargav@gmail.com
-                  </a>
-                </li>
-                <li>
-                  <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="text-sm text-white/70 no-underline hover:text-white transition-colors flex items-center gap-2">
-                    <FiMessageCircle size={16} /> WhatsApp Us
-                  </a>
-                </li>
-              </ul>
-              <div className="flex gap-4 mt-4">
-                {[
-                  { icon: FiLinkedin, href: "#" },
-                  { icon: FiTwitter, href: "#" },
-                  { icon: FiInstagram, href: "#" },
-                  { icon: FiYoutube, href: "#" },
-                ].map((social, idx) => (
-                  <a key={idx} href={social.href} className="text-white/70 hover:text-white transition-colors text-xl" aria-label="Social link">
-                    <social.icon />
-                  </a>
-                ))}
-              </div>
+            <div className="absolute bottom-8 left-0 right-0 flex flex-col items-center gap-2 text-white/50 animate-pulse pointer-events-none">
+              <span className="text-xs uppercase tracking-widest">Move the cursor around to interact and Click to randomize.</span>
+              <span className="text-xs text-white/40">© 2024 ExpoGraph Academy</span>
             </div>
           </div>
-          <div
-            className="pt-8 sm:pt-10 border-t border-white/10 text-center text-sm text-white/50"
-            style={{ fontFamily: "var(--font-dm)" }}
-          >
-            © 2024 ExpoGraph Academy. All rights reserved.
-          </div>
-        </div>
+        </TubesBackground>
       </footer>
     </div>
   );
