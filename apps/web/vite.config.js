@@ -35,6 +35,14 @@ export default defineConfig({
       '@/lib': path.resolve(__dirname, './src/lib'),
     },
   },
+  build: {
+    chunkSizeWarningLimit: 600,
+    rollupOptions: {
+      output: {
+        manualChunks: undefined,
+      },
+    },
+  },
   optimizeDeps: {
     include: ['@splinetool/react-spline'],
     force: true, // Force re-optimization on next start

@@ -104,6 +104,8 @@ const StyledWrapper = styled.div`
   align-items: center;
   padding: 24px;
   box-sizing: border-box;
+  contain: layout style;
+  isolation: isolate;
 
   .parent {
     width: 290px;

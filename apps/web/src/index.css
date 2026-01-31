@@ -2,6 +2,11 @@
 @import "./styles/academy-tokens.css";
 @import "./styles/academy-premium.css";
 
+/* Smoother scrolling (avoids jank with 3D/parallax sections) */
+html {
+  scroll-behavior: smooth;
+}
+
 /* shadcn/ui theme tokens for Tailwind v4 (Components/ui) */
 @theme {
   --color-background: var(--background);
