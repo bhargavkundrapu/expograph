@@ -36,10 +36,21 @@ export default defineConfig({
     },
   },
   build: {
-    chunkSizeWarningLimit: 600,
+    chunkSizeWarningLimit: 1000,
     rollupOptions: {
       output: {
-        manualChunks: undefined,
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('@splinetool') || id.includes('three')) return 'spline'
+            if (id.includes('@monaco-editor') || id.includes('codemirror') || id.includes('@codemirror')) return 'editors'
+            if (id.includes('react-dom') || id.includes('react-router')) return 'react-vendor'
+            if (id.includes('framer-motion') || id.includes('gsap')) return 'animation'
+            if (id.includes('chart.js') || id.includes('plotly') || id.includes('d3') || id.includes('mermaid')) return 'charts'
+            if (id.includes('@radix-ui') || id.includes('lucide-react') || id.includes('react-icons')) return 'ui'
+            if (id.includes('styled-components')) return 'styled'
+            return 'vendor'
+          }
+        },
       },
     },
   },
