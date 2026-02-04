@@ -297,6 +297,69 @@ export function ScheduleItemSkeleton({ count = 5 }) {
   );
 }
 
+// Lesson Content Skeleton (for content area only)
+export function LessonContentSkeleton() {
+  return (
+    <div className="max-w-6xl mx-auto animate-pulse">
+      {/* Goal Section Skeleton */}
+      <div className="px-8 pt-8 pb-6">
+        <div className="bg-amber-50 border border-amber-200 p-4 flex items-start gap-3">
+          <div className="w-6 h-6 bg-amber-200 rounded flex-shrink-0"></div>
+          <div className="flex-1 space-y-2">
+            <div className="h-4 bg-amber-200 rounded w-32"></div>
+            <div className="h-4 bg-amber-200 rounded w-full"></div>
+            <div className="h-4 bg-amber-200 rounded w-3/4"></div>
+          </div>
+        </div>
+      </div>
+
+      {/* Video Player Skeleton */}
+      <div className="px-8 pb-8">
+        <div className="max-w-3xl mx-auto">
+          <div className="bg-black overflow-hidden shadow-xl">
+            <div className="aspect-video bg-slate-800 flex items-center justify-center" style={{ maxHeight: "450px" }}>
+              <div className="w-16 h-16 bg-slate-700 rounded-full"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Presentation Skeleton */}
+      <div className="px-8 pb-8">
+        <div className="max-w-4xl mx-auto">
+          <div className="bg-slate-100 border border-slate-300 h-[600px] flex items-center justify-center">
+            <div className="text-center space-y-3">
+              <div className="w-16 h-16 bg-slate-300 rounded mx-auto"></div>
+              <div className="h-4 bg-slate-300 rounded w-32 mx-auto"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Prompts Section Skeleton */}
+      <div className="px-8 pb-8">
+        <div className="border border-slate-300 bg-white rounded-none">
+          {/* Tabs Skeleton */}
+          <div className="bg-slate-50 border-b border-slate-300 flex gap-0">
+            <div className="px-5 py-3 bg-slate-200 w-32"></div>
+            <div className="px-5 py-3 bg-slate-100 w-32"></div>
+            <div className="px-5 py-3 bg-slate-100 w-40"></div>
+          </div>
+          {/* Content Skeleton */}
+          <div className="p-4">
+            <div className="bg-slate-50 border border-slate-200 rounded p-4 space-y-3">
+              <div className="h-4 bg-slate-200 rounded w-3/4"></div>
+              <div className="h-4 bg-slate-200 rounded w-full"></div>
+              <div className="h-4 bg-slate-200 rounded w-5/6"></div>
+              <div className="h-4 bg-slate-200 rounded w-4/5"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // Generic Page Skeleton (for pages without specific skeletons)
 export function GenericPageSkeleton() {
   return (

@@ -214,6 +214,8 @@ async function getProgress({ tenantId, userId }) {
 
     return {
       completed: total > 0 ? Math.round((completed / total) * 100) : 0,
+      completed_lessons: completed,
+      total_lessons: total,
       streak: parseInt(streakResult.rows[0]?.streak) || 0,
       consistency: Math.min(consistency, 100),
     };
@@ -221,6 +223,8 @@ async function getProgress({ tenantId, userId }) {
     console.error("Error in getProgress:", error);
     return {
       completed: 0,
+      completed_lessons: 0,
+      total_lessons: 0,
       streak: 0,
       consistency: 0,
     };
@@ -265,17 +269,21 @@ async function listEnrolledCourses({ tenantId, userId }) {
       [userId, tenantId]
     );
 
-    return result.rows.map((row) => ({
-      id: row.id,
-      title: row.title,
-      slug: row.slug,
-      description: row.description,
-      level: row.level,
-      modules_count: parseInt(row.modules_count) || 0,
-      progress: parseInt(row.total_lessons) > 0 
-        ? Math.round((parseInt(row.completed_lessons) / parseInt(row.total_lessons)) * 100)
-        : 0,
-    }));
+    return result.rows.map((row) => {
+      const totalLessons = parseInt(row.total_lessons) || 0;
+      const completedLessons = parseInt(row.completed_lessons) || 0;
+      return {
+        id: row.id,
+        title: row.title,
+        slug: row.slug,
+        description: row.description,
+        level: row.level,
+        modules_count: parseInt(row.modules_count) || 0,
+        completed_lessons: completedLessons,
+        total_lessons: totalLessons,
+        progress: totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0,
+      };
+    });
   } catch (error) {
     console.error("Error in listEnrolledCourses:", error);
     return []; // Return empty array on error
@@ -530,10 +538,50 @@ async function upvoteDiscussion({ tenantId, userId, discussionId }) {
 // Bookmarks
 async function listBookmarks({ tenantId, userId }) {
   const result = await query(
-    `SELECT id, type, item_id, created_at
-     FROM bookmarks
-     WHERE tenant_id = $1 AND user_id = $2
-     ORDER BY created_at DESC`,
+    `SELECT 
+      b.id, 
+      b.type, 
+      b.item_id, 
+      b.created_at,
+      CASE 
+        WHEN b.type = 'lesson' THEN l.title
+        WHEN b.type = 'mcq' THEN lmq.question
+        WHEN b.type = 'practice' THEN pt.title
+        WHEN b.type = 'discussion' THEN d.discussion_name
+        ELSE NULL
+      END as title,
+      CASE 
+        WHEN b.type = 'lesson' THEN l.summary
+        WHEN b.type = 'mcq' THEN lmq.question
+        WHEN b.type = 'practice' THEN pt.prompt
+        WHEN b.type = 'discussion' THEN d.problem
+        ELSE NULL
+      END as description,
+      CASE 
+        WHEN b.type = 'lesson' THEN c.slug
+        ELSE NULL
+      END as course_slug,
+      CASE 
+        WHEN b.type = 'lesson' THEN cm.slug
+        ELSE NULL
+      END as module_slug,
+      CASE 
+        WHEN b.type = 'lesson' THEN l.slug
+        ELSE NULL
+      END as lesson_slug,
+      CASE 
+        WHEN b.type = 'lesson' THEN c.title
+        ELSE NULL
+      END as course_title
+     FROM bookmarks b
+     LEFT JOIN lessons l ON b.type = 'lesson' AND b.item_id = l.id AND b.tenant_id = l.tenant_id
+     LEFT JOIN course_modules cm ON l.module_id = cm.id AND b.tenant_id = cm.tenant_id
+     LEFT JOIN courses c ON cm.course_id = c.id AND b.tenant_id = c.tenant_id
+     LEFT JOIN lesson_mcqs lmq ON b.type = 'mcq' AND b.item_id = lmq.id AND b.tenant_id = lmq.tenant_id
+     LEFT JOIN practice_tasks pt ON b.type = 'practice' AND b.item_id = pt.id AND b.tenant_id = pt.tenant_id
+     LEFT JOIN discussions d ON b.type = 'discussion' AND b.item_id = d.id AND b.tenant_id = d.tenant_id
+     WHERE b.tenant_id = $1 AND b.user_id = $2
+     ORDER BY b.created_at DESC`,
     [tenantId, userId]
   );
 

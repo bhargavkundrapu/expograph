@@ -7,6 +7,7 @@ import StudentLayout from "./layouts/StudentLayout";
 import AcademyPage from "../pages/academy/AcademyPage";
 import SolutionsPage from "../pages/solutions/SolutionsPage";
 import LoginPage from "../pages/auth/LoginPage";
+import CourseContentsSidebarDemo from "../pages/demo/CourseContentsSidebarDemo";
 
 import SuperAdminHome from "../pages/lms/superadmin/SuperAdminHome";
 import TenantAdminHome from "../pages/lms/admin/TenantAdminHome";
@@ -36,7 +37,6 @@ import SuperAdminPlayground from "../pages/lms/superadmin/SuperAdminPlayground";
 import SuperAdminSettings from "../pages/lms/superadmin/SuperAdminSettings";
 import SuperAdminPresentation from "../pages/lms/superadmin/SuperAdminPresentation";
 import StudentCourses from "../pages/lms/student/StudentCourses";
-import StudentCourseTree from "../pages/lms/student/StudentCourseTree";
 import StudentLesson from "../pages/lms/student/StudentLesson";
 import StudentSubmissions from "../pages/lms/student/StudentSubmissions";
 import StudentProgress from "../pages/lms/student/StudentProgress";
@@ -83,6 +83,7 @@ export const router = createBrowserRouter([
       { path: "/", element: <AcademyPage /> },
       { path: "/academy", element: <AcademyPage /> },
       { path: "/solutions", element: <SolutionsPage /> },
+      { path: "/demo/course-sidebar", element: <CourseContentsSidebarDemo /> },
       { path: "/login", element: <PublicOnly><LoginPage /></PublicOnly> },
     ],
   },
@@ -362,7 +363,6 @@ export const router = createBrowserRouter([
           // Courses - Nested Routes
           { path: "courses", element: <StudentCourses /> },
           { path: "courses/list", element: <StudentCourses /> },
-          { path: "courses/:courseSlug", element: <StudentCourseTree /> },
           { path: "courses/:courseSlug/modules/:moduleSlug/lessons/:lessonSlug", element: <StudentLesson /> },
           { path: "courses/:courseSlug/modules/:moduleSlug/lessons/:lessonSlug/complete", element: <StudentLesson /> },
           

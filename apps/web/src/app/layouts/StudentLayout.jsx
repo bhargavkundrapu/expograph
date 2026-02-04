@@ -44,12 +44,17 @@ export default function StudentLayout() {
     navigate("/login");
   };
 
+  // On lesson page, render only the lesson (demo sidebar + content) - no layout wrapper
+  if (isLessonPage) {
+    return <Outlet />;
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900">
 
       <div className="flex h-screen overflow-hidden">
-        {/* Sidebar - Hidden on lesson pages, visible on medium+ devices */}
-        {!isLessonPage && (
+        {/* Sidebar - visible on medium+ devices */}
+        {(
           <motion.aside
             initial={false}
             animate={{

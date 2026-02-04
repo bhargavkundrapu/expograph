@@ -116,12 +116,12 @@ export default function SuperAdminModuleLessons() {
           : undefined;
       const body = {
         title: form.title.trim(),
-        ...(form.summary?.trim() && { summary: form.summary.trim() }),
-        ...(form.goal?.trim() && { goal: form.goal.trim() }),
-        ...(form.video_url?.trim() && { video_url: form.video_url.trim() }),
+        ...(form.summary != null && { summary: form.summary.trim?.() ?? "" }),
+        ...(form.goal != null && { goal: form.goal.trim?.() ?? "" }),
+        ...(form.video_url != null && { video_url: form.video_url.trim?.() ?? "" }),
         ...(promptsObj && { prompts: promptsObj }),
-        ...(form.success_image_url?.trim() && { success_image_url: form.success_image_url.trim() }),
-        ...(form.pdf_url?.trim() && { pdf_url: form.pdf_url.trim() }),
+        ...(form.success_image_url != null && { success_image_url: form.success_image_url.trim?.() ?? "" }),
+        ...(form.pdf_url != null && { pdf_url: form.pdf_url.trim?.() ?? "" }),
       };
 
       const json = await apiFetch(`/api/v1/admin/lessons/${lessonId}`, { method: "PATCH", token, body });

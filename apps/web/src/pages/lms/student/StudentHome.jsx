@@ -18,9 +18,7 @@ import {
   FiZap,
   FiChevronRight,
   FiInfo,
-  FiChevronLeft,
   FiLock,
-  FiPause,
 } from "react-icons/fi";
 
 export default function StudentHome() {
@@ -36,9 +34,6 @@ export default function StudentHome() {
     consistency: 0,
   });
   const [events, setEvents] = useState([]);
-  const [monthlyTracker, setMonthlyTracker] = useState([]);
-  const [trackerView, setTrackerView] = useState("daily"); // "daily" or "weekly"
-  const [currentMonth, setCurrentMonth] = useState(new Date());
 
   useEffect(() => {
     if (!token) return;
@@ -85,22 +80,6 @@ export default function StudentHome() {
       setCurrentCourse(courseRes?.data || null);
       setProgress(progressRes?.data || { completed: 0, streak: 0, consistency: 0 });
       setEvents(eventsRes?.data || []);
-
-      // Generate monthly tracker (mock for now) - matching the image
-      const tracker = Array.from({ length: 31 }, (_, i) => {
-        const day = i + 1;
-        // Specific days from the image: 4th, 11th (first row), 5th (second row) = holidays
-        // 7th (second row) = streak freeze
-        if (day === 4 || day === 11 || day === 5) {
-          return { day, status: "holiday" };
-        }
-        if (day === 7) {
-          return { day, status: "streak_freeze" };
-        }
-        // Most days are empty/missed
-        return { day, status: "missed" };
-      });
-      setMonthlyTracker(tracker);
     } catch (error) {
       console.error("Failed to fetch dashboard data:", error);
     } finally {
@@ -146,41 +125,6 @@ export default function StudentHome() {
     return <StudentHomeSkeleton />;
   }
 
-  const formatMonthYear = (date) => {
-    return date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-  };
-
-  const navigateMonth = (direction) => {
-    setCurrentMonth(prev => {
-      const newDate = new Date(prev);
-      newDate.setMonth(prev.getMonth() + direction);
-      return newDate;
-    });
-  };
-
-  const getDaysInMonth = (date) => {
-    const year = date.getFullYear();
-    const month = date.getMonth();
-    const firstDay = new Date(year, month, 1).getDay();
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
-    const days = [];
-    
-    // Add empty cells for days before the first day of the month
-    for (let i = 0; i < firstDay; i++) {
-      days.push(null);
-    }
-    
-    // Add all days of the month
-    for (let day = 1; day <= daysInMonth; day++) {
-      const trackerDay = monthlyTracker.find(t => t.day === day);
-      days.push({
-        day,
-        status: trackerDay?.status || "missed"
-      });
-    }
-    
-    return days;
-  };
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -280,8 +224,8 @@ export default function StudentHome() {
                                 if (item.courseSlug && item.moduleSlug && item.lessonSlug) {
                                   navigate(`/lms/student/courses/${item.courseSlug}/modules/${item.moduleSlug}/lessons/${item.lessonSlug}`);
                                 } else if (item.courseSlug) {
-                                  // Navigate to course if lesson not available
-                                  navigate(`/lms/student/courses/${item.courseSlug}`);
+                                  // Navigate to course list if lesson not available (course tree route removed)
+                                  navigate("/lms/student/courses");
                                 } else if (item.link) {
                                   // Use custom link if provided
                                   navigate(item.link);
@@ -363,206 +307,6 @@ export default function StudentHome() {
             </div>
           </div>
 
-          {/* Leaderboard Card */}
-          <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
-            <div className="flex items-center justify-between mb-3 sm:mb-4">
-              <h3 className="text-lg sm:text-xl font-bold text-slate-900">Leaderboard</h3>
-              <button
-                onClick={() => navigate("/lms/student/leaderboard")}
-                className="flex items-center gap-1 text-purple-600 hover:text-purple-700 font-medium text-xs sm:text-sm"
-              >
-                View
-                <FiChevronRight className="w-3 h-3 sm:w-4 sm:h-4" />
-              </button>
-            </div>
-            <div className="flex items-start gap-3 mb-3 sm:mb-4">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-slate-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                <FiLock className="w-5 h-5 sm:w-6 sm:h-6 text-slate-400" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="font-bold text-sm sm:text-base text-slate-900">Earn A Badge</p>
-                <p className="text-xs text-slate-500 mt-1 line-clamp-2">Sir C.R.R. College of Engineerng (SCRRCE)</p>
-              </div>
-            </div>
-            <p className="text-xs sm:text-sm text-slate-900">
-              Rank: Nil (Need <FiZap className="w-3 h-3 sm:w-4 sm:h-4 inline text-yellow-500" /> 100 more)
-            </p>
-          </div>
-
-          {/* Learning Consistency & Monthly Tracker Card */}
-          <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
-            {/* Learning Consistency Section */}
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-2 flex-1 min-w-0">
-                <h3 className="text-lg sm:text-xl font-bold text-slate-900 truncate">Learning Consistency</h3>
-                <FiInfo className="w-3 h-3 sm:w-4 sm:h-4 text-slate-400 flex-shrink-0" />
-              </div>
-              <div className="px-2 sm:px-3 py-1 bg-orange-500 rounded-full flex items-center gap-1 flex-shrink-0">
-                <span className="text-white text-[10px] sm:text-xs font-medium">Goal</span>
-                <span className="text-white text-[10px] sm:text-xs">🔥</span>
-                <span className="text-white text-[10px] sm:text-xs font-medium">50</span>
-              </div>
-            </div>
-            <p className="text-xs sm:text-sm text-slate-600 mb-4 sm:mb-6">Track your learning progress and consistency.</p>
-            
-            <div className="grid grid-cols-2 gap-4 sm:gap-6 border-t border-slate-200 pt-4 sm:pt-6 mb-4 sm:mb-6">
-              {/* Current Streak */}
-              <div>
-                <p className="text-xs sm:text-sm font-bold text-slate-900 mb-1 sm:mb-2">Current Streak</p>
-                <div className="flex items-center gap-1 sm:gap-2 mb-2 sm:mb-3">
-                  <span className="text-2xl sm:text-3xl">🔥</span>
-                  <span className="text-2xl sm:text-3xl font-bold text-slate-900">{progress.streak || 0}</span>
-                </div>
-                <div className="inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 sm:py-1 bg-green-500 rounded-lg">
-                  <span className="text-white text-[10px] sm:text-xs font-medium">My Best</span>
-                  <span className="text-white text-[10px] sm:text-xs">🔥</span>
-                  <span className="text-white text-[10px] sm:text-xs font-medium">49</span>
-                </div>
-              </div>
-              
-              {/* Consistency Score */}
-              <div>
-                <p className="text-xs sm:text-sm font-bold text-slate-900 mb-1 sm:mb-2">Consistency Score</p>
-                <div className="flex items-center gap-1 sm:gap-2">
-                  <FiZap className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-500 flex-shrink-0" />
-                  <span className="text-2xl sm:text-3xl font-bold text-slate-900">{progress.consistency || 0}</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Monthly Tracker Section */}
-            <div className="flex items-center justify-between mb-3 sm:mb-4 border-t border-slate-200 pt-4 sm:pt-6">
-              <div className="flex items-center gap-2 flex-1 min-w-0">
-                <h3 className="text-lg sm:text-xl font-bold text-slate-900 truncate">Monthly Tracker</h3>
-                  <FiInfo className="w-4 h-4 text-slate-400" />
-                </div>
-              <div className="flex items-center gap-0 bg-slate-100 rounded-full p-0.5 flex-shrink-0">
-                <button
-                  onClick={() => setTrackerView("daily")}
-                  className={`px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-bold transition-colors ${
-                    trackerView === "daily"
-                      ? "bg-slate-600 text-white shadow-sm"
-                      : "text-slate-600 bg-transparent"
-                  }`}
-                >
-                  Daily
-                </button>
-                <button
-                  onClick={() => setTrackerView("weekly")}
-                  className={`px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-bold transition-colors ${
-                    trackerView === "weekly"
-                      ? "bg-slate-600 text-white shadow-sm"
-                      : "text-slate-600 bg-transparent"
-                  }`}
-                >
-                  Weekly
-                </button>
-              </div>
-            </div>
-            
-            <div className="flex items-center justify-between mb-3 sm:mb-4">
-              <span className="text-xs sm:text-sm font-medium text-slate-900">{formatMonthYear(currentMonth)}</span>
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => navigateMonth(-1)}
-                    className="p-1 hover:bg-slate-100 rounded"
-                  >
-                    <FiChevronLeft className="w-4 h-4 text-slate-400" />
-                  </button>
-                  <button
-                    onClick={() => navigateMonth(1)}
-                    className="p-1 hover:bg-slate-100 rounded"
-                  >
-                    <FiChevronRight className="w-4 h-4 text-slate-400" />
-                  </button>
-                </div>
-              </div>
-
-            <div className="grid grid-cols-7 gap-0.5 sm:gap-1 mb-3 sm:mb-4">
-              {getDaysInMonth(currentMonth).map((day, index) => {
-                if (!day) {
-                  return (
-                    <div
-                      key={index}
-                      className="aspect-square rounded border border-transparent"
-                    />
-                  );
-                }
-                
-                return (
-                  <div
-                    key={index}
-                    className="aspect-square rounded border border-slate-200 bg-white flex items-center justify-center relative"
-                  >
-                    {day.status === "holiday" && (
-                      <svg className="absolute inset-0 w-full h-full" style={{ pointerEvents: 'none' }}>
-                        <line
-                          x1="0"
-                          y1="0"
-                          x2="100%"
-                          y2="100%"
-                          stroke="#ef4444"
-                          strokeWidth="1.5"
-                        />
-                      </svg>
-                    )}
-                    {day.status === "achieved" && (
-                      <div className="w-full h-full bg-green-500 rounded"></div>
-                    )}
-                    {day.status === "paused" && (
-                      <FiPause className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-slate-500" />
-                    )}
-                    {day.status === "streak_freeze" && (
-                      <div className="absolute bottom-0.5 sm:bottom-1 left-1/2 transform -translate-x-1/2">
-                        <svg width="6" height="4" className="sm:w-8 sm:h-6" viewBox="0 0 8 6" fill="none">
-                          <path d="M4 0L8 6H0L4 0Z" fill="#3b82f6" />
-                        </svg>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Legend */}
-            <div className="flex flex-wrap items-center gap-2 sm:gap-3 md:gap-4 text-[10px] sm:text-xs text-slate-600">
-              <div className="flex items-center gap-1 sm:gap-1.5">
-                <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-slate-200 rounded border border-slate-200 flex-shrink-0"></div>
-                <span>Missed</span>
-              </div>
-              <div className="flex items-center gap-1 sm:gap-1.5">
-                <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-green-500 rounded flex-shrink-0"></div>
-                <span>Achieved</span>
-              </div>
-              <div className="flex items-center gap-1 sm:gap-1.5">
-                <FiPause className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-slate-500 flex-shrink-0" />
-                <span>Paused</span>
-              </div>
-              <div className="flex items-center gap-1 sm:gap-1.5">
-                <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 relative flex items-center justify-center flex-shrink-0">
-                  <svg width="6" height="4" className="sm:w-8 sm:h-6" viewBox="0 0 8 6" fill="none">
-                    <path d="M4 0L8 6H0L4 0Z" fill="#3b82f6" />
-                  </svg>
-                </div>
-                <span>Streak Freeze</span>
-              </div>
-              <div className="flex items-center gap-1 sm:gap-1.5">
-                <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-slate-200 rounded border border-slate-200 relative flex-shrink-0">
-                  <svg className="absolute inset-0 w-full h-full" style={{ pointerEvents: 'none' }}>
-                    <line
-                      x1="0"
-                      y1="0"
-                      x2="100%"
-                      y2="100%"
-                      stroke="#ef4444"
-                      strokeWidth="1.5"
-                    />
-                  </svg>
-                </div>
-                <span>Holiday</span>
-              </div>
-            </div>
-          </div>
 
           {/* Your Progress Card */}
           <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">

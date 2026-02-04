@@ -47,17 +47,17 @@ const CreateLessonSchema = z.object({
 });
 const UpdateLessonSchema = z.object({
   title: z.string().min(2).optional(),
-  summary: z.string().optional(),
+  summary: z.string().optional().nullable(),
   position: z.number().int().optional(),
-  goal: z.string().optional(),
-  video_url: z.string().url().optional().or(z.literal("")),
+  goal: z.string().optional().nullable(),
+  video_url: z.string().optional().transform((v) => (v && (v = String(v).trim())) ? v : null),
   prompts: z.object({
     prompts: z.string().optional(),
     commands: z.string().optional(),
     error_resolve: z.string().optional(),
-  }).optional(),
-  success_image_url: z.string().url().optional().or(z.literal("")),
-  pdf_url: z.optional(z.union([z.string().url(), z.literal("")])),
+  }).optional().nullable(),
+  success_image_url: z.string().optional().transform((v) => (v && (v = String(v).trim())) ? v : null),
+  pdf_url: z.string().optional().transform((v) => (v && (v = String(v).trim())) ? v : null),
   video_provider: z.string().nullable().optional(),
   video_id: z.string().nullable().optional(),
 });
@@ -292,26 +292,30 @@ const updateLesson = asyncHandler(async (req, res) => {
   const parsed = UpdateLessonSchema.safeParse(req.body);
   if (!parsed.success) throw new HttpError(400, "Invalid input", parsed.error.flatten());
 
-  if (parsed.data.title === undefined && parsed.data.summary === undefined && parsed.data.position === undefined 
-      && parsed.data.goal === undefined && parsed.data.video_url === undefined && parsed.data.prompts === undefined 
-      && parsed.data.success_image_url === undefined && parsed.data.pdf_url === undefined) {
+  const patch = { ...parsed.data };
+  const hasAnyField = [
+    "title", "summary", "position", "goal", "video_url", "prompts",
+    "success_image_url", "pdf_url", "video_provider", "video_id"
+  ].some((k) => patch[k] !== undefined);
+  if (!hasAnyField) {
     throw new HttpError(400, "No fields to update");
   }
-
-  const patch = { ...parsed.data };
   if (patch.pdf_url !== undefined) {
     patch.pdf_url = (patch.pdf_url && String(patch.pdf_url).trim()) || null;
   }
 
+  const tenantId = req.tenant?.id ?? req.auth?.tenantId;
+  if (!tenantId) throw new HttpError(400, "Tenant not resolved");
+
   const updated = await svc.updateLesson({
-    tenantId: req.tenant.id,
+    tenantId,
     lessonId: req.params.lessonId,
     patch,
     updatedBy: req.auth.userId,
   });
 
   if (!updated) throw new HttpError(404, "Lesson not found");
-  delByPrefix(`pub:tenant:${req.tenant.id}:`);
+  delByPrefix(`pub:tenant:${tenantId}:`);
   res.json({ ok: true, data: updated });
 });
 const listLessonResourcesAdmin = asyncHandler(async (req, res) => {

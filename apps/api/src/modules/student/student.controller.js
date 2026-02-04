@@ -139,10 +139,16 @@ const completeLesson = asyncHandler(async (req, res) => {
     throw new HttpError(404, "Lesson not found");
   }
 
+  // content.repo returns raw row with lesson_id (not id)
+  const lessonId = lessonData.lesson.lesson_id ?? lessonData.lesson.id;
+  if (!lessonId) {
+    throw new HttpError(400, "Lesson id missing");
+  }
+
   await progressRepo.completeLesson({
     tenantId,
     userId,
-    lessonId: lessonData.lesson.id,
+    lessonId,
   });
 
   res.json({ ok: true });

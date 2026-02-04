@@ -31,6 +31,17 @@ html {
   --radius-lg: calc(var(--radius) + 4px);
 }
 
+/* shadcn primary (HSL) – extend for Radix/shadcn UI components */
+@layer base {
+  :root {
+    --primary: 220deg 91% 54%;
+  }
+
+  .dark {
+    --primary: 217deg 92% 76%;
+  }
+}
+
 /* Blob Animation for Academy Page */
 @keyframes blob {
   0%, 100% { 
@@ -289,3 +300,4 @@ html {
     scrollbar-color: rgba(99, 102, 241, 0.5) rgba(241, 245, 249, 0.3);
   }
 }
+

@@ -211,7 +211,7 @@ export default function StudentProgress() {
                   return (
                     <div
                       key={course.id}
-                      onClick={() => navigate(`/lms/student/courses/${course.slug}`)}
+                      onClick={() => navigate("/lms/student/courses")}
                       className="p-4 bg-gradient-to-r from-cyan-50 to-blue-50 rounded-md border-2 border-cyan-200 hover:border-cyan-400 hover:shadow-md transition-all cursor-pointer"
                     >
                       <div className="flex items-center justify-between mb-2">

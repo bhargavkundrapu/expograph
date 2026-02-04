@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../../app/providers/AuthProvider";
 import { apiFetch } from "../../../services/api";
 import { StudentCoursesSkeleton } from "../../../Components/common/SkeletonLoaders";
@@ -12,11 +12,13 @@ import {
   FiX,
   FiChevronRight,
   FiChevronDown,
+  FiClock,
 } from "react-icons/fi";
 import { AnimatePresence } from "framer-motion";
 
 export default function StudentCourses() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { token } = useAuth();
   const [loading, setLoading] = useState(true);
   const [courses, setCourses] = useState([]);
@@ -26,6 +28,9 @@ export default function StudentCourses() {
   const [courseDetails, setCourseDetails] = useState(null);
   const [loadingDetails, setLoadingDetails] = useState(false);
   const [expandedTopics, setExpandedTopics] = useState(new Set());
+  
+  // Check if we're on the bonus courses page
+  const isBonusCoursesPage = location.pathname.includes("bonus-courses");
 
   useEffect(() => {
     if (!token) return;
@@ -115,6 +120,44 @@ export default function StudentCourses() {
 
   if (loading) {
     return <StudentCoursesSkeleton />;
+  }
+
+  // Show "Coming Soon" for bonus courses
+  if (isBonusCoursesPage) {
+    return (
+      <div className="min-h-screen bg-slate-50 p-8">
+        <div className="max-w-7xl mx-auto">
+          {/* Header Section */}
+          <div className="mb-8">
+            <div className="flex items-start justify-between mb-4">
+              <div>
+                <p className="text-xs uppercase tracking-wider text-slate-500 mb-1">BONUS CONTENT</p>
+                <h1 className="text-3xl md:text-4xl font-bold text-slate-900 mb-2">
+                  Bonus Courses
+                </h1>
+              </div>
+            </div>
+          </div>
+
+          {/* Coming Soon Card */}
+          <div className="bg-white rounded-lg border border-slate-200 shadow-sm p-12 text-center">
+            <div className="max-w-md mx-auto">
+              <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                <FiClock className="w-10 h-10 text-white" />
+              </div>
+              <h2 className="text-2xl font-bold text-slate-900 mb-3">Coming Soon</h2>
+              <p className="text-slate-600 text-lg mb-6">
+                We're working hard to bring you exciting bonus courses. Stay tuned for updates!
+              </p>
+              <div className="flex items-center justify-center gap-2 text-sm text-slate-500">
+                <FiClock className="w-4 h-4" />
+                <span>Check back soon for new content</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   // Circular Progress Component
