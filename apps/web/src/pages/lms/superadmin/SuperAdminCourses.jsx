@@ -19,6 +19,7 @@ import {
   FiGlobe,
   FiCode,
   FiSave,
+  FiChevronDown,
 } from "react-icons/fi";
 
 export default function SuperAdminCourses() {
@@ -35,6 +36,7 @@ export default function SuperAdminCourses() {
   const [saving, setSaving] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(null);
   const [filterLevel, setFilterLevel] = useState("all");
+  const [openStatusDropdown, setOpenStatusDropdown] = useState(null); // Track which status dropdown is open
   
   // Form states
   const [showCourseForm, setShowCourseForm] = useState(false);
@@ -341,6 +343,64 @@ export default function SuperAdminCourses() {
       <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusColors[status] || statusColors.draft}`}>
         {status?.toUpperCase() || "DRAFT"}
       </span>
+    );
+  };
+
+  const StatusDropdown = ({ type, id, currentStatus, onStatusChange }) => {
+    const isOpen = openStatusDropdown === `${type}-${id}`;
+    const statusOptions = [
+      { value: "draft", label: "Draft", icon: FiFileText, color: "text-slate-600" },
+      { value: "published", label: "Published", icon: FiEye, color: "text-green-600" },
+      { value: "unpublished", label: "Unpublished", icon: FiEyeOff, color: "text-yellow-600" },
+    ];
+
+    return (
+      <div className="relative status-dropdown-container">
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            setOpenStatusDropdown(isOpen ? null : `${type}-${id}`);
+          }}
+          className={`flex items-center gap-2 px-3 py-1.5 rounded-md border transition-colors ${
+            currentStatus === "published"
+              ? "bg-green-50 border-green-200 text-green-700 hover:bg-green-100"
+              : currentStatus === "unpublished"
+              ? "bg-yellow-50 border-yellow-200 text-yellow-700 hover:bg-yellow-100"
+              : "bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100"
+          }`}
+        >
+          {getStatusBadge(currentStatus)}
+          <FiChevronDown className={`w-4 h-4 transition-transform ${isOpen ? "rotate-180" : ""}`} />
+        </button>
+        {isOpen && (
+          <div className="absolute right-0 top-full mt-1 bg-white border border-slate-200 rounded-lg shadow-xl z-[200] min-w-[180px] py-1">
+            {statusOptions.map((option) => {
+              const Icon = option.icon;
+              const isActive = currentStatus === option.value;
+              return (
+                <button
+                  key={option.value}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (!isActive) {
+                      onStatusChange(type, id, option.value);
+                    }
+                    setOpenStatusDropdown(null);
+                  }}
+                  disabled={isActive}
+                  className={`w-full px-4 py-2 text-left hover:bg-slate-50 flex items-center gap-2 transition-colors ${
+                    isActive ? "bg-slate-50 opacity-60 cursor-not-allowed" : option.color
+                  }`}
+                >
+                  <Icon className="w-4 h-4" />
+                  <span className="font-medium">{option.label}</span>
+                  {isActive && <FiCheck className="w-4 h-4 ml-auto" />}
+                </button>
+              );
+            })}
+          </div>
+        )}
+      </div>
     );
   };
 
@@ -927,53 +987,65 @@ export default function SuperAdminCourses() {
                   key={module.id}
                   className="bg-white rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition-all overflow-visible relative"
                 >
-                  <div 
-                    onClick={() => navigate(`/lms/superadmin/courses/${courseId}/modules/${module.id}`)}
-                    className="p-6 cursor-pointer"
-                  >
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-center gap-3 flex-1 min-w-0">
+                  <div className="p-6 relative">
+                    {/* Status Dropdown and Three Dots - Top Right */}
+                    <div className="absolute top-4 right-4 z-10 flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                      <StatusDropdown
+                        type="module"
+                        id={module.id}
+                        currentStatus={module.status || "draft"}
+                        onStatusChange={handleStatusChange}
+                      />
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setShowDeleteConfirm(showDeleteConfirm === module.id ? null : module.id);
+                        }}
+                        className="p-2 hover:bg-slate-100 rounded-lg transition-colors relative z-20"
+                        title="More options"
+                      >
+                        <FiMoreVertical className="w-5 h-5 text-slate-600" />
+                      </button>
+                    </div>
+                    
+                    {/* Main Content */}
+                    <div 
+                      onClick={() => navigate(`/lms/superadmin/courses/${courseId}/modules/${module.id}`)}
+                      className="cursor-pointer pr-32"
+                    >
+                      <div className="flex items-start gap-3 mb-4">
                         <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
                           <FiFileText className="w-5 h-5 text-purple-600" />
                         </div>
-                        <div className="min-w-0 flex-1">
-                          <h3 className="text-lg font-bold text-slate-900 truncate">
+                        <div className="flex-1 min-w-0">
+                          <h3 className="text-lg font-bold text-slate-900 break-words leading-tight">
                             {index + 1}. {module.title || "Untitled Module"}
                           </h3>
-                          {getStatusBadge(module.status)}
                         </div>
                       </div>
-                      <div className="flex items-center gap-1 flex-shrink-0" onClick={(e) => e.stopPropagation()}>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            if (confirm("Are you sure you want to delete this module? This will remove all lessons in it.")) {
-                              handleDelete("module", module.id);
-                            }
-                          }}
-                          className="p-2 hover:bg-red-50 rounded-lg transition-colors text-slate-500 hover:text-red-600"
-                          title="Delete module"
-                        >
-                          <FiTrash2 className="w-5 h-5" />
-                        </button>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setShowDeleteConfirm(showDeleteConfirm === module.id ? null : module.id);
-                          }}
-                          className="p-2 hover:bg-slate-100 rounded-lg transition-colors relative z-20"
-                          title="More options"
-                        >
-                          <FiMoreVertical className="w-5 h-5 text-slate-600" />
-                        </button>
+                      <div className="flex items-center justify-between text-sm text-slate-500">
+                        <span>{module.lessons?.length || 0} Lessons</span>
+                        <span className="flex items-center gap-1">
+                          View Lessons
+                          <FiChevronRight className="w-4 h-4" />
+                        </span>
                       </div>
                     </div>
-                    <div className="flex items-center justify-between text-sm text-slate-500">
-                      <span>{module.lessons?.length || 0} Lessons</span>
-                      <span className="flex items-center gap-1">
-                        View Lessons
-                        <FiChevronRight className="w-4 h-4" />
-                      </span>
+                    
+                    {/* Delete Button - Bottom Right */}
+                    <div className="flex items-center justify-end mt-4" onClick={(e) => e.stopPropagation()}>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (confirm("Are you sure you want to delete this module? This will remove all lessons in it.")) {
+                            handleDelete("module", module.id);
+                          }
+                        }}
+                        className="p-2 hover:bg-red-50 rounded-lg transition-colors text-slate-500 hover:text-red-600"
+                        title="Delete module"
+                      >
+                        <FiTrash2 className="w-5 h-5" />
+                      </button>
                     </div>
                   </div>
                   
@@ -1221,8 +1293,17 @@ export default function SuperAdminCourses() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs uppercase tracking-wider text-slate-500 mb-1">LESSONS</p>
-                <h1 className="text-3xl md:text-4xl font-bold text-slate-900">{module?.title || "Module"}</h1>
-                {getStatusBadge(module?.status)}
+                <div className="flex items-center gap-3">
+                  <h1 className="text-3xl md:text-4xl font-bold text-slate-900">{module?.title || "Module"}</h1>
+                  {module && (
+                    <StatusDropdown
+                      type="module"
+                      id={module.id}
+                      currentStatus={module.status || "draft"}
+                      onStatusChange={handleStatusChange}
+                    />
+                  )}
+                </div>
               </div>
               <div className="flex items-center gap-2">
                 <button
@@ -1276,41 +1357,52 @@ export default function SuperAdminCourses() {
                   key={lesson.id}
                   className="bg-white rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition-all overflow-hidden relative"
                 >
-                  <div 
-                    onClick={() => navigate(`/lms/superadmin/courses/${courseId}/modules/${moduleId}/lessons/${lesson.id}`)}
-                    className="p-6 cursor-pointer"
-                  >
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
-                          <FiFileText className="w-5 h-5 text-indigo-600" />
-                        </div>
-                        <div>
-                          <h3 className="text-lg font-bold text-slate-900">
-                            {index + 1}. {lesson.title || "Untitled Lesson"}
-                          </h3>
-                          {getStatusBadge(lesson.status)}
-                        </div>
-                      </div>
+                  <div className="p-6 relative">
+                    {/* Status Dropdown and Three Dots - Top Right */}
+                    <div className="absolute top-4 right-4 z-10 flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                      <StatusDropdown
+                        type="lesson"
+                        id={lesson.id}
+                        currentStatus={lesson.status || "draft"}
+                        onStatusChange={handleStatusChange}
+                      />
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
                           setShowDeleteConfirm(showDeleteConfirm === lesson.id ? null : lesson.id);
                         }}
                         className="p-2 hover:bg-slate-100 rounded-lg transition-colors relative z-20"
+                        title="More options"
                       >
                         <FiMoreVertical className="w-5 h-5 text-slate-600" />
                       </button>
                     </div>
-                    {lesson.summary && (
-                      <p className="text-sm text-slate-500 mb-4 line-clamp-2">{lesson.summary}</p>
-                    )}
-                    <div className="flex items-center justify-between text-sm text-slate-500">
-                      <span>{lesson.duration_seconds ? `${Math.round(lesson.duration_seconds / 60)} mins` : "No duration"}</span>
-                      <span className="flex items-center gap-1">
-                        View Details
-                        <FiChevronRight className="w-4 h-4" />
-                      </span>
+                    
+                    {/* Main Content */}
+                    <div 
+                      onClick={() => navigate(`/lms/superadmin/courses/${courseId}/modules/${moduleId}/lessons/${lesson.id}`)}
+                      className="cursor-pointer pr-32"
+                    >
+                      <div className="flex items-start gap-3 mb-4">
+                        <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <FiFileText className="w-5 h-5 text-indigo-600" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="text-lg font-bold text-slate-900 break-words leading-tight">
+                            {index + 1}. {lesson.title || "Untitled Lesson"}
+                          </h3>
+                        </div>
+                      </div>
+                      {lesson.summary && (
+                        <p className="text-sm text-slate-500 mb-4 line-clamp-2">{lesson.summary}</p>
+                      )}
+                      <div className="flex items-center justify-between text-sm text-slate-500">
+                        <span>{lesson.duration_seconds ? `${Math.round(lesson.duration_seconds / 60)} mins` : "No duration"}</span>
+                        <span className="flex items-center gap-1">
+                          View Details
+                          <FiChevronRight className="w-4 h-4" />
+                        </span>
+                      </div>
                     </div>
                   </div>
 

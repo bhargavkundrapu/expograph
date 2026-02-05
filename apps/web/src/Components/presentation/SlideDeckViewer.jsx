@@ -177,29 +177,29 @@ export default function SlideDeckViewer({ slides = [], slideCount }) {
       }`}
     >
       {/* Slide Header/Controls */}
-      <div className="bg-gradient-to-r from-[#1565D8] to-[#0d47a1] px-6 py-3 flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <span className="text-white text-sm font-medium">
+      <div className="bg-gradient-to-r from-[#1565D8] to-[#0d47a1] px-3 py-2 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <span className="text-white text-xs font-medium">
             Slide {currentSlide + 1} of {slides.length}
           </span>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1">
           <button
             onClick={() => setIsFullscreen(!isFullscreen)}
-            className="p-2 rounded-lg hover:bg-white/20 text-white transition-colors"
+            className="p-1.5 rounded-lg hover:bg-white/20 text-white transition-colors"
             title={isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
           >
             {isFullscreen ? (
-              <FiMinimize2 className="w-5 h-5" />
+              <FiMinimize2 className="w-4 h-4" />
             ) : (
-              <FiMaximize2 className="w-5 h-5" />
+              <FiMaximize2 className="w-4 h-4" />
             )}
           </button>
         </div>
       </div>
 
       {/* Slide Content */}
-      <div className={`bg-[#F9FBFE] ${isFullscreen ? "h-[calc(100vh-100px)]" : "h-[700px]"} overflow-hidden relative`}>
+      <div className={`bg-[#F9FBFE] ${isFullscreen ? "h-[calc(100vh-100px)]" : "h-[450px]"} overflow-hidden relative`}>
         <AnimatePresence mode="wait">
           <motion.div
             key={currentSlide}
@@ -215,26 +215,26 @@ export default function SlideDeckViewer({ slides = [], slideCount }) {
       </div>
 
       {/* Navigation */}
-      <div className="bg-slate-100 px-6 py-4 flex items-center justify-between border-t border-slate-200">
+      <div className="bg-slate-100 px-3 py-2 flex items-center justify-between border-t border-slate-200">
         <button
           onClick={prevSlide}
           disabled={currentSlide === 0}
-          className="flex items-center gap-2 px-4 py-2 bg-white rounded-lg border-2 border-slate-300 hover:border-[#1565D8] hover:bg-blue-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex items-center gap-1 px-3 py-1.5 bg-white rounded-lg border border-slate-300 hover:border-[#1565D8] hover:bg-blue-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <FiChevronLeft className="w-5 h-5" />
-          <span className="font-medium">Previous</span>
+          <FiChevronLeft className="w-4 h-4" />
+          <span className="text-sm font-medium">Previous</span>
         </button>
 
         {/* Slide Indicators */}
-        <div className="flex items-center gap-2 flex-1 justify-center px-4 overflow-x-auto">
+        <div className="flex items-center gap-1.5 flex-1 justify-center px-2 overflow-x-auto">
           {slides.map((_, index) => (
             <button
               key={index}
               onClick={() => goToSlide(index)}
-              className={`h-2 rounded-full transition-all flex-shrink-0 ${
+              className={`h-1.5 rounded-full transition-all flex-shrink-0 ${
                 index === currentSlide
-                  ? "w-8 bg-[#1565D8]"
-                  : "w-2 bg-slate-300 hover:bg-slate-400"
+                  ? "w-6 bg-[#1565D8]"
+                  : "w-1.5 bg-slate-300 hover:bg-slate-400"
               }`}
               title={`Go to slide ${index + 1}`}
             />
@@ -244,10 +244,10 @@ export default function SlideDeckViewer({ slides = [], slideCount }) {
         <button
           onClick={nextSlide}
           disabled={currentSlide === slides.length - 1}
-          className="flex items-center gap-2 px-4 py-2 bg-white rounded-lg border-2 border-slate-300 hover:border-[#1565D8] hover:bg-blue-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex items-center gap-1 px-3 py-1.5 bg-white rounded-lg border border-slate-300 hover:border-[#1565D8] hover:bg-blue-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <span className="font-medium">Next</span>
-          <FiChevronRight className="w-5 h-5" />
+          <span className="text-sm font-medium">Next</span>
+          <FiChevronRight className="w-4 h-4" />
         </button>
       </div>
     </div>

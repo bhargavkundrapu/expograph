@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../../app/providers/AuthProvider";
 import { apiFetch } from "../../../services/api";
@@ -18,7 +18,6 @@ import {
   FiFileText,
   FiHelpCircle,
   FiCode,
-  FiBookmark,
   FiArrowLeft,
   FiLayers,
   FiTarget,
@@ -68,8 +67,6 @@ export default function StudentLesson() {
   const [copiedIndex, setCopiedIndex] = useState(null);
   const [activePromptTab, setActivePromptTab] = useState("prompts");
   const [summaryExpanded, setSummaryExpanded] = useState(false);
-  const [bookmarks, setBookmarks] = useState([]);
-  const [bookmarkLoading, setBookmarkLoading] = useState(false);
   const videoRef = useRef(null);
   const courseDataLoadedRef = useRef(false);
   const isManualNavigationRef = useRef(false);
@@ -111,7 +108,6 @@ export default function StudentLesson() {
       fetchCourseData();
     }
     fetchLessonData(courseSlug, moduleSlug, lessonSlug, courseDataLoadedRef.current);
-    fetchBookmarks();
   }, [token, courseSlug, moduleSlug, lessonSlug]);
 
   // Fetch video token if needed for Cloudflare Stream
@@ -145,72 +141,6 @@ export default function StudentLesson() {
     }
   };
 
-  const fetchBookmarks = useCallback(async () => {
-    try {
-      const res = await apiFetch("/api/v1/student/bookmarks", { token }).catch(() => ({ data: [] }));
-      const bookmarkList = res?.data || [];
-      setBookmarks(bookmarkList);
-      console.log("Bookmarks fetched:", bookmarkList.length);
-    } catch (error) {
-      console.error("Failed to fetch bookmarks:", error);
-      setBookmarks([]);
-    }
-  }, [token]);
-
-  const toggleLessonBookmark = useCallback(async (lessonId, currentlyBookmarked) => {
-    if (bookmarkLoading) {
-      console.log("Bookmark operation already in progress");
-      return;
-    }
-    
-    console.log("Toggle bookmark called:", { lessonId, currentlyBookmarked, currentBookmarks: bookmarks.length });
-    
-    try {
-      setBookmarkLoading(true);
-      
-      if (currentlyBookmarked) {
-        // Find and delete the bookmark
-        const bookmark = bookmarks.find(
-          (b) => b.type === "lesson" && String(b.item_id) === String(lessonId)
-        );
-        console.log("Found bookmark to delete:", bookmark);
-        if (bookmark?.id) {
-          await apiFetch(`/api/v1/student/bookmarks/${bookmark.id}`, {
-            method: "DELETE",
-            token,
-          });
-          // Update bookmarks state immediately
-          setBookmarks((prev) => prev.filter((b) => b.id !== bookmark.id));
-          console.log("Bookmark deleted successfully");
-        } else {
-          console.warn("Bookmark not found for deletion");
-          // Refresh to sync state
-          await fetchBookmarks();
-        }
-      } else {
-        // Create new bookmark
-        console.log("Creating bookmark for lesson:", lessonId);
-        const res = await apiFetch("/api/v1/student/bookmarks", {
-          method: "POST",
-          token,
-          body: {
-            type: "lesson",
-            item_id: String(lessonId),
-          },
-        });
-        console.log("Bookmark created:", res?.data);
-        // Refresh bookmarks to get enriched data
-        await fetchBookmarks();
-        console.log("Bookmarks refreshed after creation");
-      }
-    } catch (error) {
-      console.error("Failed to toggle bookmark:", error);
-      // Refresh bookmarks on error to sync state
-      await fetchBookmarks();
-    } finally {
-      setBookmarkLoading(false);
-    }
-  }, [bookmarks, bookmarkLoading, token, fetchBookmarks]);
 
   const fetchLessonData = async (courseSlugParam, moduleSlugParam, lessonSlugParam, isContentUpdate = false) => {
     try {
@@ -383,31 +313,6 @@ export default function StudentLesson() {
     setWrongAnswers([]);
   };
 
-  const handleBookmarkMcq = async (questionId) => {
-    try {
-      await apiFetch("/api/v1/student/bookmarks", {
-        method: "POST",
-        token,
-        body: { type: "mcq", item_id: questionId },
-      });
-      alert("Question bookmarked!");
-    } catch (error) {
-      console.error("Failed to bookmark:", error);
-    }
-  };
-
-  const handleBookmarkPractice = async (taskId) => {
-    try {
-      await apiFetch("/api/v1/student/bookmarks", {
-        method: "POST",
-        token,
-        body: { type: "practice", item_id: taskId },
-      });
-      alert("Practice question bookmarked!");
-    } catch (error) {
-      console.error("Failed to bookmark:", error);
-    }
-  };
 
   const getLessonStatus = (l) => {
     if (l.completed) return "completed";
@@ -471,28 +376,16 @@ export default function StudentLesson() {
   const sidebarLessons = useMemo(() => {
     return allLessons.map((l) => {
       const status = getLessonStatus(l);
-      const isBookmarked = bookmarks.some(
-        (b) => b.type === "lesson" && String(b.item_id) === String(l.id)
-      );
       return {
         id: String(l.id),
         title: l.title || "Lesson",
         minutes: l.duration_seconds ? Math.round(l.duration_seconds / 60) : 0,
         completed: status === "completed",
         active: status === "current",
-        bookmarked: isBookmarked,
         locked: status === "locked",
       };
     });
-  }, [allLessons, bookmarks]);
-
-  // Bookmark toggle handler - must be defined before JSX to maintain hook order
-  const handleBookmarkToggle = useCallback((lessonId, bookmarked) => {
-    console.log("onBookmarkToggle called:", { lessonId, bookmarked });
-    toggleLessonBookmark(lessonId, bookmarked).catch((err) => {
-      console.error("Error in toggleLessonBookmark:", err);
-    });
-  }, [toggleLessonBookmark]);
+  }, [allLessons]);
 
   if (loading) {
     return <StudentLessonSkeleton />;
@@ -538,12 +431,6 @@ export default function StudentLesson() {
                 Home
               </button>
               <button
-                onClick={() => navigate("/lms/student/bookmarks")}
-                className="text-slate-700 hover:text-slate-900 text-base font-medium transition-colors"
-              >
-                Bookmark
-              </button>
-              <button
                 onClick={() => navigate("/lms/student/profile")}
                 className="text-slate-700 hover:text-slate-900 text-base font-medium transition-colors"
               >
@@ -569,13 +456,12 @@ export default function StudentLesson() {
                 if (full && !full.locked) {
                   // Mark as manual navigation to prevent useEffect from triggering
                   isManualNavigationRef.current = true;
-                  // Update URL first (for bookmarking/sharing)
+                  // Update URL first (for sharing)
                   navigate(`/lms/student/courses/${courseSlug}/modules/${full.moduleSlug}/lessons/${full.slug}`, { replace: true });
                   // Fetch new lesson data (only content area updates)
                   await fetchLessonData(courseSlug, full.moduleSlug, full.slug, true);
                 }
               }}
-              onBookmarkToggle={handleBookmarkToggle}
             />
           ) : null}
 
@@ -762,41 +648,60 @@ export default function StudentLesson() {
               </div>
               ) : null}
 
-            {/* Summary - after video (dropdown) */}
+              {/* Presentation (PDF) - Modern styled section inspired by courses page */}
+              {lesson?.pdf_url && (
+                <div className="px-8 pt-8 pb-8 flex justify-center">
+                  <PDFPresentationViewer pdfUrl={lesson.pdf_url} />
+                </div>
+              )}
+
+            {/* Learn and Setup - Enhanced attractive section */}
             {lesson?.summary?.trim() && (
-              <div className="px-8 pb-6">
-                <div className="bg-slate-50 border border-slate-200 overflow-hidden">
+              <div className="px-8 pb-8">
+                <div className="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 rounded-lg border-2 border-blue-200 shadow-lg overflow-hidden">
                   <button
                     type="button"
                     onClick={() => setSummaryExpanded(!summaryExpanded)}
-                    className="w-full px-4 py-3 flex items-center justify-between hover:bg-slate-100 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-inset"
+                    className="w-full px-6 py-4 flex items-center justify-between hover:from-blue-100 hover:via-indigo-100 hover:to-purple-100 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                     aria-expanded={summaryExpanded}
                   >
-                    <h3 className="text-sm font-semibold text-slate-900">What you&apos;ll learn</h3>
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center shadow-md">
+                        <FiTarget className="w-5 h-5 text-white" />
+                      </div>
+                      <div className="text-left">
+                        <h3 className="text-lg font-bold text-slate-900 mb-0.5">Learn and Setup</h3>
+                        <p className="text-xs text-slate-600 font-medium">Essential information to get started</p>
+                      </div>
+                    </div>
                     {summaryExpanded ? (
-                      <FiChevronUp className="w-5 h-5 text-slate-600 flex-shrink-0" />
+                      <FiChevronUp className="w-6 h-6 text-blue-600 flex-shrink-0" />
                     ) : (
-                      <FiChevronDown className="w-5 h-5 text-slate-600 flex-shrink-0" />
+                      <FiChevronDown className="w-6 h-6 text-blue-600 flex-shrink-0" />
                     )}
                   </button>
-                  {summaryExpanded && (
-                    <div className="px-4 pb-4">
-                      <p className="text-slate-700 whitespace-pre-wrap">{lesson.summary.trim()}</p>
-                    </div>
-                  )}
+                  <AnimatePresence>
+                    {summaryExpanded && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="border-t-2 border-blue-200 overflow-hidden"
+                      >
+                        <div className="px-6 py-5 bg-white/60">
+                          <div className="prose prose-slate max-w-none">
+                            <p className="text-slate-800 leading-relaxed whitespace-pre-wrap text-base font-medium">
+                              {lesson.summary.trim()}
+                            </p>
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
               </div>
             )}
-
-              {/* Presentation (PDF) - after video */}
-              {lesson?.pdf_url && (
-                <div className="px-8 pb-8">
-                  <div className="mt-8">
-                    <h3 className="text-sm font-semibold text-slate-800 mb-2">Slides (PDF)</h3>
-                    <PDFPresentationViewer pdfUrl={lesson.pdf_url} />
-                  </div>
-                </div>
-              )}
 
               {/* Prompts - classic tabs design - only show if at least one prompt exists */}
               {lesson?.prompts && typeof lesson.prompts === "object" && 
@@ -979,25 +884,25 @@ export default function StudentLesson() {
                       type="button"
                       onClick={handleMarkComplete}
                       disabled={markCompleteLoading}
-                      className="px-6 py-3 bg-green-600 text-white font-semibold hover:bg-green-700 disabled:opacity-70 disabled:cursor-not-allowed flex items-center gap-2 transition-colors"
+                      className="px-6 py-2.5 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-md hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-colors"
                       aria-label={markCompleteLoading ? "Marking as complete…" : "Mark lesson complete"}
                     >
                       {markCompleteLoading ? (
                         <>
-                          <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" aria-hidden />
-                          Marking…
+                          <span className="w-4 h-4 border-2 border-slate-400 border-t-transparent rounded-full animate-spin" aria-hidden />
+                          <span>Marking as complete...</span>
                         </>
                       ) : (
                         <>
-                          <FiCheckCircle className="w-5 h-5" />
-                          Mark lesson complete
+                          <FiCheckCircle className="w-4 h-4 text-slate-600" />
+                          <span>Mark as complete</span>
                         </>
                       )}
                     </button>
                   ) : (
-                    <div className="flex items-center gap-2 text-green-700 font-medium" role="status" aria-label="Lesson completed">
-                      <FiCheckCircle className="w-5 h-5 flex-shrink-0" />
-                      You completed this lesson
+                    <div className="flex items-center gap-2 text-slate-600 text-sm" role="status" aria-label="Lesson completed">
+                      <FiCheckCircle className="w-4 h-4 flex-shrink-0 text-green-600" />
+                      <span>Completed</span>
                     </div>
                   )}
                 </div>

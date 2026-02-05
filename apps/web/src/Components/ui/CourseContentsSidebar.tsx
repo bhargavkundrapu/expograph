@@ -1,9 +1,8 @@
-import React, { useState, useCallback } from "react";
+import React, { useState } from "react";
 import {
   ChevronLeft,
   ChevronDown,
   Clock,
-  Bookmark,
   CheckCircle,
   PanelRightClose,
 } from "lucide-react";
@@ -15,7 +14,6 @@ export interface LessonItem {
   minutes: number;
   completed: boolean;
   active: boolean;
-  bookmarked: boolean;
   /** When true, row is disabled and not clickable (e.g. locked lesson). */
   locked?: boolean;
 }
@@ -28,16 +26,15 @@ export interface CourseContentsSidebarProps {
   onBack?: () => void;
   onClose?: () => void;
   onLessonSelect?: (lesson: LessonItem) => void;
-  onBookmarkToggle?: (lessonId: string, bookmarked: boolean) => void;
   className?: string;
 }
 
 const defaultLessons: LessonItem[] = [
-  { id: "1", title: "Introduction to Responsive Web Design", minutes: 40, completed: true, active: false, bookmarked: false },
-  { id: "2", title: "Introduction to Responsive Web Design | Cheat Sheet", minutes: 10, completed: true, active: false, bookmarked: true },
-  { id: "3", title: "Bootstrap Grid System", minutes: 50, completed: true, active: false, bookmarked: false },
-  { id: "4", title: "Bootstrap Grid System | Cheat Sheet", minutes: 10, completed: false, active: true, bookmarked: false },
-  { id: "5", title: "Responsive Utilities & Breakpoints", minutes: 35, completed: false, active: false, bookmarked: false },
+  { id: "1", title: "Introduction to Responsive Web Design", minutes: 40, completed: true, active: false },
+  { id: "2", title: "Introduction to Responsive Web Design | Cheat Sheet", minutes: 10, completed: true, active: false },
+  { id: "3", title: "Bootstrap Grid System", minutes: 50, completed: true, active: false },
+  { id: "4", title: "Bootstrap Grid System | Cheat Sheet", minutes: 10, completed: false, active: true },
+  { id: "5", title: "Responsive Utilities & Breakpoints", minutes: 35, completed: false, active: false },
 ];
 
 export function CourseContentsSidebar({
@@ -48,22 +45,9 @@ export function CourseContentsSidebar({
   onBack,
   onClose,
   onLessonSelect,
-  onBookmarkToggle,
   className,
 }: CourseContentsSidebarProps) {
   const [expanded, setExpanded] = useState(true);
-
-  const toggleBookmark = useCallback(
-    (e: React.MouseEvent, lessonId: string, currentlyBookmarked: boolean) => {
-      e.stopPropagation();
-      // Call the callback with current state - parent will toggle it
-      if (onBookmarkToggle) {
-        // Pass the current state so parent knows whether to add or remove
-        onBookmarkToggle(lessonId, currentlyBookmarked);
-      }
-    },
-    [onBookmarkToggle]
-  );
 
   return (
     <aside
@@ -114,7 +98,7 @@ export function CourseContentsSidebar({
         type="button"
         onClick={() => setExpanded((e) => !e)}
         className="flex-shrink-0 w-full px-4 py-3.5 text-left bg-slate-700/60 hover:bg-slate-700/70 border-b border-slate-700/50 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-inset flex items-start justify-between gap-3"
-        aria-expanded={expanded ? "true" : "false"}
+        aria-expanded={expanded}
         aria-label={expanded ? "Collapse lesson list" : "Expand lesson list"}
       >
         <div className="min-w-0 flex-1">
@@ -148,7 +132,6 @@ export function CourseContentsSidebar({
               {lessons.map((lesson) => {
                 const active = lesson.active;
                 const completed = lesson.completed;
-                const bookmarked = lesson.bookmarked;
                 const locked = lesson.locked === true;
                 return (
                   <li
@@ -222,27 +205,6 @@ export function CourseContentsSidebar({
                           {lesson.minutes} mins
                         </p>
                       </div>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        console.log("Bookmark button clicked:", { lessonId: lesson.id, bookmarked });
-                        toggleBookmark(e, lesson.id, bookmarked);
-                      }}
-                      className="flex-shrink-0 p-1.5 rounded hover:bg-slate-700/40 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 self-center"
-                      aria-label={bookmarked ? "Remove bookmark" : "Add bookmark"}
-                      aria-pressed={bookmarked ? "true" : "false"}
-                    >
-                      <Bookmark
-                        className={cn(
-                          "w-4 h-4 transition-colors",
-                          bookmarked
-                            ? "fill-sky-400 text-sky-400"
-                            : "text-slate-400 hover:text-slate-300"
-                        )}
-                        strokeWidth={bookmarked ? 0 : 1.5}
-                        aria-hidden
-                      />
                     </button>
                   </li>
                 );

@@ -14,7 +14,6 @@ import {
   FiSearch,
   FiUser,
   FiClock,
-  FiBookmark,
   FiZap,
 } from "react-icons/fi";
 
@@ -362,16 +361,6 @@ export default function StudentDiscussions() {
                     >
                       <FiThumbsUp className="w-4 h-4" />
                       <span>{discussion.upvotes || 0}</span>
-                    </button>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        // TODO: Implement bookmark
-                      }}
-                      className="p-2 bg-slate-50 hover:bg-amber-50 text-slate-600 hover:text-amber-600 rounded-lg transition-colors"
-                      title="Bookmark"
-                    >
-                      <FiBookmark className="w-4 h-4" />
                     </button>
                   </div>
                 </div>

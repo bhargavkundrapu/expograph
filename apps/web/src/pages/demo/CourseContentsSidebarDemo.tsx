@@ -3,11 +3,11 @@ import { CourseContentsSidebar } from "../../Components/ui/CourseContentsSidebar
 import type { LessonItem } from "../../Components/ui/CourseContentsSidebar";
 
 const sampleLessons: LessonItem[] = [
-  { id: "1", title: "Introduction to Responsive Web Design", minutes: 40, completed: true, active: false, bookmarked: false },
-  { id: "2", title: "Introduction to Responsive Web Design | Cheat Sheet", minutes: 10, completed: true, active: false, bookmarked: true },
-  { id: "3", title: "Bootstrap Grid System", minutes: 50, completed: true, active: false, bookmarked: false },
-  { id: "4", title: "Bootstrap Grid System | Cheat Sheet", minutes: 10, completed: false, active: true, bookmarked: false },
-  { id: "5", title: "Responsive Utilities & Breakpoints", minutes: 35, completed: false, active: false, bookmarked: false },
+  { id: "1", title: "Introduction to Responsive Web Design", minutes: 40, completed: true, active: false },
+  { id: "2", title: "Introduction to Responsive Web Design | Cheat Sheet", minutes: 10, completed: true, active: false },
+  { id: "3", title: "Bootstrap Grid System", minutes: 50, completed: true, active: false },
+  { id: "4", title: "Bootstrap Grid System | Cheat Sheet", minutes: 10, completed: false, active: true },
+  { id: "5", title: "Responsive Utilities & Breakpoints", minutes: 35, completed: false, active: false },
 ];
 
 export default function CourseContentsSidebarDemo() {
@@ -23,7 +23,6 @@ export default function CourseContentsSidebarDemo() {
           onBack={() => window.history.back()}
           onClose={() => setSidebarVisible(false)}
           onLessonSelect={(lesson) => console.log("Selected lesson:", lesson.title)}
-          onBookmarkToggle={(id, bookmarked) => console.log("Bookmark", id, bookmarked)}
         />
       ) : null}
       <main className="flex-1 flex flex-col min-w-0">

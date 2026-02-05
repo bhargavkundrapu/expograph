@@ -5,7 +5,6 @@ import { useAuth } from "../providers/AuthProvider";
 import {
   FiHome,
   FiBookOpen,
-  FiBookmark,
   FiFileText,
   FiUser,
   FiSearch,
@@ -21,12 +20,11 @@ export default function StudentLayout() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
 
-  // Student-specific menu items - only Home, Courses, Bonus Courses, Bookmarks
+  // Student-specific menu items - only Home, Courses, Bonus Courses
   const menuItems = [
     { path: "/lms/student", label: "Home", icon: FiHome },
     { path: "/lms/student/courses", label: "Courses", icon: FiBookOpen },
     { path: "/lms/student/bonus-courses", label: "Bonus Courses", icon: FiFileText },
-    { path: "/lms/student/bookmarks", label: "Bookmarks", icon: FiBookmark },
   ];
 
   const isActive = (path) => {

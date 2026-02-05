@@ -11,8 +11,6 @@ import {
   FiBriefcase,
   FiDollarSign,
   FiClock,
-  FiBookmark,
-  FiBookmark as FiBookmarkFilled,
   FiStar,
   FiTrendingUp,
   FiCheckCircle,
@@ -27,7 +25,6 @@ export default function StudentExternalJobs() {
   const [selectedLocation, setSelectedLocation] = useState("all");
   const [selectedType, setSelectedType] = useState("all");
   const [selectedExperience, setSelectedExperience] = useState("all");
-  const [savedJobs, setSavedJobs] = useState([]);
   const [appliedJobs, setAppliedJobs] = useState([]);
   const [selectedJob, setSelectedJob] = useState(null);
 
@@ -259,19 +256,6 @@ export default function StudentExternalJobs() {
     setFilteredJobs(filtered);
   };
 
-  const toggleSaveJob = (jobId) => {
-    const isSaved = savedJobs.includes(jobId);
-    let updated;
-
-    if (isSaved) {
-      updated = savedJobs.filter((id) => id !== jobId);
-    } else {
-      updated = [...savedJobs, jobId];
-    }
-
-    setSavedJobs(updated);
-    localStorage.setItem("saved_jobs", JSON.stringify(updated));
-  };
 
   const markAsApplied = (jobId) => {
     if (!appliedJobs.includes(jobId)) {
@@ -332,21 +316,6 @@ export default function StudentExternalJobs() {
                 <p className="text-2xl font-bold text-white">{jobs.length}</p>
               </div>
               <FiBriefcase className="w-8 h-8 text-blue-400" />
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="bg-gradient-to-br from-emerald-600/20 to-teal-600/20 rounded-md p-4 border border-emerald-500/30"
-          >
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-slate-400 mb-1">Saved Jobs</p>
-                <p className="text-2xl font-bold text-white">{savedJobs.length}</p>
-              </div>
-              <FiBookmark className="w-8 h-8 text-emerald-400" />
             </div>
           </motion.div>
 
@@ -491,19 +460,6 @@ export default function StudentExternalJobs() {
                     </div>
                   </div>
                   <div className="flex items-start gap-2 ml-4">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        toggleSaveJob(job.id);
-                      }}
-                      className="p-2 hover:bg-slate-700/50 rounded-lg transition-colors"
-                    >
-                      {savedJobs.includes(job.id) ? (
-                        <FiBookmarkFilled className="w-5 h-5 text-yellow-400" />
-                      ) : (
-                        <FiBookmark className="w-5 h-5 text-slate-400" />
-                      )}
-                    </button>
                     {appliedJobs.includes(job.id) && (
                       <span className="px-2 py-1 bg-green-600/20 text-green-400 rounded text-xs font-medium flex items-center gap-1">
                         <FiCheckCircle className="w-3 h-3" />

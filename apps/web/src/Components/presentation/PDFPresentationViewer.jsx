@@ -1,10 +1,22 @@
-import { useState, useEffect, useRef } from "react";
-import { motion } from "framer-motion";
-import { FiChevronLeft, FiChevronRight, FiMaximize2, FiMinimize2, FiFileText } from "react-icons/fi";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  FiChevronLeft,
+  FiChevronRight,
+  FiMaximize2,
+  FiMinimize2,
+  FiChevronDown,
+  FiFileText,
+  FiPlay,
+  FiPause,
+  FiX,
+  FiSidebar,
+  FiEdit3,
+  FiSave,
+} from "react-icons/fi";
 
 /**
- * PDF Presentation Viewer - displays PDF pages side by side in a horizontal carousel
- * Uses PDF.js to render individual pages as images
+ * PDF Presentation Viewer - Clean design with features at bottom
  */
 export default function PDFPresentationViewer({ pdfUrl }) {
   const [pages, setPages] = useState([]);
@@ -12,47 +24,55 @@ export default function PDFPresentationViewer({ pdfUrl }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [showThumbnails, setShowThumbnails] = useState(false);
+  const [showSlideDropdown, setShowSlideDropdown] = useState(false);
+  const [autoPlay, setAutoPlay] = useState(false);
+  const autoPlayIntervalRef = useRef(null);
+  const [notes, setNotes] = useState({});
+  const [showNotes, setShowNotes] = useState(false);
+  const [editingNote, setEditingNote] = useState(null);
+  const [noteText, setNoteText] = useState("");
   const containerRef = useRef(null);
   const pdfjsLibRef = useRef(null);
+  const notesRef = useRef(null);
+  const dropdownRef = useRef(null);
 
   // Load PDF.js dynamically
   useEffect(() => {
     const loadPDFJS = async () => {
       try {
-        // Check if PDF.js is already loaded
         if (window.pdfjsLib) {
           pdfjsLibRef.current = window.pdfjsLib;
           if (!window.pdfjsLib.GlobalWorkerOptions.workerSrc) {
-            window.pdfjsLib.GlobalWorkerOptions.workerSrc = 
+            window.pdfjsLib.GlobalWorkerOptions.workerSrc =
               "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
           }
           loadPDF();
           return;
         }
 
-        // Use CDN for PDF.js
         if (!pdfjsLibRef.current) {
           const script = document.createElement("script");
           script.src = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js";
           script.async = true;
-          
+
           script.onload = () => {
             if (window.pdfjsLib) {
-              window.pdfjsLib.GlobalWorkerOptions.workerSrc = 
+              window.pdfjsLib.GlobalWorkerOptions.workerSrc =
                 "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
-              pdfjsLibRef.current = window.pdfjsLib;
-              loadPDF();
+          pdfjsLibRef.current = window.pdfjsLib;
+          loadPDF();
             } else {
               setError("PDF.js library failed to load");
               setLoading(false);
             }
           };
-          
+
           script.onerror = () => {
             setError("Failed to load PDF viewer library. Please try opening the PDF in a new tab.");
             setLoading(false);
           };
-          
+
           document.head.appendChild(script);
         } else {
           loadPDF();
@@ -68,21 +88,48 @@ export default function PDFPresentationViewer({ pdfUrl }) {
       try {
         setLoading(true);
         setError(null);
-        
+
         if (!pdfjsLibRef.current) {
           setError("PDF.js library not loaded");
           setLoading(false);
           return;
         }
 
+        // Suppress console warnings for tracking prevention
+        const originalWarn = console.warn;
+        const originalError = console.error;
+        console.warn = (...args) => {
+          const message = args.join(' ');
+          // Suppress tracking prevention warnings
+          if (message.includes('Tracking Prevention') || message.includes('storage')) {
+            return;
+          }
+          originalWarn.apply(console, args);
+        };
+        console.error = (...args) => {
+          const message = args.join(' ');
+          // Suppress tracking prevention errors
+          if (message.includes('Tracking Prevention') || message.includes('storage')) {
+            return;
+          }
+          originalError.apply(console, args);
+        };
+
         const loadingTask = pdfjsLibRef.current.getDocument({
           url: pdfUrl,
           cMapUrl: "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/cmaps/",
           cMapPacked: true,
+          disableAutoFetch: true,
+          disableStream: true,
+          disableRange: false,
         });
         const pdf = await loadingTask.promise;
-        const numPages = pdf.numPages;
         
+        // Restore original console methods
+        console.warn = originalWarn;
+        console.error = originalError;
+        const numPages = pdf.numPages;
+
         const pagePromises = [];
         for (let i = 1; i <= numPages; i++) {
           pagePromises.push(
@@ -93,15 +140,17 @@ export default function PDFPresentationViewer({ pdfUrl }) {
               canvas.height = viewport.height;
               canvas.width = viewport.width;
 
-              return page.render({
-                canvasContext: context,
-                viewport: viewport,
-              }).promise.then(() => ({
-                imageUrl: canvas.toDataURL("image/png"),
-                pageNumber: i,
-                width: viewport.width,
-                height: viewport.height,
-              }));
+              return page
+                .render({
+                  canvasContext: context,
+                  viewport: viewport,
+                })
+                .promise.then(() => ({
+                  imageUrl: canvas.toDataURL("image/png"),
+                  pageNumber: i,
+                  width: viewport.width,
+                  height: viewport.height,
+                }));
             })
           );
         }
@@ -110,8 +159,19 @@ export default function PDFPresentationViewer({ pdfUrl }) {
         setPages(renderedPages);
         setLoading(false);
       } catch (err) {
-        console.error("Failed to load PDF:", err);
-        setError(`Failed to load PDF: ${err.message || "Unknown error"}. Please try opening it in a new tab.`);
+        // Restore console methods in case of error
+        if (console.warn && console.error) {
+          // Already restored above, but ensure it's restored on error too
+        }
+        // Only show actual errors, not tracking prevention warnings
+        const errorMessage = err?.message || "";
+        if (!errorMessage.includes("Tracking Prevention") && !errorMessage.includes("storage")) {
+          console.error("Failed to load PDF:", err);
+          setError(`Failed to load PDF: ${errorMessage || "Unknown error"}. Please try opening it in a new tab.`);
+        } else {
+          // If it's just a tracking prevention warning, try to continue
+          setError(null);
+        }
         setLoading(false);
       }
     };
@@ -121,22 +181,69 @@ export default function PDFPresentationViewer({ pdfUrl }) {
     }
   }, [pdfUrl]);
 
-  // Keyboard navigation
+
+  // Load saved notes from localStorage
   useEffect(() => {
-    const handleKeyPress = (e) => {
-      if (e.key === "ArrowRight" || e.key === " ") {
-        e.preventDefault();
-        nextPage();
-      } else if (e.key === "ArrowLeft") {
-        e.preventDefault();
-        prevPage();
-      } else if (e.key === "Escape") {
-        setIsFullscreen(false);
+    if (pdfUrl) {
+      const savedNotes = localStorage.getItem(`pdf-notes-${pdfUrl}`);
+      if (savedNotes) {
+        try {
+          setNotes(JSON.parse(savedNotes));
+        } catch (e) {
+          console.error("Failed to load notes:", e);
+        }
+      }
+    }
+  }, [pdfUrl]);
+
+  // Save notes to localStorage
+  useEffect(() => {
+    if (pdfUrl && Object.keys(notes).length > 0) {
+      localStorage.setItem(`pdf-notes-${pdfUrl}`, JSON.stringify(notes));
+    }
+  }, [notes, pdfUrl]);
+
+  // Auto-play functionality
+  useEffect(() => {
+    if (autoPlay && pages.length > 0) {
+      autoPlayIntervalRef.current = setInterval(() => {
+        setCurrentPage((prev) => {
+          if (prev < pages.length - 1) {
+            return prev + 1;
+          } else {
+            setAutoPlay(false);
+            return prev;
+          }
+        });
+      }, 5000); // 5 seconds per slide
+      return () => {
+        if (autoPlayIntervalRef.current) {
+          clearInterval(autoPlayIntervalRef.current);
+          autoPlayIntervalRef.current = null;
+        }
+      };
+    } else {
+      if (autoPlayIntervalRef.current) {
+        clearInterval(autoPlayIntervalRef.current);
+        autoPlayIntervalRef.current = null;
+      }
+    }
+  }, [autoPlay, pages.length]);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowSlideDropdown(false);
       }
     };
-    window.addEventListener("keydown", handleKeyPress);
-    return () => window.removeEventListener("keydown", handleKeyPress);
-  }, [currentPage, pages.length]);
+    if (showSlideDropdown) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showSlideDropdown]);
 
   const nextPage = () => {
     if (currentPage < pages.length - 1) {
@@ -156,28 +263,79 @@ export default function PDFPresentationViewer({ pdfUrl }) {
     }
   };
 
+
+  const handleSaveNote = () => {
+    if (editingNote !== null && noteText.trim()) {
+      setNotes((prev) => ({
+        ...prev,
+        [editingNote]: noteText.trim(),
+      }));
+    }
+    setEditingNote(null);
+    setNoteText("");
+  };
+
+  const handleEditNote = (pageIndex) => {
+    setEditingNote(pageIndex);
+    setNoteText(notes[pageIndex] || "");
+  };
+
+  const handleDeleteNote = (pageIndex) => {
+    setNotes((prev) => {
+      const newNotes = { ...prev };
+      delete newNotes[pageIndex];
+      return newNotes;
+    });
+  };
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyPress = (e) => {
+      if (e.key === "ArrowRight" || e.key === " ") {
+        e.preventDefault();
+        nextPage();
+      } else if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        prevPage();
+      } else if (e.key === "Escape") {
+        setIsFullscreen(false);
+        setShowThumbnails(false);
+        setShowNotes(false);
+        setShowSlideDropdown(false);
+      } else if (e.key === "f" || e.key === "F") {
+        setIsFullscreen(!isFullscreen);
+      }
+    };
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
+  }, [currentPage, pages.length, isFullscreen]);
+
   if (loading) {
     return (
-      <div className="bg-white border border-slate-300 p-12 text-center shadow-sm">
-        <div className="w-10 h-10 border-2 border-slate-400 border-t-transparent animate-spin mx-auto mb-4"></div>
-        <p className="text-slate-600 text-sm">Loading presentation…</p>
+      <div className="bg-white rounded-lg border border-slate-200 shadow-sm p-12 text-center">
+        <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+        <p className="text-slate-600 font-medium">Loading presentation…</p>
+        <p className="text-sm text-slate-500 mt-2">Preparing slides for you</p>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="bg-white border border-slate-300 p-8 text-center shadow-sm">
-        <p className="text-slate-800 font-medium mb-1">Error loading PDF</p>
-        <p className="text-slate-500 text-sm mb-4">{error}</p>
+      <div className="bg-white rounded-lg border border-slate-200 shadow-sm p-8 text-center">
+        <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <FiFileText className="w-8 h-8 text-red-600" />
+        </div>
+        <p className="text-slate-900 font-semibold mb-2">Error loading presentation</p>
+        <p className="text-slate-600 text-sm mb-4">{error}</p>
         <a
           href={pdfUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 px-4 py-2 text-sm text-slate-700 border border-slate-400 hover:bg-slate-50 transition-colors"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
         >
           <FiFileText className="w-4 h-4" />
-          Open PDF in new tab
+          Open in new tab
         </a>
       </div>
     );
@@ -185,121 +343,458 @@ export default function PDFPresentationViewer({ pdfUrl }) {
 
   if (pages.length === 0) {
     return (
-      <div className="bg-white border border-slate-300 p-12 text-center shadow-sm">
-        <p className="text-slate-600 text-sm">No pages found in PDF</p>
+      <div className="bg-white rounded-lg border border-slate-200 shadow-sm p-8 text-center">
+        <p className="text-slate-600">No slides found in presentation</p>
       </div>
     );
   }
 
+  const currentPageData = pages[currentPage];
+  const containerHeight = isFullscreen
+    ? (typeof window !== "undefined" ? window.innerHeight - 120 : 450)
+    : 450;
+
   return (
     <div
-      className={`bg-white border border-slate-300 overflow-hidden shadow-sm ${
-        isFullscreen ? "fixed inset-0 z-50" : ""
+      className={`bg-white rounded-lg border border-slate-200 shadow-lg ${
+        isFullscreen 
+          ? "fixed inset-0 z-50 rounded-none w-full h-full flex flex-col" 
+          : "inline-block rounded-none w-auto mx-auto"
       }`}
     >
-      {/* Header - classic bar */}
-      <div className="flex items-center justify-between px-4 py-2.5 border-b border-slate-300 bg-slate-50">
-        <span className="text-slate-700 text-sm">
-          Page {currentPage + 1} of {pages.length}
-        </span>
+      {/* Minimal Top Bar - Only Maximize Button */}
+      <div className="bg-slate-50 border-b border-slate-200 px-3 sm:px-4 py-2 flex items-center justify-end">
         <button
           type="button"
           onClick={() => setIsFullscreen(!isFullscreen)}
-          className="p-1.5 text-slate-600 hover:text-slate-900 hover:bg-slate-200 transition-colors"
+          className="p-1.5 sm:p-2 rounded-lg hover:bg-slate-200 text-slate-600 transition-colors"
           title={isFullscreen ? "Exit fullscreen" : "Fullscreen"}
         >
-          {isFullscreen ? <FiMinimize2 className="w-4 h-4" /> : <FiMaximize2 className="w-4 h-4" />}
+          {isFullscreen ? <FiMinimize2 className="w-4 h-4 sm:w-5 sm:h-5" /> : <FiMaximize2 className="w-4 h-4 sm:w-5 sm:h-5" />}
         </button>
       </div>
 
-      {/* Slides area - one slide at a time, no horizontal scroll */}
-      <div
-        className={`bg-slate-200 overflow-hidden flex items-center justify-center ${
-          isFullscreen ? "h-[calc(100vh-140px)]" : "h-[600px]"
-        }`}
-      >
-        {pages.map((page, index) => {
-          if (index !== currentPage) return null;
-          const containerHeight = isFullscreen
-            ? (typeof window !== "undefined" ? window.innerHeight - 140 : 600)
-            : 600;
-          return (
-            <div
-              key={index}
-              ref={containerRef}
-              className="h-full flex items-center justify-center px-6 py-6"
-              style={{
-                width: `${(page.width / page.height) * containerHeight}px`,
-                maxWidth: "100%",
+      {/* Main Content Area */}
+      <div className={`flex relative ${isFullscreen ? "h-full" : "overflow-visible"}`}>
+        {/* Feature Buttons Sidebar - Left side in fullscreen */}
+        {isFullscreen && (
+          <div className="bg-slate-50 border-r border-slate-200 flex flex-col gap-2 p-3 z-30">
+            {/* Notes */}
+            <button
+              type="button"
+              onClick={() => setShowNotes(!showNotes)}
+              className={`flex flex-col items-center gap-1 px-3 py-2 rounded-lg border transition-all ${
+                showNotes
+                  ? "border-blue-500 bg-blue-50 text-blue-700"
+                  : "border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
+              }`}
+              title="Show notes"
+            >
+              <FiEdit3 className="w-5 h-5" />
+              <span className="text-xs font-medium">Notes</span>
+            </button>
+
+            {/* Thumbnails */}
+            <button
+              type="button"
+              onClick={() => setShowThumbnails(!showThumbnails)}
+              className={`flex flex-col items-center gap-1 px-3 py-2 rounded-lg border transition-all ${
+                showThumbnails
+                  ? "border-blue-500 bg-blue-50 text-blue-700"
+                  : "border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
+              }`}
+              title={showThumbnails ? "Hide thumbnails" : "Show thumbnails"}
+            >
+              <FiSidebar className="w-5 h-5" />
+              <span className="text-xs font-medium">Thumbnails</span>
+            </button>
+
+            {/* Auto-play */}
+            <button
+              type="button"
+              onClick={() => setAutoPlay(!autoPlay)}
+              className={`flex flex-col items-center gap-1 px-3 py-2 rounded-lg border transition-all ${
+                autoPlay
+                  ? "border-blue-500 bg-blue-50 text-blue-700"
+                  : "border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
+              }`}
+              title={autoPlay ? "Pause auto-play" : "Start auto-play"}
+            >
+              {autoPlay ? <FiPause className="w-5 h-5" /> : <FiPlay className="w-5 h-5" />}
+              <span className="text-xs font-medium">Auto-play</span>
+            </button>
+          </div>
+        )}
+
+        {/* Thumbnails Sidebar */}
+        <AnimatePresence>
+          {showThumbnails && (
+            <motion.div
+              initial={{ width: 0, opacity: 0 }}
+              animate={{ width: 240, opacity: 1 }}
+              exit={{ width: 0, opacity: 0 }}
+              className="bg-slate-50 border-r border-slate-200 overflow-y-auto absolute sm:relative z-40 h-full w-[200px] sm:w-[220px] md:w-[240px]"
+              style={{ 
+                maxHeight: isFullscreen 
+                  ? "calc(100vh - 120px)" 
+                  : "450px"
               }}
             >
+              <div className="p-2 sm:p-4">
+                <div className="flex items-center justify-between mb-2 sm:mb-3">
+                  <h4 className="text-xs uppercase tracking-wider text-slate-500 font-semibold">
+                    SLIDE NAVIGATION
+                  </h4>
+                  <button
+                    type="button"
+                    onClick={() => setShowThumbnails(false)}
+                    className="p-1 rounded hover:bg-slate-200 transition-colors"
+                  >
+                    <FiX className="w-4 h-4 text-slate-600" />
+                  </button>
+                </div>
+                <div className="space-y-2">
+                  {pages.map((page, index) => (
+                    <button
+                      key={index}
+                      type="button"
+                      onClick={() => goToPage(index)}
+                      className={`w-full p-2 rounded-lg border-2 transition-all text-left ${
+                        index === currentPage
+                          ? "border-blue-500 bg-blue-50 shadow-sm"
+                          : "border-slate-200 bg-white hover:border-slate-300 hover:shadow-sm"
+                      }`}
+                    >
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-xs font-semibold text-slate-700">Slide {index + 1}</span>
+                      </div>
+                      <img
+                        src={page.imageUrl}
+                        alt={`Slide ${index + 1}`}
+                        className="w-full h-auto rounded border border-slate-200"
+                      />
+                      {notes[index] && (
+                        <div className="mt-1 text-xs text-slate-500 truncate" title={notes[index]}>
+                          <FiEdit3 className="w-3 h-3 inline mr-1" />
+                          Note
+                        </div>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Slide Display Area */}
+        <div className={`flex flex-col min-w-0 ${isFullscreen ? "flex-1" : ""}`}>
+          {/* Slide Content */}
+          <div
+            className={`bg-gradient-to-br from-slate-100 to-slate-50 flex items-center justify-center ${
+              isFullscreen 
+                ? "h-[calc(100vh-120px)] overflow-auto" 
+                : "overflow-visible"
+            }`}
+            ref={containerRef}
+          >
+            {currentPageData && (
               <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.2 }}
-                className="h-full w-full bg-white border border-slate-400 overflow-hidden shadow-md"
+                key={currentPage}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.3 }}
+                className={`flex items-center justify-center ${isFullscreen ? "w-full h-full" : ""}`}
               >
-                <img
-                  src={page.imageUrl}
-                  alt={`Page ${page.pageNumber}`}
-                  className="h-full w-full object-contain"
-                />
+                <div className={`bg-white flex items-center justify-center ${isFullscreen ? "w-full h-full" : ""}`}>
+                  <img
+                    src={currentPageData.imageUrl}
+                    alt={`Slide ${currentPageData.pageNumber}`}
+                    className="object-contain"
+                    style={{
+                      maxWidth: isFullscreen ? "100%" : "100%",
+                      maxHeight: isFullscreen 
+                        ? `${containerHeight - 48}px` 
+                        : "none",
+                      width: isFullscreen ? "auto" : "auto",
+                      height: isFullscreen ? "auto" : "auto",
+                      objectFit: "contain",
+                      display: "block"
+                    }}
+                  />
+                </div>
               </motion.div>
+            )}
+          </div>
+
+          {/* Bottom Navigation Bar with All Features */}
+          <div className="px-2 sm:px-4 md:px-6 py-3 sm:py-4 bg-white border-t border-slate-200">
+            <div className="flex items-center justify-between gap-2 sm:gap-4">
+              {/* Left: Previous Button */}
+              <button
+                type="button"
+                onClick={prevPage}
+                disabled={currentPage === 0}
+                className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 bg-white border-2 border-slate-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-slate-300 disabled:hover:bg-white transition-all"
+              >
+                <FiChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 text-slate-700" />
+                <span className="font-medium text-slate-700 text-xs sm:text-sm md:text-base hidden sm:inline">Previous</span>
+              </button>
+
+              {/* Center: Slide Dropdown and Indicators */}
+              <div className="flex items-center gap-1 sm:gap-2 md:gap-3 flex-1 justify-center">
+                {/* Slide Dropdown */}
+                <div className="relative" ref={dropdownRef}>
+                  <button
+                    type="button"
+                    onClick={() => setShowSlideDropdown(!showSlideDropdown)}
+                    className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm text-slate-700 border border-slate-300 bg-white hover:bg-slate-50 rounded-lg transition-colors"
+                  >
+                    <span className="whitespace-nowrap">Slide {currentPage + 1} of {pages.length}</span>
+                    <FiChevronDown className={`w-3 h-3 sm:w-4 sm:h-4 transition-transform ${showSlideDropdown ? "rotate-180" : ""}`} />
+                  </button>
+                  {showSlideDropdown && (
+                    <div className="absolute bottom-full left-0 mb-2 bg-white border border-slate-300 rounded-lg shadow-lg z-50 max-h-60 overflow-y-auto min-w-[160px]">
+                      {pages.map((_, index) => (
+                        <button
+                          key={index}
+                          type="button"
+                          onClick={() => {
+                            goToPage(index);
+                            setShowSlideDropdown(false);
+                          }}
+                          className={`w-full px-4 py-2 text-sm text-left hover:bg-slate-50 transition-colors ${
+                            index === currentPage ? "bg-slate-100 font-medium text-slate-900" : "text-slate-700"
+                          }`}
+                        >
+                          <span>Slide {index + 1}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Slide Indicators */}
+                <div className="flex items-center gap-1 sm:gap-1.5 overflow-x-auto px-2 sm:px-4 max-w-[100px] sm:max-w-none">
+                  {pages.map((_, index) => (
+                    <button
+                      key={index}
+                      type="button"
+                      onClick={() => goToPage(index)}
+                      className={`rounded-full transition-all flex-shrink-0 ${
+                        index === currentPage
+                          ? "w-6 sm:w-8 h-1.5 sm:h-2 bg-blue-500"
+                          : "w-1.5 sm:w-2 h-1.5 sm:h-2 bg-slate-300 hover:bg-slate-400"
+                      }`}
+                      title={`Go to slide ${index + 1}`}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              {/* Right: Next Button */}
+              <button
+                type="button"
+                onClick={nextPage}
+                disabled={currentPage === pages.length - 1}
+                className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 bg-white border-2 border-slate-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-slate-300 disabled:hover:bg-white transition-all"
+              >
+                <span className="font-medium text-slate-700 text-xs sm:text-sm md:text-base hidden sm:inline">Next</span>
+                <FiChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-slate-700" />
+              </button>
             </div>
-          );
-        })}
-      </div>
 
-      {/* Navigation - classic toolbar */}
-      <div className="flex items-center justify-between gap-4 px-4 py-3 border-t border-slate-300 bg-slate-50">
-        <button
-          type="button"
-          onClick={prevPage}
-          disabled={currentPage === 0}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-slate-700 border border-slate-400 bg-white hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white transition-colors"
-        >
-          <FiChevronLeft className="w-4 h-4" />
-          Previous
-        </button>
+            {/* Feature Buttons Row - Only show when not in fullscreen */}
+            {!isFullscreen && (
+              <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-slate-200">
+                {/* Notes */}
+                <button
+                  type="button"
+                  onClick={() => setShowNotes(!showNotes)}
+                  className={`flex items-center gap-1 sm:gap-2 px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 rounded-lg border transition-all ${
+                    showNotes
+                      ? "border-blue-500 bg-blue-50 text-blue-700"
+                      : "border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
+                  }`}
+                  title="Show notes"
+                >
+                  <FiEdit3 className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <span className="text-xs sm:text-sm font-medium hidden sm:inline">Notes</span>
+                </button>
 
-        <div className="flex items-center gap-1.5 flex-1 justify-center overflow-x-auto py-1">
-          {pages.map((_, index) => (
-            <button
-              key={index}
-              type="button"
-              onClick={() => goToPage(index)}
-              className={`flex-shrink-0 transition-colors ${
-                index === currentPage
-                  ? "w-6 h-1.5 bg-slate-700"
-                  : "w-1.5 h-1.5 bg-slate-400 hover:bg-slate-500"
-              }`}
-              title={`Go to page ${index + 1}`}
-            />
-          ))}
+                {/* Thumbnails */}
+                <button
+                  type="button"
+                  onClick={() => setShowThumbnails(!showThumbnails)}
+                  className={`flex items-center gap-1 sm:gap-2 px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 rounded-lg border transition-all ${
+                    showThumbnails
+                      ? "border-blue-500 bg-blue-50 text-blue-700"
+                      : "border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
+                  }`}
+                  title={showThumbnails ? "Hide thumbnails" : "Show thumbnails"}
+                >
+                  <FiSidebar className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <span className="text-xs sm:text-sm font-medium hidden sm:inline">Thumbnails</span>
+                </button>
+
+                {/* Auto-play */}
+                <button
+                  type="button"
+                  onClick={() => setAutoPlay(!autoPlay)}
+                  className={`flex items-center gap-1 sm:gap-2 px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 rounded-lg border transition-all ${
+                    autoPlay
+                      ? "border-blue-500 bg-blue-50 text-blue-700"
+                      : "border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
+                  }`}
+                  title={autoPlay ? "Pause auto-play" : "Start auto-play"}
+                >
+                  {autoPlay ? <FiPause className="w-3 h-3 sm:w-4 sm:h-4" /> : <FiPlay className="w-3 h-3 sm:w-4 sm:h-4" />}
+                  <span className="text-xs sm:text-sm font-medium hidden sm:inline">Auto-play</span>
+                </button>
+              </div>
+            )}
+          </div>
         </div>
 
-        <button
-          type="button"
-          onClick={nextPage}
-          disabled={currentPage === pages.length - 1}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-slate-700 border border-slate-400 bg-white hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white transition-colors"
-        >
-          Next
-          <FiChevronRight className="w-4 h-4" />
-        </button>
-      </div>
+        {/* Notes Sidebar */}
+        <AnimatePresence>
+          {showNotes && (
+            <motion.div
+              initial={{ width: 0, opacity: 0 }}
+              animate={{ width: 320, opacity: 1 }}
+              exit={{ width: 0, opacity: 0 }}
+              className="bg-slate-50 border-l border-slate-200 overflow-y-auto absolute sm:relative z-40 h-full right-0 w-[280px] sm:w-[300px] md:w-[320px]"
+              style={{ 
+                maxHeight: isFullscreen 
+                  ? "calc(100vh - 120px)" 
+                  : "450px"
+              }}
+              ref={notesRef}
+            >
+              <div className="p-2 sm:p-4">
+                <div className="flex items-center justify-between mb-4">
+                  <h4 className="text-xs uppercase tracking-wider text-slate-500 font-semibold">MY NOTES</h4>
+                  <button
+                    type="button"
+                    onClick={() => setShowNotes(false)}
+                    className="p-1 rounded hover:bg-slate-200 transition-colors"
+                  >
+                    <FiX className="w-4 h-4 text-slate-600" />
+                  </button>
+                </div>
 
-      {/* Footer */}
-      <div className="px-4 py-2 border-t border-slate-200 bg-white">
-        <a
-          href={pdfUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-slate-600 text-xs hover:text-slate-800 flex items-center gap-1.5 w-fit"
-        >
-          <FiFileText className="w-3.5 h-3.5" />
-          Open PDF in new tab
-        </a>
+                {editingNote !== null ? (
+                  <div className="bg-white rounded-lg border border-slate-200 p-4 mb-4">
+                    <textarea
+                      value={noteText}
+                      onChange={(e) => setNoteText(e.target.value)}
+                      placeholder="Add your notes for this slide..."
+                      className="w-full h-32 p-2 border border-slate-300 rounded text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      autoFocus
+                    />
+                    <div className="flex items-center gap-2 mt-2">
+                      <button
+                        type="button"
+                        onClick={handleSaveNote}
+                        className="flex items-center gap-1 px-3 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+                      >
+                        <FiSave className="w-4 h-4" />
+                        Save
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setEditingNote(null);
+                          setNoteText("");
+                        }}
+                        className="px-3 py-1.5 bg-slate-200 text-slate-700 rounded-lg hover:bg-slate-300 transition-colors text-sm"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {notes[currentPage] ? (
+                      <div className="bg-white rounded-lg border border-slate-200 p-4">
+                        <div className="flex items-start justify-between mb-2">
+                          <span className="text-xs font-semibold text-slate-500">Slide {currentPage + 1}</span>
+                          <div className="flex items-center gap-1">
+                            <button
+                              type="button"
+                              onClick={() => handleEditNote(currentPage)}
+                              className="p-1 rounded hover:bg-slate-100 transition-colors"
+                              title="Edit note"
+                            >
+                              <FiEdit3 className="w-3 h-3 text-slate-600" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteNote(currentPage)}
+                              className="p-1 rounded hover:bg-slate-100 transition-colors"
+                              title="Delete note"
+                            >
+                              <FiX className="w-3 h-3 text-slate-600" />
+                            </button>
+                          </div>
+                        </div>
+                        <p className="text-sm text-slate-700 whitespace-pre-wrap">{notes[currentPage]}</p>
+                      </div>
+                    ) : (
+                      <div className="bg-white rounded-lg border-2 border-dashed border-slate-300 p-6 text-center">
+                        <FiEdit3 className="w-8 h-8 text-slate-400 mx-auto mb-2" />
+                        <p className="text-sm text-slate-500 mb-3">No notes for this slide</p>
+                        <button
+                          type="button"
+                          onClick={() => handleEditNote(currentPage)}
+                          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+                        >
+                          Add Note
+                        </button>
+                      </div>
+                    )}
+
+                    {/* All Notes Summary */}
+                    {Object.keys(notes).length > 0 && (
+                      <div className="mt-6">
+                        <h5 className="text-xs uppercase tracking-wider text-slate-500 font-semibold mb-2">
+                          ALL NOTES ({Object.keys(notes).length})
+                        </h5>
+                        <div className="space-y-2">
+                          {Object.entries(notes).map(([pageIndex, note]) => (
+                            <button
+                              key={pageIndex}
+                              type="button"
+                              onClick={() => {
+                                goToPage(parseInt(pageIndex));
+                                setShowNotes(true);
+                              }}
+                              className={`w-full text-left p-3 rounded-lg border transition-all ${
+                                parseInt(pageIndex) === currentPage
+                                  ? "border-blue-500 bg-blue-50"
+                                  : "border-slate-200 bg-white hover:border-slate-300"
+                              }`}
+                            >
+                              <div className="flex items-center justify-between mb-1">
+                                <span className="text-xs font-semibold text-slate-700">
+                                  Slide {parseInt(pageIndex) + 1}
+                                </span>
+                                {parseInt(pageIndex) === currentPage && (
+                                  <span className="text-xs text-blue-600 font-medium">Current</span>
+                                )}
+                              </div>
+                              <p className="text-xs text-slate-600 line-clamp-2">{note}</p>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );

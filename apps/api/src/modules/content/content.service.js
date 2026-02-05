@@ -38,7 +38,7 @@ async function createModuleSmart({ tenantId, courseId, title, slug, position, cr
   for (let i = 0; i < 5; i++) {
     const candidate = i === 0 ? base : `${base}-${Math.random().toString(16).slice(2, 6)}`;
     try {
-      return await repo.createModule({ tenantId, courseId, title, slug: candidate, position, status: "draft", createdBy });
+      return await repo.createModule({ tenantId, courseId, title, slug: candidate, position, status: "published", createdBy });
     } catch (e) {
       if (isUniqueViolation(e)) continue;
       throw e;
