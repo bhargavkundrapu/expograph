@@ -18,7 +18,9 @@ console.error = (...args) => {
     return;
   }
   // Suppress Chrome extension messaging errors (e.g. "message channel closed before response")
-  if (message.includes('asynchronous response') && message.includes('message channel closed')) {
+  if ((message.includes('asynchronous response') && message.includes('message channel closed')) ||
+      message.includes('message channel closed before a response was received') ||
+      (message.includes('listener indicated') && message.includes('asynchronous response'))) {
     return;
   }
   originalError.apply(console, args);
@@ -46,9 +48,12 @@ console.warn = (...args) => { if (!isSplineNoise(args)) originalWarn.apply(conso
 // Suppress unhandled promise rejections from browser extensions (e.g. React DevTools, ad blockers)
 window.addEventListener('unhandledrejection', (event) => {
   const msg = event.reason?.message ?? String(event.reason ?? '');
-  if (msg.includes('asynchronous response') && msg.includes('message channel closed')) {
+  if ((msg.includes('asynchronous response') && msg.includes('message channel closed')) ||
+      msg.includes('message channel closed before a response was received') ||
+      (msg.includes('listener indicated') && msg.includes('asynchronous response'))) {
     event.preventDefault();
     event.stopPropagation();
+    return;
   }
 });
 

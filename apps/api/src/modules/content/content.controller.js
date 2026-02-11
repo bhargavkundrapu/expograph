@@ -43,6 +43,8 @@ const CreateLessonSchema = z.object({
     error_resolve: z.string().optional(),
   }).optional(),
   success_image_url: z.string().optional().transform((v) => (v && v.trim() ? v.trim() : undefined)),
+  success_image_urls: z.array(z.string().url()).optional(),
+  learn_setup_steps: z.array(z.string()).optional(),
   pdf_url: z.string().optional().transform((v) => (v && v.trim() ? v.trim() : undefined)),
 });
 const UpdateLessonSchema = z.object({
@@ -57,6 +59,8 @@ const UpdateLessonSchema = z.object({
     error_resolve: z.string().optional(),
   }).optional().nullable(),
   success_image_url: z.string().optional().transform((v) => (v && (v = String(v).trim())) ? v : null),
+  success_image_urls: z.array(z.string().url()).optional().nullable(),
+  learn_setup_steps: z.array(z.string()).optional().nullable(),
   pdf_url: z.string().optional().transform((v) => (v && (v = String(v).trim())) ? v : null),
   video_provider: z.string().nullable().optional(),
   video_id: z.string().nullable().optional(),
@@ -275,6 +279,8 @@ const createLesson = asyncHandler(async (req, res) => {
     video_url: (data.video_url && String(data.video_url).trim()) || null,
     prompts: data.prompts ?? null,
     success_image_url: (data.success_image_url && String(data.success_image_url).trim()) || null,
+    success_image_urls: Array.isArray(data.success_image_urls) ? data.success_image_urls.filter(Boolean) : null,
+    learn_setup_steps: Array.isArray(data.learn_setup_steps) ? data.learn_setup_steps.filter((s) => s && String(s).trim()) : null,
     pdf_url: (data.pdf_url && String(data.pdf_url).trim()) || null,
     createdBy: req.auth.userId,
   });
@@ -295,7 +301,7 @@ const updateLesson = asyncHandler(async (req, res) => {
   const patch = { ...parsed.data };
   const hasAnyField = [
     "title", "summary", "position", "goal", "video_url", "prompts",
-    "success_image_url", "pdf_url", "video_provider", "video_id"
+    "success_image_url", "success_image_urls", "learn_setup_steps", "pdf_url", "video_provider", "video_id"
   ].some((k) => patch[k] !== undefined);
   if (!hasAnyField) {
     throw new HttpError(400, "No fields to update");

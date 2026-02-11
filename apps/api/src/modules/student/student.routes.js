@@ -18,6 +18,7 @@ router.get("/events", ctrl.getEvents);
 
 // Courses
 router.get("/courses", ctrl.listCourses);
+router.get("/search", ctrl.search);
 router.get("/courses/:courseSlug", ctrl.getCourseTree);
 router.get("/courses/:courseSlug/modules/:moduleSlug/lessons/:lessonSlug", ctrl.getLesson);
 router.post("/courses/:courseSlug/modules/:moduleSlug/lessons/:lessonSlug/complete", ctrl.completeLesson);

@@ -397,31 +397,41 @@ export default function SuperAdminViewLesson() {
           </div>
         )}
 
-        {/* Success Image */}
-        {lesson.success_image_url && (
-          <div className="mb-8">
-            <h3 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
-              <FiCheck className="w-5 h-5 text-green-600" />
-              Success Looks Like This
-            </h3>
-            <div className="rounded-lg overflow-hidden border border-slate-200 shadow-lg">
-              <img
-                src={lesson.success_image_url}
-                alt="Success example"
-                className="w-full h-auto"
-                onError={(e) => {
-                  e.target.style.display = 'none';
-                  if (e.target.nextSibling) {
-                    e.target.nextSibling.style.display = 'block';
-                  }
-                }}
-              />
-              <div className="hidden bg-slate-100 p-8 text-center text-slate-500">
-                <p>Image failed to load</p>
+        {/* Success Images */}
+        {(() => {
+          const urls = Array.isArray(lesson.success_image_urls) && lesson.success_image_urls.length > 0
+            ? lesson.success_image_urls
+            : (lesson.success_image_url ? [lesson.success_image_url] : []);
+          if (urls.length === 0) return null;
+          return (
+            <div className="mb-8">
+              <h3 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
+                <FiCheck className="w-5 h-5 text-green-600" />
+                Success Looks Like This
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {urls.map((url, idx) => (
+                  <div key={idx} className="rounded-lg overflow-hidden border border-slate-200 shadow-lg">
+                    <img
+                      src={url}
+                      alt={`Success example ${idx + 1}`}
+                      className="w-full h-auto"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                        if (e.target.nextSibling) {
+                          e.target.nextSibling.style.display = 'block';
+                        }
+                      }}
+                    />
+                    <div className="hidden bg-slate-100 p-8 text-center text-slate-500">
+                      <p>Image failed to load</p>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
-          </div>
-        )}
+          );
+        })()}
 
         {/* PDF Presentation */}
         {lesson.pdf_url && (

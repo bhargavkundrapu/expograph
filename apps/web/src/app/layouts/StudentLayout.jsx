@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Link, useLocation, useNavigate, Outlet } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../providers/AuthProvider";
+import { apiFetch } from "../../services/api";
 import {
   FiHome,
   FiBookOpen,
@@ -12,13 +13,71 @@ import {
   FiLogOut,
   FiChevronRight,
   FiAward,
+  FiX,
 } from "react-icons/fi";
 
 export default function StudentLayout() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const searchInputRef = useRef(null);
+  const searchDropdownRef = useRef(null);
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const { user, logout, token } = useAuth();
+
+  const fetchSearch = useCallback(async (q) => {
+    if (!token || !q || q.trim().length < 2) {
+      setSearchResults([]);
+      return;
+    }
+    setSearchLoading(true);
+    try {
+      const res = await apiFetch(`/api/v1/student/search?q=${encodeURIComponent(q.trim())}`, { token });
+      setSearchResults(res?.data || []);
+    } catch {
+      setSearchResults([]);
+    } finally {
+      setSearchLoading(false);
+    }
+  }, [token]);
+
+  useEffect(() => {
+    if (!searchQuery.trim() || searchQuery.trim().length < 2) {
+      setSearchResults([]);
+      return;
+    }
+    const t = setTimeout(() => fetchSearch(searchQuery), 300);
+    return () => clearTimeout(t);
+  }, [searchQuery, fetchSearch]);
+
+
+  const handleSearchSelect = (item) => {
+    setSearchQuery("");
+    setSearchResults([]);
+    if (item.type === "lesson" && item.courseSlug && item.moduleSlug && item.lessonSlug) {
+      navigate(`/lms/student/courses/${item.courseSlug}/modules/${item.moduleSlug}/lessons/${item.lessonSlug}`);
+    } else if (item.type === "course" && item.courseSlug) {
+      navigate(`/lms/student/courses?course=${item.courseSlug}`);
+    } else if (item.type === "module" && item.courseSlug) {
+      navigate(`/lms/student/courses?course=${item.courseSlug}`);
+    } else {
+      navigate("/lms/student/courses");
+    }
+  };
+
+  const handleSearchKeyDown = (e) => {
+    if (e.key === "Escape") {
+      searchInputRef.current?.blur();
+    } else if (e.key === "Enter" && searchResults.length > 0) {
+      handleSearchSelect(searchResults[0]);
+    } else if (e.key === "Enter" && searchQuery.trim()) {
+      navigate(`/lms/student/courses?search=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
+
+  const showSearchDropdown = searchQuery.trim().length >= 2 && (searchResults.length > 0 || searchLoading);
 
   // Student-specific menu items - only Home, Courses, Bonus Courses
   const menuItems = [
@@ -67,23 +126,26 @@ export default function StudentLayout() {
               w-64
             `}
           >
-          {/* Logo Section */}
-          <div className="h-20 flex items-center justify-between px-4 border-b border-slate-700/50">
+          {/* Logo Section - 1.png for sidebar (dark bg), e^x.png for collapsed icon */}
+          <div className="h-20 flex items-center justify-between px-4 border-b border-slate-900">
             <AnimatePresence mode="wait">
-              {!sidebarCollapsed && (
+              {!sidebarCollapsed ? (
                 <motion.div
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -20 }}
-                  className="flex items-center gap-3"
+                  className="flex items-center"
                 >
-                  <div className="w-10 h-10 rounded-md bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg">
-                    E
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-white font-bold text-sm">CCBP 4.0</span>
-                    <span className="text-slate-400 text-xs">Academy</span>
-                  </div>
+                  <img src="/1.png" alt="ExpoGraph" className="h-18 m-4 mt-8 w-64 object-contain object-left" />
+                </motion.div>
+              ) : (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="flex items-center justify-center"
+                >
+                  <img src="/e^x.png" alt="ExpoGraph" className="h-9 w-9 object-contain" />
                 </motion.div>
               )}
             </AnimatePresence>
@@ -99,7 +161,7 @@ export default function StudentLayout() {
           </div>
 
           {/* Search */}
-          <div className="px-4 py-4 border-b border-slate-700/50">
+          <div className="px-4 pt-4 pb-4 border-b border-slate-900 relative" ref={searchDropdownRef}>
             <AnimatePresence mode="wait">
               {!sidebarCollapsed ? (
                 <motion.div
@@ -108,12 +170,62 @@ export default function StudentLayout() {
                   exit={{ opacity: 0 }}
                   className="relative"
                 >
-                  <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                  <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
                   <input
+                    ref={searchInputRef}
                     type="text"
-                    placeholder="Search courses..."
-                    className="w-full pl-10 pr-4 py-2.5 bg-slate-800/50 border border-slate-700/50 rounded-lg text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyDown={handleSearchKeyDown}
+                    placeholder="Search courses, modules, lessons..."
+                    className="w-full pl-10 pr-9 py-2.5 bg-slate-800/50 border border-slate-700/50 rounded-lg text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all text-sm"
                   />
+                  {searchQuery && (
+                    <button
+                      type="button"
+                      onClick={() => { setSearchQuery(""); setSearchResults([]); searchInputRef.current?.focus(); }}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded text-slate-400 hover:text-white hover:bg-slate-700/50"
+                      aria-label="Clear search"
+                    >
+                      <FiX className="w-4 h-4" />
+                    </button>
+                  )}
+                  <AnimatePresence>
+                    {showSearchDropdown && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -4 }}
+                        className="absolute left-0 right-0 top-full mt-1 z-50 max-h-72 overflow-y-auto rounded-lg bg-slate-800 border border-slate-700 shadow-xl"
+                      >
+                        {searchLoading ? (
+                          <div className="px-4 py-6 text-center text-slate-400 text-sm">Searching...</div>
+                        ) : (
+                          <ul className="py-2">
+                            {searchResults.map((item, idx) => (
+                              <li key={`${item.type}-${item.id}-${idx}`}>
+                                <button
+                                  type="button"
+                                  onClick={() => handleSearchSelect(item)}
+                                  className="w-full px-4 py-2.5 text-left hover:bg-slate-700/70 flex flex-col gap-0.5 transition-colors"
+                                >
+                                  <span className="text-slate-200 font-medium text-sm truncate">{item.title}</span>
+                                  {item.subtitle && (
+                                    <span className="text-slate-500 text-xs truncate flex items-center gap-1">
+                                      {item.type === "course" && <FiBookOpen className="w-3 h-3 flex-shrink-0" />}
+                                      {item.type === "module" && <span className="text-sky-400">Module</span>}
+                                      {item.type === "lesson" && <span className="text-emerald-400">Lesson</span>}
+                                      {item.subtitle}
+                                    </span>
+                                  )}
+                                </button>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </motion.div>
               ) : (
                 <motion.div
@@ -123,6 +235,8 @@ export default function StudentLayout() {
                   className="flex justify-center"
                 >
                   <button
+                    type="button"
+                    onClick={() => { setSidebarCollapsed(false); setTimeout(() => searchInputRef.current?.focus(), 100); }}
                     className="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-slate-700/50 text-slate-300 hover:text-white transition-colors"
                     title="Search"
                   >
@@ -171,7 +285,7 @@ export default function StudentLayout() {
           </nav>
 
           {/* Profile Section */}
-          <div className="border-t border-slate-700/50 p-4">
+          <div className="border-t border-slate-900 p-4">
             <AnimatePresence mode="wait">
               {!sidebarCollapsed ? (
                 <motion.div
@@ -182,11 +296,11 @@ export default function StudentLayout() {
                 >
                   <div className="flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-slate-700/30 transition-colors cursor-pointer">
                     <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold">
-                      {user?.name?.charAt(0)?.toUpperCase() || user?.full_name?.charAt(0)?.toUpperCase() || "S"}
+                      {(user?.fullName || user?.full_name || user?.name)?.charAt(0)?.toUpperCase() || "S"}
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-white font-medium text-sm truncate">
-                        {user?.name || user?.full_name || "Student"}
+                        {user?.fullName || user?.full_name || user?.name || "Student"}
                       </p>
                     </div>
                   </div>

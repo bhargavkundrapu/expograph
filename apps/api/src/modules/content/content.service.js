@@ -47,7 +47,7 @@ async function createModuleSmart({ tenantId, courseId, title, slug, position, cr
   throw new HttpError(500, "Could not create unique module slug");
 }
 
-async function createLessonSmart({ tenantId, moduleId, title, slug, summary, position, goal, video_url, prompts, success_image_url, pdf_url = null, createdBy }) {
+async function createLessonSmart({ tenantId, moduleId, title, slug, summary, position, goal, video_url, prompts, success_image_url, success_image_urls, learn_setup_steps, pdf_url = null, createdBy }) {
   const base = slug ? slugify(slug) : slugify(title);
   if (!base) throw new HttpError(400, "Invalid title/slug");
 
@@ -56,6 +56,9 @@ async function createLessonSmart({ tenantId, moduleId, title, slug, summary, pos
   for (let i = 0; i < 5; i++) {
     const candidate = i === 0 ? base : `${base}-${Math.random().toString(16).slice(2, 6)}`;
     try {
+      const urls = Array.isArray(success_image_urls) && success_image_urls.length > 0
+        ? success_image_urls
+        : (success_image_url ? [success_image_url] : []);
       return await repo.createLesson({ 
         tenantId, 
         moduleId, 
@@ -66,7 +69,9 @@ async function createLessonSmart({ tenantId, moduleId, title, slug, summary, pos
         goal,
         video_url,
         prompts,
-        success_image_url,
+        success_image_url: success_image_url || null,
+        success_image_urls: urls.length ? urls : null,
+        learn_setup_steps: Array.isArray(learn_setup_steps) && learn_setup_steps.filter(Boolean).length > 0 ? learn_setup_steps.filter(Boolean) : null,
         pdf_url: pdfUrl,
         status: "draft", 
         createdBy 

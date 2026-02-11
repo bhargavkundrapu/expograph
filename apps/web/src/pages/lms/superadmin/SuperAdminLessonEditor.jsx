@@ -33,7 +33,8 @@ export default function SuperAdminLessonEditor() {
       commands: "",
       error_resolve: "",
     },
-    success_image_url: "",
+    success_image_urls: [],
+    learn_setup_steps: [],
   });
 
   useEffect(() => {
@@ -93,7 +94,12 @@ export default function SuperAdminLessonEditor() {
           goal: lessonData.goal || "",
           video_url: lessonData.video_url || "",
           prompts: prompts,
-          success_image_url: lessonData.success_image_url || "",
+          success_image_urls: Array.isArray(lessonData.success_image_urls)
+            ? [...lessonData.success_image_urls]
+            : (lessonData.success_image_url ? [lessonData.success_image_url] : []),
+          learn_setup_steps: Array.isArray(lessonData.learn_setup_steps)
+            ? [...lessonData.learn_setup_steps]
+            : (lessonData.summary ? [lessonData.summary] : []),
         });
       }
     } catch (error) {
@@ -126,7 +132,8 @@ export default function SuperAdminLessonEditor() {
                 error_resolve: lessonForm.prompts.error_resolve || undefined,
               }
             : undefined,
-          success_image_url: lessonForm.success_image_url || undefined,
+          success_image_urls: (Array.isArray(lessonForm.success_image_urls) ? lessonForm.success_image_urls : []).filter((u) => u && String(u).trim()),
+          learn_setup_steps: (Array.isArray(lessonForm.learn_setup_steps) ? lessonForm.learn_setup_steps : []).filter((s) => s && String(s).trim()),
         },
       });
 
@@ -307,15 +314,89 @@ export default function SuperAdminLessonEditor() {
 
             <div>
               <label className="block text-sm font-semibold text-slate-900 mb-2">
-                Success Image URL (Optional)
+                Learn and Setup steps (Optional)
               </label>
-              <input
-                type="url"
-                value={lessonForm.success_image_url}
-                onChange={(e) => setLessonForm({ ...lessonForm, success_image_url: e.target.value })}
-                placeholder="https://example.com/success-image.png"
-                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
-              />
+              <p className="text-xs text-slate-500 mb-2">Add multiple steps for the "Learn and Setup" section. Students will see Step 0, Step 1, etc.</p>
+              <div className="space-y-3">
+                {(lessonForm.learn_setup_steps || []).map((step, idx) => (
+                  <div key={idx} className="border border-slate-200 rounded-md p-3 bg-slate-50">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-xs font-semibold text-slate-600">Step {idx}</span>
+                      <button
+                        type="button"
+                        onClick={() => setLessonForm((f) => ({
+                          ...f,
+                          learn_setup_steps: (f.learn_setup_steps || []).filter((_, i) => i !== idx),
+                        }))}
+                        className="p-1 text-red-600 hover:bg-red-50 rounded"
+                        title="Remove step"
+                      >
+                        <FiX className="w-4 h-4" />
+                      </button>
+                    </div>
+                    <textarea
+                      value={step}
+                      onChange={(e) => setLessonForm((f) => {
+                        const steps = [...(f.learn_setup_steps || [])];
+                        steps[idx] = e.target.value;
+                        return { ...f, learn_setup_steps: steps };
+                      })}
+                      placeholder={`Step ${idx} content...`}
+                      rows={4}
+                      className="w-full px-4 py-3 bg-white border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all resize-none text-sm"
+                    />
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => setLessonForm((f) => ({ ...f, learn_setup_steps: [...(f.learn_setup_steps || []), ""] }))}
+                  className="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1"
+                >
+                  + Add step
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-slate-900 mb-2">
+                Success images (Optional)
+              </label>
+              <p className="text-xs text-slate-500 mb-2">Add multiple image URLs for the "Success looks like" section</p>
+              <div className="space-y-2">
+                {(lessonForm.success_image_urls || []).map((url, idx) => (
+                  <div key={idx} className="flex gap-2">
+                    <input
+                      type="url"
+                      value={url}
+                      onChange={(e) => setLessonForm((f) => {
+                        const urls = [...(f.success_image_urls || [])];
+                        urls[idx] = e.target.value;
+                        return { ...f, success_image_urls: urls };
+                      })}
+                      placeholder="https://example.com/success-image.png"
+                      className="flex-1 px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setLessonForm((f) => ({
+                        ...f,
+                        success_image_urls: (f.success_image_urls || []).filter((_, i) => i !== idx),
+                      }))}
+                      className="px-3 py-2 text-red-600 hover:bg-red-50 rounded-md"
+                      title="Remove"
+                    >
+                      <FiX className="w-5 h-5" />
+                    </button>
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => setLessonForm((f) => ({ ...f, success_image_urls: [...(f.success_image_urls || []), ""] }))}
+                  className="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1"
+                >
+                  + Add image URL
+                </button>
+              </div>
             </div>
 
             <div className="flex items-center gap-4 pt-4 border-t border-slate-200">

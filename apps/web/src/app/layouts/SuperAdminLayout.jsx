@@ -105,20 +105,26 @@ export default function SuperAdminLayout() {
             ${mobileMenuOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
           `}
         >
-          {/* Logo Section */}
+          {/* Logo Section - 1.png for sidebar (dark bg), e^x.png for collapsed icon */}
           <div className="h-20 flex items-center justify-between px-4 border-b border-slate-700/50">
             <AnimatePresence mode="wait">
-              {!sidebarCollapsed && (
+              {!sidebarCollapsed ? (
                 <motion.div
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -20 }}
-                  className="flex items-center gap-3"
+                  className="flex items-center"
                 >
-                  <div className="w-10 h-10 rounded-md bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg">
-                    E
-                  </div>
-                  <span className="text-white font-bold text-xl">ExpoGraph</span>
+                  <img src="/1.png" alt="ExpoGraph" className="h-10 w-44 object-contain object-left" />
+                </motion.div>
+              ) : (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="flex items-center justify-center"
+                >
+                  <img src="/e^x.png" alt="ExpoGraph" className="h-9 w-9 object-contain" />
                 </motion.div>
               )}
             </AnimatePresence>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../../app/providers/AuthProvider";
@@ -28,7 +28,8 @@ export default function StudentCourses() {
   const [courseDetails, setCourseDetails] = useState(null);
   const [loadingDetails, setLoadingDetails] = useState(false);
   const [expandedTopics, setExpandedTopics] = useState(new Set());
-  
+  const openedFromUrlRef = useRef(false);
+
   // Check if we're on the bonus courses page
   const isBonusCoursesPage = location.pathname.includes("bonus-courses");
 
@@ -36,6 +37,24 @@ export default function StudentCourses() {
     if (!token) return;
     fetchCourses();
   }, [token]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const q = params.get("search") || params.get("q") || "";
+    if (q) setSearchQuery(q);
+  }, [location.search]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const courseSlug = params.get("course");
+    if (courseSlug && courses.length > 0 && !openedFromUrlRef.current) {
+      const c = courses.find((co) => co.slug === courseSlug);
+      if (c) {
+        openedFromUrlRef.current = true;
+        handleCourseClick(c);
+      }
+    }
+  }, [location.search, courses]);
 
   const fetchCourses = async () => {
     try {
@@ -76,6 +95,7 @@ export default function StudentCourses() {
     setSelectedCourse(null);
     setCourseDetails(null);
     setExpandedTopics(new Set());
+    openedFromUrlRef.current = false;
   };
 
   const toggleTopic = (topicId) => {

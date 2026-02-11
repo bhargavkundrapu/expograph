@@ -10,9 +10,6 @@ import {
   FiPlay,
   FiPause,
   FiX,
-  FiSidebar,
-  FiEdit3,
-  FiSave,
 } from "react-icons/fi";
 
 /**
@@ -24,17 +21,11 @@ export default function PDFPresentationViewer({ pdfUrl }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [showThumbnails, setShowThumbnails] = useState(false);
   const [showSlideDropdown, setShowSlideDropdown] = useState(false);
   const [autoPlay, setAutoPlay] = useState(false);
   const autoPlayIntervalRef = useRef(null);
-  const [notes, setNotes] = useState({});
-  const [showNotes, setShowNotes] = useState(false);
-  const [editingNote, setEditingNote] = useState(null);
-  const [noteText, setNoteText] = useState("");
   const containerRef = useRef(null);
   const pdfjsLibRef = useRef(null);
-  const notesRef = useRef(null);
   const dropdownRef = useRef(null);
 
   // Load PDF.js dynamically
@@ -181,28 +172,6 @@ export default function PDFPresentationViewer({ pdfUrl }) {
     }
   }, [pdfUrl]);
 
-
-  // Load saved notes from localStorage
-  useEffect(() => {
-    if (pdfUrl) {
-      const savedNotes = localStorage.getItem(`pdf-notes-${pdfUrl}`);
-      if (savedNotes) {
-        try {
-          setNotes(JSON.parse(savedNotes));
-        } catch (e) {
-          console.error("Failed to load notes:", e);
-        }
-      }
-    }
-  }, [pdfUrl]);
-
-  // Save notes to localStorage
-  useEffect(() => {
-    if (pdfUrl && Object.keys(notes).length > 0) {
-      localStorage.setItem(`pdf-notes-${pdfUrl}`, JSON.stringify(notes));
-    }
-  }, [notes, pdfUrl]);
-
   // Auto-play functionality
   useEffect(() => {
     if (autoPlay && pages.length > 0) {
@@ -263,31 +232,6 @@ export default function PDFPresentationViewer({ pdfUrl }) {
     }
   };
 
-
-  const handleSaveNote = () => {
-    if (editingNote !== null && noteText.trim()) {
-      setNotes((prev) => ({
-        ...prev,
-        [editingNote]: noteText.trim(),
-      }));
-    }
-    setEditingNote(null);
-    setNoteText("");
-  };
-
-  const handleEditNote = (pageIndex) => {
-    setEditingNote(pageIndex);
-    setNoteText(notes[pageIndex] || "");
-  };
-
-  const handleDeleteNote = (pageIndex) => {
-    setNotes((prev) => {
-      const newNotes = { ...prev };
-      delete newNotes[pageIndex];
-      return newNotes;
-    });
-  };
-
   // Keyboard navigation
   useEffect(() => {
     const handleKeyPress = (e) => {
@@ -299,8 +243,6 @@ export default function PDFPresentationViewer({ pdfUrl }) {
         prevPage();
       } else if (e.key === "Escape") {
         setIsFullscreen(false);
-        setShowThumbnails(false);
-        setShowNotes(false);
         setShowSlideDropdown(false);
       } else if (e.key === "f" || e.key === "F") {
         setIsFullscreen(!isFullscreen);
@@ -379,36 +321,6 @@ export default function PDFPresentationViewer({ pdfUrl }) {
         {/* Feature Buttons Sidebar - Left side in fullscreen */}
         {isFullscreen && (
           <div className="bg-slate-50 border-r border-slate-200 flex flex-col gap-2 p-3 z-30">
-            {/* Notes */}
-            <button
-              type="button"
-              onClick={() => setShowNotes(!showNotes)}
-              className={`flex flex-col items-center gap-1 px-3 py-2 rounded-lg border transition-all ${
-                showNotes
-                  ? "border-blue-500 bg-blue-50 text-blue-700"
-                  : "border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
-              }`}
-              title="Show notes"
-            >
-              <FiEdit3 className="w-5 h-5" />
-              <span className="text-xs font-medium">Notes</span>
-            </button>
-
-            {/* Thumbnails */}
-            <button
-              type="button"
-              onClick={() => setShowThumbnails(!showThumbnails)}
-              className={`flex flex-col items-center gap-1 px-3 py-2 rounded-lg border transition-all ${
-                showThumbnails
-                  ? "border-blue-500 bg-blue-50 text-blue-700"
-                  : "border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
-              }`}
-              title={showThumbnails ? "Hide thumbnails" : "Show thumbnails"}
-            >
-              <FiSidebar className="w-5 h-5" />
-              <span className="text-xs font-medium">Thumbnails</span>
-            </button>
-
             {/* Auto-play */}
             <button
               type="button"
@@ -425,67 +337,6 @@ export default function PDFPresentationViewer({ pdfUrl }) {
             </button>
           </div>
         )}
-
-        {/* Thumbnails Sidebar */}
-        <AnimatePresence>
-          {showThumbnails && (
-            <motion.div
-              initial={{ width: 0, opacity: 0 }}
-              animate={{ width: 240, opacity: 1 }}
-              exit={{ width: 0, opacity: 0 }}
-              className="bg-slate-50 border-r border-slate-200 overflow-y-auto absolute sm:relative z-40 h-full w-[200px] sm:w-[220px] md:w-[240px]"
-              style={{ 
-                maxHeight: isFullscreen 
-                  ? "calc(100vh - 120px)" 
-                  : "450px"
-              }}
-            >
-              <div className="p-2 sm:p-4">
-                <div className="flex items-center justify-between mb-2 sm:mb-3">
-                  <h4 className="text-xs uppercase tracking-wider text-slate-500 font-semibold">
-                    SLIDE NAVIGATION
-                  </h4>
-                  <button
-                    type="button"
-                    onClick={() => setShowThumbnails(false)}
-                    className="p-1 rounded hover:bg-slate-200 transition-colors"
-                  >
-                    <FiX className="w-4 h-4 text-slate-600" />
-                  </button>
-                </div>
-                <div className="space-y-2">
-                  {pages.map((page, index) => (
-                    <button
-                      key={index}
-                      type="button"
-                      onClick={() => goToPage(index)}
-                      className={`w-full p-2 rounded-lg border-2 transition-all text-left ${
-                        index === currentPage
-                          ? "border-blue-500 bg-blue-50 shadow-sm"
-                          : "border-slate-200 bg-white hover:border-slate-300 hover:shadow-sm"
-                      }`}
-                    >
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="text-xs font-semibold text-slate-700">Slide {index + 1}</span>
-                      </div>
-                      <img
-                        src={page.imageUrl}
-                        alt={`Slide ${index + 1}`}
-                        className="w-full h-auto rounded border border-slate-200"
-                      />
-                      {notes[index] && (
-                        <div className="mt-1 text-xs text-slate-500 truncate" title={notes[index]}>
-                          <FiEdit3 className="w-3 h-3 inline mr-1" />
-                          Note
-                        </div>
-                      )}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
 
         {/* Slide Display Area */}
         <div className={`flex flex-col min-w-0 ${isFullscreen ? "flex-1" : ""}`}>
@@ -607,36 +458,6 @@ export default function PDFPresentationViewer({ pdfUrl }) {
             {/* Feature Buttons Row - Only show when not in fullscreen */}
             {!isFullscreen && (
               <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-slate-200">
-                {/* Notes */}
-                <button
-                  type="button"
-                  onClick={() => setShowNotes(!showNotes)}
-                  className={`flex items-center gap-1 sm:gap-2 px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 rounded-lg border transition-all ${
-                    showNotes
-                      ? "border-blue-500 bg-blue-50 text-blue-700"
-                      : "border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
-                  }`}
-                  title="Show notes"
-                >
-                  <FiEdit3 className="w-3 h-3 sm:w-4 sm:h-4" />
-                  <span className="text-xs sm:text-sm font-medium hidden sm:inline">Notes</span>
-                </button>
-
-                {/* Thumbnails */}
-                <button
-                  type="button"
-                  onClick={() => setShowThumbnails(!showThumbnails)}
-                  className={`flex items-center gap-1 sm:gap-2 px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 rounded-lg border transition-all ${
-                    showThumbnails
-                      ? "border-blue-500 bg-blue-50 text-blue-700"
-                      : "border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
-                  }`}
-                  title={showThumbnails ? "Hide thumbnails" : "Show thumbnails"}
-                >
-                  <FiSidebar className="w-3 h-3 sm:w-4 sm:h-4" />
-                  <span className="text-xs sm:text-sm font-medium hidden sm:inline">Thumbnails</span>
-                </button>
-
                 {/* Auto-play */}
                 <button
                   type="button"
@@ -655,146 +476,6 @@ export default function PDFPresentationViewer({ pdfUrl }) {
             )}
           </div>
         </div>
-
-        {/* Notes Sidebar */}
-        <AnimatePresence>
-          {showNotes && (
-            <motion.div
-              initial={{ width: 0, opacity: 0 }}
-              animate={{ width: 320, opacity: 1 }}
-              exit={{ width: 0, opacity: 0 }}
-              className="bg-slate-50 border-l border-slate-200 overflow-y-auto absolute sm:relative z-40 h-full right-0 w-[280px] sm:w-[300px] md:w-[320px]"
-              style={{ 
-                maxHeight: isFullscreen 
-                  ? "calc(100vh - 120px)" 
-                  : "450px"
-              }}
-              ref={notesRef}
-            >
-              <div className="p-2 sm:p-4">
-                <div className="flex items-center justify-between mb-4">
-                  <h4 className="text-xs uppercase tracking-wider text-slate-500 font-semibold">MY NOTES</h4>
-                  <button
-                    type="button"
-                    onClick={() => setShowNotes(false)}
-                    className="p-1 rounded hover:bg-slate-200 transition-colors"
-                  >
-                    <FiX className="w-4 h-4 text-slate-600" />
-                  </button>
-                </div>
-
-                {editingNote !== null ? (
-                  <div className="bg-white rounded-lg border border-slate-200 p-4 mb-4">
-                    <textarea
-                      value={noteText}
-                      onChange={(e) => setNoteText(e.target.value)}
-                      placeholder="Add your notes for this slide..."
-                      className="w-full h-32 p-2 border border-slate-300 rounded text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      autoFocus
-                    />
-                    <div className="flex items-center gap-2 mt-2">
-                      <button
-                        type="button"
-                        onClick={handleSaveNote}
-                        className="flex items-center gap-1 px-3 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
-                      >
-                        <FiSave className="w-4 h-4" />
-                        Save
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setEditingNote(null);
-                          setNoteText("");
-                        }}
-                        className="px-3 py-1.5 bg-slate-200 text-slate-700 rounded-lg hover:bg-slate-300 transition-colors text-sm"
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    {notes[currentPage] ? (
-                      <div className="bg-white rounded-lg border border-slate-200 p-4">
-                        <div className="flex items-start justify-between mb-2">
-                          <span className="text-xs font-semibold text-slate-500">Slide {currentPage + 1}</span>
-                          <div className="flex items-center gap-1">
-                            <button
-                              type="button"
-                              onClick={() => handleEditNote(currentPage)}
-                              className="p-1 rounded hover:bg-slate-100 transition-colors"
-                              title="Edit note"
-                            >
-                              <FiEdit3 className="w-3 h-3 text-slate-600" />
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => handleDeleteNote(currentPage)}
-                              className="p-1 rounded hover:bg-slate-100 transition-colors"
-                              title="Delete note"
-                            >
-                              <FiX className="w-3 h-3 text-slate-600" />
-                            </button>
-                          </div>
-                        </div>
-                        <p className="text-sm text-slate-700 whitespace-pre-wrap">{notes[currentPage]}</p>
-                      </div>
-                    ) : (
-                      <div className="bg-white rounded-lg border-2 border-dashed border-slate-300 p-6 text-center">
-                        <FiEdit3 className="w-8 h-8 text-slate-400 mx-auto mb-2" />
-                        <p className="text-sm text-slate-500 mb-3">No notes for this slide</p>
-                        <button
-                          type="button"
-                          onClick={() => handleEditNote(currentPage)}
-                          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
-                        >
-                          Add Note
-                        </button>
-                      </div>
-                    )}
-
-                    {/* All Notes Summary */}
-                    {Object.keys(notes).length > 0 && (
-                      <div className="mt-6">
-                        <h5 className="text-xs uppercase tracking-wider text-slate-500 font-semibold mb-2">
-                          ALL NOTES ({Object.keys(notes).length})
-                        </h5>
-                        <div className="space-y-2">
-                          {Object.entries(notes).map(([pageIndex, note]) => (
-                            <button
-                              key={pageIndex}
-                              type="button"
-                              onClick={() => {
-                                goToPage(parseInt(pageIndex));
-                                setShowNotes(true);
-                              }}
-                              className={`w-full text-left p-3 rounded-lg border transition-all ${
-                                parseInt(pageIndex) === currentPage
-                                  ? "border-blue-500 bg-blue-50"
-                                  : "border-slate-200 bg-white hover:border-slate-300"
-                              }`}
-                            >
-                              <div className="flex items-center justify-between mb-1">
-                                <span className="text-xs font-semibold text-slate-700">
-                                  Slide {parseInt(pageIndex) + 1}
-                                </span>
-                                {parseInt(pageIndex) === currentPage && (
-                                  <span className="text-xs text-blue-600 font-medium">Current</span>
-                                )}
-                              </div>
-                              <p className="text-xs text-slate-600 line-clamp-2">{note}</p>
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </div>
     </div>
   );

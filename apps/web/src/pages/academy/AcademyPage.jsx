@@ -39,21 +39,12 @@ export default function AcademyPage() {
       >
         <div className="max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 py-3 sm:py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-1.5 sm:gap-2 no-underline shrink-0">
-            <div
-              className="px-2 py-1 sm:px-3 sm:py-1.5 rounded-full font-bold text-xs sm:text-sm md:text-base"
-              style={{
-                backgroundColor: "var(--bg-secondary)",
-                color: "var(--text-primary)",
-                fontFamily: "var(--font-dm)",
-              }}
-            >
-              EXPOGRAPH
-            </div>
+            <img src="/1.png" alt="ExpoGraph" className="h-8 sm:h-9 w-auto object-contain" />
             <span
               className="text-xs sm:text-sm md:text-base font-semibold"
               style={{ color: "var(--text-secondary)", fontFamily: "var(--font-dm)" }}
             >
-              Academy
+              
             </span>
           </Link>
 

@@ -410,6 +410,24 @@ async function enhanceLessonWithData({ tenantId, userId, lesson, moduleLessons }
       video_url: lessonRow.video_url,
       prompts: lessonRow.prompts,
       success_image_url: lessonRow.success_image_url,
+      success_image_urls: (() => {
+        let urls = lessonRow.success_image_urls;
+        if (typeof urls === 'string') {
+          try { urls = JSON.parse(urls); } catch { urls = null; }
+        }
+        if (Array.isArray(urls)) return urls;
+        const single = lessonRow.success_image_url;
+        return single ? [single] : [];
+      })(),
+      learn_setup_steps: (() => {
+        let steps = lessonRow.learn_setup_steps;
+        if (typeof steps === 'string') {
+          try { steps = JSON.parse(steps); } catch { steps = null; }
+        }
+        if (Array.isArray(steps)) return steps;
+        const single = lessonRow.summary;
+        return single ? [single] : [];
+      })(),
       pdf_url: lessonRow.pdf_url,
       duration_seconds: lessonRow.duration_seconds,
       completed,
@@ -618,6 +636,88 @@ async function deleteBookmark({ tenantId, userId, bookmarkId }) {
   );
 }
 
+async function searchContent({ tenantId, userId, q }) {
+  if (!q || typeof q !== "string" || q.trim().length < 2) return [];
+  const term = `%${q.trim().toLowerCase()}%`;
+
+  const coursesResult = await query(
+    `SELECT c.id, c.title, c.slug, c.description
+     FROM courses c
+     WHERE c.tenant_id = $1 AND c.status = 'published'
+       AND (LOWER(c.title) LIKE $2 OR LOWER(COALESCE(c.description, '')) LIKE $2)
+     ORDER BY c.title ASC
+     LIMIT 5`,
+    [tenantId, term]
+  ).catch(() => ({ rows: [] }));
+
+  const modulesResult = await query(
+    `SELECT cm.id, cm.title, cm.slug, c.slug as course_slug, c.title as course_title
+     FROM course_modules cm
+     JOIN courses c ON c.id = cm.course_id
+     WHERE c.tenant_id = $1 AND c.status = 'published' AND cm.status = 'published'
+       AND LOWER(cm.title) LIKE $2
+     ORDER BY cm.title ASC
+     LIMIT 8`,
+    [tenantId, term]
+  ).catch(() => ({ rows: [] }));
+
+  const lessonsResult = await query(
+    `SELECT l.id, l.title, l.slug, cm.slug as module_slug, cm.title as module_title,
+            c.slug as course_slug, c.title as course_title
+     FROM lessons l
+     JOIN course_modules cm ON cm.id = l.module_id
+     JOIN courses c ON c.id = cm.course_id
+     WHERE c.tenant_id = $1 AND c.status = 'published' AND cm.status = 'published' AND l.status = 'published'
+       AND (LOWER(l.title) LIKE $2 OR LOWER(COALESCE(l.summary, '')) LIKE $2 OR LOWER(COALESCE(l.goal, '')) LIKE $2)
+     ORDER BY l.title ASC
+     LIMIT 10`,
+    [tenantId, term]
+  ).catch(() => ({ rows: [] }));
+
+  const results = [];
+  coursesResult.rows.forEach((r) => {
+    results.push({
+      type: "course",
+      id: r.id,
+      title: r.title,
+      slug: r.slug,
+      subtitle: r.description ? r.description.slice(0, 60) + (r.description.length > 60 ? "…" : "") : null,
+      path: `/lms/student/courses`,
+      courseSlug: r.slug,
+      moduleSlug: null,
+      lessonSlug: null,
+    });
+  });
+  modulesResult.rows.forEach((r) => {
+    results.push({
+      type: "module",
+      id: r.id,
+      title: r.title,
+      slug: r.slug,
+      subtitle: r.course_title,
+      path: `/lms/student/courses`,
+      courseSlug: r.course_slug,
+      moduleSlug: r.slug,
+      lessonSlug: null,
+    });
+  });
+  lessonsResult.rows.forEach((r) => {
+    results.push({
+      type: "lesson",
+      id: r.id,
+      title: r.title,
+      slug: r.slug,
+      subtitle: `${r.course_title} › ${r.module_title}`,
+      path: `/lms/student/courses`,
+      courseSlug: r.course_slug,
+      moduleSlug: r.module_slug,
+      lessonSlug: r.slug,
+    });
+  });
+
+  return results;
+}
+
 async function getModuleLessons({ tenantId, moduleId }) {
   const result = await query(
     `SELECT id, title, slug, summary, position
@@ -637,6 +737,7 @@ module.exports = {
   listEnrolledCourses,
   enhanceCourseWithProgress,
   enhanceLessonWithData,
+  searchContent,
   listDiscussions,
   createDiscussion,
   getDiscussion,

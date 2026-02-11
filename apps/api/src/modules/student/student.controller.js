@@ -61,6 +61,13 @@ const listCourses = asyncHandler(async (req, res) => {
   res.json({ ok: true, data: courses });
 });
 
+const search = asyncHandler(async (req, res) => {
+  const { tenantId, userId } = req.auth;
+  const q = (req.query.q || req.query.search || "").trim();
+  const results = await repo.searchContent({ tenantId, userId, q });
+  res.json({ ok: true, data: results });
+});
+
 const getCourseTree = asyncHandler(async (req, res) => {
   const { tenantId, userId } = req.auth;
   const { courseSlug } = req.params;
@@ -289,6 +296,7 @@ module.exports = {
   getProgress,
   getEvents,
   listCourses,
+  search,
   getCourseTree,
   getLesson,
   completeLesson,

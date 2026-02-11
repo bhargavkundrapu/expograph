@@ -63,11 +63,17 @@ async function createModule({ tenantId, courseId, title, slug, position, status,
   return rows[0];
 }
 
-async function createLesson({ tenantId, moduleId, title, slug, summary, position, goal, video_url, prompts, success_image_url, pdf_url = null, status, createdBy }) {
+async function createLesson({ tenantId, moduleId, title, slug, summary, position, goal, video_url, prompts, success_image_url, success_image_urls, learn_setup_steps, pdf_url = null, status, createdBy }) {
   const pdfUrlValue = pdf_url ?? null;
+  const urlsValue = Array.isArray(success_image_urls) && success_image_urls.length > 0
+    ? JSON.stringify(success_image_urls)
+    : null;
+  const stepsValue = Array.isArray(learn_setup_steps) && learn_setup_steps.length > 0
+    ? JSON.stringify(learn_setup_steps)
+    : null;
   const { rows } = await query(
-    `INSERT INTO lessons (tenant_id, module_id, title, slug, summary, position, goal, video_url, prompts, success_image_url, pdf_url, status, created_by)
-     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)
+    `INSERT INTO lessons (tenant_id, module_id, title, slug, summary, position, goal, video_url, prompts, success_image_url, success_image_urls, learn_setup_steps, pdf_url, status, created_by)
+     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)
      RETURNING *`,
     [
       tenantId, 
@@ -80,6 +86,8 @@ async function createLesson({ tenantId, moduleId, title, slug, summary, position
       video_url ?? null,
       prompts ? JSON.stringify(prompts) : null,
       success_image_url ?? null,
+      urlsValue,
+      stepsValue,
       pdfUrlValue,
       status ?? "draft", 
       createdBy ?? null
@@ -162,17 +170,31 @@ async function getCourseTreeAdmin({ tenantId, courseId }) {
   let lessons = [];
   if (moduleIds.length) {
     lessons = (await query(
-      `SELECT id, module_id, title, slug, summary, position, goal, video_url, prompts, success_image_url, pdf_url, video_provider, video_id, duration_seconds, status, created_at, updated_at FROM lessons WHERE tenant_id=$1 AND module_id = ANY($2::uuid[]) ORDER BY position ASC, created_at ASC`,
+      `SELECT id, module_id, title, slug, summary, position, goal, video_url, prompts, success_image_url, success_image_urls, learn_setup_steps, pdf_url, video_provider, video_id, duration_seconds, status, created_at, updated_at FROM lessons WHERE tenant_id=$1 AND module_id = ANY($2::uuid[]) ORDER BY position ASC, created_at ASC`,
       [tenantId, moduleIds]
     )).rows;
 
-    // Parse prompts JSONB for each lesson
+    // Parse prompts and success_image_urls for each lesson
     lessons = lessons.map(lesson => {
       if (lesson.prompts && typeof lesson.prompts === 'string') {
         try {
           lesson.prompts = JSON.parse(lesson.prompts);
         } catch (e) {
           lesson.prompts = null;
+        }
+      }
+      if (lesson.success_image_urls && typeof lesson.success_image_urls === 'string') {
+        try {
+          lesson.success_image_urls = JSON.parse(lesson.success_image_urls);
+        } catch (e) {
+          lesson.success_image_urls = null;
+        }
+      }
+      if (lesson.learn_setup_steps && typeof lesson.learn_setup_steps === 'string') {
+        try {
+          lesson.learn_setup_steps = JSON.parse(lesson.learn_setup_steps);
+        } catch (e) {
+          lesson.learn_setup_steps = null;
         }
       }
       return lesson;
@@ -215,7 +237,7 @@ async function getPublishedCourseTreeBySlug({ tenantId, courseSlug }) {
   let lessons = [];
   if (moduleIds.length) {
     lessons = (await query(
-      `SELECT id, module_id, title, slug, summary, position, goal, video_url, prompts, success_image_url, pdf_url
+      `SELECT id, module_id, title, slug, summary, position, goal, video_url, prompts, success_image_url, success_image_urls, learn_setup_steps, pdf_url
        FROM lessons
        WHERE tenant_id=$1 AND module_id = ANY($2::uuid[]) AND status='published'
        ORDER BY position ASC, created_at ASC`,
@@ -223,13 +245,27 @@ async function getPublishedCourseTreeBySlug({ tenantId, courseSlug }) {
     )).rows;
   }
 
-  // Parse prompts JSONB for each lesson
+  // Parse prompts and success_image_urls for each lesson
   lessons = lessons.map(lesson => {
     if (lesson.prompts && typeof lesson.prompts === 'string') {
       try {
         lesson.prompts = JSON.parse(lesson.prompts);
       } catch (e) {
         lesson.prompts = null;
+      }
+    }
+    if (lesson.success_image_urls && typeof lesson.success_image_urls === 'string') {
+      try {
+        lesson.success_image_urls = JSON.parse(lesson.success_image_urls);
+      } catch (e) {
+        lesson.success_image_urls = null;
+      }
+    }
+    if (lesson.learn_setup_steps && typeof lesson.learn_setup_steps === 'string') {
+      try {
+        lesson.learn_setup_steps = JSON.parse(lesson.learn_setup_steps);
+      } catch (e) {
+        lesson.learn_setup_steps = null;
       }
     }
     return lesson;
@@ -261,7 +297,7 @@ async function getPublishedLessonBySlugs({ tenantId, courseSlug, moduleSlug, les
         m.id AS module_id, m.title AS module_title, m.slug AS module_slug,
         l.id AS lesson_id, l.title AS lesson_title, l.slug AS lesson_slug, l.summary,
         l.video_provider, l.video_id, l.duration_seconds,
-        l.goal, l.video_url, l.prompts, l.success_image_url, l.pdf_url
+        l.goal, l.video_url, l.prompts, l.success_image_url, l.success_image_urls, l.learn_setup_steps, l.pdf_url
      FROM courses c
      JOIN course_modules m ON m.course_id = c.id AND m.tenant_id = c.tenant_id
      JOIN lessons l ON l.module_id = m.id AND l.tenant_id = m.tenant_id
@@ -377,6 +413,16 @@ async function updateLesson({ tenantId, lessonId, patch, updatedBy }) {
   if (patch.video_url !== undefined) { fields.push(`video_url=$${i++}`); values.push(patch.video_url || null); }
   if (patch.prompts !== undefined) { fields.push(`prompts=$${i++}`); values.push(patch.prompts ? JSON.stringify(patch.prompts) : null); }
   if (patch.success_image_url !== undefined) { fields.push(`success_image_url=$${i++}`); values.push(patch.success_image_url || null); }
+  if (patch.success_image_urls !== undefined) {
+    const urls = Array.isArray(patch.success_image_urls) ? patch.success_image_urls.filter(Boolean) : [];
+    fields.push(`success_image_urls=$${i++}`);
+    values.push(JSON.stringify(urls));
+  }
+  if (patch.learn_setup_steps !== undefined) {
+    const steps = Array.isArray(patch.learn_setup_steps) ? patch.learn_setup_steps.filter(Boolean) : [];
+    fields.push(`learn_setup_steps=$${i++}`);
+    values.push(JSON.stringify(steps));
+  }
   if (patch.pdf_url !== undefined) { fields.push(`pdf_url=$${i++}`); values.push(patch.pdf_url || null); }
 
 

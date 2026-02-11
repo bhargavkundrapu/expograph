@@ -67,9 +67,17 @@ export default function StudentLesson() {
   const [copiedIndex, setCopiedIndex] = useState(null);
   const [activePromptTab, setActivePromptTab] = useState("prompts");
   const [summaryExpanded, setSummaryExpanded] = useState(false);
+  const [selectedSuccessImageIndex, setSelectedSuccessImageIndex] = useState(0);
+  const [selectedLearnStepIndex, setSelectedLearnStepIndex] = useState(0);
   const videoRef = useRef(null);
   const courseDataLoadedRef = useRef(false);
   const isManualNavigationRef = useRef(false);
+
+  // Reset success image index and learn step when lesson changes
+  useEffect(() => {
+    setSelectedSuccessImageIndex(0);
+    setSelectedLearnStepIndex(0);
+  }, [lesson?.id]);
 
   // Set default prompt tab when lesson loads
   useEffect(() => {
@@ -313,13 +321,14 @@ export default function StudentLesson() {
     setWrongAnswers([]);
   };
 
-
-  const getLessonStatus = (l) => {
-    if (l.completed) return "completed";
-    if (l.id === lesson?.id || l.slug === lessonSlug) return "current";
-    if (l.locked) return "locked";
-    return "open";
+  const handleNextLesson = async () => {
+    if (!nextLesson || nextLesson.locked) return;
+    isManualNavigationRef.current = true;
+    const targetModuleSlug = nextLesson.moduleSlug;
+    navigate(`/lms/student/courses/${courseSlug}/modules/${targetModuleSlug}/lessons/${nextLesson.slug}`, { replace: true });
+    await fetchLessonData(courseSlug, targetModuleSlug, nextLesson.slug, true);
   };
+
 
   const formatDuration = (seconds) => {
     if (!seconds) return "0 mins";
@@ -373,19 +382,51 @@ export default function StudentLesson() {
   );
   const moduleTitle = currentModule?.title || "";
 
-  const sidebarLessons = useMemo(() => {
-    return allLessons.map((l) => {
-      const status = getLessonStatus(l);
+  const nextLesson = useMemo(() => {
+    if (!allLessons.length || !lesson?.id) return null;
+    const idx = allLessons.findIndex((l) => String(l.id) === String(lesson.id));
+    if (idx < 0 || idx >= allLessons.length - 1) return null;
+    const next = allLessons[idx + 1];
+    return next?.locked ? null : next;
+  }, [allLessons, lesson?.id]);
+
+  // Prepare modules structure for sidebar - optimized for performance
+  const sidebarModules = useMemo(() => {
+    const currentLessonIdStr = lesson?.id ? String(lesson.id) : null;
+    
+    return allModules.map((module) => {
+      const lessons = (module.lessons || []).map((l) => {
+        // Fast active check: compare IDs and slugs directly
+        const active = currentLessonIdStr === String(l.id) || l.slug === lessonSlug;
+        
+        // Check if lesson has video
+        const hasVideo = !!(
+          l.video_provider ||
+          l.video_id ||
+          l.video_url ||
+          (l.video_id && l.video_id.startsWith("http"))
+        );
+        
+        return {
+          id: String(l.id),
+          slug: l.slug,
+          title: l.title || "Lesson",
+          minutes: l.duration_seconds ? Math.round(l.duration_seconds / 60) : 0,
+          completed: l.completed || false,
+          active,
+          locked: l.locked || false,
+          hasVideo,
+        };
+      });
+
       return {
-        id: String(l.id),
-        title: l.title || "Lesson",
-        minutes: l.duration_seconds ? Math.round(l.duration_seconds / 60) : 0,
-        completed: status === "completed",
-        active: status === "current",
-        locked: status === "locked",
+        id: String(module.id),
+        slug: module.slug,
+        title: module.title || "Module",
+        lessons,
       };
     });
-  }, [allLessons]);
+  }, [allModules, lesson?.id, lessonSlug]);
 
   if (loading) {
     return <StudentLessonSkeleton />;
@@ -413,26 +454,24 @@ export default function StudentLesson() {
     <div className="flex h-screen w-full overflow-hidden bg-slate-100">
       <main className="flex-1 flex flex-col min-w-0">
         {/* Navbar */}
-        <nav className="flex-shrink-0 bg-white border-b border-slate-200 shadow-sm px-6 py-7">
+        <nav className="flex-shrink-0 bg-white border-b border-slate-200 shadow-sm px-6 py-4">
           <div className="flex items-center justify-between">
-            {/* Logo */}
+            {/* Logo - 2.png for main/navbar (light background) */}
             <div className="flex items-center gap-2">
-              <div className="px-4 py-2 bg-slate-900 text-white rounded-md font-bold text-base">
-                EXPOGRAPH
-              </div>
+              <img src="/2.png" alt="ExpoGraph" className="h-13 w-64 ml-8 object-contain object-left" />
             </div>
 
             {/* Navigation Links */}
-            <div className="flex items-center gap-8">
+            <div className="flex items-center gap-15 mr-16">
               <button
                 onClick={() => navigate("/lms/student")}
-                className="text-slate-700 hover:text-slate-900 text-base font-medium transition-colors"
+                className="text-slate-700 hover:text-slate-900 text-lg font-large transition-colors "
               >
                 Home
               </button>
               <button
                 onClick={() => navigate("/lms/student/profile")}
-                className="text-slate-700 hover:text-slate-900 text-base font-medium transition-colors"
+                className="text-slate-700 hover:text-slate-900 text-lg font-large transition-colors"
               >
                 Profile
               </button>
@@ -446,20 +485,23 @@ export default function StudentLesson() {
           {sidebarVisible ? (
             <CourseContentsSidebar
               courseTitle={course?.title || "Course"}
-              moduleTitle={moduleTitle}
+              modules={sidebarModules}
               totalDuration={getTotalCourseDuration() || "0 mins"}
-              lessons={sidebarLessons}
+              currentLessonId={lesson?.id ? String(lesson.id) : undefined}
+              currentLessonSlug={lessonSlug}
               onBack={() => navigate("/lms/student/courses")}
               onClose={() => setSidebarVisible(false)}
-              onLessonSelect={async (item) => {
+              onLessonSelect={async (item, moduleSlugParam) => {
                 const full = allLessons.find((l) => String(l.id) === item.id);
                 if (full && !full.locked) {
                   // Mark as manual navigation to prevent useEffect from triggering
                   isManualNavigationRef.current = true;
+                  // Use moduleSlugParam from callback, fallback to full.moduleSlug
+                  const targetModuleSlug = moduleSlugParam || full.moduleSlug;
                   // Update URL first (for sharing)
-                  navigate(`/lms/student/courses/${courseSlug}/modules/${full.moduleSlug}/lessons/${full.slug}`, { replace: true });
+                  navigate(`/lms/student/courses/${courseSlug}/modules/${targetModuleSlug}/lessons/${full.slug}`, { replace: true });
                   // Fetch new lesson data (only content area updates)
-                  await fetchLessonData(courseSlug, full.moduleSlug, full.slug, true);
+                  await fetchLessonData(courseSlug, targetModuleSlug, full.slug, true);
                 }
               }}
             />
@@ -650,13 +692,16 @@ export default function StudentLesson() {
 
               {/* Presentation (PDF) - Modern styled section inspired by courses page */}
               {lesson?.pdf_url && (
-                <div className="px-8 pt-8 pb-8 flex justify-center">
-                  <PDFPresentationViewer pdfUrl={lesson.pdf_url} />
+                <div className="px-8 pt-8 pb-8">
+                  <h3 className="text-lg font-semibold text-slate-900 mb-3">Slides</h3>
+                  <div className="flex justify-center">
+                    <PDFPresentationViewer pdfUrl={lesson.pdf_url} />
+                  </div>
                 </div>
               )}
 
-            {/* Learn and Setup - Enhanced attractive section */}
-            {lesson?.summary?.trim() && (
+            {/* Learn and Setup - Step-based section (like Success looks like) */}
+            {((Array.isArray(lesson?.learn_setup_steps) && lesson.learn_setup_steps.length > 0) || lesson?.summary?.trim()) && (
               <div className="px-8 pb-8">
                 <div className="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 rounded-lg border-2 border-blue-200 shadow-lg overflow-hidden">
                   <button
@@ -670,8 +715,8 @@ export default function StudentLesson() {
                         <FiTarget className="w-5 h-5 text-white" />
                       </div>
                       <div className="text-left">
-                        <h3 className="text-lg font-bold text-slate-900 mb-0.5">Learn and Setup</h3>
-                        <p className="text-xs text-slate-600 font-medium">Essential information to get started</p>
+                        <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight mb-1">Learn and Setup</h2>
+                        <p className="text-base text-slate-500 font-normal">Essential information to get started</p>
                       </div>
                     </div>
                     {summaryExpanded ? (
@@ -690,11 +735,48 @@ export default function StudentLesson() {
                         className="border-t-2 border-blue-200 overflow-hidden"
                       >
                         <div className="px-6 py-5 bg-white/60">
-                          <div className="prose prose-slate max-w-none">
-                            <p className="text-slate-800 leading-relaxed whitespace-pre-wrap text-base font-medium">
-                              {lesson.summary.trim()}
-                            </p>
-                          </div>
+                          {(() => {
+                            const stepsList = (Array.isArray(lesson?.learn_setup_steps) && lesson.learn_setup_steps.length > 0)
+                              ? lesson.learn_setup_steps.filter((s) => s && String(s).trim())
+                              : (lesson?.summary?.trim()
+                                  ? (() => {
+                                      const steps = lesson.summary.trim().split(/\n-{2,}\n|\n\n-{2,}\n\n/).map((s) => s.trim()).filter(Boolean);
+                                      return steps.length > 0 ? steps : [lesson.summary.trim()];
+                                    })()
+                                  : []);
+                            if (stepsList.length === 0) return null;
+                            const currentStepIndex = Math.min(selectedLearnStepIndex, stepsList.length - 1);
+                            const currentStepContent = stepsList[currentStepIndex] || "";
+                            return (
+                              <>
+                                {stepsList.length > 1 && (
+                                  <div className="flex flex-wrap items-center gap-2 mb-4">
+                                    {stepsList.map((_, idx) => (
+                                      <button
+                                        key={idx}
+                                        type="button"
+                                        onClick={() => setSelectedLearnStepIndex(idx)}
+                                        className={`px-4 py-2 rounded-md text-sm font-semibold transition-colors ${
+                                          idx === currentStepIndex
+                                            ? "bg-blue-600 text-white"
+                                            : "bg-slate-200 text-slate-700 hover:bg-slate-300"
+                                        }`}
+                                      >
+                                        Step {idx}
+                                      </button>
+                                    ))}
+                                  </div>
+                                )}
+                                <div className="prose prose-slate max-w-prose text-left">
+                                  {currentStepContent.split(/\n\n+/).map((block, i) => (
+                                    <p key={i} className="text-slate-700 leading-7 text-base font-normal mb-4 last:mb-0 whitespace-pre-wrap">
+                                      {block.trim()}
+                                    </p>
+                                  ))}
+                                </div>
+                              </>
+                            );
+                          })()}
                         </div>
                       </motion.div>
                     )}
@@ -793,27 +875,53 @@ export default function StudentLesson() {
               )}
 
               {/* Success view - after prompts */}
-              {lesson?.success_image_url && (
-                <div className="px-8 pb-8">
-                  <div className="mt-8">
-                    <h3 className="text-sm font-semibold text-slate-800 mb-2">Success looks like</h3>
-                    <div className="overflow-hidden border border-slate-200 shadow-lg">
-                      <img
-                        src={lesson.success_image_url}
-                        alt="Success example"
-                        className="w-full h-auto"
-                        onError={(e) => {
-                          e.target.style.display = "none";
-                          e.target.nextSibling.style.display = "block";
-                        }}
-                      />
-                      <div className="hidden bg-slate-100 p-8 text-center text-slate-500">
-                        <p>Image failed to load</p>
+              {(() => {
+                const urls = Array.isArray(lesson?.success_image_urls) && lesson.success_image_urls.length > 0
+                  ? lesson.success_image_urls
+                  : (lesson?.success_image_url ? [lesson.success_image_url] : []);
+                if (urls.length === 0) return null;
+                const currentIndex = Math.min(selectedSuccessImageIndex, urls.length - 1);
+                const currentUrl = urls[currentIndex];
+                return (
+                  <div className="px-8 pb-8">
+                    <div className="mt-8">
+                      <h3 className="text-lg font-semibold text-slate-900 mb-3">Success looks like</h3>
+                      {urls.length > 1 && (
+                        <div className="flex items-center gap-2 mb-3">
+                          {urls.map((_, idx) => (
+                            <button
+                              key={idx}
+                              type="button"
+                              onClick={() => setSelectedSuccessImageIndex(idx)}
+                              className={`w-9 h-9 rounded-md text-sm font-semibold transition-colors ${
+                                idx === currentIndex
+                                  ? "bg-slate-900 text-white"
+                                  : "bg-slate-200 text-slate-700 hover:bg-slate-300"
+                              }`}
+                            >
+                              {idx + 1}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                      <div className="overflow-hidden border border-slate-200 shadow-lg">
+                        <img
+                          src={currentUrl}
+                          alt={`Success example ${currentIndex + 1}`}
+                          className="w-full h-auto"
+                          onError={(e) => {
+                            e.target.style.display = "none";
+                            if (e.target.nextSibling) e.target.nextSibling.style.display = "block";
+                          }}
+                        />
+                        <div className="hidden bg-slate-100 p-8 text-center text-slate-500">
+                          <p>Image failed to load</p>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              )}
+                );
+              })()}
 
               {/* Resources (cheatsheets, links, text) */}
               {resources?.length > 0 && (
@@ -876,34 +984,46 @@ export default function StudentLesson() {
                 </div>
               )}
 
-              {/* Mark as complete - visible at bottom */}
+              {/* Mark as complete + Next Lesson - visible at bottom */}
               <div className="px-8 pb-8">
-                <div className="mt-10 pt-8 border-t border-slate-200">
-                  {!completed ? (
+                <div className="mt-10 pt-8 border-t border-slate-200 flex flex-wrap items-center justify-between gap-4">
+                  <div>
+                    {!completed ? (
+                      <button
+                        type="button"
+                        onClick={handleMarkComplete}
+                        disabled={markCompleteLoading}
+                        className="px-6 py-2.5 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-md hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-colors"
+                        aria-label={markCompleteLoading ? "Marking as complete…" : "Mark lesson complete"}
+                      >
+                        {markCompleteLoading ? (
+                          <>
+                            <span className="w-4 h-4 border-2 border-slate-400 border-t-transparent rounded-full animate-spin" aria-hidden />
+                            <span>Marking as complete...</span>
+                          </>
+                        ) : (
+                          <>
+                            <FiCheckCircle className="w-4 h-4 text-slate-600" />
+                            <span>Mark as complete</span>
+                          </>
+                        )}
+                      </button>
+                    ) : (
+                      <div className="flex items-center gap-2 text-slate-600 text-sm" role="status" aria-label="Lesson completed">
+                        <FiCheckCircle className="w-4 h-4 flex-shrink-0 text-green-600" />
+                        <span>Completed</span>
+                      </div>
+                    )}
+                  </div>
+                  {nextLesson && (
                     <button
                       type="button"
-                      onClick={handleMarkComplete}
-                      disabled={markCompleteLoading}
-                      className="px-6 py-2.5 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-md hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-colors"
-                      aria-label={markCompleteLoading ? "Marking as complete…" : "Mark lesson complete"}
+                      onClick={handleNextLesson}
+                      className="px-6 py-2.5 text-sm font-medium text-white bg-blue-600 border border-blue-600 rounded-md hover:bg-blue-700 flex items-center gap-2 transition-colors"
                     >
-                      {markCompleteLoading ? (
-                        <>
-                          <span className="w-4 h-4 border-2 border-slate-400 border-t-transparent rounded-full animate-spin" aria-hidden />
-                          <span>Marking as complete...</span>
-                        </>
-                      ) : (
-                        <>
-                          <FiCheckCircle className="w-4 h-4 text-slate-600" />
-                          <span>Mark as complete</span>
-                        </>
-                      )}
+                      <span>Next lesson</span>
+                      <FiChevronRight className="w-4 h-4" />
                     </button>
-                  ) : (
-                    <div className="flex items-center gap-2 text-slate-600 text-sm" role="status" aria-label="Lesson completed">
-                      <FiCheckCircle className="w-4 h-4 flex-shrink-0 text-green-600" />
-                      <span>Completed</span>
-                    </div>
                   )}
                 </div>
               </div>
