@@ -46,10 +46,10 @@ export function Header() {
 			{/* Nav bar wrapper — only this gets background/blur; header stays fully transparent */}
 			<div
 				className={cn(
-					'academy-nav-bar pointer-events-auto mx-auto w-full max-w-5xl ease-out',
+					'academy-nav-bar pointer-events-auto mx-auto w-full max-w-7xl ease-out',
 					{
 						'academy-nav-default': (!scrolled && !open) || open,
-						'academy-nav-scrolled md:max-w-4xl md:mt-1px': scrolled && !open,
+						'academy-nav-scrolled md:max-w-4xl md:mt-1': scrolled && !open,
 					},
 				)}
 			>
