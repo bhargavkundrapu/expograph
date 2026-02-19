@@ -1,9 +1,9 @@
 'use client';
 import React from 'react';
-import { Button, buttonVariants } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
-import { MenuToggleIcon } from '@/components/ui/menu-toggle-icon';
-import { useScroll } from '@/components/ui/use-scroll';
+import { Button, buttonVariants } from './button';
+import { cn } from '../../lib/utils';
+import { MenuToggleIcon } from './menu-toggle-icon';
+import { useScroll } from './use-scroll';
 
 export function Header() {
 	const [open, setOpen] = React.useState(false);
@@ -46,10 +46,10 @@ export function Header() {
 			{/* Nav bar wrapper — only this gets background/blur; header stays fully transparent */}
 			<div
 				className={cn(
-					'academy-nav-bar pointer-events-auto mx-auto w-full max-w-7xl ease-out',
+					'academy-nav-bar pointer-events-auto mx-auto w-full max-w-5xl ease-out',
 					{
 						'academy-nav-default': (!scrolled && !open) || open,
-						'academy-nav-scrolled md:max-w-6xl md:mt-4': scrolled && !open,
+						'academy-nav-scrolled md:max-w-4xl md:mt-1px': scrolled && !open,
 					},
 				)}
 			>

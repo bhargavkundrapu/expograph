@@ -1,2 +1,2 @@
 'use client';
-export { Header, WordmarkIcon } from '@/components/ui/header-2';
+export { Header, WordmarkIcon } from './ui/header-2';
