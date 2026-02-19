@@ -1,0 +1,13 @@
+{
+  "name": "resume-pdf",
+  "version": "1.0.0",
+  "description": "LaTeX-to-PDF microservice for ExpoGraph Resume Builder",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test/latex.test.js"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}

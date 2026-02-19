@@ -1,6 +1,9 @@
 
 
 const { listPermissionsForUser } = require("../modules/rbac/rbac.repo");
+const progressRepo = require("../modules/progress/progress.repo");
+const clientLabEligibilityRepo = require("../modules/clientLab/clientLabEligibility.repo");
+const clientLabEligibilityService = require("../modules/clientLab/clientLabEligibility.service");
 
 // apps/api/src/server/createApp.js
 const { router: leadsPublic } = require("../modules/leads/leads.routes.public");
@@ -19,8 +22,10 @@ const { router: featureFlagsAdmin } = require("../modules/featureFlags/featureFl
 const { router: featureFlagsPublic } = require("../modules/featureFlags/featureFlags.routes.public");
 
 const { router: referralsRoutes } = require("../modules/referrals/referrals.routes");
+const { router: resumeRouter } = require("../modules/resume/resume.routes");
 
 const { router: adminClientLabRouter } = require("../modules/clientLab/clientLab.routes.admin");
+const { router: clientLabRealWorldRouter } = require("../modules/clientLab/clientLabRealWorld.routes");
 const { router: lmsClientLabRouter } = require("../modules/clientLab/clientLab.routes.lms");
 const { router: mentorClientLabRouter } = require("../modules/clientLab/clientLab.routes.mentor");
 
@@ -134,6 +139,7 @@ app.use(
   app.use("/api/v1/lms/internships", lmsInternRouter);
   app.use("/api/v1/mentor/internships", mentorInternRouter);
   app.use("/api/v1/admin/client-lab", adminClientLabRouter);
+  app.use("/api/v1/client-lab", clientLabRealWorldRouter);
   app.use("/api/v1/lms/client-lab", lmsClientLabRouter);
   app.use("/api/v1/mentor/client-lab", mentorClientLabRouter);
   app.use("/api/v1/public", leadsPublic);
@@ -150,9 +156,12 @@ app.use(
   app.use("/api/v1/admin/dashboard", dashboardRouter);
 
   app.use("/api/v1/referrals", referralsRoutes);
- 
- 
+  app.use("/api/v1/resume", resumeRouter);
 
+  // Presentations (stub until full API exists) – returns empty list so frontend doesn't 404
+  app.get("/api/v1/presentations", requireAuth, (req, res) => {
+    res.json({ ok: true, data: [] });
+  });
 
 // last line:
 
@@ -170,6 +179,15 @@ app.get("/api/v1/me", requireAuth, async (req, res, next) => {
 
     const permissions = await listPermissionsForUser({ tenantId, userId });
 
+    let overallProgressPercent = 0;
+    let eligibleClientLab = false;
+    if (req.auth?.role === "Student") {
+      overallProgressPercent = await progressRepo.getOverallProgressPercent({ tenantId, userId });
+      await clientLabEligibilityService.recomputeEligibility({ tenantId, userId });
+      const eligibility = await clientLabEligibilityRepo.getEligibility({ userId });
+      eligibleClientLab = !!eligibility.eligible_client_lab;
+    }
+
     res.json({
       ok: true,
       data: {
@@ -178,6 +196,8 @@ app.get("/api/v1/me", requireAuth, async (req, res, next) => {
         membershipId: req.auth?.membershipId,
         role: req.auth?.role,
         permissions,
+        overall_progress_percent: overallProgressPercent,
+        eligible_client_lab: eligibleClientLab,
       },
     });
   } catch (e) {

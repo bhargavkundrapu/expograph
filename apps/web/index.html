@@ -27,6 +27,8 @@
           }
           if (s.indexOf('updating from') !== -1) return true;
           if (s.indexOf('@splinetool') !== -1 && (s.indexOf('H0') !== -1 || s.indexOf('BV') !== -1 || s.indexOf('start') !== -1 || s.indexOf('load') !== -1)) return true;
+          if (s.indexOf('Download the React DevTools') !== -1 || s.indexOf('React DevTools') !== -1) return true;
+          if (s.indexOf('Multiple instances of Three.js') !== -1) return true;
           if (args.length === 1) {
             var one = String(args[0]).trim();
             if (one === 'H0' || one === 'BV' || one === 'start' || one === 'load' || one === 't') return true;

@@ -300,9 +300,11 @@ export default function MentorLayout() {
             <div className="w-10" />
           </div>
 
-          {/* Main Content Area */}
-          <main className="flex-1 overflow-y-auto premium-scrollbar">
-            <Outlet />
+          {/* Main Content Area - inner wrapper clips content to top-left radius */}
+          <main className="flex-1 overflow-y-auto overflow-x-hidden premium-scrollbar lg:rounded-tl-lg min-h-0">
+            <div className="min-h-full lg:rounded-tl-lg overflow-hidden bg-transparent">
+              <Outlet />
+            </div>
           </main>
         </div>
       </div>

@@ -34,5 +34,15 @@ const progressLimiter = rateLimit({
     req.auth?.userId ? `u:${req.auth.userId}` : ipKeyGenerator(req.ip, 64),
 });
 
+// Resume PDF: 5 per 10 min per user, burst 2 (strict)
+const resumePdfLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000,
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { ok: false, error: { message: "Too many resume downloads. Try again in 10 minutes." } },
+  keyGenerator: (req) =>
+    req.auth?.userId ? `resume:u:${req.auth.userId}` : `resume:ip:${ipKeyGenerator(req.ip, 64)}`,
+});
 
-module.exports = { authLimiter, mediaTokenLimiter, progressLimiter };
+module.exports = { authLimiter, mediaTokenLimiter, progressLimiter, resumePdfLimiter };

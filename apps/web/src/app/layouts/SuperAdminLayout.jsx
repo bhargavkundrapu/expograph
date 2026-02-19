@@ -56,7 +56,7 @@ export default function SuperAdminLayout() {
     { path: "/lms/superadmin/certificates", label: "Certificates", icon: FiAward },
     { path: "/lms/superadmin/playground", label: "Playground", icon: FiCode },
     { path: "/lms/superadmin/presentations", label: "Presentations", icon: FiFileText },
-    { path: "/lms/superadmin/client-lab", label: "Real World Lab", icon: FiBriefcase },
+    { path: "/lms/superadmin/client-lab/real-world", label: "Real World Lab", icon: FiBriefcase },
     { path: "/lms/superadmin/internships", label: "Internships", icon: FiLayers },
   ];
 
@@ -303,9 +303,11 @@ export default function SuperAdminLayout() {
             <div className="w-10" />
           </div>
 
-          {/* Main Content Area */}
-          <main className="flex-1 overflow-y-auto premium-scrollbar">
-            <Outlet />
+          {/* Main Content Area - inner wrapper clips content to top-left radius */}
+          <main className="flex-1 overflow-y-auto overflow-x-hidden premium-scrollbar lg:rounded-tl-lg min-h-0">
+            <div className="min-h-full lg:rounded-tl-lg overflow-hidden bg-transparent">
+              <Outlet />
+            </div>
           </main>
         </div>
       </div>

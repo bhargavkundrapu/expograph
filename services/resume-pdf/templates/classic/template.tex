@@ -1,0 +1,47 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{tabularx}
+\geometry{margin=1.15in}
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\renewcommand{\baselinestretch}{1.05}
+
+\begin{document}
+\begin{center}
+{\fontsize{18}{22}\selectfont \textbf{{{FULL_NAME}}}}\\[0.6em]
+\fontsize{10}{12}\selectfont
+{{{EMAIL}}} \qquad $\bullet$ \qquad {{{PHONE}}}\\[0.2em]
+\href{{{LINKEDIN_URL}}}{LinkedIn} \qquad $\bullet$ \qquad \href{{{GITHUB_URL}}}{GitHub} \qquad $\bullet$ \qquad \href{{{PORTFOLIO_URL}}}{Portfolio}
+\end{center}
+\vspace{1em}
+
+\textbf{\large Summary}\\[0.25em]
+{{{SUMMARY}}}
+
+\vspace{1em}
+\textbf{\large Skills}\\[0.25em]
+{{{SKILLS_SECTION}}}
+
+\vspace{1em}
+\textbf{\large Education}\\[0.25em]
+\begin{tabularx}{\textwidth}{@{}lXr@{}}
+{{{EDUCATION_BLOCK}}}
+\end{tabularx}
+
+\vspace{1em}
+\textbf{\large Experience}\\[0.25em]
+{{{EXPERIENCE_BLOCK}}}
+
+\vspace{1em}
+\textbf{\large Projects}\\[0.25em]
+{{{PROJECTS_BLOCK}}}
+
+\vspace{1em}
+\textbf{\large Certifications}\\[0.25em]
+{{{CERTIFICATIONS_BLOCK}}}
+
+\end{document}

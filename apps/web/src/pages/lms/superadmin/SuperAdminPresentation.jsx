@@ -42,18 +42,14 @@ export default function SuperAdminPresentation() {
   const fetchPresentations = async () => {
     try {
       setLoading(true);
-      // TODO: Replace with actual API endpoint
-      const response = await apiFetch("/api/v1/presentations", {
-        method: "GET",
-      });
-      // Include demo presentation
+      const response = await apiFetch("/api/v1/presentations", { token });
+      const data = response?.data ?? response ?? [];
+      const list = Array.isArray(data) ? data : [];
       const demoPresentation = { ...vibeCodingPresentation };
-      setPresentations(response?.length > 0 ? [...response, demoPresentation] : [demoPresentation]);
+      setPresentations(list.length > 0 ? [...list, demoPresentation] : [demoPresentation]);
     } catch (error) {
-      console.error("Failed to fetch presentations:", error);
-      // Include demo presentation even on error
-      const demoPresentation = { ...vibeCodingPresentation };
-      setPresentations([demoPresentation]);
+      // Use demo presentation when API is unavailable or returns error
+      setPresentations([{ ...vibeCodingPresentation }]);
     } finally {
       setLoading(false);
     }

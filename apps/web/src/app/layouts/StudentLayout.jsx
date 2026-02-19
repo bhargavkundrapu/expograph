@@ -7,6 +7,7 @@ import {
   FiHome,
   FiBookOpen,
   FiFileText,
+  FiBriefcase,
   FiUser,
   FiSearch,
   FiChevronLeft,
@@ -79,11 +80,13 @@ export default function StudentLayout() {
 
   const showSearchDropdown = searchQuery.trim().length >= 2 && (searchResults.length > 0 || searchLoading);
 
-  // Student-specific menu items - only Home, Courses, Bonus Courses
+  // Student-specific menu items - Home, Courses, Bonus Courses, Client Lab, Resume Builder
   const menuItems = [
     { path: "/lms/student", label: "Home", icon: FiHome },
     { path: "/lms/student/courses", label: "Courses", icon: FiBookOpen },
     { path: "/lms/student/bonus-courses", label: "Bonus Courses", icon: FiFileText },
+    { path: "/lms/student/client-lab", label: "Client Lab", icon: FiBriefcase },
+    { path: "/lms/student/resume-builder", label: "Resume Builder", icon: FiAward },
   ];
 
   const isActive = (path) => {
@@ -344,14 +347,14 @@ export default function StudentLayout() {
         </motion.aside>
         )}
 
-          {/* Main Content */}
+          {/* Main Content - main has same top-left radius so scroll content clips correctly */}
           <div className="flex-1 flex flex-col overflow-hidden lg:rounded-tl-lg bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 shadow-xl relative z-10">
-            <main className="flex-1 overflow-y-auto pb-20 md:pb-0">
-            <div className="min-h-full">
-              <Outlet />
-            </div>
-          </main>
-        </div>
+            <main className="flex-1 overflow-y-auto overflow-x-hidden pb-20 md:pb-0 lg:rounded-tl-lg min-h-0">
+              <div className="min-h-full lg:rounded-tl-lg overflow-hidden bg-transparent">
+                <Outlet />
+              </div>
+            </main>
+          </div>
       </div>
 
       {/* Bottom Navigation Bar - Visible only on small devices */}

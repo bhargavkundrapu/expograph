@@ -1,174 +1,252 @@
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { useState, useEffect, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../../app/providers/AuthProvider";
 import { apiFetch } from "../../../services/api";
 import { GenericPageSkeleton } from "../../../Components/common/SkeletonLoaders";
 import {
   FiFolder,
-  FiCode,
   FiCheckCircle,
   FiClock,
   FiArrowLeft,
-  FiPlus,
+  FiLock,
+  FiSend,
+  FiMessageSquare,
 } from "react-icons/fi";
 
 export default function StudentClientLab() {
   const navigate = useNavigate();
-  const { projectId } = useParams();
+  const { projectId, taskId } = useParams();
   const { token } = useAuth();
   const [loading, setLoading] = useState(true);
+  const [me, setMe] = useState(null);
   const [projects, setProjects] = useState([]);
-  const [selectedProject, setSelectedProject] = useState(null);
+  const [tasks, setTasks] = useState([]);
+  const [projectDetail, setProjectDetail] = useState(null);
+  const [taskDetail, setTaskDetail] = useState(null);
+  const [submitForm, setSubmitForm] = useState({ pr_link: "", notes: "" });
+  const [saving, setSaving] = useState(false);
+
+  const fetchMe = useCallback(async () => {
+    if (!token) return;
+    try {
+      const res = await apiFetch("/api/v1/me", { token });
+      if (res?.ok) setMe(res.data);
+    } catch (e) {
+      console.error(e);
+    }
+  }, [token]);
+
+  const fetchAssignedProjects = useCallback(async () => {
+    if (!token) return;
+    try {
+      const res = await apiFetch("/api/v1/client-lab/me/assigned-projects", { token });
+      if (res?.ok) setProjects(res.data || []);
+    } catch (e) {
+      setProjects([]);
+    }
+  }, [token]);
+
+  const fetchAssignedTasks = useCallback(async () => {
+    if (!token) return;
+    try {
+      const res = await apiFetch("/api/v1/client-lab/me/assigned-tasks", { token });
+      if (res?.ok) setTasks(res.data || []);
+    } catch (e) {
+      setTasks([]);
+    }
+  }, [token]);
+
+  const fetchProjectDetail = useCallback(
+    async (id) => {
+      if (!token || !id) return;
+      try {
+        const res = await apiFetch(`/api/v1/client-lab/me/projects/${id}`, { token });
+        if (res?.ok) setProjectDetail(res.data);
+      } catch (e) {
+        setProjectDetail(null);
+      }
+    },
+    [token]
+  );
+
+  const fetchTaskDetail = useCallback(
+    async (id) => {
+      if (!token || !id) return;
+      try {
+        const res = await apiFetch(`/api/v1/client-lab/me/tasks/${id}`, { token });
+        if (res?.ok) setTaskDetail(res.data);
+      } catch (e) {
+        setTaskDetail(null);
+      }
+    },
+    [token]
+  );
 
   useEffect(() => {
     if (!token) return;
-    fetchProjects();
-  }, [token]);
+    setLoading(true);
+    fetchMe().finally(() => setLoading(false));
+  }, [token, fetchMe]);
+
+  /* Always fetch assigned projects/tasks when we have me (for students).
+   * API returns [] when not eligible, so we don't rely on me.eligible_client_lab for the request.
+   * This ensures projects show as soon as the user is eligible and has assignments. */
+  useEffect(() => {
+    if (!token || !me) return;
+    fetchAssignedProjects();
+    fetchAssignedTasks();
+  }, [token, me, fetchAssignedProjects, fetchAssignedTasks]);
 
   useEffect(() => {
-    if (projectId && projects.length > 0) {
-      const project = projects.find((p) => p.id === projectId);
-      if (project) {
-        setSelectedProject(project);
-      }
-    }
-  }, [projectId, projects]);
+    if (projectId) fetchProjectDetail(projectId);
+    else setProjectDetail(null);
+  }, [projectId, fetchProjectDetail]);
 
-  const fetchProjects = async () => {
+  useEffect(() => {
+    if (taskId) fetchTaskDetail(taskId);
+    else setTaskDetail(null);
+  }, [taskId, fetchTaskDetail]);
+
+  const handleSubmitTask = async () => {
+    if (!taskId || !token) return;
+    setSaving(true);
     try {
-      setLoading(true);
-      // Mock data - replace with actual API call
-      const mockProjects = [
-        {
-          id: "1",
-          title: "E-commerce Website",
-          description: "Full-stack e-commerce platform with React and Node.js",
-          status: "in_progress",
-          created_at: new Date(Date.now() - 2592000000).toISOString(),
-          updated_at: new Date(Date.now() - 86400000).toISOString(),
-          tasks: [
-            { id: "1", title: "Design homepage", status: "completed" },
-            { id: "2", title: "Implement cart functionality", status: "in_progress" },
-            { id: "3", title: "Add payment integration", status: "pending" },
-          ],
-        },
-        {
-          id: "2",
-          title: "Task Management App",
-          description: "Collaborative task management application",
-          status: "completed",
-          created_at: new Date(Date.now() - 5184000000).toISOString(),
-          updated_at: new Date(Date.now() - 1728000000).toISOString(),
-          tasks: [
-            { id: "1", title: "User authentication", status: "completed" },
-            { id: "2", title: "Task CRUD operations", status: "completed" },
-            { id: "3", title: "Real-time updates", status: "completed" },
-          ],
-        },
-      ];
-      setProjects(mockProjects);
-    } catch (error) {
-      console.error("Failed to fetch projects:", error);
+      const res = await apiFetch(`/api/v1/client-lab/tasks/${taskId}/submit`, {
+        method: "POST",
+        token,
+        body: { pr_link: submitForm.pr_link || undefined, notes: submitForm.notes || undefined },
+      });
+      if (res?.ok) {
+        setSubmitForm({ pr_link: "", notes: "" });
+        await fetchTaskDetail(taskId);
+        await fetchAssignedTasks();
+      }
+    } catch (e) {
+      alert(e?.message || "Failed to submit");
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   };
+
+  const progressPercent = me?.overall_progress_percent ?? 0;
+  const eligible = !!me?.eligible_client_lab;
+  const hasAssignments = projects.length > 0 || tasks.length > 0;
 
   if (loading) {
     return <GenericPageSkeleton />;
   }
 
-  if (selectedProject) {
-    const completedTasks = selectedProject.tasks.filter((t) => t.status === "completed").length;
-    const totalTasks = selectedProject.tasks.length;
-    const progress = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
-
+  // Not eligible and no assignments: full locked screen
+  if (!eligible && !hasAssignments) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
-        <div className="max-w-4xl mx-auto">
-          <button
-            onClick={() => {
-              setSelectedProject(null);
-              navigate("/lms/student/projects");
-            }}
-            className="mb-6 flex items-center gap-2 text-slate-600 hover:text-slate-900"
-          >
-            <FiArrowLeft className="w-5 h-5" />
-            Back to Projects
-          </button>
-
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8 lg:rounded-tl-lg overflow-hidden">
+        <div className="max-w-xl mx-auto text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white/80 backdrop-blur-sm rounded-md p-8 border-2 border-cyan-200/50 shadow-xl"
+            className="bg-white/90 backdrop-blur rounded-2xl border-2 border-slate-200 shadow-xl p-8"
           >
-            <div className="flex items-start justify-between mb-6">
-              <div>
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent mb-2">
-                  {selectedProject.title}
-                </h1>
-                <p className="text-slate-600">{selectedProject.description}</p>
-              </div>
-              <div
-                className={`px-4 py-2 rounded-md border-2 ${
-                  selectedProject.status === "completed"
-                    ? "bg-emerald-50 border-emerald-200 text-emerald-600"
-                    : selectedProject.status === "in_progress"
-                    ? "bg-amber-50 border-amber-200 text-amber-600"
-                    : "bg-slate-50 border-slate-200 text-slate-600"
-                }`}
-              >
-                <span className="font-semibold capitalize">{selectedProject.status.replace("_", " ")}</span>
-              </div>
+            <div className="w-20 h-20 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-6">
+              <FiLock className="w-10 h-10 text-slate-500" />
             </div>
-
-            <div className="mb-6">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium text-slate-700">Progress</span>
-                <span className="text-sm font-bold text-cyan-600">{progress}%</span>
+            <h1 className="text-2xl font-bold text-slate-900 mb-2">Client Lab is locked</h1>
+            <p className="text-slate-600 mb-6">
+              Complete at least 75% of your overall progress and finish all required courses to unlock Real-World Client Lab.
+            </p>
+            <div className="mb-4">
+              <div className="flex justify-between text-sm text-slate-600 mb-1">
+                <span>Your progress</span>
+                <span className="font-semibold">{progressPercent}%</span>
               </div>
               <div className="w-full bg-slate-200 rounded-full h-3">
                 <div
-                  className="bg-gradient-to-r from-cyan-500 to-blue-500 h-3 rounded-full transition-all"
-                  style={{ width: `${progress}%` }}
+                  className="bg-indigo-500 h-3 rounded-full transition-all"
+                  style={{ width: `${Math.min(progressPercent, 100)}%` }}
                 />
               </div>
-              <p className="text-xs text-slate-600 mt-2">
-                {completedTasks} of {totalTasks} tasks completed
-              </p>
             </div>
+            <p className="text-sm text-slate-500">
+              Keep learning to unlock client projects and real-world tasks.
+            </p>
+          </motion.div>
+        </div>
+      </div>
+    );
+  }
 
-            <div className="space-y-4">
-              <h3 className="text-lg font-bold text-slate-800">Tasks</h3>
-              {selectedProject.tasks.map((task) => (
-                <div
-                  key={task.id}
-                  className="p-4 bg-gradient-to-r from-slate-50 to-cyan-50 rounded-md border-2 border-slate-200 flex items-center justify-between"
-                >
-                  <div className="flex items-center gap-3">
-                    {task.status === "completed" ? (
-                      <FiCheckCircle className="w-5 h-5 text-emerald-600" />
-                    ) : task.status === "in_progress" ? (
-                      <FiClock className="w-5 h-5 text-amber-600" />
-                    ) : (
-                      <div className="w-5 h-5 rounded-full border-2 border-slate-300" />
-                    )}
-                    <span className="font-medium text-slate-800">{task.title}</span>
-                  </div>
-                  <span
-                    className={`px-3 py-1 rounded-lg text-xs font-semibold ${
-                      task.status === "completed"
-                        ? "bg-emerald-100 text-emerald-700"
-                        : task.status === "in_progress"
-                        ? "bg-amber-100 text-amber-700"
-                        : "bg-slate-100 text-slate-700"
-                    }`}
+  // Task detail: submit form + review status (only if eligible; else show list with banner)
+  if (taskId && taskDetail) {
+    const latest = taskDetail.latest_submission;
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8 lg:rounded-tl-lg overflow-hidden">
+        <div className="max-w-2xl mx-auto">
+          {!eligible && (
+            <div className="mb-4 p-4 bg-amber-50 border border-amber-200 rounded-2xl text-amber-800 text-sm">
+              Complete 75% overall progress and all required courses to submit work. You can view your assigned tasks below.
+            </div>
+          )}
+          <button
+            onClick={() => { navigate(projectId ? `/lms/student/client-lab/projects/${projectId}` : "/lms/student/client-lab"); }}
+            className="mb-6 flex items-center gap-2 text-slate-600 hover:text-slate-900 rounded-lg px-2 py-1 hover:bg-slate-100 transition-colors"
+          >
+            <FiArrowLeft className="w-5 h-5" /> Back
+          </button>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6"
+          >
+            <h1 className="text-xl font-bold text-slate-900 mb-2">{taskDetail.title}</h1>
+            {taskDetail.description && <p className="text-slate-600 mb-4">{taskDetail.description}</p>}
+            <div className="flex items-center gap-2 mb-4">
+              <span className={`text-sm px-2 py-1 rounded-md ${taskDetail.status === "done" ? "bg-emerald-100 text-emerald-700" : "bg-slate-100 text-slate-600"}`}>
+                {taskDetail.status}
+              </span>
+              {latest && (
+                <span className={`text-sm px-2 py-1 rounded-md ${
+                  latest.status === "approved" ? "bg-emerald-100 text-emerald-700" :
+                  latest.status === "changes_requested" ? "bg-amber-100 text-amber-700" : "bg-slate-100 text-slate-600"
+                }`}>
+                  Submission: {latest.status}
+                </span>
+              )}
+            </div>
+            {latest?.feedback && (
+              <div className="mb-4 p-3 bg-slate-50 rounded-lg flex items-start gap-2">
+                <FiMessageSquare className="w-4 h-4 text-slate-500 mt-0.5 shrink-0" />
+                <p className="text-sm text-slate-700">{latest.feedback}</p>
+              </div>
+            )}
+            <div className="border-t border-slate-100 pt-4">
+              <h3 className="font-medium text-slate-900 mb-2">Submit work</h3>
+              {!eligible ? (
+                <p className="text-sm text-slate-500 py-2">Complete 75% progress and all courses to unlock submissions.</p>
+              ) : (
+                <div className="space-y-3">
+                  <input
+                    type="url"
+                    placeholder="PR or work link (optional)"
+                    value={submitForm.pr_link}
+                    onChange={(e) => setSubmitForm((f) => ({ ...f, pr_link: e.target.value }))}
+                    className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm"
+                  />
+                  <textarea
+                    placeholder="Notes (optional)"
+                    value={submitForm.notes}
+                    onChange={(e) => setSubmitForm((f) => ({ ...f, notes: e.target.value }))}
+                    className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm"
+                    rows={3}
+                  />
+                  <button
+                    onClick={handleSubmitTask}
+                    disabled={saving}
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50"
                   >
-                    {task.status.replace("_", " ")}
-                  </span>
+                    <FiSend className="w-4 h-4" /> {saving ? "Submitting…" : "Submit"}
+                  </button>
                 </div>
-              ))}
+              )}
             </div>
           </motion.div>
         </div>
@@ -176,102 +254,148 @@ export default function StudentClientLab() {
     );
   }
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex items-center justify-between mb-8">
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-600 bg-clip-text text-transparent mb-3">
-              My Projects
-            </h1>
-            <p className="text-slate-600 text-lg">Manage your code snippets and projects</p>
-          </motion.div>
+  // Project detail: list tasks for this project
+  if (projectId && projectDetail) {
+    const projectTasks = projectDetail.tasks || [];
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8 lg:rounded-tl-lg overflow-hidden">
+        <div className="max-w-2xl mx-auto">
+          {!eligible && (
+            <div className="mb-4 p-4 bg-amber-50 border border-amber-200 rounded-2xl text-amber-800 text-sm">
+              Complete 75% progress and all courses to submit work.
+            </div>
+          )}
           <button
-            onClick={() => navigate("/lms/student/projects/create")}
-            className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-semibold rounded-md hover:from-cyan-600 hover:to-blue-600 transition-all flex items-center gap-2"
+            onClick={() => navigate("/lms/student/client-lab")}
+            className="mb-6 flex items-center gap-2 text-slate-600 hover:text-slate-900 rounded-lg px-2 py-1 hover:bg-slate-100"
           >
-            <FiPlus className="w-5 h-5" />
-            New Project
+            <FiArrowLeft className="w-5 h-5" /> Back to Client Lab
           </button>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 mb-6"
+          >
+            <h1 className="text-xl font-bold text-slate-900 mb-2">{projectDetail.title}</h1>
+            {projectDetail.scope && <p className="text-slate-600 text-sm">{projectDetail.scope}</p>}
+          </motion.div>
+          <div className="space-y-2">
+            {projectTasks.map((t) => (
+              <div
+                key={t.id}
+                onClick={() => navigate(`/lms/student/client-lab/projects/${projectId}/tasks/${t.id}`)}
+                className="bg-white rounded-xl border border-slate-200 p-4 flex items-center justify-between hover:border-indigo-300 cursor-pointer transition-colors shadow-sm"
+              >
+                <span className="font-medium text-slate-900">{t.title}</span>
+                <div className="flex items-center gap-2">
+                  <span className={`text-xs px-2 py-0.5 rounded-md ${t.status === "done" ? "bg-emerald-100 text-emerald-700" : "bg-slate-100 text-slate-600"}`}>
+                    {t.status}
+                  </span>
+                  {t.submission_status && (
+                    <span className="text-xs text-slate-500">{t.submission_status}</span>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+          {projectTasks.length === 0 && (
+            <div className="bg-white rounded-2xl border border-slate-200 p-8 text-center text-slate-500">
+              No tasks assigned in this project.
+            </div>
+          )}
         </div>
+      </div>
+    );
+  }
 
-        {projects.length === 0 ? (
+  // Default: list assigned projects and tasks (LMS portal style)
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8 lg:rounded-tl-lg overflow-hidden">
+      <div className="max-w-4xl mx-auto">
+        {!eligible && hasAssignments && (
+          <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-2xl text-amber-800 text-sm flex items-start gap-2">
+            <FiLock className="w-4 h-4 shrink-0 mt-0.5" />
+            <span>Complete 75% overall progress and all required courses to submit work. Your assigned items are shown below.</span>
+          </div>
+        )}
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-8"
+        >
+          <h1 className="text-3xl font-bold text-slate-900 mb-2">Client Lab</h1>
+          <p className="text-slate-600">Your assigned real-world projects and tasks</p>
+        </motion.div>
+
+        {projects.length === 0 && tasks.length === 0 ? (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="bg-white/80 backdrop-blur-sm rounded-md p-12 border-2 border-cyan-200/50 text-center"
+            className="bg-white rounded-2xl border border-slate-200 shadow-sm p-12 text-center"
           >
-            <FiFolder className="w-20 h-20 text-slate-300 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-slate-700 mb-2">No projects yet</h3>
-            <p className="text-slate-500 mb-6">Start a new project to showcase your work</p>
-            <button
-              onClick={() => navigate("/lms/student/projects/create")}
-              className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-semibold rounded-md hover:from-cyan-600 hover:to-blue-600 transition-all"
-            >
-              Create Project
-            </button>
+            <FiFolder className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-slate-700 mb-2">No assignments yet</h3>
+            <p className="text-slate-500 max-w-md mx-auto">
+              Projects and tasks are assigned by your admin from the Real-World Client Lab. Once you have assignments, they will appear here.
+            </p>
           </motion.div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {projects.map((project) => {
-              const completedTasks = project.tasks.filter((t) => t.status === "completed").length;
-              const totalTasks = project.tasks.length;
-              const progress = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
-
-              return (
-                <motion.div
-                  key={project.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  onClick={() => {
-                    setSelectedProject(project);
-                    navigate(`/lms/student/projects/${project.id}`);
-                  }}
-                  className="bg-white/80 backdrop-blur-sm rounded-md p-6 border-2 border-cyan-200/50 hover:border-cyan-400 hover:shadow-xl transition-all cursor-pointer"
-                >
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="p-3 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-md text-white">
-                      <FiFolder className="w-6 h-6" />
-                    </div>
+          <div className="space-y-8">
+            {projects.length > 0 && (
+              <section>
+                <h2 className="text-lg font-semibold text-slate-900 mb-3">Projects</h2>
+                <div className="grid gap-3">
+                  {projects.map((p) => (
                     <div
-                      className={`px-3 py-1 rounded-lg text-xs font-semibold ${
-                        project.status === "completed"
-                          ? "bg-emerald-100 text-emerald-700"
-                          : project.status === "in_progress"
-                          ? "bg-amber-100 text-amber-700"
-                          : "bg-slate-100 text-slate-700"
-                      }`}
+                      key={p.id}
+                      onClick={() => navigate(`/lms/student/client-lab/projects/${p.id}`)}
+                      className="bg-white rounded-2xl border border-slate-200 p-4 flex items-center justify-between hover:border-indigo-300 cursor-pointer transition-colors shadow-sm"
                     >
-                      {project.status.replace("_", " ")}
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-lg bg-indigo-100 flex items-center justify-center">
+                          <FiFolder className="w-5 h-5 text-indigo-600" />
+                        </div>
+                        <div>
+                          <div className="font-medium text-slate-900">{p.title}</div>
+                          <div className="text-sm text-slate-500">{p.status}</div>
+                        </div>
+                      </div>
+                      <FiArrowLeft className="w-5 h-5 rotate-180 text-slate-400" />
                     </div>
-                  </div>
-
-                  <h3 className="font-bold text-slate-800 mb-2">{project.title}</h3>
-                  <p className="text-sm text-slate-600 mb-4 line-clamp-2">{project.description}</p>
-
-                  <div className="mb-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-xs text-slate-600">Progress</span>
-                      <span className="text-xs font-bold text-cyan-600">{progress}%</span>
+                  ))}
+                </div>
+              </section>
+            )}
+            {tasks.length > 0 && (
+              <section>
+                <h2 className="text-lg font-semibold text-slate-900 mb-3">Assigned tasks</h2>
+                <div className="grid gap-3">
+                  {tasks.map((t) => (
+                    <div
+                      key={t.id}
+                      onClick={() => navigate(`/lms/student/client-lab/projects/${t.project_id}/tasks/${t.id}`)}
+                      className="bg-white rounded-2xl border border-slate-200 p-4 flex items-center justify-between hover:border-indigo-300 cursor-pointer transition-colors shadow-sm"
+                    >
+                      <div className="flex items-center gap-3">
+                        {t.status === "done" ? (
+                          <FiCheckCircle className="w-5 h-5 text-emerald-600 shrink-0" />
+                        ) : (
+                          <FiClock className="w-5 h-5 text-slate-400 shrink-0" />
+                        )}
+                        <div>
+                          <div className="font-medium text-slate-900">{t.title}</div>
+                          <div className="text-sm text-slate-500">{t.project_title} · {t.status}</div>
+                          {t.submission_status && (
+                            <div className="text-xs text-slate-500 mt-1">Submission: {t.submission_status}</div>
+                          )}
+                        </div>
+                      </div>
+                      <FiArrowLeft className="w-5 h-5 rotate-180 text-slate-400" />
                     </div>
-                    <div className="w-full bg-slate-200 rounded-full h-2">
-                      <div
-                        className="bg-gradient-to-r from-cyan-500 to-blue-500 h-2 rounded-full transition-all"
-                        style={{ width: `${progress}%` }}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-between text-xs text-slate-500">
-                    <span>{completedTasks}/{totalTasks} tasks</span>
-                    <span>{new Date(project.updated_at).toLocaleDateString()}</span>
-                  </div>
-                </motion.div>
-              );
-            })}
+                  ))}
+                </div>
+              </section>
+            )}
           </div>
         )}
       </div>

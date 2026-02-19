@@ -295,8 +295,25 @@ export default function SuperAdminClientLab() {
             Client Lab Management
           </motion.h1>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* All Projects Card */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Real-World Client Lab (SuperAdmin-only) */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0 }}
+              onClick={() => navigate("/lms/superadmin/client-lab/real-world")}
+              className="bg-white rounded-md p-8 border-2 border-indigo-200 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
+            >
+              <div className="flex items-center justify-between mb-6">
+                <div className="w-16 h-16 rounded-md bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white group-hover:scale-110 transition-transform">
+                  <FiBriefcase className="w-8 h-8" />
+                </div>
+              </div>
+              <h3 className="text-xl font-bold text-slate-900 mb-2">Real-World Client Lab</h3>
+              <p className="text-slate-600 text-sm">Manage projects, assign tasks to eligible students, review submissions</p>
+            </motion.div>
+
+            {/* All Projects Card (legacy) */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}

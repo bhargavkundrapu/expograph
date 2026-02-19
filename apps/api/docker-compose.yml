@@ -1,6 +1,7 @@
-# Local PostgreSQL for ExpoGraph API
+# Local PostgreSQL + Resume-PDF for ExpoGraph API
 # Usage: docker-compose up -d
 # Then: set DATABASE_URL=postgresql://postgres:postgres@localhost:5432/expograph in apps/api/.env
+# For resume builder: RESUME_PDF_SERVICE_URL=http://localhost:8080 (when using compose)
 
 services:
   postgres:
@@ -19,6 +20,22 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+
+  resume-pdf:
+    build:
+      context: ../../services/resume-pdf
+      dockerfile: Dockerfile
+    container_name: expograph-resume-pdf
+    ports:
+      - "8080:8080"
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 512M
+        reservations:
+          cpus: "0.25"
+          memory: 256M
 
 volumes:
   expograph_pgdata:

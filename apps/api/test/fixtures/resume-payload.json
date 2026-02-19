@@ -1,0 +1,49 @@
+{
+  "templateId": "modern",
+  "data": {
+    "fullName": "Jane Doe",
+    "email": "jane@example.com",
+    "phone": "+1 234 567 8900",
+    "linkedinUrl": "https://linkedin.com/in/jane",
+    "githubUrl": "https://github.com/jane",
+    "portfolioUrl": "",
+    "summary": "Full-stack developer with 5 years of experience in JavaScript and React.",
+    "skills": ["JavaScript", "React", "Node.js", "TypeScript"],
+    "education": [
+      {
+        "institution": "State University",
+        "degree": "BS",
+        "field": "Computer Science",
+        "startDate": "2016",
+        "endDate": "2020",
+        "gpa": "3.8"
+      }
+    ],
+    "experience": [
+      {
+        "company": "Tech Corp",
+        "position": "Software Engineer",
+        "startDate": "2020",
+        "endDate": "Present",
+        "bullets": ["Built REST APIs", "Mentored junior developers", "Improved performance by 40%"]
+      }
+    ],
+    "projects": [
+      {
+        "name": "Project Alpha",
+        "description": "A web application for managing tasks.",
+        "technologies": "React, Node.js",
+        "link": "https://github.com/jane/alpha",
+        "bullets": ["Used React hooks", "Deployed on Vercel"]
+      }
+    ],
+    "certifications": [
+      {
+        "name": "AWS Certified Developer",
+        "issuer": "Amazon",
+        "date": "2023",
+        "credentialId": "ABC123"
+      }
+    ]
+  }
+}

@@ -1,10 +1,35 @@
 @import "tailwindcss";
+@plugin "tailwindcss-animate";
 @import "./styles/academy-tokens.css";
 @import "./styles/academy-premium.css";
 
 /* Smoother scrolling (avoids jank with 3D/parallax sections) */
 html {
   scroll-behavior: smooth;
+}
+
+/* Academy page header: force correct styles, prevent overrides */
+.academy-header {
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+.academy-header .academy-nav-bar {
+  transition: all 0.2s ease-out;
+}
+.academy-header .academy-nav-bar.academy-nav-scrolled {
+  background: rgba(0, 0, 0, 0.2) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1px solid #000000 !important;
+  border-radius: 0.5rem !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15) !important;
+}
+.academy-header .academy-nav-bar.academy-nav-default {
+  background: #000000 !important;
+  border: 1px solid #000000 !important;
 }
 
 /* shadcn/ui theme tokens for Tailwind v4 (Components/ui) */
@@ -300,4 +325,53 @@ html {
     scrollbar-color: rgba(99, 102, 241, 0.5) rgba(241, 245, 249, 0.3);
   }
 }
+
+/* ============================================
+   Edge / Blinking caret fix (Microsoft Edge)
+   ============================================
+   Edge sometimes shows a blinking cursor at the end of text in non-editable
+   elements (p, div, span, h1–h6). Hide the caret on all elements by default,
+   then restore it only on real inputs and contenteditable areas.
+   Keeps inputs/textareas working and preserves accessibility.
+   ============================================ */
+
+* {
+  -ms-caret-color: transparent;
+  caret-color: transparent;
+}
+
+/* Restore visible caret only on editable elements */
+input,
+textarea,
+[contenteditable="true"] {
+  -ms-caret-color: auto;
+  caret-color: auto;
+}
+
+/* Ensure contenteditable="false" or empty doesn't show caret */
+[contenteditable="false"],
+[contenteditable=""] {
+  -ms-caret-color: transparent;
+  caret-color: transparent;
+}
+
+/* Remove focus outline from non-interactive text elements in Edge
+   (they can receive focus on click and show a cursor; we already hid the caret above).
+   Keep outline for keyboard focus on buttons/links via focus-visible. */
+p:focus,
+span:focus,
+div:focus:not(button):not([role="button"]):not([role="tab"]):not([role="menuitem"]):not(a),
+h1:focus,
+h2:focus,
+h3:focus,
+h4:focus,
+h5:focus,
+h6:focus,
+li:focus:not(button):not([role="button"]),
+label:focus:not(input):not(select):not(textarea) {
+  outline: none;
+}
+
+/* Accessibility: focus rings are handled by Tailwind focus-visible:ring-* in components.
+   We only removed outline from non-interactive text elements above. */
 

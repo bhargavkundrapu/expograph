@@ -50,6 +50,9 @@ const env = {
 
   DEFAULT_TENANT_SLUG: (process.env.DEFAULT_TENANT_SLUG ?? "expograph").trim(),
 
+  RESUME_PDF_SERVICE_URL: (process.env.RESUME_PDF_SERVICE_URL ?? "http://localhost:8080").trim(),
+  RESUME_PDF_TIMEOUT_MS: Number(process.env.RESUME_PDF_TIMEOUT_MS ?? 15000),
+  RESUME_PDF_MAX_CONCURRENCY: Number(process.env.RESUME_PDF_MAX_CONCURRENCY ?? 4),
 };
 
 module.exports = { env };

@@ -36,24 +36,32 @@ function isSplineNoise(args) {
   }
   return false;
 }
+// Suppress React DevTools suggestion and Three.js multi-instance warning (dev-only noise)
+function isNoise(args) {
+  const full = args.map((a) => String(a ?? '')).join(' ');
+  if (isSplineNoise(args)) return true;
+  if (full.includes('Download the React DevTools') || full.includes('React DevTools')) return true;
+  if (full.includes('Multiple instances of Three.js')) return true;
+  return false;
+}
 const originalLog = console.log;
 const originalInfo = console.info;
 const originalDebug = console.debug;
 const originalWarn = console.warn;
-console.log = (...args) => { if (!isSplineNoise(args)) originalLog.apply(console, args); };
-console.info = (...args) => { if (!isSplineNoise(args)) originalInfo.apply(console, args); };
-console.debug = (...args) => { if (!isSplineNoise(args)) originalDebug.apply(console, args); };
-console.warn = (...args) => { if (!isSplineNoise(args)) originalWarn.apply(console, args); };
+console.log = (...args) => { if (!isNoise(args)) originalLog.apply(console, args); };
+console.info = (...args) => { if (!isNoise(args)) originalInfo.apply(console, args); };
+console.debug = (...args) => { if (!isNoise(args)) originalDebug.apply(console, args); };
+console.warn = (...args) => { if (!isNoise(args)) originalWarn.apply(console, args); };
 
 // Suppress unhandled promise rejections from browser extensions (e.g. React DevTools, ad blockers)
 window.addEventListener('unhandledrejection', (event) => {
   const msg = event.reason?.message ?? String(event.reason ?? '');
   if ((msg.includes('asynchronous response') && msg.includes('message channel closed')) ||
       msg.includes('message channel closed before a response was received') ||
-      (msg.includes('listener indicated') && msg.includes('asynchronous response'))) {
+      msg.includes('listener indicated') && msg.includes('asynchronous response')) {
     event.preventDefault();
     event.stopPropagation();
-    return;
+    return false;
   }
 });
 

@@ -1,11 +1,10 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useAuth } from "../../app/providers/AuthProvider";
-import { FiMenu, FiX, FiLogIn } from "react-icons/fi";
-import "../../styles/academy-tokens.css";
+import { Header } from "@/components/ui/header-2";
 import { InteractiveRobotSpline } from "../../Components/ui/interactive-3d-robot";
 import HeroSection from "../../Components/ui/hero-section-9";
+import CallToAction1 from "../../Components/ui/call-to-action-1";
 import UiverseCard from "../../Components/ui/uiverse-card";
 import { TubesBackground } from "../../Components/ui/neon-flow";
 import { FiUsers as Users, FiBriefcase as Briefcase, FiLink as LinkIcon } from "react-icons/fi";
@@ -13,105 +12,21 @@ import { FiUsers as Users, FiBriefcase as Briefcase, FiLink as LinkIcon } from "
 export default function AcademyPage() {
   const { token, role } = useAuth();
   const navigate = useNavigate();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  const getHomePath = () => {
-    if (!token) return "/login";
-    if (role === "SuperAdmin") return "/lms/superadmin";
-    if (role === "Mentor") return "/lms/mentor";
-    if (role === "Student") return "/lms/student";
-    return "/login";
-  };
 
   return (
     <div
-      className="min-h-screen relative overflow-x-hidden w-full"
+      className="min-h-screen relative w-full"
       style={{
         fontFamily: "var(--font-dm)",
-        backgroundColor: "var(--bg-primary)",
+        backgroundColor: "black",
         color: "var(--text-secondary)",
       }}
     >
-      {/* Header */}
-      <header
-        className="sticky top-0 left-0 right-0 w-full border-b border-white/10 z-[1000]"
-        style={{ background: "var(--bg-primary)" }}
-      >
-        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 py-3 sm:py-4 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-1.5 sm:gap-2 no-underline shrink-0">
-            <img src="/1.png" alt="ExpoGraph" className="h-8 sm:h-9 w-auto object-contain" />
-            <span
-              className="text-xs sm:text-sm md:text-base font-semibold"
-              style={{ color: "var(--text-secondary)", fontFamily: "var(--font-dm)" }}
-            >
-              
-            </span>
-          </Link>
+      {/* Navbar — fixed at top, outside overflow so it stays visible when scrolling */}
+      <Header />
 
-          <nav className="hidden lg:flex items-center gap-6 xl:gap-8" style={{ fontFamily: "var(--font-dm)" }}>
-            {token ? (
-              <Link to={getHomePath()} className="text-sm xl:text-base text-inherit no-underline opacity-100 hover:opacity-70 transition-opacity" style={{ color: "var(--text-secondary)" }}>Dashboard</Link>
-            ) : (
-              <button
-                type="button"
-                onClick={() => navigate("/login")}
-                className="px-4 py-2 sm:px-5 sm:py-2 rounded-full text-sm font-semibold cursor-pointer transition-colors border border-white/20"
-                style={{
-                  backgroundColor: "var(--bg-level-4)",
-                  color: "var(--text-secondary)",
-                  fontFamily: "var(--font-dm)",
-                }}
-                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "var(--bg-level-5)"; }}
-                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "var(--bg-level-4)"; }}
-              >
-                <FiLogIn className="inline mr-1.5 sm:mr-2" size={14} /> Login
-              </button>
-            )}
-          </nav>
-
-          <button
-            type="button"
-            aria-label="Toggle menu"
-            onClick={() => setMobileMenuOpen((o) => !o)}
-            className="lg:hidden p-2 rounded-lg border border-white/20 flex items-center justify-center"
-            style={{ color: "var(--text-secondary)", backgroundColor: "var(--bg-level-4)" }}
-          >
-            {mobileMenuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
-          </button>
-        </div>
-
-        {mobileMenuOpen && (
-          <div
-            className="lg:hidden fixed inset-0 top-[57px] sm:top-[60px] z-[999] bg-black/80 backdrop-blur-sm"
-            aria-hidden
-            onClick={() => setMobileMenuOpen(false)}
-          />
-        )}
-        <div
-          className={`
-            lg:hidden fixed top-[57px] sm:top-[60px] right-0 bottom-0 w-full max-w-[280px] sm:max-w-[320px] z-[1000]
-            flex flex-col gap-1 p-4 overflow-y-auto border-l border-white/10
-            transition-transform duration-200 ease-out
-            ${mobileMenuOpen ? "translate-x-0" : "translate-x-full"}
-          `}
-          style={{ background: "var(--bg-primary)" }}
-        >
-          {token ? (
-            <Link to={getHomePath()} onClick={() => setMobileMenuOpen(false)} className="py-3 px-4 rounded-lg text-base font-medium hover:bg-white/10 transition-colors" style={{ color: "var(--text-secondary)", fontFamily: "var(--font-dm)" }}>Dashboard</Link>
-          ) : (
-            <button
-              type="button"
-              onClick={() => { setMobileMenuOpen(false); navigate("/login"); }}
-              className="mt-2 py-3 px-4 rounded-full text-base font-semibold w-full flex items-center justify-center gap-2 border border-white/20"
-              style={{ backgroundColor: "var(--bg-level-4)", color: "var(--text-secondary)", fontFamily: "var(--font-dm)" }}
-            >
-              <FiLogIn size={18} /> Login
-            </button>
-          )}
-        </div>
-      </header>
-
-      {/* Hero Section — Interactive 3D Robot */}
+      <div className="overflow-x-hidden">
+        {/* Hero Section — Interactive 3D Robot (Transform Your Career) */}
       <section className="relative w-full min-h-[100dvh] sm:min-h-screen h-screen overflow-hidden bg-black" style={{ backgroundColor: "#000000", maxWidth: "100vw" }}>
         <InteractiveRobotSpline
           scene="https://prod.spline.design/PyzDhpQ9E5f1E3MT/scene.splinecode"
@@ -194,6 +109,15 @@ export default function AcademyPage() {
         />
       </section>
 
+      {/* Call to Action — Join Academy */}
+      <section
+        id="cta"
+        className="py-12 md:py-16 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24"
+        style={{ backgroundColor: "#000000", borderTop: "1px solid rgba(255, 255, 255, 0.08)" }}
+      >
+        <CallToAction1 />
+      </section>
+
       {/* Social / Connect — 3D card (UIVERSE) */}
       <section
         id="connect"
@@ -222,6 +146,7 @@ export default function AcademyPage() {
           </div>
         </TubesBackground>
       </footer>
+      </div>
     </div>
   );
 }

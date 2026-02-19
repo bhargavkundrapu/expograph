@@ -47,7 +47,16 @@ async function progressUpdate({ tenantId, userId, lessonId, watchSecondsDelta, l
 
 async function completeLesson({ tenantId, userId, lessonId }) {
   await ensureLessonAccessibleOrThrow({ tenantId, lessonId });
-  return repo.completeLesson({ tenantId, userId, lessonId });
+  const row = await repo.completeLesson({ tenantId, userId, lessonId });
+  // Recompute Client Lab eligibility when progress updates (>= 75% + all courses)
+  try {
+    const clientLabEligibility = require("../clientLab/clientLabEligibility.service");
+    await clientLabEligibility.recomputeEligibility({ tenantId, userId });
+  } catch (e) {
+    // Don't fail lesson complete if eligibility update fails
+    if (process.env.NODE_ENV !== "test") console.warn("Client Lab eligibility recompute failed:", e?.message);
+  }
+  return row;
 }
 
 async function summary({ tenantId, userId }) {

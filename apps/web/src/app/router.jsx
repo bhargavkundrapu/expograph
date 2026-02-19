@@ -1,4 +1,4 @@
-import { createBrowserRouter, Outlet } from "react-router-dom";
+import { createBrowserRouter, Outlet, Navigate } from "react-router-dom";
 import RequireRole from "./RequireRole";
 import SuperAdminLayout from "./layouts/SuperAdminLayout";
 import MentorLayout from "./layouts/MentorLayout";
@@ -28,6 +28,7 @@ import SuperAdminCertificates from "../pages/lms/superadmin/SuperAdminCertificat
 import SuperAdminPodcasts from "../pages/lms/superadmin/SuperAdminPodcasts";
 import SuperAdminFeatureFlags from "../pages/lms/superadmin/SuperAdminFeatureFlags";
 import SuperAdminClientLab from "../pages/lms/superadmin/SuperAdminClientLab";
+import SuperAdminClientLabRealWorld from "../pages/lms/superadmin/SuperAdminClientLabRealWorld";
 import SuperAdminInternships from "../pages/lms/superadmin/SuperAdminInternships";
 import SuperAdminAnalytics from "../pages/lms/superadmin/SuperAdminAnalytics";
 import SuperAdminPlaceholder from "../pages/lms/superadmin/SuperAdminPlaceholder";
@@ -170,8 +171,8 @@ export const router = createBrowserRouter([
           { path: "podcasts/series/create", element: <SuperAdminPodcasts /> },
           { path: "podcasts/series/:id", element: <SuperAdminPodcasts /> },
           
-          // Client Lab - Nested Routes
-          { path: "client-lab", element: <SuperAdminClientLab /> },
+          // Client Lab - default to Real-World (avoids 400 from old admin/client-lab API)
+          { path: "client-lab", element: <Navigate to="client-lab/real-world" replace /> },
           { path: "client-lab/cards", element: <SuperAdminClientLab /> },
           { path: "client-lab/list", element: <SuperAdminClientLab /> },
           { path: "client-lab/create", element: <SuperAdminClientLab /> },
@@ -182,6 +183,9 @@ export const router = createBrowserRouter([
           { path: "client-lab/projects/:id/details", element: <SuperAdminClientLab /> },
           { path: "client-lab/clients", element: <SuperAdminClientLab /> },
           { path: "client-lab/tasks", element: <SuperAdminClientLab /> },
+          { path: "client-lab/real-world", element: <SuperAdminClientLabRealWorld /> },
+          { path: "client-lab/real-world/submissions", element: <SuperAdminClientLabRealWorld /> },
+          { path: "client-lab/real-world/projects/:id", element: <SuperAdminClientLabRealWorld /> },
           
           // Internships - Nested Routes
           { path: "internships", element: <SuperAdminInternships /> },
@@ -394,12 +398,8 @@ export const router = createBrowserRouter([
           // { path: "projects/create", element: <StudentClientLab /> },
           // { path: "projects/:projectId", element: <StudentClientLab /> },
           
-          // Resume Builder - Nested Routes (TEMPORARILY DISABLED)
-          // { path: "resume-builder", element: <StudentResumeBuilder /> },
-          // { path: "resume-builder/create", element: <StudentResumeBuilder /> },
-          // { path: "resume-builder/templates", element: <StudentResumeBuilder /> },
-          // { path: "resume-builder/:id", element: <StudentResumeBuilder /> },
-          // { path: "resume-builder/:id/edit", element: <StudentResumeBuilder /> },
+          // Resume Builder
+          { path: "resume-builder", element: <StudentResumeBuilder /> },
           
           // Portfolio Builder - Nested Routes (TEMPORARILY DISABLED)
           // { path: "portfolio-builder", element: <StudentPortfolioBuilder /> },
