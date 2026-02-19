@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useAuth } from "../../app/providers/AuthProvider";
-import { Header } from "@/components/ui/header-2";
+import { Header } from "../../Components/ui/header-2";
 import { InteractiveRobotSpline } from "../../Components/ui/interactive-3d-robot";
 import HeroSection from "../../Components/ui/hero-section-9";
 import CallToAction1 from "../../Components/ui/call-to-action-1";
