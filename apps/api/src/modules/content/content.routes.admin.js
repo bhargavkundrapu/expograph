@@ -49,4 +49,9 @@ router.delete("/slides/:slideId", ctrl.deleteSlide);
 
 router.get("/courses/:courseId/tree", ctrl.courseTreeAdmin);
 
+router.get("/packs", ctrl.listCoursePacksAdmin);
+router.patch("/packs/:packId", ctrl.updateCoursePack);
+router.get("/packs/:packId/courses", ctrl.getPackCoursesAdmin);
+router.put("/packs/:packId/courses", ctrl.setPackCourses);
+
 module.exports = { router };

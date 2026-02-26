@@ -1,10 +1,36 @@
 // apps/api/src/modules/student/student.repo.js
 const { query } = require("../../db/query");
 
-// Dashboard & Home
+// Dashboard & Home - Returns lessons and practice tasks from ENROLLED courses only
 async function getSchedule({ tenantId, userId }) {
   try {
-    // Get lessons from enrolled courses with progress
+    // Enrolled course IDs (direct + via pack)
+    const enrollResult = await query(
+      `SELECT item_type, item_id FROM enrollments
+       WHERE user_id = $1 AND tenant_id = $2 AND active = true`,
+      [userId, tenantId]
+    ).catch(() => ({ rows: [] }));
+
+    const enrolledCourseIds = new Set();
+    const enrolledPackIds = new Set();
+    enrollResult.rows.forEach((r) => {
+      if (r.item_type === "course") enrolledCourseIds.add(r.item_id);
+      if (r.item_type === "pack") enrolledPackIds.add(r.item_id);
+    });
+
+    if (enrolledPackIds.size > 0) {
+      const packRes = await query(
+        `SELECT course_id FROM course_pack_courses WHERE pack_id = ANY($1::uuid[])`,
+        [Array.from(enrolledPackIds)]
+      ).catch(() => ({ rows: [] }));
+      packRes.rows.forEach((r) => enrolledCourseIds.add(r.course_id));
+    }
+
+    if (enrolledCourseIds.size === 0) return [];
+
+    const courseIds = Array.from(enrolledCourseIds);
+
+    // Lessons from enrolled courses only, with progress
     const lessonsResult = await query(
       `SELECT 
         l.id as lesson_id,
@@ -25,14 +51,14 @@ async function getSchedule({ tenantId, userId }) {
       FROM courses c
       JOIN course_modules cm ON cm.course_id = c.id AND cm.status = 'published'
       JOIN lessons l ON l.module_id = cm.id AND l.status = 'published'
-      LEFT JOIN lesson_progress lp ON lp.lesson_id = l.id AND lp.user_id = $1
+      LEFT JOIN lesson_progress lp ON lp.lesson_id = l.id AND lp.user_id = $1 AND lp.tenant_id = c.tenant_id
       WHERE c.tenant_id = $2 AND c.status = 'published'
-      ORDER BY c.id, cm.position ASC, l.position ASC
-      LIMIT 20`,
-      [userId, tenantId]
+        AND c.id = ANY($3::uuid[])
+      ORDER BY c.id, cm.position ASC, l.position ASC`,
+      [userId, tenantId, courseIds]
     );
 
-    // Get practice tasks from lessons
+    // Practice tasks from enrolled courses only
     const practiceResult = await query(
       `SELECT 
         pt.id as task_id,
@@ -54,9 +80,9 @@ async function getSchedule({ tenantId, userId }) {
         AND c.status = 'published' 
         AND cm.status = 'published' 
         AND l.status = 'published'
-      ORDER BY c.id, cm.position ASC, l.position ASC, pt.sort_order ASC
-      LIMIT 20`,
-      [userId, tenantId]
+        AND c.id = ANY($3::uuid[])
+      ORDER BY c.id, cm.position ASC, l.position ASC, pt.sort_order ASC`,
+      [userId, tenantId, courseIds]
     );
 
     const schedule = [];
@@ -123,8 +149,33 @@ async function getSchedule({ tenantId, userId }) {
 
 async function getCurrentCourse({ tenantId, userId }) {
   try {
-    // Get the most recently accessed course
-    // First try to get a course with progress
+    // Get enrolled course IDs
+    const enrollResult = await query(
+      `SELECT item_type, item_id FROM enrollments
+       WHERE user_id = $1 AND tenant_id = $2 AND active = true`,
+      [userId, tenantId]
+    ).catch(() => ({ rows: [] }));
+
+    const enrolledCourseIds = new Set();
+    const enrolledPackIds = new Set();
+    enrollResult.rows.forEach((r) => {
+      if (r.item_type === "course") enrolledCourseIds.add(r.item_id);
+      if (r.item_type === "pack") enrolledPackIds.add(r.item_id);
+    });
+
+    if (enrolledPackIds.size > 0) {
+      const packRes = await query(
+        `SELECT course_id FROM course_pack_courses WHERE pack_id = ANY($1::uuid[])`,
+        [Array.from(enrolledPackIds)]
+      ).catch(() => ({ rows: [] }));
+      packRes.rows.forEach((r) => enrolledCourseIds.add(r.course_id));
+    }
+
+    if (enrolledCourseIds.size === 0) return null;
+
+    const courseIds = Array.from(enrolledCourseIds);
+
+    // Get most recently accessed enrolled course
     let result = await query(
       `SELECT DISTINCT ON (c.id) 
          c.id, c.title, c.slug, cm.title as module_name, cm.slug as module_slug, 
@@ -134,14 +185,14 @@ async function getCurrentCourse({ tenantId, userId }) {
        FROM courses c
        JOIN course_modules cm ON cm.course_id = c.id AND cm.status = 'published'
        JOIN lessons l ON l.module_id = cm.id AND l.status = 'published'
-       LEFT JOIN lesson_progress lp ON lp.lesson_id = l.id AND lp.user_id = $1
-       WHERE c.tenant_id = $2 AND c.status = 'published'
+       LEFT JOIN lesson_progress lp ON lp.lesson_id = l.id AND lp.user_id = $1 AND lp.tenant_id = c.tenant_id
+       WHERE c.tenant_id = $2 AND c.status = 'published' AND c.id = ANY($3::uuid[])
        ORDER BY c.id, lp.updated_at DESC NULLS LAST, lp.created_at DESC NULLS LAST
        LIMIT 1`,
-      [userId, tenantId]
+      [userId, tenantId, courseIds]
     );
 
-    // If no course with progress, get any published course
+    // If no course with progress, get first enrolled course
     if (result.rows.length === 0) {
       result = await query(
         `SELECT DISTINCT ON (c.id)
@@ -150,10 +201,10 @@ async function getCurrentCourse({ tenantId, userId }) {
          FROM courses c
          JOIN course_modules cm ON cm.course_id = c.id AND cm.status = 'published'
          JOIN lessons l ON l.module_id = cm.id AND l.status = 'published'
-         WHERE c.tenant_id = $1 AND c.status = 'published'
-         ORDER BY c.id, l.position ASC
+         WHERE c.tenant_id = $1 AND c.status = 'published' AND c.id = ANY($2::uuid[])
+         ORDER BY c.id, cm.position ASC, l.position ASC
          LIMIT 1`,
-        [tenantId]
+        [tenantId, courseIds]
       );
     }
 
@@ -232,30 +283,63 @@ async function getProgress({ tenantId, userId }) {
 }
 
 async function getEvents({ tenantId }) {
-  // Get upcoming events/workshops
+  // Get live (ongoing) + upcoming events/workshops
   const result = await query(
-    `SELECT id, title, starts_at, ends_at
+    `SELECT id, title, starts_at, ends_at, slug
      FROM workshops
-     WHERE tenant_id = $1 AND status = 'published' AND starts_at >= NOW()
-     ORDER BY starts_at ASC
+     WHERE tenant_id = $1 AND status = 'published'
+       AND (ends_at >= NOW() OR starts_at >= NOW())
+     ORDER BY
+       CASE WHEN starts_at <= NOW() AND ends_at >= NOW() THEN 0 ELSE 1 END,
+       starts_at ASC
      LIMIT 10`,
     [tenantId]
   );
 
-  return result.rows.map((row) => ({
-    id: row.id,
-    title: row.title,
-    date: new Date(row.starts_at).toLocaleDateString(),
-  }));
+  const now = new Date();
+  return result.rows.map((row) => {
+    const start = new Date(row.starts_at);
+    const end = row.ends_at ? new Date(row.ends_at) : null;
+    const isLive = start <= now && (!end || end >= now);
+    return {
+      id: row.id,
+      title: row.title,
+      slug: row.slug || row.id,
+      date: start.toLocaleDateString(),
+      starts_at: row.starts_at,
+      ends_at: row.ends_at,
+      isLive,
+    };
+  });
 }
 
-// Courses
+// Courses: returns ALL published courses with enrolled flag (via direct enrollment or pack)
 async function listEnrolledCourses({ tenantId, userId }) {
   try {
-    // Get all published courses (assuming all students have access)
-    // In production, check enrollments table
+    const enrollResult = await query(
+      `SELECT item_type, item_id FROM enrollments
+       WHERE user_id = $1 AND tenant_id = $2 AND active = true`,
+      [userId, tenantId]
+    ).catch(() => ({ rows: [] }));
+
+    const enrolledCourseIds = new Set();
+    const enrolledPackIds = new Set();
+    enrollResult.rows.forEach((r) => {
+      if (r.item_type === "course") enrolledCourseIds.add(r.item_id);
+      if (r.item_type === "pack") enrolledPackIds.add(r.item_id);
+    });
+
+    if (enrolledPackIds.size > 0) {
+      const packRes = await query(
+        `SELECT course_id FROM course_pack_courses
+         WHERE pack_id = ANY($1::uuid[])`,
+        [Array.from(enrolledPackIds)]
+      ).catch(() => ({ rows: [] }));
+      packRes.rows.forEach((r) => enrolledCourseIds.add(r.course_id));
+    }
+
     const result = await query(
-      `SELECT c.id, c.title, c.slug, c.description, c.level,
+      `SELECT c.id, c.title, c.slug, c.description, c.level, c.price_in_paise,
               COUNT(DISTINCT cm.id) as modules_count,
               COUNT(DISTINCT l.id) FILTER (WHERE lp.completed_at IS NOT NULL) as completed_lessons,
               COUNT(DISTINCT l.id) as total_lessons
@@ -264,7 +348,7 @@ async function listEnrolledCourses({ tenantId, userId }) {
        LEFT JOIN lessons l ON l.module_id = cm.id AND l.status = 'published'
        LEFT JOIN lesson_progress lp ON lp.lesson_id = l.id AND lp.user_id = $1
        WHERE c.tenant_id = $2 AND c.status = 'published'
-       GROUP BY c.id, c.title, c.slug, c.description, c.level
+       GROUP BY c.id, c.title, c.slug, c.description, c.level, c.price_in_paise
        ORDER BY c.created_at DESC`,
       [userId, tenantId]
     );
@@ -272,22 +356,46 @@ async function listEnrolledCourses({ tenantId, userId }) {
     return result.rows.map((row) => {
       const totalLessons = parseInt(row.total_lessons) || 0;
       const completedLessons = parseInt(row.completed_lessons) || 0;
+      const enrolled = enrolledCourseIds.has(row.id);
       return {
         id: row.id,
         title: row.title,
         slug: row.slug,
         description: row.description,
         level: row.level,
+        price_in_paise: row.price_in_paise ?? 0,
+        enrolled,
         modules_count: parseInt(row.modules_count) || 0,
-        completed_lessons: completedLessons,
+        completed_lessons: enrolled ? completedLessons : 0,
         total_lessons: totalLessons,
-        progress: totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0,
+        progress: enrolled && totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0,
       };
     });
   } catch (error) {
     console.error("Error in listEnrolledCourses:", error);
-    return []; // Return empty array on error
+    return [];
   }
+}
+
+async function hasCourseAccess({ tenantId, userId, courseId }) {
+  const enrollResult = await query(
+    `SELECT item_type, item_id FROM enrollments
+     WHERE user_id = $1 AND tenant_id = $2 AND active = true
+     AND ((item_type = 'course' AND item_id = $3) OR item_type = 'pack')`,
+    [userId, tenantId, courseId]
+  ).catch(() => ({ rows: [] }));
+
+  for (const r of enrollResult.rows) {
+    if (r.item_type === "course" && r.item_id === courseId) return true;
+    if (r.item_type === "pack") {
+      const packRes = await query(
+        `SELECT 1 FROM course_pack_courses WHERE pack_id = $1 AND course_id = $2 LIMIT 1`,
+        [r.item_id, courseId]
+      ).catch(() => ({ rows: [] }));
+      if (packRes.rows.length > 0) return true;
+    }
+  }
+  return false;
 }
 
 async function enhanceCourseWithProgress({ tenantId, userId, course }) {
@@ -408,6 +516,7 @@ async function enhanceLessonWithData({ tenantId, userId, lesson, moduleLessons }
       video_provider: lessonRow.video_provider,
       video_id: lessonRow.video_id,
       video_url: lessonRow.video_url,
+      video_captions: lessonRow.video_captions || null,
       prompts: lessonRow.prompts,
       success_image_url: lessonRow.success_image_url,
       success_image_urls: (() => {
@@ -735,6 +844,7 @@ module.exports = {
   getProgress,
   getEvents,
   listEnrolledCourses,
+  hasCourseAccess,
   enhanceCourseWithProgress,
   enhanceLessonWithData,
   searchContent,

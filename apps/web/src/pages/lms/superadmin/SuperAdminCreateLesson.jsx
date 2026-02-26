@@ -26,6 +26,7 @@ export default function SuperAdminCreateLesson() {
     summary: "",
     goal: "",
     video_url: "",
+    video_captions: "",
     prompts: { prompts: "", commands: "", error_resolve: "" },
     success_image_urls: [],
     learn_setup_steps: [],
@@ -81,6 +82,7 @@ export default function SuperAdminCreateLesson() {
         ...(form.summary?.trim() && { summary: form.summary.trim() }),
         ...(form.goal?.trim() && { goal: form.goal.trim() }),
         ...(form.video_url?.trim() && { video_url: form.video_url.trim() }),
+        ...(form.video_captions?.trim() && { video_captions: form.video_captions.trim() }),
         ...(Array.isArray(form.success_image_urls) && form.success_image_urls.filter((u) => u && String(u).trim()).length > 0 && {
           success_image_urls: form.success_image_urls.filter((u) => u && String(u).trim()),
         }),
@@ -213,6 +215,18 @@ export default function SuperAdminCreateLesson() {
               onChange={(e) => setForm((f) => ({ ...f, video_url: e.target.value }))}
               placeholder="https://..."
               className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-slate-900 mb-2">Video Captions / Subtitles (optional)</label>
+            <p className="text-xs text-slate-500 mb-2">Paste the .srt subtitle content here. Students can toggle captions on/off in the video player.</p>
+            <textarea
+              value={form.video_captions}
+              onChange={(e) => setForm((f) => ({ ...f, video_captions: e.target.value }))}
+              placeholder={"1\n00:00:00,000 --> 00:00:03,000\nHello, welcome to this lesson.\n\n2\n00:00:03,500 --> 00:00:07,000\nLet's get started."}
+              rows={6}
+              className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 resize-none font-mono text-sm"
             />
           </div>
 

@@ -21,6 +21,9 @@ const defaultAuthValue = {
   login: async () => {
     throw new Error("AuthProvider not initialized");
   },
+  requestOtp: async () => {
+    throw new Error("AuthProvider not initialized");
+  },
   logout: () => {
     throw new Error("AuthProvider not initialized");
   },
@@ -155,10 +158,18 @@ export function AuthProvider({ children }) {
     return () => window.removeEventListener("storage", onStorage);
   }, []);
 
-  async function login({ email, password }) {
-    const res = await apiFetch("/api/v1/auth/login", {
+  async function requestOtp(email) {
+    const res = await apiFetch("/api/v1/auth/request-otp", {
       method: "POST",
-      body: { email, password },
+      body: { email: email.trim().toLowerCase() },
+    });
+    return res;
+  }
+
+  async function login({ email, otp }) {
+    const res = await apiFetch("/api/v1/auth/verify-otp", {
+      method: "POST",
+      body: { email: email.trim().toLowerCase(), otp },
     });
 
     const data = res?.data;
@@ -173,7 +184,6 @@ export function AuthProvider({ children }) {
     setTenant(data.tenant || null);
     setStatus("authed");
 
-    // validate once (but still only logout on 401/403)
     validateTokenSilently(data.token);
 
     return data;
@@ -219,6 +229,7 @@ export function AuthProvider({ children }) {
       permissionsLoading,
       user,
       tenant,
+      requestOtp,
       login,
       logout,
       updateUser,

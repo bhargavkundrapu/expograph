@@ -17,6 +17,10 @@ console.error = (...args) => {
   if (message.includes('sentry') || message.includes('platform.dash.cloudflare.com')) {
     return;
   }
+  // Suppress API connection refused (expected when API server is not running)
+  if (message.includes('Cannot connect to API server') || message.includes('ERR_CONNECTION_REFUSED')) {
+    return;
+  }
   // Suppress Chrome extension messaging errors (e.g. "message channel closed before response")
   if ((message.includes('asynchronous response') && message.includes('message channel closed')) ||
       message.includes('message channel closed before a response was received') ||
@@ -56,6 +60,10 @@ console.warn = (...args) => { if (!isNoise(args)) originalWarn.apply(console, ar
 // Suppress unhandled promise rejections from browser extensions (e.g. React DevTools, ad blockers)
 window.addEventListener('unhandledrejection', (event) => {
   const msg = event.reason?.message ?? String(event.reason ?? '');
+  if (msg.includes('Cannot connect to API server') || msg.includes('ERR_CONNECTION_REFUSED')) {
+    event.preventDefault();
+    return false;
+  }
   if ((msg.includes('asynchronous response') && msg.includes('message channel closed')) ||
       msg.includes('message channel closed before a response was received') ||
       msg.includes('listener indicated') && msg.includes('asynchronous response')) {

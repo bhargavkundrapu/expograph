@@ -29,6 +29,7 @@ export default function SuperAdminClientLabRealWorld() {
   const [eligibleStudents, setEligibleStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [apiOffline, setApiOffline] = useState(false);
   const view = location.pathname.includes("/submissions") ? "submissions" : params.id ? "project-detail" : "projects";
   const [showCreateProject, setShowCreateProject] = useState(false);
   const [showCreateTask, setShowCreateTask] = useState(false);
@@ -40,10 +41,12 @@ export default function SuperAdminClientLabRealWorld() {
   const fetchProjects = useCallback(async () => {
     if (!token) return;
     try {
+      setApiOffline(false);
       const res = await apiFetch("/api/v1/client-lab/projects", { token });
       if (res?.ok) setProjects(res.data || []);
     } catch (e) {
-      console.error(e);
+      setProjects([]);
+      if (e?.message?.includes("Cannot connect")) setApiOffline(true);
     }
   }, [token]);
 
@@ -53,9 +56,10 @@ export default function SuperAdminClientLabRealWorld() {
       try {
         const res = await apiFetch(`/api/v1/client-lab/projects/${id}`, { token });
         if (res?.ok) setProjectDetail(res.data);
-      } catch (e) {
-        console.error(e);
-      }
+    } catch (e) {
+      setProjectDetail(null);
+      if (e?.message?.includes("Cannot connect")) setApiOffline(true);
+    }
     },
     [token]
   );
@@ -66,7 +70,8 @@ export default function SuperAdminClientLabRealWorld() {
       const res = await apiFetch("/api/v1/client-lab/submissions", { token });
       if (res?.ok) setSubmissions(res.data || []);
     } catch (e) {
-      console.error(e);
+      setSubmissions([]);
+      if (e?.message?.includes("Cannot connect")) setApiOffline(true);
     }
   }, [token]);
 
@@ -76,7 +81,8 @@ export default function SuperAdminClientLabRealWorld() {
       const res = await apiFetch("/api/v1/client-lab/students-for-assign", { token });
       if (res?.ok) setEligibleStudents(res.data || []);
     } catch (e) {
-      console.error(e);
+      setEligibleStudents([]);
+      if (e?.message?.includes("Cannot connect")) setApiOffline(true);
     }
   }, [token]);
 
@@ -241,6 +247,12 @@ export default function SuperAdminClientLabRealWorld() {
             </button>
           </div>
         </div>
+
+        {apiOffline && (
+          <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-xl text-amber-800 text-sm">
+            API server is not running. Start it with <code className="bg-amber-100 px-1 rounded">cd apps/api && npm run dev</code>
+          </div>
+        )}
 
         <AnimatePresence mode="wait">
           {view === "projects" && (

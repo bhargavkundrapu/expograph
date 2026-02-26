@@ -38,17 +38,29 @@ export default function CallToAction1() {
               alt="Student 3"
             />
           </div>
-          <p className="-translate-x-2 font-medium">Join family of 10k+ students who are Vibing</p>
+          <p className="-translate-x-2 font-medium">Join family of 5k students who are Vibing</p>
         </div>
-        <h2 className="text-4xl md:text-5xl md:leading-[60px] font-semibold max-w-xl mt-5 bg-gradient-to-r from-white to-[#CAABFF] text-transparent bg-clip-text">
+        <h2 className="text-4xl md:text-5xl md:leading-[60px] font-semibold max-w-xl mt-5 bg-gradient-to-r from-white to-[#CAABFF] text-transparent bg-clip-text flex items-center justify-center gap-2 flex-wrap">
           Unlock your next big opportunity.
+          <button
+            type="button"
+            aria-label="Future use"
+            className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 transition-colors shrink-0"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
         </h2>
         <button
           type="button"
           onClick={handleJoin}
-          className="px-8 py-3 text-white bg-violet-600 hover:bg-violet-700 transition-all rounded-full uppercase text-sm mt-8 font-medium"
+          className="flex items-center justify-center gap-2 px-10 py-4 text-white bg-violet-600 hover:bg-violet-700 transition-all rounded-full uppercase text-lg md:text-xl font-medium mt-8"
         >
-          Join Academy
+          Real Client Lab
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          </svg>
         </button>
       </div>
     </>

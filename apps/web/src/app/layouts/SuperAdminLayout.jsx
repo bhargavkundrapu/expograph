@@ -14,6 +14,7 @@ import {
   FiFileText,
   FiBriefcase,
   FiLayers,
+  FiPackage,
   FiSearch,
   FiMenu,
   FiX,
@@ -21,6 +22,7 @@ import {
   FiSettings,
   FiLogOut,
   FiUser,
+  FiCheckSquare,
 } from "react-icons/fi";
 
 export default function SuperAdminLayout() {
@@ -48,8 +50,10 @@ export default function SuperAdminLayout() {
 
   const menuItems = [
     { path: "/lms/superadmin", label: "Home", icon: FiHome },
+    { path: "/lms/superadmin/approvals", label: "Approvals", icon: FiCheckSquare },
     { path: "/lms/superadmin/students", label: "Students", icon: FiUsers },
     { path: "/lms/superadmin/courses", label: "Courses", icon: FiBook },
+    { path: "/lms/superadmin/course-packs", label: "Course Packs", icon: FiPackage },
     { path: "/lms/superadmin/mentors", label: "Mentors", icon: FiUserCheck },
     { path: "/lms/superadmin/workshops", label: "Events", icon: FiCalendar },
     { path: "/lms/superadmin/podcasts", label: "Podcast Updates", icon: FiRadio },

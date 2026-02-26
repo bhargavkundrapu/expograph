@@ -1,5 +1,6 @@
 'use client';
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Button, buttonVariants } from './button';
 import { cn } from '../../lib/utils';
 import { MenuToggleIcon } from './menu-toggle-icon';
@@ -11,12 +12,12 @@ export function Header() {
 
 	const links = [
 		{
-			label: 'Features',
-			href: '#',
+			label: 'Home',
+			href: '/academy',
 		},
 		{
-			label: 'Pricing',
-			href: '#',
+			label: 'Courses',
+			href: '/courses',
 		},
 		{
 			label: 'About',
@@ -61,15 +62,24 @@ export function Header() {
 					},
 				)}
 			>
-				<span className="text-lg font-semibold tracking-tight">ΣxpoGraph</span>
+				<Link to="/academy" className="text-lg font-semibold tracking-tight hover:opacity-90">
+					ΣxpoGraph
+				</Link>
 				<div className="hidden items-center gap-2 md:flex">
 					{links.map((link, i) => (
-						<a key={i} className={buttonVariants({ variant: 'ghost' })} href={link.href}>
-							{link.label}
-						</a>
+						link.href.startsWith('/') ? (
+							<Link key={i} to={link.href} className={buttonVariants({ variant: 'ghost' })}>
+								{link.label}
+							</Link>
+						) : (
+							<a key={i} className={buttonVariants({ variant: 'ghost' })} href={link.href}>
+								{link.label}
+							</a>
+						)
 					))}
-					<Button variant="outline">Sign In</Button>
-					<Button>Get Started</Button>
+					<Link to="/login">
+						<Button>Login</Button>
+					</Link>
 				</div>
 				<Button size="icon" variant="outline" onClick={() => setOpen(!open)} className="md:hidden">
 					<MenuToggleIcon open={open} className="size-5" duration={300} />
@@ -90,24 +100,37 @@ export function Header() {
 					)}
 				>
 					<div className="grid gap-y-2">
-						{links.map((link) => (
-							<a
-								key={link.label}
-								className={buttonVariants({
-									variant: 'ghost',
-									className: 'justify-start',
-								})}
-								href={link.href}
-							>
-								{link.label}
-							</a>
-						))}
+						{links.map((link) =>
+							link.href.startsWith('/') ? (
+								<Link
+									key={link.label}
+									to={link.href}
+									className={buttonVariants({
+										variant: 'ghost',
+										className: 'justify-start',
+									})}
+									onClick={() => setOpen(false)}
+								>
+									{link.label}
+								</Link>
+							) : (
+								<a
+									key={link.label}
+									className={buttonVariants({
+										variant: 'ghost',
+										className: 'justify-start',
+									})}
+									href={link.href}
+								>
+									{link.label}
+								</a>
+							)
+						)}
 					</div>
 					<div className="flex flex-col gap-2">
-						<Button variant="outline" className="w-full">
-							Sign In
-						</Button>
-						<Button className="w-full">Get Started</Button>
+						<Link to="/login" onClick={() => setOpen(false)}>
+							<Button className="w-full">Login</Button>
+						</Link>
 					</div>
 				</div>
 			</div>

@@ -6,6 +6,8 @@ const router = express.Router();
 
 router.get("/courses", ctrl.listCoursesPublic);
 router.get("/courses/:courseSlug", ctrl.courseTreePublicBySlug);
+router.get("/packs", ctrl.listPacksPublic);
+router.get("/packs/:packSlug", ctrl.packPublicBySlug);
 router.get(
   "/courses/:courseSlug/modules/:moduleSlug/lessons/:lessonSlug",
   ctrl.lessonPublicBySlugs

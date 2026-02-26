@@ -28,6 +28,7 @@ export default function SuperAdminLessonEditor() {
     summary: "",
     goal: "",
     video_url: "",
+    video_captions: "",
     prompts: {
       prompts: "",
       commands: "",
@@ -93,6 +94,7 @@ export default function SuperAdminLessonEditor() {
           summary: lessonData.summary || "",
           goal: lessonData.goal || "",
           video_url: lessonData.video_url || "",
+          video_captions: lessonData.video_captions || "",
           prompts: prompts,
           success_image_urls: Array.isArray(lessonData.success_image_urls)
             ? [...lessonData.success_image_urls]
@@ -125,6 +127,7 @@ export default function SuperAdminLessonEditor() {
           summary: lessonForm.summary || undefined,
           goal: lessonForm.goal || undefined,
           video_url: lessonForm.video_url || undefined,
+          video_captions: lessonForm.video_captions || undefined,
           prompts: (lessonForm.prompts.prompts || lessonForm.prompts.commands || lessonForm.prompts.error_resolve) 
             ? {
                 prompts: lessonForm.prompts.prompts || undefined,
@@ -257,6 +260,20 @@ export default function SuperAdminLessonEditor() {
                 onChange={(e) => setLessonForm({ ...lessonForm, video_url: e.target.value })}
                 placeholder="https://example.com/video.mp4"
                 className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-slate-900 mb-2">
+                Video Captions / Subtitles (Optional)
+              </label>
+              <p className="text-xs text-slate-500 mb-2">Paste the .srt subtitle content here. Students can toggle captions on/off in the video player.</p>
+              <textarea
+                value={lessonForm.video_captions}
+                onChange={(e) => setLessonForm({ ...lessonForm, video_captions: e.target.value })}
+                placeholder={"1\n00:00:00,000 --> 00:00:03,000\nHello, welcome to this lesson.\n\n2\n00:00:03,500 --> 00:00:07,000\nLet's get started."}
+                rows={6}
+                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all resize-none font-mono text-sm"
               />
             </div>
 

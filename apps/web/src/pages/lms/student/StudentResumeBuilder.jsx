@@ -199,11 +199,6 @@ export default function StudentResumeBuilder() {
                 data={data}
                 token={token}
               />
-              {import.meta.env.DEV && (
-                <p className="mt-4 text-slate-500 text-xs text-center max-w-md mx-auto">
-                  Local dev: start the PDF service. With Docker: from <code className="bg-slate-100 px-1 rounded">apps/api</code> run <code className="bg-slate-100 px-1 rounded text-[11px]">docker compose up -d resume-pdf</code>. Without Docker: install MiKTeX (Windows) or TeX Live, then from <code className="bg-slate-100 px-1 rounded">services/resume-pdf</code> run <code className="bg-slate-100 px-1 rounded text-[11px]">npm start</code>. See docs/RESUME_BUILDER.md.
-                </p>
-              )}
               <div className="mt-8 flex justify-start">
                 <button
                   type="button"

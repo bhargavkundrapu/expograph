@@ -1,4 +1,5 @@
 import { getOrCreateDeviceId } from "./device";
+import { getToken } from "./session";
 
 const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
 
@@ -20,11 +21,13 @@ function buildUrl(path) {
 export async function apiFetch(path, options = {}) {
   const {
     method = "GET",
-    token,
+    token: tokenOpt,
     headers = {},
     body,
     signal,
   } = options;
+
+  const token = tokenOpt ?? (typeof localStorage !== "undefined" ? getToken() : null);
 
   const deviceId = getOrCreateDeviceId();
   const url = buildUrl(path);

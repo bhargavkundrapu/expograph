@@ -77,6 +77,13 @@ const getCourseTree = asyncHandler(async (req, res) => {
     throw new HttpError(404, "Course not found");
   }
 
+  const courseId = courseData.course.id || courseData.course.course_id;
+  if (!courseId) throw new HttpError(400, "Invalid course data");
+  const hasAccess = await repo.hasCourseAccess({ tenantId, userId, courseId });
+  if (!hasAccess) {
+    throw new HttpError(403, "You don't have access to this course. Purchase it to unlock.");
+  }
+
   // Enhance with progress data
   const enhancedCourse = await repo.enhanceCourseWithProgress({
     tenantId,
@@ -104,13 +111,21 @@ const getLesson = asyncHandler(async (req, res) => {
 
   // Get module lessons for sidebar - get all lessons in the module
   const moduleResult = await query(
-    `SELECT m.id as module_id
+    `SELECT m.id as module_id, c.id as course_id
      FROM course_modules m
      JOIN courses c ON c.id = m.course_id
      WHERE c.tenant_id = $1 AND c.slug = $2 AND m.slug = $3 AND m.status = 'published'
      LIMIT 1`,
     [tenantId, courseSlug, moduleSlug]
   );
+
+  const courseId = moduleResult.rows[0]?.course_id;
+  if (courseId) {
+    const hasAccess = await repo.hasCourseAccess({ tenantId, userId, courseId });
+    if (!hasAccess) {
+      throw new HttpError(403, "You don't have access to this course. Purchase it to unlock.");
+    }
+  }
   
   let moduleLessons = [];
   if (moduleResult.rows.length > 0) {
@@ -144,6 +159,20 @@ const completeLesson = asyncHandler(async (req, res) => {
 
   if (!lessonData?.lesson) {
     throw new HttpError(404, "Lesson not found");
+  }
+
+  const courseModuleRes = await query(
+    `SELECT c.id as course_id FROM courses c
+     JOIN course_modules m ON m.course_id = c.id
+     WHERE c.tenant_id = $1 AND c.slug = $2 AND m.slug = $3 LIMIT 1`,
+    [tenantId, courseSlug, moduleSlug]
+  );
+  const courseId = courseModuleRes.rows[0]?.course_id;
+  if (courseId) {
+    const hasAccess = await repo.hasCourseAccess({ tenantId, userId, courseId });
+    if (!hasAccess) {
+      throw new HttpError(403, "You don't have access to this course.");
+    }
   }
 
   // content.repo returns raw row with lesson_id (not id)

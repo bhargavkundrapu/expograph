@@ -13,12 +13,6 @@ export const LIMITS = {
 export const TEMPLATES = [
   { id: "modern", name: "Modern", style: "modern" },
   { id: "classic", name: "Classic", style: "classic" },
-  { id: "modern-2", name: "Modern II", style: "modern" },
-  { id: "classic-2", name: "Classic II", style: "classic" },
-  { id: "modern-3", name: "Modern III", style: "modern" },
-  { id: "classic-3", name: "Classic III", style: "classic" },
-  { id: "modern-4", name: "Modern IV", style: "modern" },
-  { id: "classic-4", name: "Classic IV", style: "classic" },
 ];
 
 export const INITIAL_DATA = {

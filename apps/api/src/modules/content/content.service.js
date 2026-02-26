@@ -47,7 +47,7 @@ async function createModuleSmart({ tenantId, courseId, title, slug, position, cr
   throw new HttpError(500, "Could not create unique module slug");
 }
 
-async function createLessonSmart({ tenantId, moduleId, title, slug, summary, position, goal, video_url, prompts, success_image_url, success_image_urls, learn_setup_steps, pdf_url = null, createdBy }) {
+async function createLessonSmart({ tenantId, moduleId, title, slug, summary, position, goal, video_url, prompts, success_image_url, success_image_urls, learn_setup_steps, pdf_url = null, video_captions = null, createdBy }) {
   const base = slug ? slugify(slug) : slugify(title);
   if (!base) throw new HttpError(400, "Invalid title/slug");
 
@@ -73,6 +73,7 @@ async function createLessonSmart({ tenantId, moduleId, title, slug, summary, pos
         success_image_urls: urls.length ? urls : null,
         learn_setup_steps: Array.isArray(learn_setup_steps) && learn_setup_steps.filter(Boolean).length > 0 ? learn_setup_steps.filter(Boolean) : null,
         pdf_url: pdfUrl,
+        video_captions: video_captions ?? null,
         status: "draft", 
         createdBy 
       });

@@ -29,6 +29,16 @@
           if (s.indexOf('@splinetool') !== -1 && (s.indexOf('H0') !== -1 || s.indexOf('BV') !== -1 || s.indexOf('start') !== -1 || s.indexOf('load') !== -1)) return true;
           if (s.indexOf('Download the React DevTools') !== -1 || s.indexOf('React DevTools') !== -1) return true;
           if (s.indexOf('Multiple instances of Three.js') !== -1) return true;
+          if (s.indexOf('width(-1)') !== -1 && s.indexOf('height(-1)') !== -1 && s.indexOf('chart') !== -1) return true;
+          if (s.indexOf('preloaded using link preload but not used') !== -1) return true;
+          if (s.indexOf('[Intervention]') !== -1) return true;
+          if (s.indexOf('Refused to get unsafe header') !== -1) return true;
+          if (s.indexOf('Blocked call to navigator.vibrate') !== -1) return true;
+          if (s.indexOf('[Violation]') !== -1 || s.indexOf('Permissions policy') !== -1) return true;
+          if (s.indexOf('devicemotion') !== -1 || s.indexOf('deviceorientation') !== -1) return true;
+          if (s.indexOf('Mixed Content') !== -1) return true;
+          if (s.indexOf('Tracking Prevention blocked') !== -1) return true;
+          if (s.indexOf('[DEBUG CAPTIONS]') !== -1) return true;
           if (args.length === 1) {
             var one = String(args[0]).trim();
             if (one === 'H0' || one === 'BV' || one === 'start' || one === 'load' || one === 't') return true;

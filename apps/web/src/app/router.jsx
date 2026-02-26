@@ -6,7 +6,12 @@ import StudentLayout from "./layouts/StudentLayout";
 
 import AcademyPage from "../pages/academy/AcademyPage";
 import SolutionsPage from "../pages/solutions/SolutionsPage";
+import CoursesPage from "../pages/courses/CoursesPage";
+import CourseDetailPage from "../pages/courses/CourseDetailPage";
+import NotFoundPageRoute from "../pages/NotFoundPage";
 import LoginPage from "../pages/auth/LoginPage";
+import AccountPendingPage from "../pages/payment/AccountPendingPage";
+import PaymentFailurePage from "../pages/payment/PaymentFailurePage";
 import CourseContentsSidebarDemo from "../pages/demo/CourseContentsSidebarDemo";
 
 import SuperAdminHome from "../pages/lms/superadmin/SuperAdminHome";
@@ -16,6 +21,7 @@ import StudentHome from "../pages/lms/student/StudentHome";
 import PublicOnly from "./PublicOnly";
 import SuperAdminContent from "../pages/lms/superadmin/SuperAdminContent";
 import SuperAdminCourses from "../pages/lms/superadmin/SuperAdminCourses";
+import SuperAdminCoursePacks from "../pages/lms/superadmin/SuperAdminCoursePacks";
 import SuperAdminCourseBuilder from "../pages/lms/superadmin/SuperAdminCourseBuilder";
 import SuperAdminModuleLessons from "../pages/lms/superadmin/SuperAdminModuleLessons";
 import SuperAdminCreateLesson from "../pages/lms/superadmin/SuperAdminCreateLesson";
@@ -32,6 +38,7 @@ import SuperAdminClientLabRealWorld from "../pages/lms/superadmin/SuperAdminClie
 import SuperAdminInternships from "../pages/lms/superadmin/SuperAdminInternships";
 import SuperAdminAnalytics from "../pages/lms/superadmin/SuperAdminAnalytics";
 import SuperAdminPlaceholder from "../pages/lms/superadmin/SuperAdminPlaceholder";
+import SuperAdminApprovals from "../pages/lms/superadmin/SuperAdminApprovals";
 import SuperAdminStudents from "../pages/lms/superadmin/SuperAdminStudents";
 import SuperAdminMentors from "../pages/lms/superadmin/SuperAdminMentors";
 import SuperAdminPlayground from "../pages/lms/superadmin/SuperAdminPlayground";
@@ -83,8 +90,14 @@ export const router = createBrowserRouter([
       { path: "/", element: <AcademyPage /> },
       { path: "/academy", element: <AcademyPage /> },
       { path: "/solutions", element: <SolutionsPage /> },
+      { path: "/courses", element: <CoursesPage /> },
+      { path: "/courses/:slug", element: <CourseDetailPage /> },
       { path: "/demo/course-sidebar", element: <CourseContentsSidebarDemo /> },
       { path: "/login", element: <PublicOnly><LoginPage /></PublicOnly> },
+      { path: "/account-pending", element: <AccountPendingPage /> },
+      { path: "/payment-failure", element: <PaymentFailurePage /> },
+      { path: "/not-found", element: <NotFoundPageRoute /> },
+      { path: "*", element: <NotFoundPageRoute /> },
     ],
   },
   {
@@ -99,10 +112,12 @@ export const router = createBrowserRouter([
         ),
         children: [
           { index: true, element: <SuperAdminHome /> },
+          { path: "approvals", element: <SuperAdminApprovals /> },
           
           // Courses Management - Nested Routes
           { path: "courses", element: <SuperAdminCourses /> },
           { path: "courses/list", element: <SuperAdminCourses /> },
+          { path: "course-packs", element: <SuperAdminCoursePacks /> },
           { path: "courses/:courseId", element: <SuperAdminCourses /> },
           { path: "courses/:courseId/modules/:moduleId", element: <SuperAdminCourses /> },
           { path: "courses/:courseId/modules/:moduleId/lessons/create", element: <SuperAdminCreateLesson /> },

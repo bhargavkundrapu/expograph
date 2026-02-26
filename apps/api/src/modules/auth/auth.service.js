@@ -1,27 +1,20 @@
 // apps/api/src/modules/auth/auth.service.js
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt"); // if using bcryptjs, change to: require("bcryptjs")
 const { z } = require("zod");
 const { env } = require("../../config/env");
 const { HttpError } = require("../../utils/httpError");
-const {
-  findUserByEmail,
-  createUser,
-  findRoleIdForTenant,
-  upsertMembership,
-  getMembershipWithRole,
-} = require("../users/users.repo");
+const { findUserByEmail, getMembershipWithRole } = require("../users/users.repo");
 const { listPermissionsForUser } = require("../rbac/rbac.repo");
+const { createOtp, verifyOtp } = require("./auth.otp.repo");
+const { sendOtpEmail } = require("./auth.email.service");
 
-const RegisterSchema = z.object({
+const RequestOtpSchema = z.object({
   email: z.string().email(),
-  password: z.string().min(8),
-  fullName: z.string().min(1).max(100).optional(),
 });
 
-const LoginSchema = z.object({
+const VerifyOtpSchema = z.object({
   email: z.string().email(),
-  password: z.string().min(1),
+  otp: z.string().min(6).max(6),
 });
 
 function signToken({ userId, tenantId, membershipId, roleName }) {
@@ -32,74 +25,37 @@ function signToken({ userId, tenantId, membershipId, roleName }) {
   );
 }
 
-async function register({ tenant, body }) {
-  const parsed = RegisterSchema.safeParse(body);
+async function requestOtp({ tenant, body }) {
+  const parsed = RequestOtpSchema.safeParse(body);
   if (!parsed.success) {
     throw new HttpError(400, "Invalid input", parsed.error.flatten());
   }
 
   const email = parsed.data.email.trim().toLowerCase();
-  const password = parsed.data.password;
-  const fullName = parsed.data.fullName;
-
-  const existing = await findUserByEmail(email);
-  if (existing && existing.password_hash) {
-    throw new HttpError(409, "Email already registered");
-  }
-
-  const passwordHash = await bcrypt.hash(password, 12);
-
-  const user =
-    existing ??
-    (await createUser({
-      email,
-      fullName,
-      passwordHash,
-    }));
-
-  const roleId = await findRoleIdForTenant({ tenantId: tenant.id, roleName: "Student" });
-  if (!roleId) throw new HttpError(500, "Student role not found for tenant");
-
-  const membership = await upsertMembership({
-    tenantId: tenant.id,
-    userId: user.id,
-    roleId,
-  });
-
-  const membershipWithRole = await getMembershipWithRole({ tenantId: tenant.id, userId: user.id });
-  const permissions = await listPermissionsForUser({ tenantId: tenant.id, userId: user.id });
-
-  const token = signToken({
-    userId: user.id,
-    tenantId: tenant.id,
-    membershipId: membership.id,
-    roleName: membershipWithRole.role_name,
-  });
-
-  return {
-    token,
-    user: { id: user.id, email: user.email, fullName: user.full_name },
-    tenant: { id: tenant.id, slug: tenant.slug, name: tenant.name },
-    role: membershipWithRole.role_name,
-    permissions,
-  };
-}
-
-async function login({ tenant, body }) {
-  const parsed = LoginSchema.safeParse(body);
-  if (!parsed.success) {
-    throw new HttpError(400, "Invalid input", parsed.error.flatten());
-  }
-
-  const email = parsed.data.email.trim().toLowerCase();
-  const password = parsed.data.password;
-
   const user = await findUserByEmail(email);
-  if (!user || !user.password_hash) throw new HttpError(401, "Invalid credentials");
+  if (!user) throw new HttpError(404, "No account found with this email.");
   if (!user.is_active) throw new HttpError(403, "User is inactive");
 
-  const ok = await bcrypt.compare(password, user.password_hash);
-  if (!ok) throw new HttpError(401, "Invalid credentials");
+  const { otpCode } = await createOtp(email);
+  await sendOtpEmail({ to: email, otpCode, appName: tenant?.name || "ExpoGraph" });
+
+  return { ok: true, message: "OTP sent to your email" };
+}
+
+async function verifyOtpAndLogin({ tenant, body }) {
+  const parsed = VerifyOtpSchema.safeParse(body);
+  if (!parsed.success) {
+    throw new HttpError(400, "Invalid input", parsed.error.flatten());
+  }
+
+  const email = parsed.data.email.trim().toLowerCase();
+  const otp = parsed.data.otp.trim();
+
+  const { valid } = await verifyOtp(email, otp);
+  if (!valid) throw new HttpError(401, "Invalid or expired OTP. Please request a new code.");
+
+  const user = await findUserByEmail(email);
+  if (!user || !user.is_active) throw new HttpError(403, "User is inactive");
 
   const membershipWithRole = await getMembershipWithRole({ tenantId: tenant.id, userId: user.id });
   if (!membershipWithRole) throw new HttpError(403, "No membership for this tenant");
@@ -122,4 +78,4 @@ async function login({ tenant, body }) {
   };
 }
 
-module.exports = { register, login };
+module.exports = { requestOtp, verifyOtpAndLogin };

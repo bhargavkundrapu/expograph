@@ -6,6 +6,9 @@ import { InteractiveRobotSpline } from "../../Components/ui/interactive-3d-robot
 import HeroSection from "../../Components/ui/hero-section-9";
 import CallToAction1 from "../../Components/ui/call-to-action-1";
 import UiverseCard from "../../Components/ui/uiverse-card";
+import { AcademyMilestoneStepper } from "../../Components/ui/academy-milestone-stepper";
+import AccordionIndexed from "../../Components/ui/accordion-indexed";
+import { AcademyFeaturesGrid } from "../../Components/ui/academy-features-grid";
 import { TubesBackground } from "../../Components/ui/neon-flow";
 import { FiUsers as Users, FiBriefcase as Briefcase, FiLink as LinkIcon } from "react-icons/fi";
 
@@ -32,6 +35,13 @@ export default function AcademyPage() {
           scene="https://prod.spline.design/PyzDhpQ9E5f1E3MT/scene.splinecode"
           className="absolute inset-0 z-0"
         />
+        {/* "Built with ExpoGraph" badge — replaces Spline watermark in same spot */}
+        <div
+          className="absolute bottom-4 right-4 sm:bottom-5 sm:right-5 z-20 flex items-center justify-center gap-2 min-w-[180px] min-h-[48px] px-6 py-3 bg-black backdrop-blur-sm border border-white/10 rounded-full text-white/70 text-sm font-medium pointer-events-none"
+          aria-label="Built with ExpoGraph"
+        >
+          <span>ExpoGraph Acadamey</span>
+        </div>
         <div className="absolute inset-0 z-10 flex items-start pt-20 sm:pt-24 md:pt-28 lg:pt-32 xl:pt-40 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 pointer-events-none">
           <div className="text-left text-white drop-shadow-lg w-full max-w-full sm:max-w-xl md:max-w-xl lg:max-w-2xl pr-2 sm:pr-4">
             <motion.h1
@@ -41,7 +51,7 @@ export default function AcademyPage() {
               className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-bold leading-tight mb-4 sm:mb-6"
               style={{ fontFamily: '"Google Sans Flex", "Google Sans", sans-serif' }}
             >
-              Transform Your Career with ExpoGraph Academy
+              Transform Your Career with ExpoGraph 
             </motion.h1>
             <motion.div
               initial={{ opacity: 0, y: 12 }}
@@ -83,7 +93,7 @@ export default function AcademyPage() {
           subtitle="ExpoGraph Academy is here for you with various courses & materials from skilled tutors all around the world."
           actions={[
             {
-              text: "Join the Class",
+              text: "Join the Family",
               onClick: () => {
                 if (token) navigate("/lms/student/courses");
                 else navigate("/login");
@@ -97,9 +107,14 @@ export default function AcademyPage() {
             },
           ]}
           stats={[
-            { value: "15,2K", label: "Active students", icon: <Users className="h-5 w-5 text-muted-foreground" /> },
-            { value: "4,5K", label: "Tutors", icon: <Briefcase className="h-5 w-5 text-muted-foreground" /> },
-            { value: "Resources", label: "", icon: <LinkIcon className="h-5 w-5 text-muted-foreground" /> },
+            { value: "5K", label: "Active students", icon: <Users className="h-5 w-5 text-muted-foreground" /> },
+            { value: "100+", label: "Tutors", icon: <Briefcase className="h-5 w-5 text-muted-foreground" /> },
+            {
+              value: "Resources",
+              label: "",
+              icon: <LinkIcon className="h-5 w-5 text-muted-foreground" />,
+              onClick: () => document.getElementById("stepper")?.scrollIntoView({ behavior: "smooth" }),
+            },
           ]}
           images={[
             "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=2071&auto=format&fit=crop",
@@ -118,6 +133,40 @@ export default function AcademyPage() {
         <CallToAction1 />
       </section>
 
+      {/* What Features Are There With Us */}
+      <section
+        id="features"
+        className="py-12 md:py-16 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24"
+        style={{
+          backgroundColor: "#000000",
+          borderTop: "1px solid rgba(255, 255, 255, 0.08)",
+        }}
+      >
+        <h2 className="text-center text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-10">
+          What features are there with us
+        </h2>
+        <div className="mx-auto max-w-6xl">
+          <AcademyFeaturesGrid />
+        </div>
+      </section>
+
+      {/* Milestone Stepper Section */}
+      <section
+        id="stepper"
+        className="py-12 md:py-16 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24"
+        style={{
+          backgroundColor: "#000000",
+          borderTop: "1px solid rgba(255, 255, 255, 0.08)",
+        }}
+      >
+        <h2 className="text-center text-2xl md:text-3xl font-bold text-white mb-10">
+          Your Learning Journey
+        </h2>
+        <div className="text-white/90">
+          <AcademyMilestoneStepper />
+        </div>
+      </section>
+
       {/* Social / Connect — 3D card (UIVERSE) */}
       <section
         id="connect"
@@ -128,6 +177,23 @@ export default function AcademyPage() {
         }}
       >
         <UiverseCard />
+      </section>
+
+      {/* FAQs Section */}
+      <section
+        id="faqs"
+        className="py-12 md:py-16 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24"
+        style={{
+          backgroundColor: "#000000",
+          borderTop: "1px solid rgba(255, 255, 255, 0.08)",
+        }}
+      >
+        <h2 className="text-center text-3xl md:text-4xl font-bold text-white mb-10">
+          Frequently Asked Questions
+        </h2>
+        <div className="mx-auto max-w-3xl text-white/90">
+          <AccordionIndexed />
+        </div>
       </section>
 
       {/* Footer — ExpoGraph flow (TubesBackground) */}

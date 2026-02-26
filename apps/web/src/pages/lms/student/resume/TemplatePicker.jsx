@@ -2,7 +2,7 @@ import { TEMPLATES } from "./resumeConstants";
 
 export default function TemplatePicker({ selectedId, onSelect }) {
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+    <div className="grid grid-cols-2 gap-4 max-w-md">
       {TEMPLATES.map((t) => (
         <button
           key={t.id}

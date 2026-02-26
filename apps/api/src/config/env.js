@@ -53,6 +53,12 @@ const env = {
   RESUME_PDF_SERVICE_URL: (process.env.RESUME_PDF_SERVICE_URL ?? "http://localhost:8080").trim(),
   RESUME_PDF_TIMEOUT_MS: Number(process.env.RESUME_PDF_TIMEOUT_MS ?? 15000),
   RESUME_PDF_MAX_CONCURRENCY: Number(process.env.RESUME_PDF_MAX_CONCURRENCY ?? 4),
+
+  RAZORPAY_KEY_ID: (process.env.RAZORPAY_KEY_ID ?? "").trim(),
+  RAZORPAY_KEY_SECRET: (process.env.RAZORPAY_KEY_SECRET ?? "").trim(),
+  RAZORPAY_WEBHOOK_SECRET: (process.env.RAZORPAY_WEBHOOK_SECRET ?? "").trim(),
+  PUBLIC_WEB_URL: (process.env.PUBLIC_WEB_URL ?? "http://localhost:5173").trim(),
+  PUBLIC_API_URL: (process.env.PUBLIC_API_URL ?? process.env.API_URL ?? "http://localhost:4000").trim().replace(/\/$/, ""),
 };
 
 module.exports = { env };

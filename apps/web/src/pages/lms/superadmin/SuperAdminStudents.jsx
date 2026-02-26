@@ -270,17 +270,21 @@ export default function SuperAdminStudents() {
     try {
       const res = await apiFetch(`/api/v1/admin/students/${studentId}`, {
         method: "DELETE",
-        token,
+        token: token ?? localStorage.getItem("token"),
       });
 
       if (res?.ok) {
-        await fetchStudents();
-        if (view === "details" && selectedStudent?.id === studentId) {
-          navigate("/lms/superadmin/students/list");
+        const wasViewingDeleted = selectedStudent?.id === studentId;
+        if (wasViewingDeleted) {
+          setSelectedStudent(null);
+          if (view === "details") {
+            navigate("/lms/superadmin/students/list");
+          }
         }
+        await fetchStudents();
       }
     } catch (error) {
-      alert(error?.message || "Failed to delete student");
+      alert(error?.message || "Failed to delete student. Ensure the API server is running.");
     }
   };
 

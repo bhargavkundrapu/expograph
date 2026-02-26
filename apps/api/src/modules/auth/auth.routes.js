@@ -9,8 +9,8 @@ const controller = require("./auth.controller");
 
 const router = express.Router();
 
-router.post("/login", authLimiter, attachDevice, controller.login);
-router.post("/register", authLimiter, attachDevice, controller.register);
+router.post("/request-otp", authLimiter, attachDevice, controller.requestOtp);
+router.post("/verify-otp", authLimiter, attachDevice, controller.verifyOtp);
 
 
 

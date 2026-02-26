@@ -30,6 +30,7 @@ const { router: lmsClientLabRouter } = require("../modules/clientLab/clientLab.r
 const { router: mentorClientLabRouter } = require("../modules/clientLab/clientLab.routes.mentor");
 
 const { router: usersAdminRouter } = require("../modules/users/users.routes.admin");
+const { router: approvalsAdminRouter } = require("../modules/approvals/approvals.routes.admin");
 const { router: dashboardRouter } = require("../modules/dashboard/dashboard.routes");
 
 const { router: lmsInternRouter } = require("../modules/internships/internships.routes.lms");
@@ -54,7 +55,8 @@ const { notFound,errorHandler } = require("../middlewares/error-handler/errorHan
 const { requireAuth } = require("../middlewares/auth/requireAuth");
 const { requirePermission } = require("../middlewares/rbac/requirePermission");
 const { router: authRouter } = require("../modules/auth/auth.routes");
-
+const { router: paymentsRouter } = require("../modules/payments/payments.routes");
+const paymentsController = require("../modules/payments/payments.controller");
 
 function createApp() {
   const app = express();
@@ -66,6 +68,18 @@ function createApp() {
   })
 );
   app.use(morgan("combined"));
+
+  // Razorpay webhook needs raw body for signature verification - must be before express.json
+  app.post(
+    "/api/v1/payments/razorpay/webhook",
+    express.raw({ type: "application/json" }),
+    (req, res, next) => {
+      req.rawBody = req.body && Buffer.isBuffer(req.body) ? req.body.toString("utf8") : "";
+      next();
+    },
+    paymentsController.webhook
+  );
+
   app.use(express.json({ limit: "1mb" }));
  
 
@@ -153,10 +167,12 @@ app.use(
   app.use("/api/v1/admin", certAdmin);
   app.use("/api/v1/admin", featureFlagsAdmin);
   app.use("/api/v1/admin", usersAdminRouter);
+  app.use("/api/v1/admin/approvals", approvalsAdminRouter);
   app.use("/api/v1/admin/dashboard", dashboardRouter);
 
   app.use("/api/v1/referrals", referralsRoutes);
   app.use("/api/v1/resume", resumeRouter);
+  app.use("/api/v1/payments", paymentsRouter);
 
   // Presentations (stub until full API exists) – returns empty list so frontend doesn't 404
   app.get("/api/v1/presentations", requireAuth, (req, res) => {

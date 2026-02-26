@@ -13,13 +13,15 @@ import {
   FiChevronRight,
   FiChevronDown,
   FiClock,
+  FiLock,
 } from "react-icons/fi";
 import { AnimatePresence } from "framer-motion";
+import { BuyNowModal } from "../../../Components/payments/BuyNowModal";
 
 export default function StudentCourses() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [courses, setCourses] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -28,6 +30,8 @@ export default function StudentCourses() {
   const [courseDetails, setCourseDetails] = useState(null);
   const [loadingDetails, setLoadingDetails] = useState(false);
   const [expandedTopics, setExpandedTopics] = useState(new Set());
+  const [showBuyModal, setShowBuyModal] = useState(false);
+  const [buyItem, setBuyItem] = useState(null);
   const openedFromUrlRef = useRef(false);
 
   // Check if we're on the bonus courses page
@@ -51,7 +55,8 @@ export default function StudentCourses() {
       const c = courses.find((co) => co.slug === courseSlug);
       if (c) {
         openedFromUrlRef.current = true;
-        handleCourseClick(c);
+        if (c.enrolled) handleCourseClick(c);
+        else openBuyModal(c);
       }
     }
   }, [location.search, courses]);
@@ -87,8 +92,23 @@ export default function StudentCourses() {
   };
 
   const handleCourseClick = async (course) => {
+    if (!course.enrolled) {
+      openBuyModal(course);
+      return;
+    }
     setSelectedCourse(course);
     await fetchCourseDetails(course.slug);
+  };
+
+  const openBuyModal = (course) => {
+    setBuyItem({ type: "course", id: course.id, title: course.title });
+    setShowBuyModal(true);
+  };
+
+  const handleBuySuccess = () => {
+    setShowBuyModal(false);
+    setBuyItem(null);
+    fetchCourses();
   };
 
   const handleCloseModal = () => {
@@ -127,10 +147,14 @@ export default function StudentCourses() {
     return matchesSearch && matchesLevel;
   });
 
-  // Calculate overall progress
-  const overallProgress = courses.length > 0
-    ? Math.round(courses.reduce((sum, course) => sum + (course.progress || 0), 0) / courses.length)
-    : 0;
+  // Calculate overall progress (enrolled courses only)
+  const enrolledCourses = courses.filter((c) => c.enrolled);
+  const overallProgress =
+    enrolledCourses.length > 0
+      ? Math.round(
+          enrolledCourses.reduce((sum, c) => sum + (c.progress || 0), 0) / enrolledCourses.length
+        )
+      : 0;
 
   // Calculate total duration (assuming each course has duration)
   const totalDuration = courses.reduce((sum, course) => {
@@ -266,7 +290,11 @@ export default function StudentCourses() {
           <div className="bg-white rounded-lg p-12 border border-slate-200 text-center shadow-sm">
             <FiBookOpen className="w-16 h-16 text-slate-300 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-slate-900 mb-2">No courses found</h3>
-            <p className="text-slate-600">You haven't enrolled in any courses yet</p>
+            <p className="text-slate-600">
+              {searchQuery || filterLevel !== "all"
+                ? "No courses match your filters"
+                : "No courses available yet"}
+            </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -275,6 +303,9 @@ export default function StudentCourses() {
               const isCompleted = progress === 100;
               const topicsCount = course.modules_count || course.topics_count || course.lessons_count || 0;
               const technologies = course.technologies || course.tags || [];
+              const locked = !course.enrolled;
+              const priceRupees = course.price_in_paise ? Math.round(course.price_in_paise / 100) : 0;
+              const canBuy = priceRupees >= 1;
 
               return (
                 <motion.div
@@ -283,24 +314,54 @@ export default function StudentCourses() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.05 }}
                   onClick={() => handleCourseClick(course)}
-                  className="bg-white rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition-all cursor-pointer overflow-hidden"
+                  className={`bg-white rounded-lg border shadow-sm transition-all overflow-hidden relative ${
+                    locked
+                      ? "border-slate-300 cursor-pointer hover:shadow-md"
+                      : "border-slate-200 hover:shadow-md cursor-pointer"
+                  }`}
                 >
-                  <div className="p-6">
-                    {/* Top Section */}
+                  {locked && (
+                    <div className="absolute inset-0 bg-slate-50/80 z-10 flex items-center justify-center rounded-lg opacity-0 hover:opacity-100 transition-opacity">
+                      <div className="text-center">
+                        <FiLock className="w-12 h-12 text-slate-400 mx-auto mb-2" />
+                        <p className="text-sm font-medium text-slate-700 mb-2">Locked</p>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            openBuyModal(course);
+                          }}
+                          disabled={!canBuy}
+                          className={`px-4 py-2 rounded-lg font-semibold text-sm transition-colors ${
+                            canBuy
+                              ? "bg-blue-600 hover:bg-blue-700 text-white"
+                              : "bg-slate-300 text-slate-500 cursor-not-allowed"
+                          }`}
+                        >
+                          Get Course {canBuy && priceRupees > 0 ? `(₹${priceRupees})` : ""}
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                  <div className={`p-6 ${locked ? "opacity-75" : ""}`}>
                     <div className="flex items-start justify-between mb-4">
-                      {/* Left: Course Code/Icon */}
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 flex items-center justify-center">
-                          {getCourseIcon(course, index)}
+                          {locked ? (
+                            <FiLock className="w-6 h-6 text-slate-400" />
+                          ) : (
+                            getCourseIcon(course, index)
+                          )}
                         </div>
-                        {course.code && (
+                        {course.code && !locked && (
                           <span className="text-sm font-bold text-blue-600">{course.code}</span>
                         )}
                       </div>
-
-                      {/* Right: Status/Progress */}
                       <div className="flex items-center gap-2">
-                        {isCompleted ? (
+                        {locked ? (
+                          <span className="text-xs font-medium text-slate-500 bg-slate-100 px-2 py-1 rounded">
+                            🔒 Locked
+                          </span>
+                        ) : isCompleted ? (
                           <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center">
                             <FiCheck className="w-5 h-5 text-white" />
                           </div>
@@ -309,26 +370,29 @@ export default function StudentCourses() {
                         )}
                       </div>
                     </div>
-
-                    {/* Course Label */}
                     <p className="text-xs uppercase tracking-wider text-slate-500 mb-2">COURSE</p>
-
-                    {/* Course Title */}
                     <h3 className="text-lg font-bold text-slate-900 mb-2">
                       {index + 1}. {course.title || "Untitled Course"}
                     </h3>
-
-                    {/* Description */}
                     <p className="text-sm text-slate-500 mb-4 line-clamp-2">
                       {course.description || "No description available"}
                     </p>
-
-                    {/* Topics Count */}
                     <p className="text-sm text-slate-500 mb-4">
-                      {topicsCount} {topicsCount === 1 ? 'Topic' : 'Topics'}
+                      {topicsCount} {topicsCount === 1 ? "Topic" : "Topics"}
                     </p>
-
-                    {/* Technology Tags */}
+                    {locked && canBuy && (
+                      <div className="mb-4">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            openBuyModal(course);
+                          }}
+                          className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg text-sm"
+                        >
+                          Get Course — ₹{priceRupees}
+                        </button>
+                      </div>
+                    )}
                     {technologies.length > 0 && (
                       <div className="flex flex-wrap gap-2">
                         {technologies.slice(0, 3).map((tech, techIndex) => (
@@ -336,7 +400,9 @@ export default function StudentCourses() {
                             key={techIndex}
                             className="px-3 py-1 bg-slate-100 rounded-full text-xs text-slate-700 font-medium"
                           >
-                            {typeof tech === 'string' ? tech.toUpperCase() : tech.name?.toUpperCase() || tech}
+                            {typeof tech === "string"
+                              ? tech.toUpperCase()
+                              : tech.name?.toUpperCase() || tech}
                           </span>
                         ))}
                       </div>
@@ -535,6 +601,14 @@ export default function StudentCourses() {
           </>
         )}
       </AnimatePresence>
+
+      <BuyNowModal
+        open={showBuyModal}
+        onClose={() => { setShowBuyModal(false); setBuyItem(null); }}
+        item={buyItem}
+        onSuccess={handleBuySuccess}
+        prefill={user ? { name: user.name || user.full_name, email: user.email, phone: user.phone } : undefined}
+      />
     </div>
   );
 }

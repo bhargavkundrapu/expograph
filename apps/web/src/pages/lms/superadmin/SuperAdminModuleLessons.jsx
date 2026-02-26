@@ -30,6 +30,7 @@ export default function SuperAdminModuleLessons() {
     summary: "",
     goal: "",
     video_url: "",
+    video_captions: "",
     prompts: { prompts: "", commands: "", error_resolve: "" },
     success_image_urls: [],
     learn_setup_steps: [],
@@ -87,6 +88,7 @@ export default function SuperAdminModuleLessons() {
           summary: found.summary || "",
           goal: found.goal || "",
           video_url: found.video_url || "",
+          video_captions: found.video_captions || "",
           prompts,
           success_image_urls: Array.isArray(found.success_image_urls)
             ? [...found.success_image_urls]
@@ -125,6 +127,7 @@ export default function SuperAdminModuleLessons() {
         ...(form.summary != null && { summary: form.summary.trim?.() ?? "" }),
         ...(form.goal != null && { goal: form.goal.trim?.() ?? "" }),
         ...(form.video_url != null && { video_url: form.video_url.trim?.() ?? "" }),
+        ...(form.video_captions != null && { video_captions: form.video_captions.trim?.() ?? "" }),
         ...(promptsObj && { prompts: promptsObj }),
         success_image_urls: (Array.isArray(form.success_image_urls) ? form.success_image_urls : []).filter((u) => u && String(u).trim()),
         learn_setup_steps: (Array.isArray(form.learn_setup_steps) ? form.learn_setup_steps : []).filter((s) => s && String(s).trim()),
@@ -217,6 +220,17 @@ export default function SuperAdminModuleLessons() {
               onChange={(e) => setForm((f) => ({ ...f, video_url: e.target.value }))}
               placeholder="https://..."
               className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-semibold text-slate-900 mb-2">Video Captions / Subtitles (optional)</label>
+            <p className="text-xs text-slate-500 mb-2">Paste the .srt subtitle content here. Students can toggle captions on/off in the video player.</p>
+            <textarea
+              value={form.video_captions}
+              onChange={(e) => setForm((f) => ({ ...f, video_captions: e.target.value }))}
+              placeholder={"1\n00:00:00,000 --> 00:00:03,000\nHello, welcome to this lesson.\n\n2\n00:00:03,500 --> 00:00:07,000\nLet's get started."}
+              rows={6}
+              className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 resize-none font-mono text-sm"
             />
           </div>
           <div className="border-t border-slate-200 pt-4 space-y-4">

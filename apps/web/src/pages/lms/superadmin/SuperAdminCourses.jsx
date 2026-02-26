@@ -47,7 +47,7 @@ export default function SuperAdminCourses() {
   const [editingModule, setEditingModule] = useState(null);
   const [courseForm, setCourseForm] = useState({ title: "", description: "", level: "beginner" });
   const [moduleForm, setModuleForm] = useState({ title: "" });
-  const [courseEditForm, setCourseEditForm] = useState({ title: "", description: "", level: "beginner" });
+  const [courseEditForm, setCourseEditForm] = useState({ title: "", description: "", level: "beginner", priceRupees: "" });
   const [moduleEditForm, setModuleEditForm] = useState({ title: "" });
 
   // Determine current view
@@ -208,10 +208,12 @@ export default function SuperAdminCourses() {
 
   const openEditCourse = (c) => {
     setEditingCourse(c);
+    const pricePaise = c.price_in_paise ?? 0;
     setCourseEditForm({
       title: c.title || "",
       description: c.description || "",
       level: c.level || "beginner",
+      priceRupees: pricePaise > 0 ? String(Math.round(pricePaise / 100)) : "",
     });
     setShowEditCourseModal(true);
     setShowDeleteConfirm(null);
@@ -224,6 +226,9 @@ export default function SuperAdminCourses() {
     }
     try {
       setSaving(true);
+      const pricePaise = courseEditForm.priceRupees && !isNaN(Number(courseEditForm.priceRupees))
+        ? Math.round(Number(courseEditForm.priceRupees) * 100)
+        : undefined;
       const res = await apiFetch(`/api/v1/admin/courses/${editingCourse.id}`, {
         method: "PATCH",
         token,
@@ -231,6 +236,7 @@ export default function SuperAdminCourses() {
           title: courseEditForm.title.trim(),
           description: courseEditForm.description?.trim() || undefined,
           level: courseEditForm.level,
+          ...(pricePaise !== undefined && { price_in_paise: Math.max(0, pricePaise) }),
         },
       });
       if (res && (res.ok === true || res.data?.id)) {
@@ -902,6 +908,19 @@ export default function SuperAdminCourses() {
                     <option value="advanced">Advanced</option>
                   </select>
                 </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-900 mb-2">Price (₹)</label>
+                  <input
+                    type="number"
+                    min="0"
+                    step="1"
+                    value={courseEditForm.priceRupees}
+                    onChange={(e) => setCourseEditForm((f) => ({ ...f, priceRupees: e.target.value }))}
+                    placeholder="e.g. 199 (leave empty for free)"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-slate-900"
+                  />
+                  <p className="text-xs text-slate-500 mt-1">Amount in rupees. Minimum ₹1 for paid courses.</p>
+                </div>
               </div>
               <div className="p-6 border-t border-slate-200 flex items-center justify-end gap-3">
                 <button onClick={() => { setShowEditCourseModal(false); setEditingCourse(null); }} className="px-4 py-2 text-slate-700 hover:bg-slate-100 rounded-md">Cancel</button>
@@ -1261,6 +1280,19 @@ export default function SuperAdminCourses() {
                     <option value="intermediate">Intermediate</option>
                     <option value="advanced">Advanced</option>
                   </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-900 mb-2">Price (₹)</label>
+                  <input
+                    type="number"
+                    min="0"
+                    step="1"
+                    value={courseEditForm.priceRupees}
+                    onChange={(e) => setCourseEditForm((f) => ({ ...f, priceRupees: e.target.value }))}
+                    placeholder="e.g. 199 (leave empty for free)"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-slate-900"
+                  />
+                  <p className="text-xs text-slate-500 mt-1">Amount in rupees. Minimum ₹1 for paid courses.</p>
                 </div>
               </div>
               <div className="p-6 border-t border-slate-200 flex items-center justify-end gap-3">

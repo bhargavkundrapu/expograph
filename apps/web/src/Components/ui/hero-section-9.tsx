@@ -7,6 +7,7 @@ interface StatProps {
   value: string;
   label: string;
   icon: React.ReactNode;
+  onClick?: () => void;
 }
 
 interface ActionProps {
@@ -126,19 +127,30 @@ const HeroSection = ({
             className="mt-8 sm:mt-12 flex flex-wrap justify-center gap-4 sm:gap-6 lg:gap-8 lg:justify-start"
             variants={itemVariants}
           >
-            {stats.map((stat, index) => (
-              <div key={index} className="flex items-center gap-2 sm:gap-3">
-                <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-muted shrink-0">
-                  {stat.icon}
-                </div>
-                <div className="min-w-0">
-                  <p className="text-base sm:text-lg md:text-xl font-bold text-foreground truncate">
-                    {stat.value}
-                  </p>
-                  <p className="text-xs sm:text-sm text-muted-foreground truncate">{stat.label}</p>
-                </div>
-              </div>
-            ))}
+            {stats.map((stat, index) => {
+              const Wrapper = stat.onClick ? "button" : "div";
+              return (
+                <Wrapper
+                  key={index}
+                  type={stat.onClick ? "button" : undefined}
+                  onClick={stat.onClick}
+                  className={cn(
+                    "flex items-center gap-2 sm:gap-3 text-left",
+                    stat.onClick && "cursor-pointer hover:opacity-80 transition-opacity"
+                  )}
+                >
+                  <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-muted shrink-0">
+                    {stat.icon}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-base sm:text-lg md:text-xl font-bold text-foreground truncate">
+                      {stat.value}
+                    </p>
+                    <p className="text-xs sm:text-sm text-muted-foreground truncate">{stat.label}</p>
+                  </div>
+                </Wrapper>
+              );
+            })}
           </motion.div>
         </motion.div>
 

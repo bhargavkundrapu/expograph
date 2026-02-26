@@ -34,7 +34,7 @@ async function listCoursesAdmin({ tenantId }) {
 
 async function listCoursesPublic({ tenantId }) {
   const { rows } = await query(
-    `SELECT id, title, slug, description, level
+    `SELECT id, title, slug, description, level, price_in_paise
      FROM courses
      WHERE tenant_id = $1 AND status = 'published'
      ORDER BY created_at DESC`,
@@ -63,7 +63,7 @@ async function createModule({ tenantId, courseId, title, slug, position, status,
   return rows[0];
 }
 
-async function createLesson({ tenantId, moduleId, title, slug, summary, position, goal, video_url, prompts, success_image_url, success_image_urls, learn_setup_steps, pdf_url = null, status, createdBy }) {
+async function createLesson({ tenantId, moduleId, title, slug, summary, position, goal, video_url, prompts, success_image_url, success_image_urls, learn_setup_steps, pdf_url = null, video_captions = null, status, createdBy }) {
   const pdfUrlValue = pdf_url ?? null;
   const urlsValue = Array.isArray(success_image_urls) && success_image_urls.length > 0
     ? JSON.stringify(success_image_urls)
@@ -72,8 +72,8 @@ async function createLesson({ tenantId, moduleId, title, slug, summary, position
     ? JSON.stringify(learn_setup_steps)
     : null;
   const { rows } = await query(
-    `INSERT INTO lessons (tenant_id, module_id, title, slug, summary, position, goal, video_url, prompts, success_image_url, success_image_urls, learn_setup_steps, pdf_url, status, created_by)
-     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)
+    `INSERT INTO lessons (tenant_id, module_id, title, slug, summary, position, goal, video_url, prompts, success_image_url, success_image_urls, learn_setup_steps, pdf_url, video_captions, status, created_by)
+     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16)
      RETURNING *`,
     [
       tenantId, 
@@ -89,6 +89,7 @@ async function createLesson({ tenantId, moduleId, title, slug, summary, position
       urlsValue,
       stepsValue,
       pdfUrlValue,
+      video_captions ?? null,
       status ?? "draft", 
       createdBy ?? null
     ]
@@ -170,7 +171,7 @@ async function getCourseTreeAdmin({ tenantId, courseId }) {
   let lessons = [];
   if (moduleIds.length) {
     lessons = (await query(
-      `SELECT id, module_id, title, slug, summary, position, goal, video_url, prompts, success_image_url, success_image_urls, learn_setup_steps, pdf_url, video_provider, video_id, duration_seconds, status, created_at, updated_at FROM lessons WHERE tenant_id=$1 AND module_id = ANY($2::uuid[]) ORDER BY position ASC, created_at ASC`,
+      `SELECT id, module_id, title, slug, summary, position, goal, video_url, video_captions, prompts, success_image_url, success_image_urls, learn_setup_steps, pdf_url, video_provider, video_id, duration_seconds, status, created_at, updated_at FROM lessons WHERE tenant_id=$1 AND module_id = ANY($2::uuid[]) ORDER BY position ASC, created_at ASC`,
       [tenantId, moduleIds]
     )).rows;
 
@@ -217,7 +218,7 @@ async function getCourseTreeAdmin({ tenantId, courseId }) {
 
 async function getPublishedCourseTreeBySlug({ tenantId, courseSlug }) {
   const course = (await query(
-    `SELECT id, title, slug, description, level
+    `SELECT id, title, slug, description, level, price_in_paise
      FROM courses
      WHERE tenant_id=$1 AND slug=$2 AND status='published'`,
     [tenantId, courseSlug]
@@ -237,7 +238,7 @@ async function getPublishedCourseTreeBySlug({ tenantId, courseSlug }) {
   let lessons = [];
   if (moduleIds.length) {
     lessons = (await query(
-      `SELECT id, module_id, title, slug, summary, position, goal, video_url, prompts, success_image_url, success_image_urls, learn_setup_steps, pdf_url
+      `SELECT id, module_id, title, slug, summary, position, goal, video_url, video_captions, prompts, success_image_url, success_image_urls, learn_setup_steps, pdf_url
        FROM lessons
        WHERE tenant_id=$1 AND module_id = ANY($2::uuid[]) AND status='published'
        ORDER BY position ASC, created_at ASC`,
@@ -297,7 +298,7 @@ async function getPublishedLessonBySlugs({ tenantId, courseSlug, moduleSlug, les
         m.id AS module_id, m.title AS module_title, m.slug AS module_slug,
         l.id AS lesson_id, l.title AS lesson_title, l.slug AS lesson_slug, l.summary,
         l.video_provider, l.video_id, l.duration_seconds,
-        l.goal, l.video_url, l.prompts, l.success_image_url, l.success_image_urls, l.learn_setup_steps, l.pdf_url
+        l.goal, l.video_url, l.video_captions, l.prompts, l.success_image_url, l.success_image_urls, l.learn_setup_steps, l.pdf_url
      FROM courses c
      JOIN course_modules m ON m.course_id = c.id AND m.tenant_id = c.tenant_id
      JOIN lessons l ON l.module_id = m.id AND l.tenant_id = m.tenant_id
@@ -355,6 +356,10 @@ async function updateCourse({ tenantId, courseId, patch, updatedBy }) {
   if (patch.level !== undefined) {
     fields.push(`level=$${i++}`);
     values.push(patch.level);
+  }
+  if (patch.price_in_paise !== undefined) {
+    fields.push(`price_in_paise=$${i++}`);
+    values.push(patch.price_in_paise);
   }
 
   if (!fields.length) return null;
@@ -424,8 +429,7 @@ async function updateLesson({ tenantId, lessonId, patch, updatedBy }) {
     values.push(JSON.stringify(steps));
   }
   if (patch.pdf_url !== undefined) { fields.push(`pdf_url=$${i++}`); values.push(patch.pdf_url || null); }
-
-
+  if (patch.video_captions !== undefined) { fields.push(`video_captions=$${i++}`); values.push(patch.video_captions || null); }
 
   if (!fields.length) return null;
 
@@ -831,6 +835,110 @@ async function deleteLesson({ tenantId, lessonId }) {
   return rows[0] || null;
 }
 
+async function listCoursePacksPublic({ tenantId }) {
+  const { rows } = await query(
+    `SELECT id, title, slug, description, price_in_paise
+     FROM course_packs
+     WHERE tenant_id = $1 AND status = 'published'
+     ORDER BY created_at DESC`,
+    [tenantId]
+  );
+  return rows;
+}
+
+async function getPackBySlug({ tenantId, slug }) {
+  const { rows } = await query(
+    `SELECT id, title, slug, description, price_in_paise
+     FROM course_packs
+     WHERE tenant_id = $1 AND slug = $2 AND status = 'published' LIMIT 1`,
+    [tenantId, slug]
+  );
+  return rows[0] ?? null;
+}
+
+// Admin: course packs
+async function listCoursePacksAdmin({ tenantId }) {
+  const { rows } = await query(
+    `SELECT id, title, slug, description, price_in_paise, status, created_at, updated_at
+     FROM course_packs
+     WHERE tenant_id = $1
+     ORDER BY created_at DESC`,
+    [tenantId]
+  );
+  return rows;
+}
+
+async function getCoursePackById({ tenantId, packId }) {
+  const { rows } = await query(
+    `SELECT id, title, slug, description, price_in_paise, status
+     FROM course_packs
+     WHERE tenant_id = $1 AND id = $2 LIMIT 1`,
+    [tenantId, packId]
+  );
+  return rows[0] ?? null;
+}
+
+async function updateCoursePack({ tenantId, packId, patch }) {
+  const allowed = ["title", "slug", "description", "price_in_paise", "status"];
+  const setClauses = [];
+  const values = [];
+  let i = 1;
+  for (const k of allowed) {
+    if (patch[k] !== undefined) {
+      setClauses.push(`${k} = $${i++}`);
+      values.push(patch[k]);
+    }
+  }
+  if (setClauses.length === 0) return null;
+  setClauses.push("updated_at = now()");
+  values.push(tenantId, packId);
+  const { rows } = await query(
+    `UPDATE course_packs SET ${setClauses.join(", ")}
+     WHERE tenant_id = $${i++} AND id = $${i}
+     RETURNING *`,
+    values
+  );
+  return rows[0] ?? null;
+}
+
+async function getPackCourseIds({ tenantId, packId }) {
+  const { rows } = await query(
+    `SELECT course_id FROM course_pack_courses cpc
+     JOIN course_packs p ON p.id = cpc.pack_id
+     WHERE p.tenant_id = $1 AND cpc.pack_id = $2`,
+    [tenantId, packId]
+  );
+  return rows.map((r) => r.course_id);
+}
+
+async function setPackCourses({ tenantId, packId, courseIds }) {
+  await query(
+    `DELETE FROM course_pack_courses
+     WHERE pack_id IN (SELECT id FROM course_packs WHERE tenant_id = $1 AND id = $2)`,
+    [tenantId, packId]
+  );
+  if (!courseIds?.length) return [];
+  await query(
+    `INSERT INTO course_pack_courses (pack_id, course_id)
+     SELECT $1, unnest($2::uuid[])
+     ON CONFLICT (pack_id, course_id) DO NOTHING`,
+    [packId, courseIds]
+  );
+  return courseIds;
+}
+
+async function listCoursesInPack({ tenantId, packId }) {
+  const { rows } = await query(
+    `SELECT c.id, c.title, c.slug
+     FROM courses c
+     JOIN course_pack_courses cpc ON cpc.course_id = c.id
+     WHERE cpc.pack_id = $1 AND c.tenant_id = $2 AND c.status = 'published'
+     ORDER BY c.title`,
+    [packId, tenantId]
+  );
+  return rows;
+}
+
 module.exports = {
   createCourse,
   listCoursesAdmin,
@@ -866,4 +974,12 @@ module.exports = {
   deleteCourse,
   deleteModule,
   deleteLesson,
+  listCoursePacksPublic,
+  getPackBySlug,
+  listCoursePacksAdmin,
+  getCoursePackById,
+  updateCoursePack,
+  getPackCourseIds,
+  setPackCourses,
+  listCoursesInPack,
 };

@@ -76,7 +76,7 @@ export default function StudentReferrals() {
 
   const generateReferralLink = () => {
     // Generate referral link - replace with actual API call
-    const link = `${window.location.origin}/signup?ref=${user?.id || "student123"}`;
+    const link = `${window.location.origin}/login?ref=${user?.id || "student123"}`;
     setReferralLink(link);
   };
 

@@ -69,14 +69,17 @@ export default function StudentLesson() {
   const [summaryExpanded, setSummaryExpanded] = useState(false);
   const [selectedSuccessImageIndex, setSelectedSuccessImageIndex] = useState(0);
   const [selectedLearnStepIndex, setSelectedLearnStepIndex] = useState(0);
+  const [captionsEnabled, setCaptionsEnabled] = useState(true);
+  const captionsBlobUrlRef = useRef(null);
   const videoRef = useRef(null);
   const courseDataLoadedRef = useRef(false);
   const isManualNavigationRef = useRef(false);
 
-  // Reset success image index and learn step when lesson changes
+  // Reset success image index, learn step, and captions when lesson changes
   useEffect(() => {
     setSelectedSuccessImageIndex(0);
     setSelectedLearnStepIndex(0);
+    setCaptionsEnabled(true);
   }, [lesson?.id]);
 
   // Set default prompt tab when lesson loads
@@ -91,6 +94,46 @@ export default function StudentLesson() {
       }
     }
   }, [lesson?.prompts]);
+
+  // Convert SRT text to a WebVTT blob URL synchronously so <track> is in the DOM with <video>
+  const captionsBlobUrl = useMemo(() => {
+    if (captionsBlobUrlRef.current) {
+      URL.revokeObjectURL(captionsBlobUrlRef.current);
+      captionsBlobUrlRef.current = null;
+    }
+    if (lesson?.video_captions && lesson.video_captions.trim()) {
+      const srtText = lesson.video_captions.trim();
+      const vttContent = "WEBVTT\n\n" + srtText
+        .replace(/\r\n/g, "\n")
+        .replace(/(\d{2}:\d{2}:\d{2}),(\d{3})/g, "$1.$2");
+      const blob = new Blob([vttContent], { type: "text/vtt" });
+      const url = URL.createObjectURL(blob);
+      captionsBlobUrlRef.current = url;
+      return url;
+    }
+    return null;
+  }, [lesson?.video_captions]);
+
+  // Cleanup blob URL on unmount
+  useEffect(() => {
+    return () => {
+      if (captionsBlobUrlRef.current) URL.revokeObjectURL(captionsBlobUrlRef.current);
+    };
+  }, []);
+
+  // Toggle captions track mode when user clicks CC button
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    const trySetMode = () => {
+      if (video.textTracks && video.textTracks.length > 0) {
+        video.textTracks[0].mode = captionsEnabled ? "showing" : "hidden";
+      }
+    };
+    trySetMode();
+    video.textTracks?.addEventListener?.("addtrack", trySetMode);
+    return () => video.textTracks?.removeEventListener?.("addtrack", trySetMode);
+  }, [captionsEnabled, captionsBlobUrl]);
 
   const handleCopy = async (text, index) => {
     try {
@@ -636,9 +679,10 @@ export default function StudentLesson() {
                     </div>
                   </div>
                 ) : lesson.video_url ? (
-                  <div className="bg-black overflow-hidden shadow-xl">
-                    <div className="aspect-video bg-black" style={{ maxHeight: "450px" }}>
+                  <div className="bg-black overflow-hidden shadow-xl relative">
+                    <div className="aspect-video bg-black relative" style={{ maxHeight: "450px" }}>
                       <video
+                        key={`vid-${lesson.id}-${captionsBlobUrl ? "cc" : "nocc"}`}
                         ref={videoRef}
                         src={lesson.video_url}
                         controls
@@ -646,12 +690,13 @@ export default function StudentLesson() {
                         disablePictureInPicture
                         className="w-full h-full"
                         onPlay={() => setVideoReady(true)}
+                        crossOrigin="anonymous"
                       >
-                        {lesson.video_captions_url && (
+                        {captionsBlobUrl && (
                           <track
                             kind="captions"
                             srcLang="en"
-                            src={lesson.video_captions_url}
+                            src={captionsBlobUrl}
                             label="English"
                             default
                           />
@@ -659,11 +704,26 @@ export default function StudentLesson() {
                         Your browser does not support the video tag.
                       </video>
                     </div>
+                    {captionsBlobUrl && (
+                      <button
+                        type="button"
+                        onClick={() => setCaptionsEnabled((v) => !v)}
+                        className={`absolute top-2 right-2 z-10 px-3 py-1.5 rounded text-xs font-semibold transition-colors ${
+                          captionsEnabled
+                            ? "bg-white text-black hover:bg-slate-200"
+                            : "bg-black/60 text-white/70 hover:bg-black/80"
+                        }`}
+                        title={captionsEnabled ? "Turn off captions" : "Turn on captions"}
+                      >
+                        CC {captionsEnabled ? "ON" : "OFF"}
+                      </button>
+                    )}
                   </div>
                 ) : lesson.video_id && lesson.video_id.startsWith("http") ? (
-                  <div className="bg-black overflow-hidden shadow-xl">
-                    <div className="aspect-video bg-black" style={{ maxHeight: "450px" }}>
+                  <div className="bg-black overflow-hidden shadow-xl relative">
+                    <div className="aspect-video bg-black relative" style={{ maxHeight: "450px" }}>
                       <video
+                        key={`vid-${lesson.id}-${captionsBlobUrl ? "cc" : "nocc"}`}
                         ref={videoRef}
                         src={lesson.video_id}
                         controls
@@ -671,12 +731,13 @@ export default function StudentLesson() {
                         disablePictureInPicture
                         className="w-full h-full"
                         onPlay={() => setVideoReady(true)}
+                        crossOrigin="anonymous"
                       >
-                        {lesson.video_captions_url && (
+                        {captionsBlobUrl && (
                           <track
                             kind="captions"
                             srcLang="en"
-                            src={lesson.video_captions_url}
+                            src={captionsBlobUrl}
                             label="English"
                             default
                           />
@@ -684,106 +745,25 @@ export default function StudentLesson() {
                         Your browser does not support the video tag.
                       </video>
                     </div>
+                    {captionsBlobUrl && (
+                      <button
+                        type="button"
+                        onClick={() => setCaptionsEnabled((v) => !v)}
+                        className={`absolute top-2 right-2 z-10 px-3 py-1.5 rounded text-xs font-semibold transition-colors ${
+                          captionsEnabled
+                            ? "bg-white text-black hover:bg-slate-200"
+                            : "bg-black/60 text-white/70 hover:bg-black/80"
+                        }`}
+                        title={captionsEnabled ? "Turn off captions" : "Turn on captions"}
+                      >
+                        CC {captionsEnabled ? "ON" : "OFF"}
+                      </button>
+                    )}
                   </div>
                 ) : null}
                 </div>
               </div>
               ) : null}
-
-              {/* Presentation (PDF) - Modern styled section inspired by courses page */}
-              {lesson?.pdf_url && (
-                <div className="px-8 pt-8 pb-8">
-                  <h3 className="text-lg font-semibold text-slate-900 mb-3">Slides</h3>
-                  <div className="flex justify-center">
-                    <PDFPresentationViewer pdfUrl={lesson.pdf_url} />
-                  </div>
-                </div>
-              )}
-
-            {/* Learn and Setup - Step-based section (like Success looks like) */}
-            {((Array.isArray(lesson?.learn_setup_steps) && lesson.learn_setup_steps.length > 0) || lesson?.summary?.trim()) && (
-              <div className="px-8 pb-8">
-                <div className="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 rounded-lg border-2 border-blue-200 shadow-lg overflow-hidden">
-                  <button
-                    type="button"
-                    onClick={() => setSummaryExpanded(!summaryExpanded)}
-                    className="w-full px-6 py-4 flex items-center justify-between hover:from-blue-100 hover:via-indigo-100 hover:to-purple-100 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                    aria-expanded={summaryExpanded}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center shadow-md">
-                        <FiTarget className="w-5 h-5 text-white" />
-                      </div>
-                      <div className="text-left">
-                        <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight mb-1">Learn and Setup</h2>
-                        <p className="text-base text-slate-500 font-normal">Essential information to get started</p>
-                      </div>
-                    </div>
-                    {summaryExpanded ? (
-                      <FiChevronUp className="w-6 h-6 text-blue-600 flex-shrink-0" />
-                    ) : (
-                      <FiChevronDown className="w-6 h-6 text-blue-600 flex-shrink-0" />
-                    )}
-                  </button>
-                  <AnimatePresence>
-                    {summaryExpanded && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        exit={{ opacity: 0, height: 0 }}
-                        transition={{ duration: 0.3 }}
-                        className="border-t-2 border-blue-200 overflow-hidden"
-                      >
-                        <div className="px-6 py-5 bg-white/60">
-                          {(() => {
-                            const stepsList = (Array.isArray(lesson?.learn_setup_steps) && lesson.learn_setup_steps.length > 0)
-                              ? lesson.learn_setup_steps.filter((s) => s && String(s).trim())
-                              : (lesson?.summary?.trim()
-                                  ? (() => {
-                                      const steps = lesson.summary.trim().split(/\n-{2,}\n|\n\n-{2,}\n\n/).map((s) => s.trim()).filter(Boolean);
-                                      return steps.length > 0 ? steps : [lesson.summary.trim()];
-                                    })()
-                                  : []);
-                            if (stepsList.length === 0) return null;
-                            const currentStepIndex = Math.min(selectedLearnStepIndex, stepsList.length - 1);
-                            const currentStepContent = stepsList[currentStepIndex] || "";
-                            return (
-                              <>
-                                {stepsList.length > 1 && (
-                                  <div className="flex flex-wrap items-center gap-2 mb-4">
-                                    {stepsList.map((_, idx) => (
-                                      <button
-                                        key={idx}
-                                        type="button"
-                                        onClick={() => setSelectedLearnStepIndex(idx)}
-                                        className={`px-4 py-2 rounded-md text-sm font-semibold transition-colors ${
-                                          idx === currentStepIndex
-                                            ? "bg-blue-600 text-white"
-                                            : "bg-slate-200 text-slate-700 hover:bg-slate-300"
-                                        }`}
-                                      >
-                                        Step {idx}
-                                      </button>
-                                    ))}
-                                  </div>
-                                )}
-                                <div className="prose prose-slate max-w-prose text-left">
-                                  {currentStepContent.split(/\n\n+/).map((block, i) => (
-                                    <p key={i} className="text-slate-700 leading-7 text-base font-normal mb-4 last:mb-0 whitespace-pre-wrap">
-                                      {block.trim()}
-                                    </p>
-                                  ))}
-                                </div>
-                              </>
-                            );
-                          })()}
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              </div>
-            )}
 
               {/* Prompts - classic tabs design - only show if at least one prompt exists */}
               {lesson?.prompts && typeof lesson.prompts === "object" && 
@@ -874,7 +854,92 @@ export default function StudentLesson() {
                 </div>
               )}
 
-              {/* Success view - after prompts */}
+            {/* Learn and Setup - Step-based section (like Success looks like) */}
+            {((Array.isArray(lesson?.learn_setup_steps) && lesson.learn_setup_steps.length > 0) || lesson?.summary?.trim()) && (
+              <div className="px-8 pb-8">
+                <div className="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 rounded-lg border-2 border-blue-200 shadow-lg overflow-hidden">
+                  <button
+                    type="button"
+                    onClick={() => setSummaryExpanded(!summaryExpanded)}
+                    className="w-full px-6 py-4 flex items-center justify-between hover:from-blue-100 hover:via-indigo-100 hover:to-purple-100 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                    aria-expanded={summaryExpanded}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center shadow-md">
+                        <FiTarget className="w-5 h-5 text-white" />
+                      </div>
+                      <div className="text-left">
+                        <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight mb-1">Learn and Setup</h2>
+                        <p className="text-base text-slate-500 font-normal">Essential information to get started</p>
+                      </div>
+                    </div>
+                    {summaryExpanded ? (
+                      <FiChevronUp className="w-6 h-6 text-blue-600 flex-shrink-0" />
+                    ) : (
+                      <FiChevronDown className="w-6 h-6 text-blue-600 flex-shrink-0" />
+                    )}
+                  </button>
+                  <AnimatePresence>
+                    {summaryExpanded && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="border-t-2 border-blue-200 overflow-hidden"
+                      >
+                        <div className="px-6 py-5 bg-white/60">
+                          {(() => {
+                            const stepsList = (Array.isArray(lesson?.learn_setup_steps) && lesson.learn_setup_steps.length > 0)
+                              ? lesson.learn_setup_steps.filter((s) => s && String(s).trim())
+                              : (lesson?.summary?.trim()
+                                  ? (() => {
+                                      const steps = lesson.summary.trim().split(/\n-{2,}\n|\n\n-{2,}\n\n/).map((s) => s.trim()).filter(Boolean);
+                                      return steps.length > 0 ? steps : [lesson.summary.trim()];
+                                    })()
+                                  : []);
+                            if (stepsList.length === 0) return null;
+                            const currentStepIndex = Math.min(selectedLearnStepIndex, stepsList.length - 1);
+                            const currentStepContent = stepsList[currentStepIndex] || "";
+                            return (
+                              <>
+                                {stepsList.length > 1 && (
+                                  <div className="flex flex-wrap items-center gap-2 mb-4">
+                                    {stepsList.map((_, idx) => (
+                                      <button
+                                        key={idx}
+                                        type="button"
+                                        onClick={() => setSelectedLearnStepIndex(idx)}
+                                        className={`px-4 py-2 rounded-md text-sm font-semibold transition-colors ${
+                                          idx === currentStepIndex
+                                            ? "bg-blue-600 text-white"
+                                            : "bg-slate-200 text-slate-700 hover:bg-slate-300"
+                                        }`}
+                                      >
+                                        Step {idx}
+                                      </button>
+                                    ))}
+                                  </div>
+                                )}
+                                <div className="prose prose-slate max-w-prose text-left">
+                                  {currentStepContent.split(/\n\n+/).map((block, i) => (
+                                    <p key={i} className="text-slate-700 leading-7 text-base font-normal mb-4 last:mb-0 whitespace-pre-wrap">
+                                      {block.trim()}
+                                    </p>
+                                  ))}
+                                </div>
+                              </>
+                            );
+                          })()}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </div>
+            )}
+
+              {/* Success view - after learn and setup */}
               {(() => {
                 const urls = Array.isArray(lesson?.success_image_urls) && lesson.success_image_urls.length > 0
                   ? lesson.success_image_urls
@@ -922,6 +987,16 @@ export default function StudentLesson() {
                   </div>
                 );
               })()}
+
+              {/* Presentation (PDF) - Slides section */}
+              {lesson?.pdf_url && (
+                <div className="px-8 pt-8 pb-8">
+                  <h3 className="text-lg font-semibold text-slate-900 mb-3">Slides</h3>
+                  <div className="flex justify-center">
+                    <PDFPresentationViewer pdfUrl={lesson.pdf_url} />
+                  </div>
+                </div>
+              )}
 
               {/* Resources (cheatsheets, links, text) */}
               {resources?.length > 0 && (

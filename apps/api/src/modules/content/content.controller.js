@@ -15,9 +15,10 @@ const CreateCourseSchema = z.object({
 });
 const UpdateCourseSchema = z.object({
   title: z.string().min(2).optional(),
-  slug: z.string().optional(),        // optional, only if you want to allow editing slug
+  slug: z.string().optional(),
   description: z.string().optional(),
   level: z.string().optional(),
+  price_in_paise: z.number().int().min(0).optional(),
 });
 
 const CreateModuleSchema = z.object({
@@ -46,6 +47,7 @@ const CreateLessonSchema = z.object({
   success_image_urls: z.array(z.string().url()).optional(),
   learn_setup_steps: z.array(z.string()).optional(),
   pdf_url: z.string().optional().transform((v) => (v && v.trim() ? v.trim() : undefined)),
+  video_captions: z.string().optional().transform((v) => (v && v.trim() ? v.trim() : undefined)),
 });
 const UpdateLessonSchema = z.object({
   title: z.string().min(2).optional(),
@@ -62,6 +64,7 @@ const UpdateLessonSchema = z.object({
   success_image_urls: z.array(z.string().url()).optional().nullable(),
   learn_setup_steps: z.array(z.string()).optional().nullable(),
   pdf_url: z.string().optional().transform((v) => (v && (v = String(v).trim())) ? v : null),
+  video_captions: z.string().optional().transform((v) => (v && (v = String(v).trim())) ? v : null),
   video_provider: z.string().nullable().optional(),
   video_id: z.string().nullable().optional(),
 });
@@ -282,6 +285,7 @@ const createLesson = asyncHandler(async (req, res) => {
     success_image_urls: Array.isArray(data.success_image_urls) ? data.success_image_urls.filter(Boolean) : null,
     learn_setup_steps: Array.isArray(data.learn_setup_steps) ? data.learn_setup_steps.filter((s) => s && String(s).trim()) : null,
     pdf_url: (data.pdf_url && String(data.pdf_url).trim()) || null,
+    video_captions: (data.video_captions && String(data.video_captions).trim()) || null,
     createdBy: req.auth.userId,
   });
 
@@ -301,7 +305,7 @@ const updateLesson = asyncHandler(async (req, res) => {
   const patch = { ...parsed.data };
   const hasAnyField = [
     "title", "summary", "position", "goal", "video_url", "prompts",
-    "success_image_url", "success_image_urls", "learn_setup_steps", "pdf_url", "video_provider", "video_id"
+    "success_image_url", "success_image_urls", "learn_setup_steps", "pdf_url", "video_captions", "video_provider", "video_id"
   ].some((k) => patch[k] !== undefined);
   if (!hasAnyField) {
     throw new HttpError(400, "No fields to update");
@@ -670,6 +674,74 @@ const lessonPublicBySlugs = asyncHandler(async (req, res) => {
   res.json({ ok: true, data });
 });
 
+const listPacksPublic = asyncHandler(async (req, res) => {
+  const rows = await svc.listCoursePacksPublic({ tenantId: req.tenant.id });
+  const withCourses = await Promise.all(
+    rows.map(async (p) => {
+      const courses = await svc.listCoursesInPack({ tenantId: req.tenant.id, packId: p.id });
+      return { ...p, courses };
+    })
+  );
+  res.json({ ok: true, data: withCourses });
+});
+
+const packPublicBySlug = asyncHandler(async (req, res) => {
+  const pack = await svc.getPackBySlug({ tenantId: req.tenant.id, slug: req.params.packSlug });
+  if (!pack) throw new HttpError(404, "Pack not found");
+  const courses = await svc.listCoursesInPack({ tenantId: req.tenant.id, packId: pack.id });
+  res.json({ ok: true, data: { ...pack, courses } });
+});
+
+// ---------- Admin: Course Packs ----------
+const UpdatePackSchema = z.object({
+  title: z.string().min(1).optional(),
+  slug: z.string().optional(),
+  description: z.string().optional(),
+  price_in_paise: z.number().int().min(0).optional(),
+  status: z.enum(["draft", "published"]).optional(),
+});
+const SetPackCoursesSchema = z.object({
+  course_ids: z.array(z.string().uuid()),
+});
+
+const listCoursePacksAdmin = asyncHandler(async (req, res) => {
+  const rows = await svc.listCoursePacksAdmin({ tenantId: req.tenant.id });
+  res.json({ ok: true, data: rows });
+});
+
+const updateCoursePack = asyncHandler(async (req, res) => {
+  const parsed = UpdatePackSchema.safeParse(req.body);
+  if (!parsed.success) throw new HttpError(400, "Invalid input", parsed.error.flatten());
+  const updated = await svc.updateCoursePack({
+    tenantId: req.tenant.id,
+    packId: req.params.packId,
+    patch: parsed.data,
+  });
+  if (!updated) throw new HttpError(404, "Pack not found");
+  res.json({ ok: true, data: updated });
+});
+
+const getPackCoursesAdmin = asyncHandler(async (req, res) => {
+  const pack = await svc.getCoursePackById({ tenantId: req.tenant.id, packId: req.params.packId });
+  if (!pack) throw new HttpError(404, "Pack not found");
+  const courseIds = await svc.getPackCourseIds({ tenantId: req.tenant.id, packId: req.params.packId });
+  res.json({ ok: true, data: { pack, course_ids: courseIds } });
+});
+
+const setPackCourses = asyncHandler(async (req, res) => {
+  const parsed = SetPackCoursesSchema.safeParse(req.body);
+  if (!parsed.success) throw new HttpError(400, "Invalid input", parsed.error.flatten());
+  const pack = await svc.getCoursePackById({ tenantId: req.tenant.id, packId: req.params.packId });
+  if (!pack) throw new HttpError(404, "Pack not found");
+  await svc.setPackCourses({
+    tenantId: req.tenant.id,
+    packId: req.params.packId,
+    courseIds: parsed.data.course_ids,
+  });
+  const courseIds = await svc.getPackCourseIds({ tenantId: req.tenant.id, packId: req.params.packId });
+  res.json({ ok: true, data: { course_ids: courseIds } });
+});
+
 module.exports = {
   // admin
   createCourse,
@@ -707,4 +779,10 @@ module.exports = {
   listCoursesPublic,
   courseTreePublicBySlug,
   lessonPublicBySlugs,
+  listPacksPublic,
+  packPublicBySlug,
+  listCoursePacksAdmin,
+  updateCoursePack,
+  getPackCoursesAdmin,
+  setPackCourses,
 };

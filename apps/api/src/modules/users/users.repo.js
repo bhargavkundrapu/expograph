@@ -135,7 +135,7 @@ async function listTenantRoles({ tenantId }) {
   return rows;
 }
 
-// SuperAdmin: List all students with filters
+// SuperAdmin: List all students with filters (only active students)
 async function listStudents({ tenantId, search, roleName = "Student" }) {
   let sql = `
     SELECT 
@@ -151,7 +151,7 @@ async function listStudents({ tenantId, search, roleName = "Student" }) {
      FROM users u
      JOIN memberships m ON m.user_id = u.id AND m.tenant_id = $1
      JOIN roles r ON r.id = m.role_id
-     WHERE r.name = $2
+     WHERE r.name = $2 AND u.is_active = true
   `;
   const params = [tenantId, roleName];
   

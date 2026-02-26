@@ -1,132 +1,71 @@
 // Skeleton loading components for different page layouts
 
-// Student Home Page Skeletons
+// Student Home Page Skeletons - matches StudentHome section colors (slate-50, white, #0b0f27 carousel)
 export function StudentHomeSkeleton() {
   return (
     <div className="min-h-screen bg-slate-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Welcome Header Skeleton */}
-        <div className="mb-8 animate-pulse">
-          <div className="h-12 bg-slate-200 rounded w-96 mb-3"></div>
-          <div className="h-6 bg-slate-200 rounded w-64"></div>
-        </div>
+      <div className="flex flex-col lg:flex-row gap-6 px-4 sm:px-6 lg:px-6 xl:px-8 py-4 sm:py-6 lg:py-8">
+        {/* Left Column - Main Content */}
+        <div className="flex-1 min-w-0 space-y-6 lg:space-y-8">
+          {/* Welcome Header Skeleton */}
+          <div className="mb-4 sm:mb-6 lg:mb-8 animate-pulse">
+            <div className="h-9 sm:h-12 bg-slate-700/30 rounded-lg w-72 sm:w-96 mb-2"></div>
+          </div>
 
-        {/* Carousel Skeleton */}
-        <div className="mb-8 animate-pulse">
-          <div className="h-60 bg-slate-200 rounded-[24px]"></div>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Column */}
-          <div className="lg:col-span-2 space-y-8">
-            {/* Schedule Skeleton */}
-            <div className="bg-white rounded-lg shadow-sm overflow-hidden animate-pulse">
-              <div className="h-32 bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-400"></div>
-              <div className="p-6 space-y-6">
-                {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="flex items-start gap-4">
-                    <div className="w-8 h-8 bg-slate-200 rounded-full flex-shrink-0"></div>
-                    <div className="flex-1 space-y-2">
-                      <div className="h-5 bg-slate-200 rounded w-3/4"></div>
-                      <div className="flex items-center gap-2">
-                        <div className="h-5 bg-slate-200 rounded w-20"></div>
-                        <div className="h-4 bg-slate-200 rounded w-24"></div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Continue Learning Skeleton */}
-            <div className="bg-gradient-to-br from-cyan-500 via-blue-500 to-indigo-600 rounded-lg p-8 animate-pulse">
-              <div className="h-8 bg-white/20 rounded w-48 mb-4"></div>
-              <div className="h-6 bg-white/20 rounded w-64 mb-4"></div>
-              <div className="h-3 bg-white/20 rounded w-full mb-2"></div>
-              <div className="h-10 bg-white/20 rounded w-full"></div>
+          {/* Carousel Skeleton - navy #0b0f27 with subtle shimmer */}
+          <div className="mb-4 sm:mb-6 lg:mb-8">
+            <div
+              className="relative h-[120px] sm:h-[140px] md:h-[160px] lg:h-[180px] rounded-[16px] sm:rounded-[20px] md:rounded-[24px] overflow-hidden animate-pulse"
+              style={{ background: "#0b0f27" }}
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-slate-800/50 via-slate-700/30 to-slate-800/50" />
             </div>
           </div>
 
-          {/* Right Column */}
-          <div className="space-y-6">
-            {/* Events Skeleton */}
-            <div className="bg-white rounded-lg shadow-sm p-6 animate-pulse">
-              <div className="flex items-center justify-between mb-4">
-                <div className="h-6 bg-slate-200 rounded w-20"></div>
-                <div className="h-4 bg-slate-200 rounded w-12"></div>
-              </div>
-              <div className="h-4 bg-slate-200 rounded w-full mb-4"></div>
-              <div className="h-5 bg-slate-200 rounded w-32"></div>
+          {/* Schedule Section - white card + navy header */}
+          <div className="bg-white rounded-lg shadow-sm overflow-hidden animate-pulse">
+            <div className="h-24 sm:h-28 relative" style={{ background: "#0b0f27" }}>
+              <div className="absolute inset-0 bg-slate-700/30 animate-pulse" />
             </div>
-
-            {/* Leaderboard Skeleton */}
-            <div className="bg-white rounded-lg shadow-sm p-6 animate-pulse">
-              <div className="flex items-center justify-between mb-4">
-                <div className="h-6 bg-slate-200 rounded w-28"></div>
-                <div className="h-4 bg-slate-200 rounded w-12"></div>
-              </div>
-              <div className="flex items-start gap-3 mb-4">
-                <div className="w-12 h-12 bg-slate-200 rounded-lg"></div>
-                <div className="flex-1 space-y-2">
-                  <div className="h-4 bg-slate-200 rounded w-32"></div>
-                  <div className="h-3 bg-slate-200 rounded w-48"></div>
-                </div>
-              </div>
-              <div className="h-4 bg-slate-200 rounded w-full"></div>
-            </div>
-
-            {/* Learning Consistency Skeleton */}
-            <div className="bg-white rounded-lg shadow-sm p-6 animate-pulse">
-              <div className="flex items-center justify-between mb-2">
-                <div className="h-6 bg-slate-200 rounded w-40"></div>
-                <div className="h-6 bg-slate-200 rounded w-20"></div>
-              </div>
-              <div className="h-4 bg-slate-200 rounded w-full mb-6"></div>
-              <div className="grid grid-cols-2 gap-6 border-t border-slate-200 pt-6">
-                <div className="space-y-3">
-                  <div className="h-4 bg-slate-200 rounded w-24"></div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 bg-slate-200 rounded"></div>
-                    <div className="h-8 bg-slate-200 rounded w-8"></div>
-                  </div>
-                  <div className="h-6 bg-slate-200 rounded w-24"></div>
-                </div>
-                <div className="space-y-3">
-                  <div className="h-4 bg-slate-200 rounded w-32"></div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 bg-slate-200 rounded"></div>
-                    <div className="h-8 bg-slate-200 rounded w-8"></div>
-                  </div>
-                </div>
-              </div>
-              <div className="border-t border-slate-200 pt-6 mt-6">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="h-6 bg-slate-200 rounded w-32"></div>
-                  <div className="h-8 bg-slate-200 rounded w-24"></div>
-                </div>
-                <div className="h-4 bg-slate-200 rounded w-32 mb-4"></div>
-                <div className="grid grid-cols-7 gap-1 mb-4">
-                  {Array.from({ length: 28 }).map((_, i) => (
-                    <div key={i} className="aspect-square bg-slate-200 rounded border border-slate-200"></div>
-                  ))}
-                </div>
-                <div className="flex flex-wrap gap-4">
-                  {[1, 2, 3, 4, 5].map((i) => (
-                    <div key={i} className="flex items-center gap-1">
-                      <div className="w-3 h-3 bg-slate-200 rounded"></div>
-                      <div className="h-3 bg-slate-200 rounded w-16"></div>
+            <div className="p-4 sm:p-6 space-y-4">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="flex items-start gap-3">
+                  <div className="w-6 h-6 sm:w-8 sm:h-8 bg-slate-200 rounded-full flex-shrink-0" />
+                  <div className="flex-1 space-y-2">
+                    <div className="h-4 bg-slate-200 rounded w-3/4" />
+                    <div className="flex items-center gap-2">
+                      <div className="h-3 bg-slate-200 rounded w-16" />
+                      <div className="h-3 bg-slate-200 rounded w-20" />
                     </div>
-                  ))}
+                  </div>
                 </div>
-              </div>
+              ))}
             </div>
+          </div>
+        </div>
 
-            {/* Progress Skeleton */}
-            <div className="bg-white rounded-lg shadow-sm p-6 animate-pulse">
-              <div className="h-6 bg-slate-200 rounded w-32 mb-4"></div>
-              <div className="h-12 bg-slate-200 rounded w-24 mb-6"></div>
-              <div className="h-20 bg-slate-200 rounded"></div>
+        {/* Right Sidebar - white cards */}
+        <div className="w-full lg:w-72 xl:w-80 2xl:w-96 flex-shrink-0 space-y-4 sm:space-y-6">
+          {/* Events Card */}
+          <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 animate-pulse">
+            <div className="flex items-center justify-between mb-3">
+              <div className="h-6 bg-slate-700/40 rounded w-20" />
+              <div className="h-4 bg-slate-200 rounded w-12" />
             </div>
+            <div className="h-4 bg-slate-200 rounded w-full mb-3" />
+            <div className="h-5 bg-slate-200 rounded w-32" />
+          </div>
+
+          {/* Progress Card */}
+          <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 animate-pulse">
+            <div className="flex items-center justify-between mb-3">
+              <div className="h-6 bg-slate-700/40 rounded w-28" />
+            </div>
+            <div className="mb-4 flex items-center justify-between">
+              <div className="h-10 sm:h-12 bg-slate-700/30 rounded w-16" />
+              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-slate-200 rounded-full" />
+            </div>
+            <div className="h-14 bg-slate-100 border border-slate-200 rounded-lg" />
           </div>
         </div>
       </div>
@@ -354,6 +293,67 @@ export function LessonContentSkeleton() {
               <div className="h-4 bg-slate-200 rounded w-4/5"></div>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Courses page skeleton (for /courses route - dark theme, premium pricing layout)
+export function CoursesPageSkeleton() {
+  return (
+    <div className="mx-auto w-full max-w-6xl animate-pulse">
+      {/* Heading Skeleton */}
+      <div className="mx-auto mb-12 sm:mb-14 max-w-2xl text-center">
+        <div className="h-9 sm:h-10 bg-white/10 rounded-xl mx-auto w-72 sm:w-80 mb-3 sm:mb-4" />
+        <div className="h-4 bg-white/10 rounded w-64 sm:w-72 mx-auto mb-2" />
+        <div className="h-4 bg-white/10 rounded w-80 sm:w-96 mx-auto" />
+      </div>
+
+      {/* Packs Section Skeleton */}
+      <div className="mb-14 sm:mb-16">
+        <div className="h-4 bg-white/10 rounded w-28 mb-5 sm:mb-6" />
+        <div className="grid gap-5 sm:gap-6 grid-cols-1 lg:grid-cols-2">
+          {[1, 2].map((i) => (
+            <div
+              key={i}
+              className="border border-white/10 rounded-2xl bg-white/[0.03] aspect-[4/3] min-h-[260px] sm:min-h-[280px] flex flex-col p-6 sm:p-7"
+            >
+              <div className="h-6 sm:h-7 bg-white/10 rounded-lg w-3/4 mb-2" />
+              <div className="h-4 bg-white/10 rounded w-full mb-2" />
+              <div className="h-4 bg-white/10 rounded w-2/3 mb-4" />
+              <div className="h-8 sm:h-9 bg-white/10 rounded w-24 mb-6" />
+              <div className="space-y-2.5 flex-1">
+                {[1, 2, 3].map((j) => (
+                  <div key={j} className="h-4 bg-white/10 rounded w-full" />
+                ))}
+              </div>
+              <div className="h-11 sm:h-12 bg-white/10 rounded-xl w-full mt-4" />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Courses Section Skeleton */}
+      <div>
+        <div className="h-4 bg-white/10 rounded w-36 mb-5 sm:mb-6" />
+        <div className="grid gap-5 sm:gap-6 grid-cols-1 lg:grid-cols-2">
+          {[1, 2].map((i) => (
+            <div
+              key={i}
+              className="border border-white/10 rounded-2xl bg-white/[0.02] aspect-[4/3] min-h-[260px] sm:min-h-[280px] flex flex-col p-6 sm:p-7"
+            >
+              <div className="h-6 sm:h-7 bg-white/10 rounded-lg w-3/4 mb-2" />
+              <div className="h-4 bg-white/10 rounded w-full mb-2" />
+              <div className="h-8 sm:h-9 bg-white/10 rounded w-20 mb-6" />
+              <div className="space-y-2.5 flex-1">
+                {[1, 2, 3].map((j) => (
+                  <div key={j} className="h-4 bg-white/10 rounded w-full" />
+                ))}
+              </div>
+              <div className="h-11 sm:h-12 bg-white/10 rounded-xl w-full mt-4" />
+            </div>
+          ))}
         </div>
       </div>
     </div>
