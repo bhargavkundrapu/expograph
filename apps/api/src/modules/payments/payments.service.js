@@ -16,6 +16,7 @@ const CreateOrderSchema = z.object({
   email: z.string().email(),
   phone: z.string().min(10).max(15),
   college: z.string().max(200).optional(),
+  origin: z.string().max(500).optional(),
 });
 
 function getRazorpayInstance() {
@@ -75,8 +76,9 @@ async function createOrder({ tenant, body }) {
     throw new HttpError(400, "Invalid input", parsed.error.flatten());
   }
 
-  const { item_type, item_id, name, email, phone, college } = parsed.data;
+  const { item_type, item_id, name, email, phone, college, origin } = parsed.data;
   const tenantId = tenant.id;
+  const redirectOrigin = (origin || "").trim() && /^https?:\/\//i.test(origin) ? origin.replace(/\/$/, "") : null;
 
   let amount;
   if (item_type === "course") {
@@ -117,6 +119,7 @@ async function createOrder({ tenant, body }) {
     customerEmail: email,
     customerPhone: phone,
     customerCollege: college,
+    redirectOrigin,
   });
 
   return {
@@ -172,6 +175,8 @@ async function handleCallback({ razorpay_payment_id, razorpay_order_id, razorpay
     existingUser = rows[0] ?? null;
   }
 
+  const baseUrl = (order.redirect_origin || env.PUBLIC_WEB_URL).replace(/\/$/, "");
+
   if (existingUser) {
     // Existing student: directly unlock the course, no approval needed
     const roleId = await findRoleIdForTenant({ tenantId: order.tenant_id, roleName: "Student" });
@@ -185,7 +190,7 @@ async function handleCallback({ razorpay_payment_id, razorpay_order_id, razorpay
       itemId: order.item_id,
     });
     console.log(`[Payment] Existing user ${existingUser.id} enrolled in ${order.item_type} ${order.item_id}`);
-    return { unlocked: true };
+    return { unlocked: true, redirect: `${baseUrl}/lms/student/courses` };
   }
 
   // New user: create approval for SuperAdmin
@@ -204,7 +209,7 @@ async function handleCallback({ razorpay_payment_id, razorpay_order_id, razorpay
   console.log(`[Payment] Approval created: ${approval.id} for ${order.customer_email}`);
 
   return {
-    redirect: `${env.PUBLIC_WEB_URL}/account-pending?email=${encodeURIComponent(order.customer_email)}`,
+    redirect: `${baseUrl}/account-pending?email=${encodeURIComponent(order.customer_email)}`,
     approvalId: approval.id,
   };
 }

@@ -30,12 +30,13 @@ async function createPaymentOrder({
   customerEmail,
   customerPhone,
   customerCollege,
+  redirectOrigin,
 }) {
   const { rows } = await query(
     `INSERT INTO payment_orders
      (tenant_id, item_type, item_id, amount, currency, razorpay_order_id, status,
-      customer_name, customer_email, customer_phone, customer_college)
-     VALUES ($1, $2, $3, $4, $5, $6, 'created', $7, $8, $9, $10)
+      customer_name, customer_email, customer_phone, customer_college, redirect_origin)
+     VALUES ($1, $2, $3, $4, $5, $6, 'created', $7, $8, $9, $10, $11)
      RETURNING *`,
     [
       tenantId,
@@ -48,6 +49,7 @@ async function createPaymentOrder({
       customerEmail,
       customerPhone,
       customerCollege ?? null,
+      redirectOrigin ?? null,
     ]
   );
   return rows[0];

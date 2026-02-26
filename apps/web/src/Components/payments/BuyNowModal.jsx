@@ -81,6 +81,7 @@ export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill }
           email: form.email.trim().toLowerCase(),
           phone: form.phone.trim(),
           college: form.college.trim() || undefined,
+          origin: typeof window !== "undefined" ? window.location.origin : undefined,
         },
       });
 
@@ -147,7 +148,8 @@ export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill }
         if (item?.title) params.set("title", item.title);
         if (item?.type) params.set("item_type", item.type);
         if (item?.id) params.set("item_id", item.id);
-        window.location.href = `/payment-failure${params.toString() ? `?${params.toString()}` : ""}`;
+        const base = typeof window !== "undefined" ? window.location.origin : "";
+        window.location.href = `${base}/payment-failure${params.toString() ? `?${params.toString()}` : ""}`;
       });
 
       rzp.open();
