@@ -19,7 +19,7 @@ interface ActionProps {
 
 interface HeroSectionProps {
   title: React.ReactNode;
-  subtitle: string;
+  subtitle: React.ReactNode;
   actions: ActionProps[];
   stats: StatProps[];
   images: string[];
@@ -155,7 +155,7 @@ const HeroSection = ({
         </motion.div>
 
         <motion.div
-          className="relative h-[280px] w-full min-h-0 sm:h-[380px] md:h-[450px] lg:h-[500px] mt-6 lg:mt-0"
+          className="relative h-[360px] w-full min-h-0 sm:h-[400px] md:h-[450px] lg:h-[500px] mt-6 lg:mt-0"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
@@ -179,36 +179,36 @@ const HeroSection = ({
           />
 
           <motion.div
-            className="absolute left-1/2 top-0 h-28 w-28 sm:h-36 sm:w-36 md:h-44 md:w-44 lg:h-48 lg:w-48 xl:h-64 xl:w-64 -translate-x-1/2 rounded-md bg-muted p-1.5 sm:p-2 shadow-lg"
+            className="absolute left-1/2 top-0 h-40 w-40 sm:h-44 sm:w-44 md:h-48 md:w-48 lg:h-52 lg:w-52 xl:h-64 xl:w-64 -translate-x-1/2 rounded-xl bg-muted p-1.5 sm:p-2 shadow-lg"
             style={{ transformOrigin: "bottom center" }}
             variants={imageVariants}
           >
             <img
               src={images[0]}
               alt="Student learning"
-              className="h-full w-full rounded-[6px] object-cover"
+              className="h-full w-full rounded-lg object-cover"
             />
           </motion.div>
           <motion.div
-            className="absolute right-0 top-1/4 sm:top-1/3 h-24 w-24 sm:h-32 sm:w-32 md:h-40 md:w-40 lg:h-56 lg:w-56 rounded-md bg-muted p-1.5 sm:p-2 shadow-lg"
+            className="absolute right-0 top-[28%] sm:top-1/3 h-36 w-36 sm:h-40 sm:w-40 md:h-44 md:w-44 lg:h-56 lg:w-56 rounded-xl bg-muted p-1.5 sm:p-2 shadow-lg"
             style={{ transformOrigin: "left center" }}
             variants={imageVariants}
           >
             <img
               src={images[1]}
               alt="Tutor assisting"
-              className="h-full w-full rounded-[6px] object-cover"
+              className="h-full w-full rounded-lg object-cover"
             />
           </motion.div>
           <motion.div
-            className="absolute bottom-0 left-0 h-20 w-20 sm:h-28 sm:w-28 md:h-32 md:w-32 lg:h-48 lg:w-48 rounded-md bg-muted p-1.5 sm:p-2 shadow-lg"
+            className="absolute bottom-0 left-0 h-32 w-32 sm:h-36 sm:w-36 md:h-40 md:w-40 lg:h-48 lg:w-48 rounded-xl bg-muted p-1.5 sm:p-2 shadow-lg"
             style={{ transformOrigin: "top right" }}
             variants={imageVariants}
           >
             <img
               src={images[2]}
               alt="Collaborative discussion"
-              className="h-full w-full rounded-[6px] object-cover"
+              className="h-full w-full rounded-lg object-cover"
             />
           </motion.div>
         </motion.div>

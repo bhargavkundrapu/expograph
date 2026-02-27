@@ -8,6 +8,7 @@ import AcademyPage from "../pages/academy/AcademyPage";
 import SolutionsPage from "../pages/solutions/SolutionsPage";
 import CoursesPage from "../pages/courses/CoursesPage";
 import CourseDetailPage from "../pages/courses/CourseDetailPage";
+import FeatureDetailPage from "../pages/features/FeatureDetailPage";
 import NotFoundPageRoute from "../pages/NotFoundPage";
 import LoginPage from "../pages/auth/LoginPage";
 import AccountPendingPage from "../pages/payment/AccountPendingPage";
@@ -92,6 +93,7 @@ export const router = createBrowserRouter([
       { path: "/solutions", element: <SolutionsPage /> },
       { path: "/courses", element: <CoursesPage /> },
       { path: "/courses/:slug", element: <CourseDetailPage /> },
+      { path: "/features/:slug", element: <FeatureDetailPage /> },
       { path: "/demo/course-sidebar", element: <CourseContentsSidebarDemo /> },
       { path: "/login", element: <PublicOnly><LoginPage /></PublicOnly> },
       { path: "/account-pending", element: <AccountPendingPage /> },

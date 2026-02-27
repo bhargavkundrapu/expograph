@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Button, buttonVariants } from './button';
 import { cn } from '../../lib/utils';
 import { MenuToggleIcon } from './menu-toggle-icon';
@@ -9,6 +9,21 @@ import { useScroll } from './use-scroll';
 export function Header() {
 	const [open, setOpen] = React.useState(false);
 	const scrolled = useScroll(10);
+	const navigate = useNavigate();
+	const location = useLocation();
+
+	const handleHashLink = (href: string) => {
+		const [path, hash] = href.split('#');
+		if (location.pathname === path || location.pathname === path + '/') {
+			document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth' });
+		} else {
+			navigate(path);
+			setTimeout(() => {
+				document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth' });
+			}, 300);
+		}
+		setOpen(false);
+	};
 
 	const links = [
 		{
@@ -20,8 +35,8 @@ export function Header() {
 			href: '/courses',
 		},
 		{
-			label: 'About',
-			href: '#',
+			label: 'Features',
+			href: '/academy#features',
 		},
 	];
 
@@ -67,7 +82,11 @@ export function Header() {
 				</Link>
 				<div className="hidden items-center gap-2 md:flex">
 					{links.map((link, i) => (
-						link.href.startsWith('/') ? (
+						link.href.includes('#') ? (
+							<button key={i} className={buttonVariants({ variant: 'ghost' })} onClick={() => handleHashLink(link.href)}>
+								{link.label}
+							</button>
+						) : link.href.startsWith('/') ? (
 							<Link key={i} to={link.href} className={buttonVariants({ variant: 'ghost' })}>
 								{link.label}
 							</Link>
@@ -101,7 +120,18 @@ export function Header() {
 				>
 					<div className="grid gap-y-2">
 						{links.map((link) =>
-							link.href.startsWith('/') ? (
+							link.href.includes('#') ? (
+								<button
+									key={link.label}
+									className={buttonVariants({
+										variant: 'ghost',
+										className: 'justify-start',
+									})}
+									onClick={() => handleHashLink(link.href)}
+								>
+									{link.label}
+								</button>
+							) : link.href.startsWith('/') ? (
 								<Link
 									key={link.label}
 									to={link.href}
