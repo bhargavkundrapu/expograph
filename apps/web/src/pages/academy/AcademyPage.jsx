@@ -289,7 +289,7 @@ export default function AcademyPage() {
       {/* What Features Are There With Us */}
       <section
         id="features"
-        className="py-14 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 academy-section-offscreen"
+        className="py-14 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 academy-section-gpu"
         style={{ backgroundColor: "#000000" }}
       >
         <div className="text-center mb-10 sm:mb-12 md:mb-14">
@@ -318,7 +318,7 @@ export default function AcademyPage() {
       {/* Certification Section */}
       <section
         id="certification"
-        className="py-14 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 academy-section-offscreen"
+        className="py-14 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 academy-section-gpu"
         style={{ backgroundColor: "#000000" }}
       >
         <div className="text-center mb-10 sm:mb-12 md:mb-14">
@@ -423,7 +423,7 @@ export default function AcademyPage() {
 
       {/* Pricing Advantage Banner */}
       <section
-        className="py-10 sm:py-12 md:py-16 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 academy-section-offscreen"
+        className="py-10 sm:py-12 md:py-16 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 academy-section-gpu"
         style={{ backgroundColor: "#000000" }}
       >
         <div className="max-w-5xl mx-auto">
@@ -468,7 +468,7 @@ export default function AcademyPage() {
       {/* Milestone Stepper Section */}
       <section
         id="stepper"
-        className="py-14 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 academy-section-offscreen"
+        className="py-14 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 academy-section-gpu"
         style={{ backgroundColor: "#000000" }}
       >
         <div className="text-center mb-10 sm:mb-12 md:mb-14">
@@ -495,7 +495,7 @@ export default function AcademyPage() {
       {/* Community / Connect Section */}
       <section
         id="connect"
-        className="py-14 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 academy-section-offscreen"
+        className="py-14 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 academy-section-gpu"
         style={{ backgroundColor: "#000000" }}
       >
         <div className="text-center mb-10 sm:mb-12 md:mb-14">
@@ -607,7 +607,7 @@ export default function AcademyPage() {
       {/* FAQs Section */}
       <section
         id="faqs"
-        className="py-14 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 academy-section-offscreen"
+        className="py-14 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 academy-section-gpu"
         style={{ backgroundColor: "#000000" }}
       >
         <div className="text-center mb-10 sm:mb-12 md:mb-14">

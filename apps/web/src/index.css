@@ -28,16 +28,9 @@ html {
   to { opacity: 1; transform: scale(1); }
 }
 
-/* GPU-promote heavy sections to their own compositing layer */
+/* Lightweight layout isolation for sections — no content-visibility to avoid re-render on scroll back */
 .academy-section-gpu {
-  will-change: auto;
   contain: layout style;
-}
-
-/* Skip rendering of off-screen sections until the user scrolls near them */
-.academy-section-offscreen {
-  content-visibility: auto;
-  contain-intrinsic-size: auto 600px;
 }
 
 /* Academy page header: force correct styles, prevent overrides */
