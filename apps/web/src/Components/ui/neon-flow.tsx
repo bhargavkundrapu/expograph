@@ -1,5 +1,7 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
+
+const MOBILE_BREAKPOINT = 768;
 
 const randomColors = (count: number) => {
   return new Array(count)
@@ -20,8 +22,15 @@ export function TubesBackground({
 }: TubesBackgroundProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const tubesRef = useRef<{ tubes?: { setColors: (c: string[]) => void; setLightsColors: (c: string[]) => void } } | null>(null);
+  const [useFallback, setUseFallback] = useState(false);
 
   useEffect(() => {
+    const mobile = window.innerWidth < MOBILE_BREAKPOINT;
+    if (mobile) {
+      setUseFallback(true);
+      return;
+    }
+
     let mounted = true;
 
     const initTubes = async () => {
@@ -73,11 +82,26 @@ export function TubesBackground({
       className={cn("relative w-full h-full min-h-[400px] overflow-hidden bg-background", className)}
       onClick={handleClick}
     >
-      <canvas
-        ref={canvasRef}
-        className="absolute inset-0 w-full h-full block"
-        style={{ touchAction: "none" }}
-      />
+      {useFallback ? (
+        <div
+          className="absolute inset-0"
+          style={{
+            background: [
+              "radial-gradient(ellipse at 20% 40%, rgba(249,103,251,0.18) 0%, transparent 55%)",
+              "radial-gradient(ellipse at 75% 30%, rgba(105,88,213,0.18) 0%, transparent 55%)",
+              "radial-gradient(ellipse at 50% 85%, rgba(83,188,40,0.12) 0%, transparent 50%)",
+              "radial-gradient(ellipse at 60% 60%, rgba(255,0,138,0.08) 0%, transparent 45%)",
+              "#0a0a0a",
+            ].join(","),
+          }}
+        />
+      ) : (
+        <canvas
+          ref={canvasRef}
+          className="absolute inset-0 w-full h-full block"
+          style={{ touchAction: "none" }}
+        />
+      )}
       <div className="relative z-10 w-full h-full pointer-events-none">{children}</div>
     </div>
   );
