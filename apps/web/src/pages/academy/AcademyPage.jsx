@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { lazy, Suspense, useState, useCallback, useEffect, useRef } from "react";
+import { lazy, Suspense, useState, useCallback } from "react";
 import { useAuth } from "../../app/providers/AuthProvider";
 import { Header } from "../../Components/ui/header-2";
 import HeroSection from "../../Components/ui/hero-section-9";
@@ -52,24 +52,6 @@ function HeroSkeleton() {
       </div>
     </div>
   );
-}
-
-function LazySection({ children, fallback, rootMargin = "200px" }) {
-  const ref = useRef(null);
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { setVisible(true); obs.disconnect(); } },
-      { rootMargin }
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, [rootMargin]);
-
-  return <div ref={ref}>{visible ? children : fallback || <SectionSkeleton />}</div>;
 }
 
 const faqData = [
@@ -307,11 +289,9 @@ export default function AcademyPage() {
           </p>
         </div>
         <div className="mx-auto max-w-6xl">
-          <LazySection fallback={<SectionSkeleton height="h-64" />} rootMargin="300px">
-            <Suspense fallback={<SectionSkeleton height="h-64" />}>
-              <AcademyFeaturesGrid />
-            </Suspense>
-          </LazySection>
+          <Suspense fallback={<SectionSkeleton height="h-64" />}>
+            <AcademyFeaturesGrid />
+          </Suspense>
         </div>
       </section>
 
@@ -516,11 +496,9 @@ export default function AcademyPage() {
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12 mb-10 sm:mb-12">
             <div className="shrink-0">
-              <LazySection fallback={<div className="w-64 h-80 rounded-2xl bg-white/[0.04] animate-pulse" />} rootMargin="200px">
-                <Suspense fallback={<div className="w-64 h-80 rounded-2xl bg-white/[0.04] animate-pulse" />}>
-                  <UiverseCard />
-                </Suspense>
-              </LazySection>
+              <Suspense fallback={<div className="w-64 h-80 rounded-2xl bg-white/[0.04] animate-pulse" />}>
+                <UiverseCard />
+              </Suspense>
             </div>
 
             <div className="flex-1 w-full">
@@ -631,23 +609,21 @@ export default function AcademyPage() {
 
       {/* Footer — ExpoGraph flow (TubesBackground) */}
       <footer className="w-full min-h-[560px] sm:min-h-[70vh] border-t border-black">
-        <LazySection fallback={<SectionSkeleton height="min-h-[560px]" />} rootMargin="300px">
-          <Suspense fallback={<SectionSkeleton height="min-h-[560px]" />}>
-            <TubesBackground className="min-h-[560px] sm:min-h-[70vh] bg-[#0a0a0a]" enableClickInteraction={true}>
-              <div className="flex flex-col items-center justify-center w-full min-h-[560px] sm:min-h-[70vh] gap-6 text-center px-4">
-                <div className="space-y-2 pointer-events-auto cursor-default select-none">
-                  <h2 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tighter text-white drop-shadow-[0_0_20px_rgba(0,0,0,1)]">
-                    ExpoGraph flow
-                  </h2>
-                </div>
-                <div className="absolute bottom-8 left-0 right-0 flex flex-col items-center gap-2 text-white/60 animate-pulse pointer-events-none">
-                  <span className="text-xs uppercase tracking-widest">Move the cursor around to interact and Click to randomize.</span>
-                  <span className="text-xs text-white/60">© 2024 ExpoGraph Academy</span>
-                </div>
+        <Suspense fallback={<SectionSkeleton height="min-h-[560px]" />}>
+          <TubesBackground className="min-h-[560px] sm:min-h-[70vh] bg-[#0a0a0a]" enableClickInteraction={true}>
+            <div className="flex flex-col items-center justify-center w-full min-h-[560px] sm:min-h-[70vh] gap-6 text-center px-4">
+              <div className="space-y-2 pointer-events-auto cursor-default select-none">
+                <h2 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tighter text-white drop-shadow-[0_0_20px_rgba(0,0,0,1)]">
+                  ExpoGraph flow
+                </h2>
               </div>
-            </TubesBackground>
-          </Suspense>
-        </LazySection>
+              <div className="absolute bottom-8 left-0 right-0 flex flex-col items-center gap-2 text-white/60 animate-pulse pointer-events-none">
+                <span className="text-xs uppercase tracking-widest">Move the cursor around to interact and Click to randomize.</span>
+                <span className="text-xs text-white/60">© 2024 ExpoGraph Academy</span>
+              </div>
+            </div>
+          </TubesBackground>
+        </Suspense>
       </footer>
       </div>
     </div>
