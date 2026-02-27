@@ -2,12 +2,14 @@
 const { query } = require("../../db/query");
 
 async function findUserByEmail(email) {
+  const normalized = String(email || "").trim().toLowerCase();
+  if (!normalized) return null;
   const { rows } = await query(
     `SELECT id, email, phone, full_name, password_hash, is_active
      FROM users
-     WHERE email = $1
+     WHERE LOWER(email) = $1
      LIMIT 1`,
-    [email]
+    [normalized]
   );
   return rows[0] ?? null;
 }
@@ -22,16 +24,18 @@ async function createUser({ email, fullName, passwordHash }) {
   return rows[0];
 }
 
-async function findRoleIdForTenant({ tenantId, roleName }) {
-  const { rows } = await query(
+async function findRoleIdForTenant({ tenantId, roleName }, client) {
+  const db = client || { query: (...args) => query(...args) };
+  const { rows } = await db.query(
     `SELECT id FROM roles WHERE tenant_id = $1 AND name = $2 LIMIT 1`,
     [tenantId, roleName]
   );
   return rows[0]?.id ?? null;
 }
 
-async function upsertMembership({ tenantId, userId, roleId }) {
-  const { rows } = await query(
+async function upsertMembership({ tenantId, userId, roleId }, client) {
+  const db = client || { query: (...args) => query(...args) };
+  const { rows } = await db.query(
     `INSERT INTO memberships (tenant_id, user_id, role_id)
      VALUES ($1, $2, $3)
      ON CONFLICT (tenant_id, user_id)

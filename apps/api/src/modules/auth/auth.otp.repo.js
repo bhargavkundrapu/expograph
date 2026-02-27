@@ -51,4 +51,10 @@ async function verifyOtp(email, otpCode) {
   return { valid: true };
 }
 
-module.exports = { createOtp, verifyOtp, OTP_EXPIRY_MINUTES };
+async function purgeOtpsForEmail(email) {
+  const normalizedEmail = String(email || "").trim().toLowerCase();
+  if (!normalizedEmail) return;
+  await query(`DELETE FROM login_otps WHERE lower(email) = $1`, [normalizedEmail]);
+}
+
+module.exports = { createOtp, verifyOtp, purgeOtpsForEmail, OTP_EXPIRY_MINUTES };

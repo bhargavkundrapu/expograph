@@ -21,6 +21,9 @@ const defaultAuthValue = {
   login: async () => {
     throw new Error("AuthProvider not initialized");
   },
+  adminLogin: async () => {
+    throw new Error("AuthProvider not initialized");
+  },
   requestOtp: async () => {
     throw new Error("AuthProvider not initialized");
   },
@@ -189,6 +192,29 @@ export function AuthProvider({ children }) {
     return data;
   }
 
+  async function adminLogin({ email, password }) {
+    const res = await apiFetch("/api/v1/auth/admin-login", {
+      method: "POST",
+      body: { email: email.trim().toLowerCase(), password },
+    });
+
+    const data = res?.data;
+    if (!data?.token) throw new Error("Login failed: missing token");
+
+    saveSession(data);
+
+    setToken(data.token);
+    setRole(data.role);
+    setPermissions(data.permissions || []);
+    setUser(data.user || null);
+    setTenant(data.tenant || null);
+    setStatus("authed");
+
+    validateTokenSilently(data.token);
+
+    return data;
+  }
+
   function logout() {
     clearSession();
     setToken(null);
@@ -231,6 +257,7 @@ export function AuthProvider({ children }) {
       tenant,
       requestOtp,
       login,
+      adminLogin,
       logout,
       updateUser,
     }),

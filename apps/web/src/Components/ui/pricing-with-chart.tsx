@@ -65,10 +65,69 @@ export function PricingWithChart() {
     return <CoursesPageSkeleton />;
   }
 
+  const courseColors = [
+    {
+      border: "border-cyan-500/25",
+      borderHover: "hover:border-cyan-500/50",
+      bg: "from-cyan-950/40 via-[#0a1218] to-[#0a0a0a]",
+      glow: "hover:shadow-[0_0_40px_-8px_rgba(6,182,212,0.2)]",
+      badge: "from-cyan-600 to-cyan-700",
+      badgeShadow: "shadow-cyan-500/25",
+      check: "text-cyan-400",
+      price: "from-cyan-400 to-cyan-500",
+      btn: "from-cyan-600 to-cyan-700 hover:from-cyan-500 hover:to-cyan-600 shadow-cyan-500/20",
+    },
+    {
+      border: "border-amber-500/25",
+      borderHover: "hover:border-amber-500/50",
+      bg: "from-amber-950/40 via-[#14110a] to-[#0a0a0a]",
+      glow: "hover:shadow-[0_0_40px_-8px_rgba(245,158,11,0.2)]",
+      badge: "from-amber-600 to-amber-700",
+      badgeShadow: "shadow-amber-500/25",
+      check: "text-amber-400",
+      price: "from-amber-400 to-amber-500",
+      btn: "from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 shadow-amber-500/20",
+    },
+    {
+      border: "border-emerald-500/25",
+      borderHover: "hover:border-emerald-500/50",
+      bg: "from-emerald-950/40 via-[#0a140e] to-[#0a0a0a]",
+      glow: "hover:shadow-[0_0_40px_-8px_rgba(16,185,129,0.2)]",
+      badge: "from-emerald-600 to-emerald-700",
+      badgeShadow: "shadow-emerald-500/25",
+      check: "text-emerald-400",
+      price: "from-emerald-400 to-emerald-500",
+      btn: "from-emerald-600 to-emerald-700 hover:from-emerald-500 hover:to-emerald-600 shadow-emerald-500/20",
+    },
+    {
+      border: "border-rose-500/25",
+      borderHover: "hover:border-rose-500/50",
+      bg: "from-rose-950/40 via-[#140a0e] to-[#0a0a0a]",
+      glow: "hover:shadow-[0_0_40px_-8px_rgba(244,63,94,0.2)]",
+      badge: "from-rose-600 to-rose-700",
+      badgeShadow: "shadow-rose-500/25",
+      check: "text-rose-400",
+      price: "from-rose-400 to-rose-500",
+      btn: "from-rose-600 to-rose-700 hover:from-rose-500 hover:to-rose-600 shadow-rose-500/20",
+    },
+  ];
+
+  const firstCourseSpan = packs.length === 1 ? "md:col-span-8" :
+    packs.length === 2 ? "md:col-span-4" :
+    packs.length >= 3 ? "md:col-span-3" : "md:col-span-8";
+
+  const courseColSpans = [
+    firstCourseSpan,
+    "md:col-span-5",
+    "md:col-span-7",
+    "md:col-span-7",
+    "md:col-span-5",
+  ];
+
   return (
     <div className="mx-auto w-full max-w-6xl">
       {/* Heading */}
-      <div className="mx-auto mb-12 sm:mb-14 md:mb-16 max-w-2xl text-center">
+      <div className="mx-auto mb-10 sm:mb-12 md:mb-14 max-w-2xl text-center">
         <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl text-white drop-shadow-sm">
           Pricing that Scales with You
         </h1>
@@ -78,158 +137,125 @@ export function PricingWithChart() {
         </p>
       </div>
 
-      {/* Packs - all highlighted as Recommended */}
-      {packs.length > 0 && (
-        <div className="mb-14 sm:mb-16">
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-white/60 mb-5 sm:mb-6">
-            Course Packs
-          </h2>
-          <div className="grid gap-5 sm:gap-6 grid-cols-1 lg:grid-cols-2">
-            {packs.map((pack) => (
-              <Card
-                key={pack.id}
-                className={`
-                  relative overflow-hidden aspect-[4/3] min-h-[260px] sm:min-h-[280px] flex flex-col
-                  border border-white/10 bg-white/[0.03] backdrop-blur-sm
-                  shadow-[0_0_0_1px_rgba(124,58,237,0.2),0_20px_50px_-12px_rgba(0,0,0,0.5)]
-                  hover:border-purple-500/40 hover:shadow-[0_0_0_1px_rgba(124,58,237,0.35),0_25px_60px_-12px_rgba(0,0,0,0.6)]
-                  transition-all duration-300 ease-out rounded-2xl
-                `}
-              >
-                <div className="absolute top-4 right-4 sm:top-5 sm:right-5">
-                  <span className="rounded-full bg-gradient-to-r from-purple-600 to-purple-700 px-3 py-1.5 text-xs font-semibold text-white shadow-lg shadow-purple-500/25">
-                    Recommended
-                  </span>
-                </div>
-                <CardHeader className="pb-3 pt-6 sm:pt-7 px-6 sm:px-7">
-                  <CardTitle className="text-lg sm:text-xl pr-24 font-bold text-white">
-                    {pack.title}
-                  </CardTitle>
-                  <CardDescription className="text-sm text-white/65 line-clamp-2 leading-relaxed">
-                    {pack.description || "Access all included courses"}
-                  </CardDescription>
-                  <span className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-purple-400 to-purple-600 bg-clip-text text-transparent">
+      {/* ── All cards in one grid: packs first, then courses ── */}
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-3 sm:gap-4">
+        {packs.map((pack, idx) => {
+          const packSpans =
+            packs.length === 1 ? ["md:col-span-4"] :
+            packs.length === 2 ? ["md:col-span-4", "md:col-span-4"] :
+            packs.length >= 3 ? ["md:col-span-3", "md:col-span-3", "md:col-span-3"] :
+            ["md:col-span-4"];
+          return (
+            <div
+              key={pack.id}
+              className={`col-span-1 ${packSpans[idx] || "md:col-span-4"} group`}
+            >
+              <div className="relative h-full overflow-hidden rounded-2xl border border-purple-500/25 bg-gradient-to-br from-purple-950/40 via-[#0e0e18] to-[#0a0a0a] p-5 sm:p-6 flex flex-col transition-all duration-300 hover:border-purple-500/50 hover:shadow-[0_0_40px_-8px_rgba(124,58,237,0.2)]">
+                <div className="flex items-start justify-between gap-3 mb-4">
+                  <div className="min-w-0">
+                    <span className="inline-block rounded-full bg-gradient-to-r from-purple-600 to-purple-700 px-3 py-1 text-[11px] font-semibold text-white shadow-lg shadow-purple-500/25 mb-3">
+                      Recommended
+                    </span>
+                    <h3 className="text-lg sm:text-xl font-bold text-white leading-tight truncate">
+                      {pack.title}
+                    </h3>
+                    <p className="text-sm text-white/55 line-clamp-2 mt-1 leading-relaxed">
+                      {pack.description || "Access all included courses"}
+                    </p>
+                  </div>
+                  <span className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-purple-400 to-purple-500 bg-clip-text text-transparent whitespace-nowrap shrink-0">
                     {formatPrice(pack.price_in_paise)}
                   </span>
-                </CardHeader>
-                <CardContent className="flex flex-col flex-1 min-h-0 px-6 sm:px-7 pb-6 sm:pb-7 pt-0">
-                  <div className="flex-1 min-w-0 space-y-4 flex flex-col">
-                    {pack.courses?.length ? (
-                      <ul className="text-white/70 space-y-2 text-sm">
-                        {pack.courses.slice(0, 4).map((c, i) => (
-                          <li key={i} className="flex items-center gap-2.5">
-                            <CheckCircleIcon className="h-4 w-4 text-purple-400 shrink-0" />
-                            <span className="font-semibold text-white">{c.title}</span>
-                          </li>
-                        ))}
-                        {pack.courses.length > 4 && (
-                          <li className="text-white/50 text-xs pl-6">
-                            +{pack.courses.length - 4} more courses
-                          </li>
-                        )}
-                      </ul>
-                    ) : (
-                      <ul className="text-white/70 space-y-2 text-sm">
-                        {["Unlimited access", "Priority support", "Lifetime access"].map((f, i) => (
-                          <li key={i} className="flex items-center gap-2.5">
-                            <CheckCircleIcon className="h-4 w-4 text-purple-400 shrink-0" />
-                            {f}
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                    <Button
-                      onClick={() =>
-                        handleGetCourse({
-                          type: "pack",
-                          id: pack.id,
-                          title: pack.title,
-                        })
-                      }
-                      disabled={(pack.price_in_paise ?? 0) < 100}
-                      className="w-full h-11 sm:h-12 bg-gradient-to-r from-purple-600 to-purple-700 text-white font-semibold hover:from-purple-500 hover:to-purple-600 border-0 shadow-lg shadow-purple-500/20 rounded-xl transition-all duration-200"
-                    >
-                      Get Course
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      )}
+                </div>
 
-      {/* Individual Courses - highlighted cards, normal Get Course button */}
-      {courses.length > 0 && (
-        <div id="courses" className="mt-14 sm:mt-16">
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-white/60 mb-5 sm:mb-6">
-            Individual Courses
-          </h2>
-          <div className="grid gap-5 sm:gap-6 grid-cols-1 lg:grid-cols-2">
-            {courses.map((c, i) => {
-              const displayTitle = courseDisplayNames[i] ?? c.title;
-              const canBuy = (c.price_in_paise ?? 0) >= 100;
-              return (
-                <Card
-                  key={c.id}
-                  className={`
-                    relative overflow-hidden aspect-[4/3] min-h-[260px] sm:min-h-[280px] flex flex-col
-                    border border-white/10 bg-white/[0.02] backdrop-blur-sm
-                    shadow-[0_0_0_1px_rgba(124,58,237,0.12),0_20px_50px_-12px_rgba(0,0,0,0.5)]
-                    hover:border-purple-500/30 hover:shadow-[0_0_0_1px_rgba(124,58,237,0.25),0_25px_60px_-12px_rgba(0,0,0,0.6)]
-                    transition-all duration-300 ease-out rounded-2xl
-                  `}
+                {pack.courses?.length ? (
+                  <ul className="text-white/70 space-y-1.5 text-sm mb-5 flex-1">
+                    {pack.courses.slice(0, 4).map((c, i) => (
+                      <li key={i} className="flex items-center gap-2">
+                        <CheckCircleIcon className="h-3.5 w-3.5 text-purple-400 shrink-0" />
+                        <span className="font-medium text-white/90 truncate">{c.title}</span>
+                      </li>
+                    ))}
+                    {pack.courses.length > 4 && (
+                      <li className="text-white/40 text-xs pl-5.5">+{pack.courses.length - 4} more</li>
+                    )}
+                  </ul>
+                ) : (
+                  <ul className="text-white/70 space-y-1.5 text-sm mb-5 flex-1">
+                    {["Unlimited access", "Priority support", "Lifetime access"].map((f, i) => (
+                      <li key={i} className="flex items-center gap-2">
+                        <CheckCircleIcon className="h-3.5 w-3.5 text-purple-400 shrink-0" />
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+
+                <Button
+                  onClick={() => handleGetCourse({ type: "pack", id: pack.id, title: pack.title })}
+                  disabled={(pack.price_in_paise ?? 0) < 100}
+                  className="w-full h-11 bg-gradient-to-r from-purple-600 to-purple-700 text-white font-semibold hover:from-purple-500 hover:to-purple-600 border-0 shadow-lg shadow-purple-500/20 rounded-xl transition-all duration-200"
                 >
-                  <div className="absolute top-4 right-4 sm:top-5 sm:right-5">
-                    <span className="rounded-full bg-purple-600/90 px-3 py-1.5 text-xs font-semibold text-white">
-                      Individual Plan
-                    </span>
-                  </div>
-                  <CardHeader className="pb-3 pt-6 sm:pt-7 px-6 sm:px-7">
-                    <CardTitle className="text-lg sm:text-xl pr-24 font-bold text-white">
-                      {displayTitle}
-                    </CardTitle>
-                    <CardDescription className="text-sm text-white/65 line-clamp-2 leading-relaxed">
-                      {c.description || "Self-paced learning"}
-                    </CardDescription>
-                    <span className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-purple-400 to-purple-600 bg-clip-text text-transparent">
+                  Get Pack
+                </Button>
+              </div>
+            </div>
+          );
+        })}
+
+        {/* ── Courses: bento varied widths, each with unique color ── */}
+        {courses.map((c, i) => {
+            const displayTitle = courseDisplayNames[i] ?? c.title;
+            const canBuy = (c.price_in_paise ?? 0) >= 100;
+            const clr = courseColors[i % courseColors.length];
+            const span = courseColSpans[i % courseColSpans.length];
+
+            return (
+              <div
+                key={c.id}
+                className={`col-span-1 ${span} group`}
+              >
+                <div className={`relative h-full overflow-hidden rounded-2xl border ${clr.border} bg-gradient-to-br ${clr.bg} p-5 sm:p-6 flex flex-col transition-all duration-300 ${clr.borderHover} ${clr.glow}`}>
+                  <div className="flex items-start justify-between gap-3 mb-3">
+                    <div className="min-w-0">
+                      <span className={`inline-block rounded-full bg-gradient-to-r ${clr.badge} px-3 py-1 text-[11px] font-semibold text-white shadow-lg ${clr.badgeShadow} mb-3`}>
+                        Individual
+                      </span>
+                      <h3 className="text-lg sm:text-xl font-bold text-white leading-tight">
+                        {displayTitle}
+                      </h3>
+                      <p className="text-sm text-white/50 line-clamp-2 mt-1 leading-relaxed">
+                        {c.description || "Self-paced learning"}
+                      </p>
+                    </div>
+                    <span className={`text-xl sm:text-2xl font-bold bg-gradient-to-r ${clr.price} bg-clip-text text-transparent whitespace-nowrap shrink-0`}>
                       {formatPrice(c.price_in_paise)}
                     </span>
-                  </CardHeader>
-                  <CardContent className="mt-auto pt-0 flex flex-col flex-1 min-h-0 px-6 sm:px-7 pb-6 sm:pb-7">
-                    <div className="flex-1 min-w-0 flex flex-col">
-                      <ul className="text-white/70 space-y-2 text-sm mb-4">
-                        {["Self-paced learning", "Certificate on completion", "Lifetime access"].map(
-                          (f, idx) => (
-                            <li key={idx} className="flex items-center gap-2.5">
-                              <CheckCircleIcon className="h-4 w-4 text-purple-400 shrink-0" />
-                              {f}
-                            </li>
-                          )
-                        )}
-                      </ul>
-                      <Button
-                        onClick={() =>
-                          handleGetCourse({
-                            type: "course",
-                            id: c.id,
-                            title: displayTitle,
-                          })
-                        }
-                        disabled={!canBuy}
-                        variant="outline"
-                        className="w-full h-11 sm:h-12 border-white/20 bg-white/5 text-white hover:bg-white/10 hover:border-white/30 rounded-xl font-medium transition-all duration-200"
-                      >
-                        Get Course
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-        </div>
-      )}
+                  </div>
+
+                  <ul className="text-white/60 space-y-1.5 text-sm mb-5 flex-1">
+                    {["Self-paced learning", "Certificate on completion", "Lifetime access"].map(
+                      (f, idx) => (
+                        <li key={idx} className="flex items-center gap-2">
+                          <CheckCircleIcon className={`h-3.5 w-3.5 ${clr.check} shrink-0`} />
+                          {f}
+                        </li>
+                      )
+                    )}
+                  </ul>
+
+                  <Button
+                    onClick={() => handleGetCourse({ type: "course", id: c.id, title: displayTitle })}
+                    disabled={!canBuy}
+                    className={`w-full h-10 sm:h-11 bg-gradient-to-r ${clr.btn} text-white font-semibold border-0 shadow-lg rounded-xl transition-all duration-200`}
+                  >
+                    Get Course
+                  </Button>
+                </div>
+              </div>
+            );
+          })}
+      </div>
 
       <BuyNowModal
         open={modalOpen}

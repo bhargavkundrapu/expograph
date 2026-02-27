@@ -1,10 +1,9 @@
 // apps/api/src/modules/approvals/approvals.service.js
 const { HttpError } = require("../../utils/httpError");
+const { withTransaction } = require("../../db/query");
 const approvalsRepo = require("./approvals.repo");
 const paymentsRepo = require("../payments/payments.repo");
 const { findRoleIdForTenant, upsertMembership } = require("../users/users.repo");
-const { createOtp } = require("../auth/auth.otp.repo");
-const { sendOtpEmail } = require("../auth/auth.email.service");
 
 async function listApprovals({ tenantId, status }) {
   if (status) {
@@ -20,46 +19,64 @@ async function approveById({ approvalId, approvedByUserId }) {
     throw new HttpError(400, `Approval is already ${approval.status}`);
   }
 
-  let userId;
-  try {
-    userId = await paymentsRepo.upsertUserFromPayment({
-      email: approval.customer_email,
-      fullName: approval.customer_name,
-      phone: approval.customer_phone,
-      college: approval.customer_college,
-    });
-  } catch (e) {
-    console.error("[Approvals] upsertUserFromPayment failed:", e.message, "code:", e.code, "constraint:", e.constraint);
-    const hint = e.code === "23505" ? " (Duplicate email or phone - try with different details)" : "";
-    throw new HttpError(500, `Failed to create user${hint}`, { originalError: e.message, code: e.code, constraint: e.constraint });
-  }
+  const result = await withTransaction(async (client) => {
+    // Step 1: Create or reactivate user
+    let userId;
+    try {
+      userId = await paymentsRepo.upsertUserFromPayment(
+        {
+          email: approval.customer_email,
+          fullName: approval.customer_name,
+          phone: approval.customer_phone,
+          college: approval.customer_college,
+        },
+        client
+      );
+    } catch (e) {
+      console.error("[Approvals] upsertUserFromPayment failed:", e.message, "code:", e.code, "constraint:", e.constraint);
+      const hint = e.code === "23505" ? " (Duplicate email or phone)" : "";
+      throw new HttpError(500, `Failed to create user${hint}`, { originalError: e.message, code: e.code, constraint: e.constraint });
+    }
 
-  const roleId = await findRoleIdForTenant({ tenantId: approval.tenant_id, roleName: "Student" });
-  if (roleId) {
-    await upsertMembership({ tenantId: approval.tenant_id, userId, roleId });
-  }
+    if (!userId) {
+      throw new HttpError(500, "User creation returned no ID");
+    }
 
-  try {
-    await paymentsRepo.ensureEnrollment({
-      userId,
-      tenantId: approval.tenant_id,
-      itemType: approval.item_type,
-      itemId: approval.item_id,
-    });
-  } catch (e) {
-    console.error("[Approvals] ensureEnrollment failed:", e.message);
-    throw new HttpError(500, "Failed to enroll user", { originalError: e.message });
-  }
+    // Step 2: Assign Student role (fail hard if role is missing)
+    const roleId = await findRoleIdForTenant({ tenantId: approval.tenant_id, roleName: "Student" }, client);
+    if (!roleId) {
+      throw new HttpError(500, "Student role not found for this tenant. Please seed roles first.");
+    }
+    await upsertMembership({ tenantId: approval.tenant_id, userId, roleId }, client);
 
-  try {
-    const { otpCode } = await createOtp(approval.customer_email);
-    await sendOtpEmail({ to: approval.customer_email, otpCode, appName: "ExpoGraph" });
-  } catch (e) {
-    console.warn("[Approvals] OTP send failed:", e.message);
-  }
+    // Step 3: Enroll in course/pack
+    try {
+      await paymentsRepo.ensureEnrollment(
+        {
+          userId,
+          tenantId: approval.tenant_id,
+          itemType: approval.item_type,
+          itemId: approval.item_id,
+        },
+        client
+      );
+    } catch (e) {
+      console.error("[Approvals] ensureEnrollment failed:", e.message);
+      throw new HttpError(500, "Failed to enroll user", { originalError: e.message });
+    }
 
-  await approvalsRepo.markApproved(approvalId, approvedByUserId);
-  return { success: true, userId };
+    // Step 4: Mark approval as approved (inside transaction so it rolls back on failure)
+    await client.query(
+      `UPDATE approvals
+       SET status = 'approved', approved_by = $2, approved_at = now(), updated_at = now()
+       WHERE id = $1 AND status = 'pending'`,
+      [approvalId, approvedByUserId]
+    );
+
+    return userId;
+  });
+
+  return { success: true, userId: result };
 }
 
 async function rejectById({ approvalId, notes }) {

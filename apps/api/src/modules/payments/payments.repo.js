@@ -99,7 +99,9 @@ async function findPaymentByRazorpayId(razorpayPaymentId) {
   return rows[0] ?? null;
 }
 
-async function upsertUserFromPayment({ email, fullName, phone, college }) {
+async function upsertUserFromPayment({ email, fullName, phone, college }, client) {
+  const db = client || { query: (...args) => query(...args) };
+  const inTransaction = !!client;
   const normalizedEmail = String(email || "").trim().toLowerCase();
   if (!normalizedEmail) throw new Error("Email is required");
 
@@ -107,59 +109,74 @@ async function upsertUserFromPayment({ email, fullName, phone, college }) {
   const safePhone = (phone || "").trim() || null;
   const safeCollege = (college || "").trim() || null;
 
-  const existingResult = await query(
-    `SELECT id FROM users WHERE LOWER(email) = LOWER($1) LIMIT 1`,
+  const existingResult = await db.query(
+    `SELECT id, is_active FROM users WHERE LOWER(email) = LOWER($1) LIMIT 1`,
     [normalizedEmail]
   );
   const existingRow = existingResult?.rows?.[0];
   if (existingRow) {
+    if (inTransaction) await db.query("SAVEPOINT update_user");
     try {
-      await query(
+      await db.query(
         `UPDATE users SET full_name = COALESCE($2, full_name),
          phone = COALESCE($3, phone),
          college = COALESCE($4, college),
+         is_active = true,
          updated_at = now()
          WHERE id = $1`,
         [existingRow.id, safeName, safePhone, safeCollege]
       );
+      if (inTransaction) await db.query("RELEASE SAVEPOINT update_user");
     } catch (err) {
       if (err.code === "23505" && (err.constraint === "users_phone_uq" || (err.constraint && String(err.constraint).includes("phone")))) {
-        await query(
+        if (inTransaction) await db.query("ROLLBACK TO SAVEPOINT update_user");
+        await db.query(
           `UPDATE users SET full_name = COALESCE($2, full_name),
            phone = NULL,
            college = COALESCE($3, college),
+           is_active = true,
            updated_at = now()
            WHERE id = $1`,
           [existingRow.id, safeName, safeCollege]
         );
       } else {
+        if (inTransaction) await db.query("ROLLBACK TO SAVEPOINT update_user");
         throw err;
       }
     }
     return existingRow.id;
   }
 
-  function doInsert(usePhone) {
-    return query(
-      `INSERT INTO users (email, full_name, phone, college)
-       VALUES ($1, $2, $3, $4)
-       RETURNING id`,
-      [normalizedEmail, safeName, usePhone ? safePhone : null, safeCollege]
-    );
-  }
-
+  // New user — try insert with phone, fall back without
+  if (inTransaction) await db.query("SAVEPOINT insert_user");
   try {
-    const { rows } = await doInsert(true);
+    const { rows } = await db.query(
+      `INSERT INTO users (email, full_name, phone, college, is_active)
+       VALUES ($1, $2, $3, $4, true)
+       RETURNING id`,
+      [normalizedEmail, safeName, safePhone, safeCollege]
+    );
+    if (inTransaction) await db.query("RELEASE SAVEPOINT insert_user");
     return rows[0]?.id;
   } catch (err) {
     if (err.code === "23505") {
+      if (inTransaction) await db.query("ROLLBACK TO SAVEPOINT insert_user");
       const c = String(err.constraint || "");
+
       if (c.includes("phone") || c === "users_phone_uq") {
-        const { rows } = await doInsert(false);
+        // Phone conflict — retry without phone
+        const { rows } = await db.query(
+          `INSERT INTO users (email, full_name, phone, college, is_active)
+           VALUES ($1, $2, NULL, $3, true)
+           RETURNING id`,
+          [normalizedEmail, safeName, safeCollege]
+        );
         return rows[0]?.id;
       }
+
       if (c.includes("email") || c === "users_email_uq" || c === "users_email_key") {
-        const retry = await query(`SELECT id FROM users WHERE LOWER(email) = LOWER($1) LIMIT 1`, [normalizedEmail]);
+        // Race condition — another process created the user between our SELECT and INSERT
+        const retry = await db.query(`SELECT id FROM users WHERE LOWER(email) = LOWER($1) LIMIT 1`, [normalizedEmail]);
         const row = retry?.rows?.[0];
         if (row) return row.id;
       }
@@ -168,8 +185,9 @@ async function upsertUserFromPayment({ email, fullName, phone, college }) {
   }
 }
 
-async function ensureEnrollment({ userId, tenantId, itemType, itemId }) {
-  const { rows } = await query(
+async function ensureEnrollment({ userId, tenantId, itemType, itemId }, client) {
+  const db = client || { query: (...args) => query(...args) };
+  const { rows } = await db.query(
     `INSERT INTO enrollments (user_id, tenant_id, item_type, item_id, active)
      VALUES ($1, $2, $3, $4, true)
      ON CONFLICT (user_id, item_type, item_id) DO UPDATE SET active = true
