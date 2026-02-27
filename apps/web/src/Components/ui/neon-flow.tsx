@@ -1,7 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
-
-const MOBILE_BREAKPOINT = 768;
 
 const randomColors = (count: number) => {
   return new Array(count)
@@ -21,21 +19,9 @@ export function TubesBackground({
   enableClickInteraction = true,
 }: TubesBackgroundProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [isMobile, setIsMobile] = useState(() =>
-    typeof window !== "undefined" ? window.innerWidth < MOBILE_BREAKPOINT : false
-  );
   const tubesRef = useRef<{ tubes?: { setColors: (c: string[]) => void; setLightsColors: (c: string[]) => void } } | null>(null);
-  const cleanupRef = useRef<(() => void) | undefined>();
 
   useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
-    window.addEventListener("resize", check);
-    return () => window.removeEventListener("resize", check);
-  }, []);
-
-  useEffect(() => {
-    if (isMobile) return;
-
     let mounted = true;
 
     const initTubes = async () => {
@@ -61,10 +47,6 @@ export function TubesBackground({
         });
 
         tubesRef.current = app;
-
-        cleanupRef.current = () => {
-          tubesRef.current = null;
-        };
       } catch (error) {
         console.warn("TubesBackground: could not load tubes cursor lib", error);
       }
@@ -74,9 +56,9 @@ export function TubesBackground({
 
     return () => {
       mounted = false;
-      if (cleanupRef.current) cleanupRef.current();
+      tubesRef.current = null;
     };
-  }, [isMobile]);
+  }, []);
 
   const handleClick = () => {
     if (!enableClickInteraction || !tubesRef.current?.tubes) return;
@@ -91,24 +73,11 @@ export function TubesBackground({
       className={cn("relative w-full h-full min-h-[400px] overflow-hidden bg-background", className)}
       onClick={handleClick}
     >
-      {isMobile ? (
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(ellipse at 30% 50%, rgba(249,103,251,0.15) 0%, transparent 50%)," +
-              "radial-gradient(ellipse at 70% 40%, rgba(105,88,213,0.15) 0%, transparent 50%)," +
-              "radial-gradient(ellipse at 50% 80%, rgba(83,188,40,0.1) 0%, transparent 50%)," +
-              "#0a0a0a",
-          }}
-        />
-      ) : (
-        <canvas
-          ref={canvasRef}
-          className="absolute inset-0 w-full h-full block"
-          style={{ touchAction: "none" }}
-        />
-      )}
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0 w-full h-full block"
+        style={{ touchAction: "none" }}
+      />
       <div className="relative z-10 w-full h-full pointer-events-none">{children}</div>
     </div>
   );
