@@ -1,11 +1,9 @@
 import { useNavigate } from "react-router-dom";
-import { lazy, Suspense, useState, useCallback } from "react";
-import { motion } from "framer-motion";
+import { lazy, Suspense, useState, useCallback, useEffect, useRef } from "react";
 import { useAuth } from "../../app/providers/AuthProvider";
 import { Header } from "../../Components/ui/header-2";
 import HeroSection from "../../Components/ui/hero-section-9";
 import CallToAction1 from "../../Components/ui/call-to-action-1";
-import { AcademyFeaturesGrid } from "../../Components/ui/academy-features-grid";
 import { FiUsers as Users, FiBriefcase as Briefcase, FiLink as LinkIcon, FiChevronDown } from "react-icons/fi";
 
 const InteractiveRobotSpline = lazy(() =>
@@ -17,6 +15,9 @@ const AcademyMilestoneStepper = lazy(() =>
 const UiverseCard = lazy(() => import("../../Components/ui/uiverse-card"));
 const TubesBackground = lazy(() =>
   import("../../Components/ui/neon-flow").then((m) => ({ default: m.TubesBackground }))
+);
+const AcademyFeaturesGrid = lazy(() =>
+  import("../../Components/ui/academy-features-grid").then((m) => ({ default: m.AcademyFeaturesGrid }))
 );
 
 function SectionSkeleton({ height = "h-96" }) {
@@ -53,12 +54,30 @@ function HeroSkeleton() {
   );
 }
 
+function LazySection({ children, fallback, rootMargin = "200px" }) {
+  const ref = useRef(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setVisible(true); obs.disconnect(); } },
+      { rootMargin }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [rootMargin]);
+
+  return <div ref={ref}>{visible ? children : fallback || <SectionSkeleton />}</div>;
+}
+
 const faqData = [
   { q: "What is ExpoGraph Academy?", a: "ExpoGraph Academy is a modern learning platform that teaches you real-world skills through structured lessons, smart prompts, and hands-on projects. You don't just watch — you build." },
   { q: "What are Smart Prompts?", a: "Smart Prompts are structured prompt boxes you can copy and use directly. They help you learn vibe coding — how to think, prompt, and build like a professional developer." },
   { q: "What is the Real Client Lab?", a: "The Real Client Lab connects you with actual clients and real-world projects. You build, deliver, and grow your portfolio with work that matters — not just tutorials." },
   { q: "Do I get a Resume Builder?", a: "Yes! Our built-in Resume Builder helps you create a professional resume using your completed courses, projects, and Real Client Lab work — ready for employers." },
-  { q: "How much does it cost?", a: "We offer flexible pricing with individual courses and course packs. Check the Courses page for current pricing. We believe in making quality education accessible." },
+  { q: "How much does it cost?", a: "Individual courses start at just ₹99 and our all-access course pack is only ₹199 — that's less than the price of a coffee for real-world skills, certificates, and career growth. We believe premium education shouldn't come with a premium price tag." },
   { q: "Do I get certificates?", a: "Absolutely. Every course you complete earns you a verifiable certificate with a unique ID — issued by ExpoGraph, a company recognised by MCA, Government of India." },
   { q: "Is there community support?", a: "Yes! Join our community on Instagram, YouTube, and LinkedIn. Connect with fellow learners, get tips, and stay updated on new courses and opportunities." },
   { q: "How is ExpoGraph different from other platforms?", a: "Unlike typical course platforms, ExpoGraph combines structured learning with real client projects, smart AI prompts, and a resume builder — everything you need to actually get hired, not just learn theory." },
@@ -121,42 +140,33 @@ export default function AcademyPage() {
         >
           <span>ExpoGraph Academy</span>
         </div>
+        {/* Dark scrim on mobile so text is readable over the 3D robot */}
+        <div className="absolute inset-0 z-[5] bg-gradient-to-b from-black/70 via-black/40 to-black/70 md:from-transparent md:via-transparent md:to-transparent pointer-events-none" />
+
         <div className="absolute inset-0 z-10 flex flex-col items-center pt-28 sm:pt-32 md:items-start md:pt-28 lg:pt-32 xl:pt-40 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 pointer-events-none">
           <div className="text-center md:text-left text-white drop-shadow-lg w-full max-w-full sm:max-w-xl md:max-w-xl lg:max-w-2xl mx-auto md:mx-0 pr-0 md:pr-4">
-            <motion.p
-              initial={{ opacity: 0, y: -8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-              className="text-xs sm:text-sm md:text-base text-white/70 font-medium tracking-wide mb-2 sm:mb-2 md:mb-3"
-              style={{ fontFamily: "var(--font-dm)" }}
+            <p
+              className="text-xs sm:text-sm md:text-base text-white/90 md:text-white/70 font-medium tracking-wide mb-2 sm:mb-2 md:mb-3 animate-[fadeInUp_0.5s_ease-out_both]"
+              style={{ fontFamily: "var(--font-dm)", textShadow: "0 2px 8px rgba(0,0,0,0.6)" }}
             >
               Prompt Smart. Vibe Code. Grow Your Career.
-            </motion.p>
-            <motion.h1
-              initial={{ opacity: 0, x: -24 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-              className="text-[1.7rem] sm:text-3xl md:text-3xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-bold leading-[1.15] mb-0 md:mb-3"
-              style={{ fontFamily: '"Google Sans Flex", "Google Sans", sans-serif' }}
+            </p>
+            <h1
+              className="text-[1.7rem] sm:text-3xl md:text-3xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-bold leading-[1.15] mb-0 md:mb-3 animate-[fadeInLeft_0.6s_ease-out_both]"
+              style={{ fontFamily: '"Google Sans Flex", "Google Sans", sans-serif', textShadow: "0 2px 12px rgba(0,0,0,0.7)" }}
             >
               Don't Just Learn Code.
               <br />
-              <span className="text-white/80">Vibe Code It.</span>
-            </motion.h1>
-            <motion.p
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-              className="text-sm sm:text-[15px] md:text-lg text-violet-200/80 md:text-white/60 max-w-xs sm:max-w-sm md:max-w-lg mt-12 sm:mt-14 md:mt-0 mb-0 md:mb-6 leading-relaxed mx-auto md:mx-0"
-              style={{ fontFamily: "var(--font-dm)" }}
+              <span className="bg-gradient-to-r from-violet-400 to-fuchsia-400 text-transparent bg-clip-text md:from-white/80 md:to-white/80">Vibe Code It.</span>
+            </h1>
+            <p
+              className="text-sm sm:text-[15px] md:text-lg text-white md:text-white/60 max-w-xs sm:max-w-sm md:max-w-lg mt-12 sm:mt-14 md:mt-0 mb-0 md:mb-6 leading-relaxed mx-auto md:mx-0 animate-[fadeInUp_0.5s_0.1s_ease-out_both]"
+              style={{ fontFamily: "var(--font-dm)", textShadow: "0 2px 10px rgba(0,0,0,0.8)" }}
             >
               Master vibe coding with smart prompts, structured lessons, and build for real clients in our Real Client Lab — the fastest way to grow your career.
-            </motion.p>
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-              className="flex justify-center md:justify-start gap-3 sm:gap-4 md:gap-4 flex-wrap pointer-events-auto mt-14 sm:mt-16 md:mt-0"
+            </p>
+            <div
+              className="flex justify-center md:justify-start gap-3 sm:gap-4 md:gap-4 flex-wrap pointer-events-auto mt-14 sm:mt-16 md:mt-0 animate-[fadeInUp_0.6s_0.15s_ease-out_both]"
             >
               <button
                 onClick={() => navigate("/courses")}
@@ -172,7 +182,20 @@ export default function AcademyPage() {
               >
                 Explore
               </button>
-            </motion.div>
+            </div>
+            {/* Pricing hook */}
+            <div
+              className="mt-5 sm:mt-6 md:mt-4 animate-[fadeInUp_0.5s_0.25s_ease-out_both] pointer-events-auto"
+              style={{ textShadow: "0 2px 8px rgba(0,0,0,0.7)" }}
+            >
+              <button
+                onClick={() => navigate("/courses")}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/15 border border-emerald-400/25 cursor-pointer hover:bg-emerald-500/25 transition-colors"
+              >
+                <span className="text-emerald-400 text-xs sm:text-sm font-bold">Starting at just ₹99</span>
+                <span className="text-white/50 text-[10px] sm:text-xs">• Courses from ₹99 | Packs from ₹199</span>
+              </button>
+            </div>
           </div>
         </div>
       </section>
@@ -189,7 +212,8 @@ export default function AcademyPage() {
           subtitle={
             <>
               At ExpoGraph, you get <strong className="text-white/90">smart prompts</strong>, <strong className="text-white/90">structured lessons</strong>, and a{" "}
-              <strong className="text-white/90">Real Client Lab</strong> to build for actual clients. You don't just learn — you ship real work and grow your career.
+              <strong className="text-white/90">Real Client Lab</strong> to build for actual clients — all starting at just{" "}
+              <strong className="text-emerald-400">₹99</strong>. You don't just learn — you ship real work and grow your career.
             </>
           }
           actions={[
@@ -265,7 +289,7 @@ export default function AcademyPage() {
       {/* What Features Are There With Us */}
       <section
         id="features"
-        className="py-14 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24"
+        className="py-14 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 academy-section-offscreen"
         style={{ backgroundColor: "#000000" }}
       >
         <div className="text-center mb-10 sm:mb-12 md:mb-14">
@@ -279,18 +303,22 @@ export default function AcademyPage() {
             </span>
           </h2>
           <p className="mt-3 sm:mt-4 text-sm sm:text-base md:text-lg text-white/60 max-w-2xl mx-auto">
-            Powerful tools and real-world experience, all in one place
+            Powerful tools and real-world experience, all in one place — starting at just <span className="text-emerald-400 font-semibold">₹99</span>
           </p>
         </div>
         <div className="mx-auto max-w-6xl">
-          <AcademyFeaturesGrid />
+          <LazySection fallback={<SectionSkeleton height="h-64" />} rootMargin="300px">
+            <Suspense fallback={<SectionSkeleton height="h-64" />}>
+              <AcademyFeaturesGrid />
+            </Suspense>
+          </LazySection>
         </div>
       </section>
 
       {/* Certification Section */}
       <section
         id="certification"
-        className="py-14 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24"
+        className="py-14 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 academy-section-offscreen"
         style={{ backgroundColor: "#000000" }}
       >
         <div className="text-center mb-10 sm:mb-12 md:mb-14">
@@ -304,7 +332,7 @@ export default function AcademyPage() {
             </span>
           </h2>
           <p className="mt-3 sm:mt-4 text-sm sm:text-base md:text-lg text-white/60 max-w-2xl mx-auto">
-            Every course you complete comes with a verifiable certificate recognised by MCA
+            Every course you complete comes with a verifiable certificate recognised by MCA — yours for just <span className="text-amber-400 font-semibold">₹99</span>
           </p>
         </div>
 
@@ -393,10 +421,54 @@ export default function AcademyPage() {
         </div>
       </section>
 
+      {/* Pricing Advantage Banner */}
+      <section
+        className="py-10 sm:py-12 md:py-16 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 academy-section-offscreen"
+        style={{ backgroundColor: "#000000" }}
+      >
+        <div className="max-w-5xl mx-auto">
+          <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl border border-emerald-500/15 bg-gradient-to-br from-emerald-500/5 via-black to-violet-500/5">
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(16,185,129,0.08),transparent_60%)] pointer-events-none" />
+            <div className="relative px-6 py-8 sm:px-10 sm:py-10 md:px-14 md:py-12 flex flex-col md:flex-row items-center gap-6 md:gap-10">
+              <div className="flex-1 text-center md:text-left">
+                <p className="inline-block text-xs sm:text-sm font-semibold tracking-widest uppercase text-emerald-400 mb-3 px-3 py-1 rounded-full border border-emerald-500/20 bg-emerald-500/5">
+                  Why pay more?
+                </p>
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white leading-tight">
+                  Premium learning.{" "}
+                  <span className="bg-gradient-to-r from-emerald-400 to-teal-400 text-transparent bg-clip-text">
+                    Unbeatable price.
+                  </span>
+                </h2>
+                <p className="mt-3 sm:mt-4 text-sm sm:text-base text-white/60 max-w-lg mx-auto md:mx-0 leading-relaxed">
+                  Other platforms charge ₹5,000–₹50,000 for the same content. At ExpoGraph, you get structured courses, smart prompts, a resume builder, certificates & real client projects — all for a price anyone can afford.
+                </p>
+              </div>
+              <div className="flex flex-row md:flex-col items-center gap-4 sm:gap-5 shrink-0">
+                <button
+                  onClick={() => navigate("/courses")}
+                  className="flex flex-col items-center justify-center w-32 sm:w-36 h-28 sm:h-32 rounded-2xl border border-emerald-500/20 bg-emerald-500/10 hover:bg-emerald-500/20 transition-colors cursor-pointer group"
+                >
+                  <span className="text-3xl sm:text-4xl font-extrabold text-emerald-400 group-hover:scale-105 transition-transform">₹99</span>
+                  <span className="text-[11px] sm:text-xs text-white/50 mt-1 uppercase tracking-wider">per course</span>
+                </button>
+                <button
+                  onClick={() => navigate("/courses")}
+                  className="flex flex-col items-center justify-center w-32 sm:w-36 h-28 sm:h-32 rounded-2xl border border-amber-500/20 bg-amber-500/10 hover:bg-amber-500/20 transition-colors cursor-pointer group"
+                >
+                  <span className="text-3xl sm:text-4xl font-extrabold text-amber-400 group-hover:scale-105 transition-transform">₹199</span>
+                  <span className="text-[11px] sm:text-xs text-white/50 mt-1 uppercase tracking-wider">all-access pack</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Milestone Stepper Section */}
       <section
         id="stepper"
-        className="py-14 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24"
+        className="py-14 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 academy-section-offscreen"
         style={{ backgroundColor: "#000000" }}
       >
         <div className="text-center mb-10 sm:mb-12 md:mb-14">
@@ -410,7 +482,7 @@ export default function AcademyPage() {
             </span>
           </h2>
           <p className="mt-3 sm:mt-4 text-sm sm:text-base md:text-lg text-white/60 max-w-2xl mx-auto">
-            A clear 4-step journey that takes you from exploring to shipping real work
+            A clear 4-step journey from exploring to shipping real work — start for just <span className="text-blue-400 font-semibold">₹99</span>
           </p>
         </div>
         <div className="text-white/90">
@@ -423,7 +495,7 @@ export default function AcademyPage() {
       {/* Community / Connect Section */}
       <section
         id="connect"
-        className="py-14 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24"
+        className="py-14 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 academy-section-offscreen"
         style={{ backgroundColor: "#000000" }}
       >
         <div className="text-center mb-10 sm:mb-12 md:mb-14">
@@ -444,16 +516,18 @@ export default function AcademyPage() {
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12 mb-10 sm:mb-12">
             <div className="shrink-0">
-              <Suspense fallback={<div className="w-64 h-80 rounded-2xl bg-white/[0.04] animate-pulse" />}>
-                <UiverseCard />
-              </Suspense>
+              <LazySection fallback={<div className="w-64 h-80 rounded-2xl bg-white/[0.04] animate-pulse" />} rootMargin="200px">
+                <Suspense fallback={<div className="w-64 h-80 rounded-2xl bg-white/[0.04] animate-pulse" />}>
+                  <UiverseCard />
+                </Suspense>
+              </LazySection>
             </div>
 
             <div className="flex-1 w-full">
               <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-6 sm:mb-8">
                 {[
                   { value: "5K+", label: "Active Learners", color: "text-emerald-400" },
-                  { value: "100+", label: "Expert Mentors", color: "text-green-400" },
+                  { value: "₹99", label: "Courses From", color: "text-green-400" },
                   { value: "Real", label: "Client Projects", color: "text-teal-400" },
                   { value: "24/7", label: "Community Access", color: "text-cyan-400" },
                 ].map((s) => (
@@ -533,7 +607,7 @@ export default function AcademyPage() {
       {/* FAQs Section */}
       <section
         id="faqs"
-        className="py-14 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24"
+        className="py-14 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 academy-section-offscreen"
         style={{ backgroundColor: "#000000" }}
       >
         <div className="text-center mb-10 sm:mb-12 md:mb-14">
@@ -557,21 +631,23 @@ export default function AcademyPage() {
 
       {/* Footer — ExpoGraph flow (TubesBackground) */}
       <footer className="w-full min-h-[560px] sm:min-h-[70vh] border-t border-black">
-        <Suspense fallback={<SectionSkeleton height="min-h-[560px]" />}>
-          <TubesBackground className="min-h-[560px] sm:min-h-[70vh] bg-[#0a0a0a]" enableClickInteraction={true}>
-            <div className="flex flex-col items-center justify-center w-full min-h-[560px] sm:min-h-[70vh] gap-6 text-center px-4">
-              <div className="space-y-2 pointer-events-auto cursor-default select-none">
-                <h2 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tighter text-white drop-shadow-[0_0_20px_rgba(0,0,0,1)]">
-                  ExpoGraph flow
-                </h2>
+        <LazySection fallback={<SectionSkeleton height="min-h-[560px]" />} rootMargin="300px">
+          <Suspense fallback={<SectionSkeleton height="min-h-[560px]" />}>
+            <TubesBackground className="min-h-[560px] sm:min-h-[70vh] bg-[#0a0a0a]" enableClickInteraction={true}>
+              <div className="flex flex-col items-center justify-center w-full min-h-[560px] sm:min-h-[70vh] gap-6 text-center px-4">
+                <div className="space-y-2 pointer-events-auto cursor-default select-none">
+                  <h2 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tighter text-white drop-shadow-[0_0_20px_rgba(0,0,0,1)]">
+                    ExpoGraph flow
+                  </h2>
+                </div>
+                <div className="absolute bottom-8 left-0 right-0 flex flex-col items-center gap-2 text-white/60 animate-pulse pointer-events-none">
+                  <span className="text-xs uppercase tracking-widest">Move the cursor around to interact and Click to randomize.</span>
+                  <span className="text-xs text-white/60">© 2024 ExpoGraph Academy</span>
+                </div>
               </div>
-              <div className="absolute bottom-8 left-0 right-0 flex flex-col items-center gap-2 text-white/60 animate-pulse pointer-events-none">
-                <span className="text-xs uppercase tracking-widest">Move the cursor around to interact and Click to randomize.</span>
-                <span className="text-xs text-white/60">© 2024 ExpoGraph Academy</span>
-              </div>
-            </div>
-          </TubesBackground>
-        </Suspense>
+            </TubesBackground>
+          </Suspense>
+        </LazySection>
       </footer>
       </div>
     </div>

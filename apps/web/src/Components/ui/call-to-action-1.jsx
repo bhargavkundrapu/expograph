@@ -35,6 +35,20 @@ export default function CallToAction1() {
             </svg>
           </button>
         </h2>
+        {/* Pricing anchor */}
+        <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 mt-4 sm:mt-5">
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 border border-white/15">
+            <span className="text-emerald-300 text-sm sm:text-base font-bold">₹99</span>
+            <span className="text-white/60 text-xs sm:text-sm">per course</span>
+          </div>
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 border border-white/15">
+            <span className="text-amber-300 text-sm sm:text-base font-bold">₹199</span>
+            <span className="text-white/60 text-xs sm:text-sm">all-access pack</span>
+          </div>
+        </div>
+        <p className="text-xs sm:text-sm text-white/50 mt-2 sm:mt-3 max-w-md">
+          Less than the price of a coffee — real skills, real projects, real career growth.
+        </p>
         <button
           type="button"
           onClick={() => navigate("/features/real-client-lab")}

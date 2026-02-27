@@ -290,9 +290,7 @@ const StyledWrapper = styled.div`
     top: 0;
     right: 0;
     box-shadow: rgba(100, 100, 111, 0.2) -10px 10px 20px 0px;
-    -webkit-backdrop-filter: blur(5px);
-    backdrop-filter: blur(5px);
-    background: rgba(0, 249, 203, 0.2);
+    background: rgba(0, 249, 203, 0.25);
     transition: all 0.5s ease-in-out;
   }
 
@@ -308,8 +306,6 @@ const StyledWrapper = styled.div`
     transform: translate3d(0, 0, 40px);
     top: 10px;
     right: 10px;
-    -webkit-backdrop-filter: blur(1px);
-    backdrop-filter: blur(1px);
     transition-delay: 0.4s;
   }
 
