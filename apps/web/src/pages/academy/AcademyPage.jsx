@@ -5,18 +5,21 @@ import { Header } from "../../Components/ui/header-2";
 import HeroSection from "../../Components/ui/hero-section-9";
 import CallToAction1 from "../../Components/ui/call-to-action-1";
 import { FiUsers as Users, FiBriefcase as Briefcase, FiLink as LinkIcon, FiChevronDown } from "react-icons/fi";
+import { AcademyFeaturesGridLite } from "../../Components/ui/academy-features-grid-lite";
 
-const InteractiveRobotSpline = lazy(() =>
+const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+
+const InteractiveRobotSpline = isMobile ? null : lazy(() =>
   import("../../Components/ui/interactive-3d-robot").then((m) => ({ default: m.InteractiveRobotSpline }))
 );
 const AcademyMilestoneStepper = lazy(() =>
   import("../../Components/ui/academy-milestone-stepper").then((m) => ({ default: m.AcademyMilestoneStepper }))
 );
-const UiverseCard = lazy(() => import("../../Components/ui/uiverse-card"));
+const UiverseCard = isMobile ? null : lazy(() => import("../../Components/ui/uiverse-card"));
 const TubesBackground = lazy(() =>
   import("../../Components/ui/neon-flow").then((m) => ({ default: m.TubesBackground }))
 );
-const AcademyFeaturesGrid = lazy(() =>
+const AcademyFeaturesGrid = isMobile ? null : lazy(() =>
   import("../../Components/ui/academy-features-grid").then((m) => ({ default: m.AcademyFeaturesGrid }))
 );
 
@@ -108,21 +111,27 @@ export default function AcademyPage() {
       <Header />
 
       <div className="overflow-x-hidden">
-        {/* Hero Section — Interactive 3D Robot */}
+        {/* Hero Section — Interactive 3D Robot (desktop) / Static bg (mobile) */}
       <section className="relative w-full min-h-[100dvh] sm:min-h-screen h-screen overflow-hidden bg-black" style={{ backgroundColor: "#000000", maxWidth: "100vw" }}>
-        <Suspense fallback={<HeroSkeleton />}>
-          <InteractiveRobotSpline
-            scene="https://prod.spline.design/PyzDhpQ9E5f1E3MT/scene.splinecode"
-            className="absolute inset-0 z-0"
+        {isMobile ? (
+          <div
+            className="absolute inset-0 z-0 bg-center bg-cover bg-no-repeat"
+            style={{ backgroundImage: "url('/robot-hero-mobile.png')" }}
           />
-        </Suspense>
+        ) : (
+          <Suspense fallback={<HeroSkeleton />}>
+            <InteractiveRobotSpline
+              scene="https://prod.spline.design/PyzDhpQ9E5f1E3MT/scene.splinecode"
+              className="absolute inset-0 z-0"
+            />
+          </Suspense>
+        )}
         <div
           className="absolute bottom-4 right-4 sm:bottom-5 sm:right-5 z-20 flex items-center justify-center gap-2 min-w-[180px] min-h-[48px] px-6 py-3 bg-black backdrop-blur-sm border border-white/10 rounded-full text-white/70 text-sm font-medium pointer-events-none"
           aria-label="Built with ExpoGraph"
         >
           <span>ExpoGraph Academy</span>
         </div>
-        {/* Dark scrim on mobile so text is readable over the 3D robot */}
         <div className="absolute inset-0 z-[5] bg-gradient-to-b from-black/70 via-black/40 to-black/70 md:from-transparent md:via-transparent md:to-transparent pointer-events-none" />
 
         <div className="absolute inset-0 z-10 flex flex-col items-center pt-28 sm:pt-32 md:items-start md:pt-28 lg:pt-32 xl:pt-40 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 pointer-events-none">
@@ -289,9 +298,13 @@ export default function AcademyPage() {
           </p>
         </div>
         <div className="mx-auto max-w-6xl">
-          <Suspense fallback={<SectionSkeleton height="h-64" />}>
-            <AcademyFeaturesGrid />
-          </Suspense>
+          {isMobile ? (
+            <AcademyFeaturesGridLite />
+          ) : (
+            <Suspense fallback={<SectionSkeleton height="h-64" />}>
+              <AcademyFeaturesGrid />
+            </Suspense>
+          )}
         </div>
       </section>
 
@@ -495,11 +508,13 @@ export default function AcademyPage() {
 
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12 mb-10 sm:mb-12">
-            <div className="shrink-0">
-              <Suspense fallback={<div className="w-64 h-80 rounded-2xl bg-white/[0.04] animate-pulse" />}>
-                <UiverseCard />
-              </Suspense>
-            </div>
+            {!isMobile && (
+              <div className="shrink-0">
+                <Suspense fallback={<div className="w-64 h-80 rounded-2xl bg-white/[0.04] animate-pulse" />}>
+                  <UiverseCard />
+                </Suspense>
+              </div>
+            )}
 
             <div className="flex-1 w-full">
               <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-6 sm:mb-8">
