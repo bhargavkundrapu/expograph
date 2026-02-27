@@ -171,7 +171,7 @@ async function handleCallback({ razorpay_payment_id, razorpay_order_id, razorpay
   const normalizedEmail = String(order.customer_email || "").trim().toLowerCase();
   let existingUser = null;
   if (normalizedEmail) {
-    const { rows } = await query(`SELECT id FROM users WHERE LOWER(email) = $1 LIMIT 1`, [normalizedEmail]);
+    const { rows } = await query(`SELECT id FROM users WHERE LOWER(email) = $1 AND is_active = true LIMIT 1`, [normalizedEmail]);
     existingUser = rows[0] ?? null;
   }
 

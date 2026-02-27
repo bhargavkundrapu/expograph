@@ -19,6 +19,7 @@ const loadRazorpay = () => {
 
 export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill }) {
   const [form, setForm] = useState({ name: "", email: "", phone: "", college: "" });
+  const [emailTouched, setEmailTouched] = useState(false);
   const [priceBreakdown, setPriceBreakdown] = useState(null);
   const [priceLoading, setPriceLoading] = useState(false);
 
@@ -55,6 +56,7 @@ export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill }
 
   const reset = () => {
     setForm({ name: "", email: "", phone: "", college: "" });
+    setEmailTouched(false);
     setPriceBreakdown(null);
     setError("");
     setStep("form");
@@ -222,16 +224,35 @@ export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill }
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-1">Email *</label>
-                  <input
-                    type="email"
-                    value={form.email}
-                    onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
-                    required
-                    autoComplete="email"
-                    style={{ color: "#0f172a", backgroundColor: "#ffffff", caretColor: "#0f172a" }}
-                    className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                    placeholder="you@example.com"
-                  />
+                  {(() => {
+                    const emailVal = form.email || "";
+                    const isInvalid = emailTouched && emailVal.length > 0 && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal);
+                    return (
+                      <>
+                        <input
+                          type="email"
+                          value={form.email}
+                          onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
+                          onBlur={() => setEmailTouched(true)}
+                          required
+                          autoComplete="email"
+                          style={{ color: "#0f172a", backgroundColor: "#ffffff", caretColor: "#0f172a" }}
+                          className={`w-full px-4 py-2.5 border rounded-lg focus:ring-2 outline-none transition-colors ${
+                            isInvalid
+                              ? "border-red-400 focus:ring-red-400/20 focus:border-red-400"
+                              : "border-slate-300 focus:ring-blue-500 focus:border-blue-500"
+                          }`}
+                          placeholder="you@example.com"
+                        />
+                        {isInvalid && (
+                          <p className="mt-1.5 text-red-500 text-xs flex items-center gap-1">
+                            <svg className="w-3.5 h-3.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" /></svg>
+                            Please enter a valid email address
+                          </p>
+                        )}
+                      </>
+                    );
+                  })()}
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-1">Phone *</label>
