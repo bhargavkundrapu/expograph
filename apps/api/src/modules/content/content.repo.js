@@ -37,7 +37,7 @@ async function listCoursesPublic({ tenantId }) {
     `SELECT id, title, slug, description, level, price_in_paise
      FROM courses
      WHERE tenant_id = $1 AND status = 'published'
-     ORDER BY created_at DESC`,
+     ORDER BY sort_order ASC, created_at ASC`,
     [tenantId]
   );
   return rows;
@@ -360,6 +360,10 @@ async function updateCourse({ tenantId, courseId, patch, updatedBy }) {
   if (patch.price_in_paise !== undefined) {
     fields.push(`price_in_paise=$${i++}`);
     values.push(patch.price_in_paise);
+  }
+  if (patch.sort_order !== undefined) {
+    fields.push(`sort_order=$${i++}`);
+    values.push(patch.sort_order);
   }
 
   if (!fields.length) return null;

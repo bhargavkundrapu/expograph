@@ -19,6 +19,7 @@ const UpdateCourseSchema = z.object({
   description: z.string().optional(),
   level: z.string().optional(),
   price_in_paise: z.number().int().min(0).optional(),
+  sort_order: z.number().int().min(0).optional(),
 });
 
 const CreateModuleSchema = z.object({
@@ -169,8 +170,8 @@ const updateCourse = asyncHandler(async (req, res) => {
   const parsed = UpdateCourseSchema.safeParse(req.body);
   if (!parsed.success) throw new HttpError(400, "Invalid input", parsed.error.flatten());
 
-  const { title, slug, description, level } = parsed.data;
-  if (title === undefined && slug === undefined && description === undefined && level === undefined) {
+  const { title, slug, description, level, price_in_paise, sort_order } = parsed.data;
+  if (title === undefined && slug === undefined && description === undefined && level === undefined && price_in_paise === undefined && sort_order === undefined) {
     throw new HttpError(400, "No fields to update");
   }
 
@@ -182,6 +183,7 @@ const updateCourse = asyncHandler(async (req, res) => {
   });
 
   if (!updated) throw new HttpError(404, "Course not found");
+  delByPrefix(`pub:tenant:${req.tenant.id}:`);
   res.json({ ok: true, data: updated });
 });
 
@@ -628,19 +630,15 @@ if (cached) {
 }
 
 const rows = await svc.listCoursesPublic({ tenantId });
-setCache(cacheKey, rows, 120); // 2 minutes
+setCache(cacheKey, rows, 5);
 
 return res.json({ ok: true, data: rows, cache: "MISS" });
 
 });
 
 const courseTreePublicBySlug = asyncHandler(async (req, res) => {
-  
-  const tree = await svc.getPublishedCourseTreeBySlug({ tenantId: req.tenant.id, courseSlug: req.params.courseSlug });
-  
   const tenantId = req.tenant.id;
   const courseSlug = req.params.courseSlug;
-
 
   const cacheKey = `pub:tenant:${tenantId}:course:${courseSlug}:tree`;
   const cached = getCache(cacheKey);
@@ -649,18 +647,14 @@ const courseTreePublicBySlug = asyncHandler(async (req, res) => {
     return res.json({ ok: true, data: cached, cache: "HIT" });
   }
 
-  
+  const tree = await svc.getPublishedCourseTreeBySlug({ tenantId, courseSlug });
 
   if (!tree) {
     return res.status(404).json({ ok: false, error: "Course not found" });
   }
 
-  setCache(cacheKey, tree, 120); // 2 minutes
+  setCache(cacheKey, tree, 5);
   return res.json({ ok: true, data: tree, cache: "MISS" });
-
-  
-  
- 
 });
 
 const lessonPublicBySlugs = asyncHandler(async (req, res) => {

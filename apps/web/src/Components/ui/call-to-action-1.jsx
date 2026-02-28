@@ -15,13 +15,9 @@ export default function CallToAction1() {
 
   return (
     <>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-        .cta-poppins * { font-family: 'Poppins', sans-serif; }
-      `}</style>
-      <div className="cta-poppins w-full max-w-5xl mx-auto flex flex-col items-center justify-center text-center bg-gradient-to-b from-[#5524B7] to-[#380B60] rounded-xl sm:rounded-2xl px-4 py-8 sm:px-6 sm:py-10 md:px-10 md:py-14 lg:px-14 lg:py-16 text-white">
+      <div className="w-full max-w-5xl mx-auto flex flex-col items-center justify-center text-center bg-gradient-to-b from-[#5524B7] to-[#380B60] rounded-xl sm:rounded-2xl px-4 py-8 sm:px-6 sm:py-10 md:px-10 md:py-14 lg:px-14 lg:py-16 text-white">
         <div className="inline-flex items-center justify-center px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-purple-600/10 backdrop-blur border border-purple-500/40 text-xs sm:text-sm">
-          <p className="font-medium leading-snug text-center">Join family of 5k students who are Vibing</p>
+          <p className="font-medium leading-snug text-center">Join 2K+ users who are Vibing</p>
         </div>
         <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl md:leading-[1.2] lg:leading-[60px] font-semibold max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl mt-4 sm:mt-5 bg-gradient-to-r from-white to-[#CAABFF] text-transparent bg-clip-text flex items-center justify-center gap-1.5 sm:gap-2 flex-wrap">
           Unlock your next big opportunity.
@@ -52,7 +48,7 @@ export default function CallToAction1() {
         <button
           type="button"
           onClick={() => navigate("/features/real-client-lab")}
-          className="flex items-center justify-center gap-1.5 sm:gap-2 px-6 py-3 sm:px-8 sm:py-3.5 md:px-10 md:py-4 text-white bg-violet-600 hover:bg-violet-700 transition-all rounded-full uppercase text-sm sm:text-base md:text-lg lg:text-xl font-medium mt-5 sm:mt-6 md:mt-8"
+          className="flex items-center justify-center gap-1.5 sm:gap-2 px-6 py-3 sm:px-8 sm:py-3.5 md:px-10 md:py-4 text-white bg-violet-600 hover:bg-violet-700 hover:scale-105 hover:shadow-lg hover:shadow-violet-500/30 transition-all duration-300 rounded-full uppercase text-sm sm:text-base md:text-lg lg:text-xl font-medium mt-5 sm:mt-6 md:mt-8 cursor-pointer"
         >
           Real Client Lab
           <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">

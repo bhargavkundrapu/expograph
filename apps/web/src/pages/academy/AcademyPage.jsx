@@ -6,6 +6,7 @@ import HeroSection from "../../Components/ui/hero-section-9";
 import CallToAction1 from "../../Components/ui/call-to-action-1";
 import { FiUsers as Users, FiBriefcase as Briefcase, FiLink as LinkIcon, FiChevronDown } from "react-icons/fi";
 import { AcademyFeaturesGridLite } from "../../Components/ui/academy-features-grid-lite";
+import { TubesBackground } from "../../Components/ui/neon-flow";
 
 const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
 
@@ -16,9 +17,6 @@ const AcademyMilestoneStepper = lazy(() =>
   import("../../Components/ui/academy-milestone-stepper").then((m) => ({ default: m.AcademyMilestoneStepper }))
 );
 const UiverseCard = isMobile ? null : lazy(() => import("../../Components/ui/uiverse-card"));
-const TubesBackground = lazy(() =>
-  import("../../Components/ui/neon-flow").then((m) => ({ default: m.TubesBackground }))
-);
 const AcademyFeaturesGrid = isMobile ? null : lazy(() =>
   import("../../Components/ui/academy-features-grid").then((m) => ({ default: m.AcademyFeaturesGrid }))
 );
@@ -57,15 +55,78 @@ function HeroSkeleton() {
   );
 }
 
+const reviewsRow1 = [
+  { name: "Arjun S.", role: "Vibe Coding Student", text: "The Vibe Coding course taught me to build full apps using smart prompts. I shipped my first SaaS in 2 weeks — at ₹99, this is unreal.", rating: 5, highlight: "Vibe Coding" },
+  { name: "Priya M.", role: "AI Agents Student", text: "The AI Agents course is next level. I automated my entire workflow and landed a freelance gig through Real Client Lab in 3 weeks.", rating: 5, highlight: "AI Agents" },
+  { name: "Rahul K.", role: "CS Student, 3rd Year", text: "Paid ₹15,000 elsewhere for worse content. Vibe Coding + Prompt Engineering at ₹99 each? ExpoGraph is honestly criminal — in a good way.", rating: 5, highlight: "Unbeatable Value" },
+  { name: "Sneha D.", role: "Prompt Engineering Student", text: "Prompt Engineering taught me how to think like a 10x developer. The resume builder + MCA certificate helped me crack 3 interviews.", rating: 5, highlight: "Prompt Engineering" },
+  { name: "Karthik V.", role: "Startup Founder", text: "I built my entire MVP using Vibe Coding techniques from ExpoGraph. Saved me lakhs in hiring costs — all from a ₹99 course.", rating: 5, highlight: "Vibe Coding" },
+  { name: "Meera J.", role: "B.Tech Student", text: "Took all 3 courses — Vibe Coding, Prompt Engineering, and AI Agents. Other platforms make you watch. ExpoGraph makes you BUILD.", rating: 5, highlight: "All 3 Courses" },
+];
+
+const reviewsRow2 = [
+  { name: "Vikram T.", role: "Freelancer", text: "AI Agents + Real Client Lab = real portfolio pieces. Clients don't care about tutorials — they care about real work you've shipped.", rating: 5, highlight: "Real Client Lab" },
+  { name: "Ananya R.", role: "BCA Student", text: "Started with Prompt Engineering, then Vibe Coding — went from zero to building full apps in 8 weeks. The structured lessons are brilliant.", rating: 5, highlight: "Zero to Builder" },
+  { name: "Deepak P.", role: "Working Professional", text: "The Vibe Coding course respects your time. No fluff — just pure, actionable skills I use at my job daily. Worth every paisa.", rating: 5, highlight: "No Filler" },
+  { name: "Riya G.", role: "MCA Student", text: "The MCA-recognised certificate with a unique ID got me 2 interview calls in a week. Employers were genuinely impressed.", rating: 5, highlight: "Verified Certificate" },
+  { name: "Aditya N.", role: "All-Access Pack User", text: "₹199 for all 3 courses — Vibe Coding, Prompt Engineering, AI Agents + Real Client Lab + Resume Builder. Best investment of my life.", rating: 5, highlight: "All-Access Pack" },
+  { name: "Pooja S.", role: "Prompt Engineering Student", text: "Prompt Engineering changed everything. I'm 3x faster, building AI-powered tools, and charging premium freelance rates now.", rating: 5, highlight: "Prompt Engineering" },
+];
+
+function ReviewCard({ r }) {
+  const colors = {
+    "Vibe Coding": "text-fuchsia-400 bg-fuchsia-500/10 border-fuchsia-500/20",
+    "AI Agents": "text-violet-400 bg-violet-500/10 border-violet-500/20",
+    "Prompt Engineering": "text-indigo-400 bg-indigo-500/10 border-indigo-500/20",
+    "Unbeatable Value": "text-amber-400 bg-amber-500/10 border-amber-500/20",
+    "Real Client Lab": "text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
+    "All 3 Courses": "text-cyan-400 bg-cyan-500/10 border-cyan-500/20",
+    "Zero to Builder": "text-blue-400 bg-blue-500/10 border-blue-500/20",
+    "No Filler": "text-orange-400 bg-orange-500/10 border-orange-500/20",
+    "Verified Certificate": "text-amber-400 bg-amber-500/10 border-amber-500/20",
+    "All-Access Pack": "text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
+  };
+
+  const c = colors[r.highlight] || "text-white/60 bg-white/5 border-white/10";
+
+  return (
+    <div className="w-[280px] sm:w-[320px] md:w-[360px] shrink-0 rounded-2xl border border-white/[0.06] bg-white/[0.02] p-5 sm:p-6 flex flex-col">
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-1">
+          {[...Array(r.rating)].map((_, s) => (
+            <svg key={s} className="w-3.5 h-3.5 text-amber-400" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+            </svg>
+          ))}
+        </div>
+        <span className={`text-[10px] sm:text-[11px] font-semibold px-2 py-0.5 rounded-full border ${c}`}>
+          {r.highlight}
+        </span>
+      </div>
+      <p className="text-sm text-white/60 leading-relaxed flex-1 mb-4">"{r.text}"</p>
+      <div className="flex items-center gap-2.5 pt-3 border-t border-white/[0.06]">
+        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center text-xs font-bold text-white shrink-0">
+          {r.name[0]}
+        </div>
+        <div>
+          <div className="text-sm font-medium text-white/90">{r.name}</div>
+          <div className="text-[11px] text-white/40">{r.role}</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 const faqData = [
-  { q: "What is ExpoGraph Academy?", a: "ExpoGraph Academy is a modern learning platform that teaches you real-world skills through structured lessons, smart prompts, and hands-on projects. You don't just watch — you build." },
+  { q: "What is ExpoGraph Academy?", a: "ExpoGraph Academy teaches Vibe Coding, Prompt Engineering & AI Agents through structured lessons, smart prompts, and hands-on projects. You don't just watch — you build." },
+  { q: "What courses do you offer?", a: "We offer three focused courses: Vibe Coding (build apps using AI), Prompt Engineering (master the art of prompting), and AI Agents (automate workflows with intelligent agents). Together, they cover everything from building to deploying real-world AI-powered projects." },
   { q: "What are Smart Prompts?", a: "Smart Prompts are structured prompt boxes you can copy and use directly. They help you learn vibe coding — how to think, prompt, and build like a professional developer." },
   { q: "What is the Real Client Lab?", a: "The Real Client Lab connects you with actual clients and real-world projects. You build, deliver, and grow your portfolio with work that matters — not just tutorials." },
   { q: "Do I get a Resume Builder?", a: "Yes! Our built-in Resume Builder helps you create a professional resume using your completed courses, projects, and Real Client Lab work — ready for employers." },
-  { q: "How much does it cost?", a: "Individual courses start at just ₹99 and our all-access course pack is only ₹199 — that's less than the price of a coffee for real-world skills, certificates, and career growth. We believe premium education shouldn't come with a premium price tag." },
+  { q: "How much does it cost?", a: "Each course (Vibe Coding, Prompt Engineering, AI Agents) starts at just ₹99 and our all-access course pack is only ₹199 — that's all 3 courses + Real Client Lab + Resume Builder for less than a coffee." },
   { q: "Do I get certificates?", a: "Absolutely. Every course you complete earns you a verifiable certificate with a unique ID — issued by ExpoGraph, a company recognised by MCA, Government of India." },
-  { q: "Is there community support?", a: "Yes! Join our community on Instagram, YouTube, and LinkedIn. Connect with fellow learners, get tips, and stay updated on new courses and opportunities." },
-  { q: "How is ExpoGraph different from other platforms?", a: "Unlike typical course platforms, ExpoGraph combines structured learning with real client projects, smart AI prompts, and a resume builder — everything you need to actually get hired, not just learn theory." },
+  { q: "Is there community support?", a: "Yes! Join our community on Instagram, YouTube, and LinkedIn. Connect with fellow users, get tips, and stay updated on new courses and opportunities." },
+  { q: "How is ExpoGraph different from other platforms?", a: "Unlike generic platforms, ExpoGraph focuses on 3 cutting-edge courses — Vibe Coding, Prompt Engineering & AI Agents — with real client projects, smart AI prompts, and a resume builder. Everything you need to actually get hired, not just learn theory." },
 ];
 
 function SimpleFAQ() {
@@ -78,7 +139,7 @@ function SimpleFAQ() {
         <div key={i} className="border-b border-white/10">
           <button
             onClick={() => toggle(i)}
-            className="w-full flex items-center gap-4 py-5 text-left text-white hover:opacity-80 transition-opacity"
+            className="w-full flex items-center gap-4 py-5 text-left text-white transition-all duration-200 hover:text-white/80 hover:pl-1"
           >
             <span className="text-lg md:text-xl text-white/60 tabular-nums">{String(i + 1).padStart(2, "0")}</span>
             <span className="flex-1 text-lg md:text-xl font-medium">{item.q}</span>
@@ -161,14 +222,14 @@ export default function AcademyPage() {
             >
               <button
                 onClick={() => navigate("/courses")}
-                className="px-5 py-2.5 sm:px-6 sm:py-3 md:px-6 md:py-3 text-white rounded-full text-sm sm:text-sm md:text-base font-semibold cursor-pointer transition-all hover:brightness-110"
+                className="px-5 py-2.5 sm:px-6 sm:py-3 md:px-6 md:py-3 text-white rounded-full text-sm sm:text-sm md:text-base font-semibold cursor-pointer transition-all duration-300 hover:brightness-110 hover:scale-105 hover:shadow-lg hover:shadow-violet-500/25"
                 style={{ fontFamily: "var(--font-dm)", background: "linear-gradient(135deg, #7c3aed, #6d28d9)" }}
               >
                 Start Vibing
               </button>
               <button
                 onClick={() => document.getElementById("learn")?.scrollIntoView({ behavior: "smooth" })}
-                className="px-5 py-2.5 sm:px-6 sm:py-3 md:px-6 md:py-3 bg-white/10 text-white border border-white/20 rounded-full text-sm sm:text-sm md:text-base font-semibold cursor-pointer transition-all hover:bg-white/20"
+                className="px-5 py-2.5 sm:px-6 sm:py-3 md:px-6 md:py-3 bg-white/10 text-white border border-white/20 rounded-full text-sm sm:text-sm md:text-base font-semibold cursor-pointer transition-all duration-300 hover:bg-white/20 hover:scale-105 hover:border-white/40"
                 style={{ fontFamily: "var(--font-dm)" }}
               >
                 Explore
@@ -181,7 +242,7 @@ export default function AcademyPage() {
             >
               <button
                 onClick={() => navigate("/courses")}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/15 border border-emerald-400/25 cursor-pointer hover:bg-emerald-500/25 transition-colors"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/15 border border-emerald-400/25 cursor-pointer transition-all duration-300 hover:bg-emerald-500/25 hover:border-emerald-400/50 hover:scale-105 hover:shadow-md hover:shadow-emerald-500/10"
               >
                 <span className="text-emerald-400 text-xs sm:text-sm font-bold">Starting at just ₹99</span>
                 <span className="text-white/50 text-[10px] sm:text-xs">• Courses from ₹99 | Packs from ₹199</span>
@@ -202,7 +263,7 @@ export default function AcademyPage() {
           }
           subtitle={
             <>
-              At ExpoGraph, you get <strong className="text-white/90">smart prompts</strong>, <strong className="text-white/90">structured lessons</strong>, and a{" "}
+              Master <strong className="text-white/90">Vibe Coding</strong>, <strong className="text-white/90">Prompt Engineering</strong> & <strong className="text-white/90">AI Agents</strong> — with smart prompts, structured lessons, and a{" "}
               <strong className="text-white/90">Real Client Lab</strong> to build for actual clients — all starting at just{" "}
               <strong className="text-emerald-400">₹99</strong>. You don't just learn — you ship real work and grow your career.
             </>
@@ -210,20 +271,19 @@ export default function AcademyPage() {
           actions={[
             {
               text: "Join the Family",
-              onClick: () => {
-                if (token) navigate("/lms/student/courses");
-                else navigate("/login");
-              },
+              onClick: () => navigate("/courses"),
               variant: "default",
+              className: "hover:scale-105 hover:shadow-lg hover:shadow-blue-500/30",
             },
             {
               text: "Connect with us",
               onClick: () => document.getElementById("connect")?.scrollIntoView({ behavior: "smooth" }),
               variant: "outline",
+              className: "hover:scale-105 hover:shadow-lg hover:shadow-white/10 hover:border-white/30",
             },
           ]}
           stats={[
-            { value: "5K", label: "Active students", icon: <Users className="h-5 w-5 text-muted-foreground" /> },
+            { value: "2K", label: "Active users", icon: <Users className="h-5 w-5 text-muted-foreground" /> },
             { value: "100+", label: "Tutors", icon: <Briefcase className="h-5 w-5 text-muted-foreground" /> },
             {
               value: "Resources",
@@ -352,7 +412,7 @@ export default function AcademyPage() {
                 <div className="space-y-3">
                   <div className="flex items-start gap-2.5">
                     <svg className="w-4 h-4 text-amber-400 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 6L9 17l-5-5" /></svg>
-                    <p className="text-sm text-white/60">Unique certificate ID for each student — verifiable and shareable</p>
+                    <p className="text-sm text-white/60">Unique certificate ID for each user — verifiable and shareable</p>
                   </div>
                   <div className="flex items-start gap-2.5">
                     <svg className="w-4 h-4 text-amber-400 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 6L9 17l-5-5" /></svg>
@@ -406,7 +466,7 @@ export default function AcademyPage() {
                 </div>
                 <div>
                   <h4 className="text-sm sm:text-base font-semibold text-white mb-1">Industry Recognized Skills</h4>
-                  <p className="text-xs sm:text-sm text-white/60 leading-relaxed">Our courses teach production-level tools and workflows — employers trust the skills you demonstrate.</p>
+                  <p className="text-xs sm:text-sm text-white/60 leading-relaxed">Our Vibe Coding, Prompt Engineering & AI Agents courses teach production-level tools and workflows — employers trust the skills you demonstrate.</p>
                 </div>
               </div>
             </div>
@@ -434,27 +494,84 @@ export default function AcademyPage() {
                   </span>
                 </h2>
                 <p className="mt-3 sm:mt-4 text-sm sm:text-base text-white/60 max-w-lg mx-auto md:mx-0 leading-relaxed">
-                  Other platforms charge ₹5,000–₹50,000 for the same content. At ExpoGraph, you get structured courses, smart prompts, a resume builder, certificates & real client projects — all for a price anyone can afford.
+                  Other platforms charge ₹5,000–₹50,000 for generic tutorials. At ExpoGraph, you get Vibe Coding, Prompt Engineering & AI Agents — structured courses with smart prompts, a resume builder, MCA-recognised certificates & real client projects — all for a price anyone can afford.
                 </p>
               </div>
               <div className="flex flex-row md:flex-col items-center gap-4 sm:gap-5 shrink-0">
                 <button
                   onClick={() => navigate("/courses")}
-                  className="flex flex-col items-center justify-center w-32 sm:w-36 h-28 sm:h-32 rounded-2xl border border-emerald-500/20 bg-emerald-500/10 hover:bg-emerald-500/20 transition-colors cursor-pointer group"
+                  className="flex flex-col items-center justify-center w-32 sm:w-36 h-28 sm:h-32 rounded-2xl border border-emerald-500/20 bg-emerald-500/10 transition-all duration-300 cursor-pointer group hover:bg-emerald-500/20 hover:border-emerald-500/40 hover:scale-105 hover:shadow-lg hover:shadow-emerald-500/10"
                 >
-                  <span className="text-3xl sm:text-4xl font-extrabold text-emerald-400 group-hover:scale-105 transition-transform">₹99</span>
-                  <span className="text-[11px] sm:text-xs text-white/50 mt-1 uppercase tracking-wider">per course</span>
+                  <span className="text-3xl sm:text-4xl font-extrabold text-emerald-400 group-hover:scale-110 transition-transform duration-300">₹99</span>
+                  <span className="text-[11px] sm:text-xs text-white/50 mt-1 uppercase tracking-wider group-hover:text-white/70 transition-colors">per course</span>
                 </button>
                 <button
                   onClick={() => navigate("/courses")}
-                  className="flex flex-col items-center justify-center w-32 sm:w-36 h-28 sm:h-32 rounded-2xl border border-amber-500/20 bg-amber-500/10 hover:bg-amber-500/20 transition-colors cursor-pointer group"
+                  className="flex flex-col items-center justify-center w-32 sm:w-36 h-28 sm:h-32 rounded-2xl border border-amber-500/20 bg-amber-500/10 transition-all duration-300 cursor-pointer group hover:bg-amber-500/20 hover:border-amber-500/40 hover:scale-105 hover:shadow-lg hover:shadow-amber-500/10"
                 >
-                  <span className="text-3xl sm:text-4xl font-extrabold text-amber-400 group-hover:scale-105 transition-transform">₹199</span>
-                  <span className="text-[11px] sm:text-xs text-white/50 mt-1 uppercase tracking-wider">all-access pack</span>
+                  <span className="text-3xl sm:text-4xl font-extrabold text-amber-400 group-hover:scale-110 transition-transform duration-300">₹199</span>
+                  <span className="text-[11px] sm:text-xs text-white/50 mt-1 uppercase tracking-wider group-hover:text-white/70 transition-colors">all-access pack</span>
                 </button>
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* User Reviews — Social Proof */}
+      <section
+        id="reviews"
+        className="py-14 sm:py-16 md:py-20 lg:py-24 overflow-hidden academy-section-gpu"
+        style={{ backgroundColor: "#000000" }}
+      >
+        <div className="px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24">
+          <div className="text-center mb-10 sm:mb-12 md:mb-14">
+            <p className="inline-block text-xs sm:text-sm font-medium tracking-widest uppercase text-cyan-400 mb-3 px-3 py-1 rounded-full border border-cyan-500/20 bg-cyan-500/5">
+              Voices from the ExpoGraph Community
+            </p>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight">
+              2,000+ users are already{" "}
+              <span className="bg-gradient-to-r from-cyan-400 via-teal-400 to-emerald-400 text-transparent bg-clip-text">
+                building with us
+              </span>
+            </h2>
+            <p className="mt-3 sm:mt-4 text-sm sm:text-base md:text-lg text-white/60 max-w-2xl mx-auto">
+              From Vibe Coding to Prompt Engineering to AI Agents — our users are shipping real projects and landing real opportunities
+            </p>
+          </div>
+        </div>
+
+        {/* Row 1 — scrolls left */}
+        <div className="relative mb-3 sm:mb-4">
+          <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-24 bg-gradient-to-r from-black to-transparent z-10 pointer-events-none" />
+          <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-24 bg-gradient-to-l from-black to-transparent z-10 pointer-events-none" />
+          <div className="flex gap-3 sm:gap-4 animate-[scrollLeft_60s_linear_infinite]" style={{ width: "max-content", willChange: "transform", transform: "translateZ(0)" }}>
+            {[...reviewsRow1, ...reviewsRow1].map((r, i) => (
+              <ReviewCard key={`r1-${i}`} r={r} />
+            ))}
+          </div>
+        </div>
+
+        {/* Row 2 — scrolls right */}
+        <div className="relative">
+          <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-24 bg-gradient-to-r from-black to-transparent z-10 pointer-events-none" />
+          <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-24 bg-gradient-to-l from-black to-transparent z-10 pointer-events-none" />
+          <div className="flex gap-3 sm:gap-4 animate-[scrollRight_65s_linear_infinite]" style={{ width: "max-content", willChange: "transform", transform: "translateZ(0)" }}>
+            {[...reviewsRow2, ...reviewsRow2].map((r, i) => (
+              <ReviewCard key={`r2-${i}`} r={r} />
+            ))}
+          </div>
+        </div>
+
+        {/* CTA after reviews */}
+        <div className="flex flex-col items-center gap-3 mt-10 sm:mt-12 px-4">
+          <button
+            onClick={() => navigate("/courses")}
+            className="px-7 py-3 sm:px-8 sm:py-3.5 bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white font-semibold rounded-full text-sm sm:text-base shadow-lg shadow-violet-500/20 transition-all duration-300 cursor-pointer hover:shadow-violet-500/40 hover:brightness-110 hover:scale-105"
+          >
+            Start Learning for ₹99
+          </button>
+          <span className="text-xs text-white/30">Join 2,000+ users already vibing with us</span>
         </div>
       </section>
 
@@ -502,7 +619,7 @@ export default function AcademyPage() {
             </span>
           </h2>
           <p className="mt-3 sm:mt-4 text-sm sm:text-base md:text-lg text-white/60 max-w-2xl mx-auto">
-            You're not just a student — you're part of a growing family of builders, creators, and future leaders
+            You're not just a user — you're part of a growing family of builders, creators, and future leaders
           </p>
         </div>
 
@@ -519,7 +636,7 @@ export default function AcademyPage() {
             <div className="flex-1 w-full">
               <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-6 sm:mb-8">
                 {[
-                  { value: "5K+", label: "Active Learners", color: "text-emerald-400" },
+                  { value: "2K+", label: "Active Users", color: "text-emerald-400" },
                   { value: "₹99", label: "Courses From", color: "text-green-400" },
                   { value: "Real", label: "Client Projects", color: "text-teal-400" },
                   { value: "24/7", label: "Community Access", color: "text-cyan-400" },
@@ -536,7 +653,7 @@ export default function AcademyPage() {
                 {/* Instagram */}
                 <a
                   href="#"
-                  className="group relative rounded-2xl border border-fuchsia-500/20 p-5 sm:p-6 transition-all duration-300 hover:border-fuchsia-500/30 hover:scale-[1.02]"
+                  className="group relative rounded-2xl border border-fuchsia-500/20 p-5 sm:p-6 transition-all duration-300 hover:border-fuchsia-500/40 hover:scale-[1.03] hover:shadow-lg hover:shadow-fuchsia-500/10"
                   style={{ background: "linear-gradient(135deg, rgba(253,29,29,0.06) 0%, rgba(252,176,69,0.06) 30%, rgba(131,58,180,0.06) 100%)" }}
                 >
                   <div className="absolute inset-0 rounded-2xl opacity-60 pointer-events-none" style={{ background: "linear-gradient(135deg, rgba(253,29,29,0.08) 0%, rgba(252,176,69,0.08) 30%, rgba(131,58,180,0.08) 100%)" }} />
@@ -545,7 +662,7 @@ export default function AcademyPage() {
                       <svg className="w-5 h-5" viewBox="0 0 24 24" fill="url(#ig-grad)"><defs><linearGradient id="ig-grad" x1="0" y1="1" x2="1" y2="0"><stop offset="0%" stopColor="#FCAF45" /><stop offset="50%" stopColor="#E1306C" /><stop offset="100%" stopColor="#833AB4" /></linearGradient></defs><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
                     </div>
                     <h3 className="text-base sm:text-lg font-semibold text-white mb-1">Instagram</h3>
-                    <p className="text-xs sm:text-sm text-white/60 leading-relaxed mb-3">Reels, tips & student wins on vibe coding.</p>
+                    <p className="text-xs sm:text-sm text-white/60 leading-relaxed mb-3">Reels, tips & user wins on Vibe Coding.</p>
                     <span className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-medium group-hover:gap-2.5 transition-all" style={{ color: "#E1306C" }}>
                       Follow
                       <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
@@ -556,7 +673,7 @@ export default function AcademyPage() {
                 {/* YouTube */}
                 <a
                   href="#"
-                  className="group relative rounded-2xl border p-5 sm:p-6 transition-all duration-300 hover:scale-[1.02]"
+                  className="group relative rounded-2xl border p-5 sm:p-6 transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-red-500/10"
                   style={{ borderColor: "rgba(255,0,0,0.15)", background: "rgba(255,0,0,0.04)" }}
                 >
                   <div className="absolute inset-0 rounded-2xl opacity-60 pointer-events-none" style={{ background: "linear-gradient(135deg, rgba(255,0,0,0.08) 0%, transparent 60%)" }} />
@@ -576,7 +693,7 @@ export default function AcademyPage() {
                 {/* LinkedIn */}
                 <a
                   href="#"
-                  className="group relative rounded-2xl border border-blue-500/20 bg-blue-500/5 p-5 sm:p-6 transition-all duration-300 hover:bg-blue-500/10 hover:border-blue-500/30 hover:scale-[1.02]"
+                  className="group relative rounded-2xl border border-blue-500/20 bg-blue-500/5 p-5 sm:p-6 transition-all duration-300 hover:bg-blue-500/10 hover:border-blue-500/40 hover:scale-[1.03] hover:shadow-lg hover:shadow-blue-500/10"
                 >
                   <div className="absolute inset-0 bg-gradient-to-br from-blue-600/10 via-transparent to-transparent rounded-2xl opacity-60 pointer-events-none" />
                   <div className="relative">
@@ -624,21 +741,19 @@ export default function AcademyPage() {
 
       {/* Footer — ExpoGraph flow (TubesBackground) */}
       <footer className="w-full min-h-[560px] sm:min-h-[70vh] border-t border-black">
-        <Suspense fallback={<SectionSkeleton height="min-h-[560px]" />}>
-          <TubesBackground className="min-h-[560px] sm:min-h-[70vh] bg-[#0a0a0a]" enableClickInteraction={true}>
-            <div className="flex flex-col items-center justify-center w-full min-h-[560px] sm:min-h-[70vh] gap-6 text-center px-4">
-              <div className="space-y-2 pointer-events-auto cursor-default select-none">
-                <h2 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tighter text-white drop-shadow-[0_0_20px_rgba(0,0,0,1)]">
-                  ExpoGraph flow
-                </h2>
-              </div>
-              <div className="absolute bottom-8 left-0 right-0 flex flex-col items-center gap-2 text-white/60 animate-pulse pointer-events-none">
-                <span className="text-xs uppercase tracking-widest">Move the cursor around to interact and Click to randomize.</span>
-                <span className="text-xs text-white/60">© 2024 ExpoGraph Academy</span>
-              </div>
+        <TubesBackground className="min-h-[560px] sm:min-h-[70vh] bg-[#0a0a0a]" enableClickInteraction={true}>
+          <div className="flex flex-col items-center justify-center w-full min-h-[560px] sm:min-h-[70vh] gap-6 text-center px-4">
+            <div className="space-y-2 pointer-events-auto cursor-default select-none">
+              <h2 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tighter text-white drop-shadow-[0_0_20px_rgba(0,0,0,1)]">
+                ExpoGraph flow
+              </h2>
             </div>
-          </TubesBackground>
-        </Suspense>
+            <div className="absolute bottom-8 left-0 right-0 flex flex-col items-center gap-2 text-white/50 pointer-events-none">
+              <span className="text-xs uppercase tracking-widest">Move the cursor around to interact and Click to randomize.</span>
+              <span className="text-xs text-white/40">© 2024 ExpoGraph Academy</span>
+            </div>
+          </div>
+        </TubesBackground>
       </footer>
       </div>
     </div>

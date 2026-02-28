@@ -1,5 +1,9 @@
 // apps/api/src/modules/payments/payments.controller.js
 const { asyncHandler } = require("../../utils/asyncHandler");
+const { z } = require("zod");
+const { HttpError } = require("../../utils/httpError");
+const { createOtp, verifyOtp } = require("../auth/auth.otp.repo");
+const { sendOtpEmail } = require("../auth/auth.email.service");
 const paymentsService = require("./payments.service");
 
 const getPriceBreakdown = asyncHandler(async (req, res) => {
@@ -71,4 +75,52 @@ const webhook = asyncHandler(async (req, res) => {
   res.status(200).json({ ok: true });
 });
 
-module.exports = { createOrder, getPriceBreakdown, callback, verifyComplete, webhook };
+const emailVerifyRateLimit = new Map();
+const RATE_LIMIT_MS = 60_000;
+
+const sendEmailVerifyOtp = asyncHandler(async (req, res) => {
+  const schema = z.object({ email: z.string().email() });
+  const parsed = schema.safeParse(req.body);
+  if (!parsed.success) throw new HttpError(400, "Please enter a valid email address.");
+
+  const email = parsed.data.email.trim().toLowerCase();
+
+  const lastSent = emailVerifyRateLimit.get(email);
+  if (lastSent && Date.now() - lastSent < RATE_LIMIT_MS) {
+    const wait = Math.ceil((RATE_LIMIT_MS - (Date.now() - lastSent)) / 1000);
+    throw new HttpError(429, `Please wait ${wait}s before requesting another code.`);
+  }
+
+  const { otpCode } = await createOtp(email);
+  await sendOtpEmail({
+    to: email,
+    otpCode,
+    appName: req.tenant?.name || "ExpoGraph",
+    subject: "Verify your email — ExpoGraph",
+    heading: "Email verification code",
+    description: "Enter this code to confirm your email before completing your purchase. It expires in 10 minutes.",
+  });
+
+  emailVerifyRateLimit.set(email, Date.now());
+
+  res.status(200).json({ ok: true, message: "Verification code sent" });
+});
+
+const confirmEmailVerifyOtp = asyncHandler(async (req, res) => {
+  const schema = z.object({
+    email: z.string().email(),
+    otp: z.string().min(6).max(6),
+  });
+  const parsed = schema.safeParse(req.body);
+  if (!parsed.success) throw new HttpError(400, "Invalid input.");
+
+  const email = parsed.data.email.trim().toLowerCase();
+  const otp = parsed.data.otp.trim();
+
+  const { valid } = await verifyOtp(email, otp);
+  if (!valid) throw new HttpError(401, "Invalid or expired code. Please request a new one.");
+
+  res.status(200).json({ ok: true, verified: true });
+});
+
+module.exports = { createOrder, getPriceBreakdown, callback, verifyComplete, webhook, sendEmailVerifyOtp, confirmEmailVerifyOtp };

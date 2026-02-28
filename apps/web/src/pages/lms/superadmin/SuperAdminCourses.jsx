@@ -229,7 +229,8 @@ export default function SuperAdminCourses() {
       const pricePaise = courseEditForm.priceRupees && !isNaN(Number(courseEditForm.priceRupees))
         ? Math.round(Number(courseEditForm.priceRupees) * 100)
         : undefined;
-      const res = await apiFetch(`/api/v1/admin/courses/${editingCourse.id}`, {
+      const editingId = editingCourse.id;
+      const res = await apiFetch(`/api/v1/admin/courses/${editingId}`, {
         method: "PATCH",
         token,
         body: {
@@ -240,10 +241,16 @@ export default function SuperAdminCourses() {
         },
       });
       if (res && (res.ok === true || res.data?.id)) {
+        const updatedCourse = res.data;
+        setCourses((prev) =>
+          prev.map((c) => (c.id === editingId ? { ...c, ...updatedCourse } : c))
+        );
+        if (courseId === editingId) {
+          setCourse((prev) => (prev ? { ...prev, ...updatedCourse } : prev));
+        }
         setShowEditCourseModal(false);
         setEditingCourse(null);
-        await fetchCourses();
-        if (courseId === editingCourse.id) await fetchCourseModules();
+        setTimeout(() => fetchCourses(), 1500);
       } else {
         alert(res?.error || "Failed to update course");
       }

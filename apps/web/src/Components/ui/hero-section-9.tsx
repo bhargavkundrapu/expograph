@@ -65,7 +65,7 @@ const HeroSection = ({
                 onClick={action.onClick}
                 variant={action.variant}
                 size="lg"
-                className={cn("text-sm sm:text-base", action.className)}
+                className={cn("text-sm sm:text-base cursor-pointer", action.className)}
               >
                 {action.text}
               </Button>

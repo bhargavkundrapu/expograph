@@ -30,8 +30,8 @@ const Card = () => {
             </div>
             <div className="glass" />
             <div className="content">
-              <span className="title">UIVERSE (3D UI)</span>
-              <span className="text">Create, share, and use beautiful custom elements made with CSS</span>
+              <span className="title">ExpoGraph</span>
+              <span className="text">Master Vibe Coding, Prompt Engineering & AI Agents — starting at ₹99</span>
             </div>
             <div className="bottom">
               <div className="social-buttons-container">
@@ -68,8 +68,8 @@ const Card = () => {
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg>
             </button>
             <div className="social-panel-content">
-              <span className="social-panel-title">Follow us</span>
-              <span className="social-panel-sub">Stay connected and get the latest updates.</span>
+              <span className="social-panel-title">Join the Vibe</span>
+              <span className="social-panel-sub">Follow ExpoGraph for tips, wins & career growth.</span>
               <div className="social-panel-items">
                 {socialItems.map((item, i) => (
                   <a key={item.name} href={item.href} className="social-panel-item" style={{ animationDelay: item.delay }}>

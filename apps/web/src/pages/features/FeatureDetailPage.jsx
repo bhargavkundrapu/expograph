@@ -154,7 +154,7 @@ const featureDetails = {
       },
     ],
     stats: [
-      { value: "5K+", label: "Active students" },
+      { value: "2K+", label: "Active users" },
       { value: "100%", label: "Mobile responsive" },
       { value: "Real-time", label: "Progress sync" },
     ],
@@ -445,7 +445,7 @@ export default function FeatureDetailPage() {
               </span>
             </h2>
             <p className="text-sm sm:text-base md:text-lg text-white/45 max-w-xl mx-auto mb-8">
-              Join 5K+ students who are building real skills, real projects, and real careers. Your journey starts now.
+              Join 2K+ users who are building real skills, real projects, and real careers with Vibe Coding, Prompt Engineering & AI Agents. Your journey starts now.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
               <Link

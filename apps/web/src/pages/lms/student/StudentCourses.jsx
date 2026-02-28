@@ -109,6 +109,7 @@ export default function StudentCourses() {
     setShowBuyModal(false);
     setBuyItem(null);
     fetchCourses();
+    setTimeout(() => fetchCourses(), 1500);
   };
 
   const handleCloseModal = () => {

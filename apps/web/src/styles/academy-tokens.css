@@ -80,3 +80,23 @@
   /* Chart colors (for recharts) */
   --chart-4: 263 70% 50%;
 }
+
+@keyframes scrollLeft {
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-50%, 0, 0); }
+}
+
+@keyframes scrollRight {
+  0% { transform: translate3d(-50%, 0, 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+
+#reviews {
+  contain: layout style paint;
+}
+
+#reviews .animate-\[scrollLeft_60s_linear_infinite\],
+#reviews .animate-\[scrollRight_65s_linear_infinite\] {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}

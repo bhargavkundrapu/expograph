@@ -348,8 +348,8 @@ async function listEnrolledCourses({ tenantId, userId }) {
        LEFT JOIN lessons l ON l.module_id = cm.id AND l.status = 'published'
        LEFT JOIN lesson_progress lp ON lp.lesson_id = l.id AND lp.user_id = $1
        WHERE c.tenant_id = $2 AND c.status = 'published'
-       GROUP BY c.id, c.title, c.slug, c.description, c.level, c.price_in_paise
-       ORDER BY c.created_at DESC`,
+       GROUP BY c.id, c.title, c.slug, c.description, c.level, c.price_in_paise, c.sort_order
+       ORDER BY c.sort_order ASC, c.created_at ASC`,
       [userId, tenantId]
     );
 

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { apiFetch, ApiError } from "../../services/api";
 
@@ -17,11 +17,72 @@ const loadRazorpay = () => {
   });
 };
 
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const COOLDOWN_SEC = 60;
+
+function OtpInput({ length = 6, value, onChange, disabled }) {
+  const refs = useRef([]);
+
+  const handleChange = (idx, char) => {
+    if (!/^\d?$/.test(char)) return;
+    const arr = value.split("");
+    arr[idx] = char;
+    const next = arr.join("").slice(0, length);
+    onChange(next);
+    if (char && idx < length - 1) refs.current[idx + 1]?.focus();
+  };
+
+  const handleKeyDown = (idx, e) => {
+    if (e.key === "Backspace" && !value[idx] && idx > 0) {
+      refs.current[idx - 1]?.focus();
+    }
+  };
+
+  const handlePaste = (e) => {
+    e.preventDefault();
+    const pasted = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, length);
+    onChange(pasted);
+    const focusIdx = Math.min(pasted.length, length - 1);
+    refs.current[focusIdx]?.focus();
+  };
+
+  return (
+    <div className="flex gap-2 justify-center">
+      {Array.from({ length }).map((_, i) => (
+        <input
+          key={i}
+          ref={(el) => (refs.current[i] = el)}
+          type="text"
+          inputMode="numeric"
+          maxLength={1}
+          value={value[i] || ""}
+          onChange={(e) => handleChange(i, e.target.value)}
+          onKeyDown={(e) => handleKeyDown(i, e)}
+          onPaste={i === 0 ? handlePaste : undefined}
+          disabled={disabled}
+          style={{ color: "#0f172a", backgroundColor: "#fff", caretColor: "#2563eb" }}
+          className="w-10 h-12 text-center text-lg font-bold border-2 border-slate-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all disabled:opacity-50"
+        />
+      ))}
+    </div>
+  );
+}
+
 export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill }) {
   const [form, setForm] = useState({ name: "", email: "", phone: "", college: "" });
   const [emailTouched, setEmailTouched] = useState(false);
   const [priceBreakdown, setPriceBreakdown] = useState(null);
   const [priceLoading, setPriceLoading] = useState(false);
+
+  // Email verification state
+  const [emailVerified, setEmailVerified] = useState(false);
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpValue, setOtpValue] = useState("");
+  const [otpLoading, setOtpLoading] = useState(false);
+  const [otpError, setOtpError] = useState("");
+  const [cooldown, setCooldown] = useState(0);
+  const cooldownRef = useRef(null);
+  const verifiedEmailRef = useRef("");
 
   useEffect(() => {
     if (open && prefill) {
@@ -50,6 +111,34 @@ export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill }
       .finally(() => setPriceLoading(false));
   }, [open, item?.type, item?.id]);
 
+  // Reset verification when email changes
+  useEffect(() => {
+    if (form.email.trim().toLowerCase() !== verifiedEmailRef.current) {
+      setEmailVerified(false);
+      setOtpSent(false);
+      setOtpValue("");
+      setOtpError("");
+    }
+  }, [form.email]);
+
+  const startCooldown = useCallback(() => {
+    setCooldown(COOLDOWN_SEC);
+    clearInterval(cooldownRef.current);
+    cooldownRef.current = setInterval(() => {
+      setCooldown((prev) => {
+        if (prev <= 1) {
+          clearInterval(cooldownRef.current);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  }, []);
+
+  useEffect(() => {
+    return () => clearInterval(cooldownRef.current);
+  }, []);
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [step, setStep] = useState("form");
@@ -61,6 +150,13 @@ export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill }
     setError("");
     setStep("form");
     setLoading(false);
+    setEmailVerified(false);
+    setOtpSent(false);
+    setOtpValue("");
+    setOtpError("");
+    setCooldown(0);
+    clearInterval(cooldownRef.current);
+    verifiedEmailRef.current = "";
   };
 
   const handleClose = () => {
@@ -68,8 +164,58 @@ export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill }
     onClose?.();
   };
 
+  const handleSendOtp = async () => {
+    const email = form.email.trim().toLowerCase();
+    if (!EMAIL_RE.test(email)) {
+      setOtpError("Please enter a valid email first.");
+      return;
+    }
+    setOtpLoading(true);
+    setOtpError("");
+    try {
+      await apiFetch("/api/v1/payments/verify-email/send", {
+        method: "POST",
+        body: { email },
+      });
+      setOtpSent(true);
+      setOtpValue("");
+      startCooldown();
+    } catch (err) {
+      setOtpError(err?.message || "Failed to send verification code.");
+    } finally {
+      setOtpLoading(false);
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    const email = form.email.trim().toLowerCase();
+    if (otpValue.length < 6) {
+      setOtpError("Please enter the full 6-digit code.");
+      return;
+    }
+    setOtpLoading(true);
+    setOtpError("");
+    try {
+      await apiFetch("/api/v1/payments/verify-email/confirm", {
+        method: "POST",
+        body: { email, otp: otpValue },
+      });
+      setEmailVerified(true);
+      verifiedEmailRef.current = email;
+      setOtpError("");
+    } catch (err) {
+      setOtpError(err?.message || "Invalid code. Please try again.");
+    } finally {
+      setOtpLoading(false);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!emailVerified) {
+      setError("Please verify your email before proceeding.");
+      return;
+    }
     setError("");
     setLoading(true);
 
@@ -126,6 +272,7 @@ export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill }
             const unlocked = verifyRes?.unlocked ?? verifyRes?.data?.unlocked;
             const redirect = verifyRes?.redirect ?? verifyRes?.data?.redirect;
             if (unlocked) {
+              onSuccess?.();
               return;
             }
             if (redirect) {
@@ -164,6 +311,8 @@ export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill }
   };
 
   if (!open) return null;
+
+  const emailValid = EMAIL_RE.test(form.email?.trim());
 
   return (
     <AnimatePresence>
@@ -222,38 +371,125 @@ export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill }
                     placeholder="Your name"
                   />
                 </div>
+
+                {/* Email + Verification */}
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-1">Email *</label>
-                  {(() => {
-                    const emailVal = form.email || "";
-                    const isInvalid = emailTouched && emailVal.length > 0 && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal);
-                    return (
-                      <>
-                        <input
-                          type="email"
-                          value={form.email}
-                          onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
-                          onBlur={() => setEmailTouched(true)}
-                          required
-                          autoComplete="email"
-                          style={{ color: "#0f172a", backgroundColor: "#ffffff", caretColor: "#0f172a" }}
-                          className={`w-full px-4 py-2.5 border rounded-lg focus:ring-2 outline-none transition-colors ${
-                            isInvalid
-                              ? "border-red-400 focus:ring-red-400/20 focus:border-red-400"
-                              : "border-slate-300 focus:ring-blue-500 focus:border-blue-500"
-                          }`}
-                          placeholder="you@example.com"
-                        />
-                        {isInvalid && (
-                          <p className="mt-1.5 text-red-500 text-xs flex items-center gap-1">
-                            <svg className="w-3.5 h-3.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" /></svg>
-                            Please enter a valid email address
-                          </p>
+                  <div className="flex gap-2">
+                    <input
+                      type="email"
+                      value={form.email}
+                      onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
+                      onBlur={() => setEmailTouched(true)}
+                      required
+                      autoComplete="email"
+                      disabled={emailVerified}
+                      style={{ color: "#0f172a", backgroundColor: emailVerified ? "#f0fdf4" : "#ffffff", caretColor: "#0f172a" }}
+                      className={`flex-1 min-w-0 px-4 py-2.5 border rounded-lg focus:ring-2 outline-none transition-all ${
+                        emailVerified
+                          ? "border-green-300 bg-green-50"
+                          : emailTouched && form.email && !emailValid
+                          ? "border-red-400 focus:ring-red-400/20 focus:border-red-400"
+                          : "border-slate-300 focus:ring-blue-500 focus:border-blue-500"
+                      }`}
+                      placeholder="you@example.com"
+                    />
+                    {!emailVerified && (
+                      <button
+                        type="button"
+                        onClick={handleSendOtp}
+                        disabled={!emailValid || otpLoading || cooldown > 0}
+                        className="shrink-0 px-4 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all whitespace-nowrap"
+                      >
+                        {otpLoading ? (
+                          <span className="flex items-center gap-1.5">
+                            <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
+                            Sending
+                          </span>
+                        ) : cooldown > 0 ? (
+                          `${cooldown}s`
+                        ) : otpSent ? (
+                          "Resend"
+                        ) : (
+                          "Verify"
                         )}
-                      </>
-                    );
-                  })()}
+                      </button>
+                    )}
+                    {emailVerified && (
+                      <div className="shrink-0 flex items-center justify-center w-10 h-10 rounded-lg bg-green-100">
+                        <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+
+                  {emailVerified && (
+                    <p className="mt-1.5 text-green-600 text-xs font-medium flex items-center gap-1">
+                      <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
+                      Email verified
+                    </p>
+                  )}
+
+                  {emailTouched && form.email && !emailValid && !emailVerified && (
+                    <p className="mt-1.5 text-red-500 text-xs flex items-center gap-1">
+                      <svg className="w-3.5 h-3.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" /></svg>
+                      Please enter a valid email address
+                    </p>
+                  )}
+
+                  {/* OTP Entry */}
+                  <AnimatePresence>
+                    {otpSent && !emailVerified && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="overflow-hidden"
+                      >
+                        <div className="mt-3 p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-3">
+                          <p className="text-sm text-slate-600 text-center">
+                            Enter the 6-digit code sent to <span className="font-medium text-slate-900">{form.email}</span>
+                          </p>
+                          <OtpInput
+                            value={otpValue}
+                            onChange={setOtpValue}
+                            disabled={otpLoading}
+                          />
+                          {otpError && (
+                            <p className="text-red-500 text-xs text-center">{otpError}</p>
+                          )}
+                          <button
+                            type="button"
+                            onClick={handleVerifyOtp}
+                            disabled={otpValue.length < 6 || otpLoading}
+                            className="w-full py-2.5 bg-slate-900 text-white text-sm font-medium rounded-lg hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                          >
+                            {otpLoading ? (
+                              <span className="flex items-center justify-center gap-1.5">
+                                <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
+                                Verifying
+                              </span>
+                            ) : (
+                              "Confirm code"
+                            )}
+                          </button>
+                          <p className="text-[11px] text-slate-400 text-center">
+                            Didn't receive it? Check your spam folder or {cooldown > 0 ? `resend in ${cooldown}s` : <button type="button" onClick={handleSendOtp} className="text-blue-600 hover:underline font-medium">resend code</button>}
+                          </p>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
+                  {!otpSent && !emailVerified && (
+                    <p className="mt-1.5 text-amber-600 text-[11px] flex items-start gap-1.5 leading-relaxed bg-amber-50 border border-amber-200 rounded-md px-2.5 py-2">
+                      <svg className="w-3.5 h-3.5 flex-shrink-0 mt-0.5 text-amber-500" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" /></svg>
+                      <span>We&apos;ll send a verification code to confirm your email. This ensures your login access after purchase.</span>
+                    </p>
+                  )}
                 </div>
+
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-1">Phone *</label>
                   <input
@@ -281,7 +517,7 @@ export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill }
                   />
                 </div>
 
-                {/* Price summary - at end of form */}
+                {/* Price summary */}
                 <div className="rounded-xl border border-slate-200 bg-slate-50/80 p-4">
                   <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 mb-3">Price summary</p>
                   {priceLoading ? (
@@ -314,10 +550,14 @@ export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill }
                   </button>
                   <button
                     type="submit"
-                    disabled={loading}
-                    className="flex-1 py-3 px-4 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={loading || !emailVerified}
+                    className={`flex-1 py-3 px-4 rounded-lg font-medium transition-all ${
+                      emailVerified
+                        ? "bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                        : "bg-slate-200 text-slate-400 cursor-not-allowed"
+                    }`}
                   >
-                    {loading ? "Opening..." : "Pay & continue"}
+                    {loading ? "Opening..." : !emailVerified ? "Verify email to pay" : "Pay & continue"}
                   </button>
                 </div>
               </form>

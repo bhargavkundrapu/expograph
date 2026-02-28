@@ -6,13 +6,13 @@ const resendApiKey = process.env.RESEND_API_KEY?.trim();
 const resendFrom = process.env.RESEND_FROM?.trim() || "ExpoGraph <onboarding@resend.dev>";
 const resend = resendApiKey ? new Resend(resendApiKey) : null;
 
-const htmlTemplate = (otpCode, appName) => `
+const htmlTemplate = (otpCode, appName, { heading, description } = {}) => `
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Your Login Code</title>
+  <title>${heading || "Your Login Code"}</title>
 </head>
 <body style="margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,sans-serif;background:#f8fafc;">
   <table width="100%" cellpadding="0" cellspacing="0" style="max-width:480px;margin:0 auto;padding:40px 20px;">
@@ -23,9 +23,9 @@ const htmlTemplate = (otpCode, appName) => `
     </tr>
     <tr>
       <td style="background:#fff;border-radius:0 0 16px 16px;padding:40px 32px;box-shadow:0 4px 6px -1px rgba(0,0,0,.1),0 2px 4px -2px rgba(0,0,0,.1);">
-        <h1 style="margin:0 0 8px;font-size:22px;color:#0f172a;">Your login code</h1>
+        <h1 style="margin:0 0 8px;font-size:22px;color:#0f172a;">${heading || "Your login code"}</h1>
         <p style="margin:0 0 24px;color:#64748b;font-size:15px;line-height:1.6;">
-          Use the code below to sign in. It expires in 10 minutes.
+          ${description || "Use the code below to sign in. It expires in 10 minutes."}
         </p>
         <div style="background:#f1f5f9;border-radius:12px;padding:20px;text-align:center;letter-spacing:8px;font-size:28px;font-weight:700;color:#0f172a;border:2px dashed #cbd5e1;">
           ${otpCode}
@@ -39,11 +39,13 @@ const htmlTemplate = (otpCode, appName) => `
 </body>
 </html>`;
 
-async function sendOtpEmail({ to, otpCode, appName = "ExpoGraph" }) {
+async function sendOtpEmail({ to, otpCode, appName = "ExpoGraph", subject, heading, description }) {
+  const effectiveSubject = subject || `Your ${appName} login code`;
+
   const logOtpToConsole = () => {
     console.log("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
     console.log(`📧 OTP for ${to}: ${otpCode}`);
-    console.log("   (Use this code to sign in. Valid for 10 minutes.)");
+    console.log(`   (${effectiveSubject}. Valid for 10 minutes.)`);
     console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
   };
 
@@ -52,8 +54,8 @@ async function sendOtpEmail({ to, otpCode, appName = "ExpoGraph" }) {
       const { data, error } = await resend.emails.send({
         from: resendFrom,
         to,
-        subject: `Your ${appName} login code`,
-        html: htmlTemplate(otpCode, appName),
+        subject: effectiveSubject,
+        html: htmlTemplate(otpCode, appName, { heading, description }),
       });
       if (error) {
         console.error("[Resend] OTP email failed:", JSON.stringify(error, null, 2));

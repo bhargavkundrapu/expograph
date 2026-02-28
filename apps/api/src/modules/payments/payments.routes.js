@@ -5,6 +5,8 @@ const controller = require("./payments.controller");
 const router = express.Router();
 
 router.get("/price-breakdown", controller.getPriceBreakdown);
+router.post("/verify-email/send", controller.sendEmailVerifyOtp);
+router.post("/verify-email/confirm", controller.confirmEmailVerifyOtp);
 router.post("/razorpay/create-order", controller.createOrder);
 router.post("/razorpay/callback", express.urlencoded({ extended: true }), controller.callback);
 router.get("/razorpay/callback", controller.callback);
