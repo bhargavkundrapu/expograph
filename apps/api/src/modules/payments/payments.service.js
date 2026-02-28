@@ -6,6 +6,7 @@ const { HttpError } = require("../../utils/httpError");
 const { z } = require("zod");
 const paymentsRepo = require("./payments.repo");
 const approvalsRepo = require("../approvals/approvals.repo");
+const approvalsService = require("../approvals/approvals.service");
 const { findRoleIdForTenant, upsertMembership } = require("../users/users.repo");
 const { query } = require("../../db/query");
 
@@ -193,7 +194,7 @@ async function handleCallback({ razorpay_payment_id, razorpay_order_id, razorpay
     return { unlocked: true, redirect: `${baseUrl}/lms/student/courses` };
   }
 
-  // New user: create approval for SuperAdmin
+  // New user: create approval then auto-approve immediately
   const approval = await approvalsRepo.createApproval({
     tenantId: order.tenant_id,
     paymentOrderId: order.id,
@@ -207,6 +208,11 @@ async function handleCallback({ razorpay_payment_id, razorpay_order_id, razorpay
     razorpayPaymentId: razorpay_payment_id,
   });
   console.log(`[Payment] Approval created: ${approval.id} for ${order.customer_email}`);
+
+  const autoApproved = await tryAutoApprove(approval.id, order.customer_email);
+  if (autoApproved) {
+    return { unlocked: true, redirect: `${baseUrl}/lms/student/courses` };
+  }
 
   return {
     redirect: `${baseUrl}/account-pending?email=${encodeURIComponent(order.customer_email)}`,
@@ -240,7 +246,7 @@ async function handleWebhook({ rawBody, signature }) {
         status: "captured",
         rawPayload: payload,
       });
-      await approvalsRepo.createApproval({
+      const approval = await approvalsRepo.createApproval({
         tenantId: order.tenant_id,
         paymentOrderId: order.id,
         itemType: order.item_type,
@@ -252,8 +258,64 @@ async function handleWebhook({ rawBody, signature }) {
         razorpayOrderId: orderId,
         razorpayPaymentId: paymentId,
       });
+      await tryAutoApprove(approval.id, order.customer_email);
     }
   }
 }
 
-module.exports = { createOrder, getPriceBreakdown, handleCallback, handleWebhook, verifyRazorpaySignature, verifyWebhookSignature };
+async function tryAutoApprove(approvalId, email) {
+  try {
+    await approvalsService.approveById({ approvalId, approvedByUserId: null });
+    console.log(`[AutoApproval] ✅ Approved ${approvalId} (${email})`);
+    return true;
+  } catch (err) {
+    console.error(`[AutoApproval] ⚠ Failed for ${approvalId} (${email}):`, err.message);
+    return false;
+  }
+}
+
+const AUTO_APPROVE_INTERVAL_MS = 30_000;
+let pollerRunning = false;
+
+async function pollPendingApprovals() {
+  if (pollerRunning) return;
+  pollerRunning = true;
+  try {
+    const { rows: tenants } = await query(`SELECT id FROM tenants LIMIT 50`);
+    for (const tenant of tenants) {
+      const pending = await approvalsRepo.listByStatus({ tenantId: tenant.id, status: "pending" });
+      for (const approval of pending) {
+        await tryAutoApprove(approval.id, approval.customer_email);
+      }
+    }
+  } catch (err) {
+    console.error("[AutoApproval] Poller error:", err.message);
+  } finally {
+    pollerRunning = false;
+  }
+}
+
+let pollerInterval = null;
+function startAutoApprovalPoller() {
+  if (pollerInterval) return;
+  pollerInterval = setInterval(pollPendingApprovals, AUTO_APPROVE_INTERVAL_MS);
+  console.log(`[AutoApproval] Background poller started (every ${AUTO_APPROVE_INTERVAL_MS / 1000}s)`);
+}
+
+function stopAutoApprovalPoller() {
+  if (pollerInterval) {
+    clearInterval(pollerInterval);
+    pollerInterval = null;
+  }
+}
+
+module.exports = {
+  createOrder,
+  getPriceBreakdown,
+  handleCallback,
+  handleWebhook,
+  verifyRazorpaySignature,
+  verifyWebhookSignature,
+  startAutoApprovalPoller,
+  stopAutoApprovalPoller,
+};
