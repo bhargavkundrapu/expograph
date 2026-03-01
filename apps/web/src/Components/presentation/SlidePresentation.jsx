@@ -11,26 +11,9 @@ import {
   FiImage,
 } from "react-icons/fi";
 
-export default function SlidePresentation({ slides = [], autoPlay = false, autoPlayInterval = 5000 }) {
+export default function SlidePresentation({ slides = [] }) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(autoPlay);
-
-  useEffect(() => {
-    if (isPlaying && slides.length > 0) {
-      const interval = setInterval(() => {
-        setCurrentSlide((prev) => {
-          if (prev < slides.length - 1) {
-            return prev + 1;
-          } else {
-            setIsPlaying(false);
-            return prev;
-          }
-        });
-      }, autoPlayInterval);
-      return () => clearInterval(interval);
-    }
-  }, [isPlaying, slides.length, autoPlayInterval]);
 
   const nextSlide = () => {
     if (currentSlide < slides.length - 1) {
@@ -84,13 +67,6 @@ export default function SlidePresentation({ slides = [], autoPlay = false, autoP
           </span>
         </div>
         <div className="flex items-center gap-2">
-          <button
-            onClick={() => setIsPlaying(!isPlaying)}
-            className="p-2 rounded-lg hover:bg-white/20 text-white transition-colors"
-            title={isPlaying ? "Pause" : "Play"}
-          >
-            <FiPlay className={`w-5 h-5 ${isPlaying ? "opacity-50" : ""}`} />
-          </button>
           <button
             onClick={() => setIsFullscreen(!isFullscreen)}
             className="p-2 rounded-lg hover:bg-white/20 text-white transition-colors"

@@ -49,7 +49,6 @@ export default function StudentLesson() {
   const [videoReady, setVideoReady] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [slidesExpanded, setSlidesExpanded] = useState(false);
-  const [autoView, setAutoView] = useState(false);
   const [mcqAnswers, setMcqAnswers] = useState({});
   const [mcqCurrentIndex, setMcqCurrentIndex] = useState(0);
   const [mcqSubmitted, setMcqSubmitted] = useState(false);

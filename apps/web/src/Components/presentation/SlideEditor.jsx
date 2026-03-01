@@ -296,18 +296,6 @@ export default function SlideEditor({ slide, onUpdate, config }) {
                 placeholder="https://example.com/video.mp4 or YouTube/Vimeo URL"
               />
             </div>
-            <div className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                id="autoplay"
-                checked={slide.content?.autoplay || false}
-                onChange={(e) => handleContentChange("autoplay", e.target.checked)}
-                className="w-4 h-4"
-              />
-              <label htmlFor="autoplay" className="text-sm text-slate-700">
-                Autoplay video
-              </label>
-            </div>
           </div>
         );
 
@@ -634,7 +622,7 @@ function getDefaultContent(type) {
     case "image":
       return { title: "Image Slide", imageUrl: "", caption: "" };
     case "video":
-      return { title: "Video Slide", videoUrl: "", autoplay: false };
+      return { title: "Video Slide", videoUrl: "" };
     case "chart":
       return { title: "Chart", chartType: "bar", data: {} };
     case "math":

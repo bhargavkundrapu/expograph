@@ -171,19 +171,7 @@ export default function PresentationViewer({ presentation, onClose }) {
       reveal.initialize().then(() => {
         revealInstanceRef.current = reveal;
         
-        // Handle voice-over playback on slide change
-        reveal.on("slidechanged", (event) => {
-          const currentSlide = presentation.slides?.[event.indexh];
-          if (currentSlide?.voiceOver?.autoplay) {
-            playVoiceOver(currentSlide.voiceOver);
-          }
-        });
-        
-        // Play voice-over for initial slide
-        const initialSlide = presentation.slides?.[0];
-        if (initialSlide?.voiceOver?.autoplay) {
-          setTimeout(() => playVoiceOver(initialSlide.voiceOver), 500);
-        }
+        reveal.on("slidechanged", () => {});
         
         // Initialize charts after reveal is ready
         if (window.Chart) {
@@ -383,13 +371,11 @@ export default function PresentationViewer({ presentation, onClose }) {
                     frameBorder="0"
                     allow="autoplay; encrypted-media"
                     allowFullScreen
-                    data-autoplay={slide.content.autoplay}
                   />
                 ) : (
                   <video
                     src={slide.content.videoUrl}
                     controls
-                    autoPlay={slide.content.autoplay}
                     style={{ width: "100%", height: "100%", objectFit: "contain" }}
                   />
                 )}

@@ -7,8 +7,6 @@ import {
   FiMinimize2,
   FiChevronDown,
   FiFileText,
-  FiPlay,
-  FiPause,
   FiX,
 } from "react-icons/fi";
 
@@ -22,8 +20,6 @@ export default function PDFPresentationViewer({ pdfUrl }) {
   const [error, setError] = useState(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showSlideDropdown, setShowSlideDropdown] = useState(false);
-  const [autoPlay, setAutoPlay] = useState(false);
-  const autoPlayIntervalRef = useRef(null);
   const containerRef = useRef(null);
   const pdfjsLibRef = useRef(null);
   const dropdownRef = useRef(null);
@@ -172,33 +168,6 @@ export default function PDFPresentationViewer({ pdfUrl }) {
     }
   }, [pdfUrl]);
 
-  // Auto-play functionality
-  useEffect(() => {
-    if (autoPlay && pages.length > 0) {
-      autoPlayIntervalRef.current = setInterval(() => {
-        setCurrentPage((prev) => {
-          if (prev < pages.length - 1) {
-            return prev + 1;
-          } else {
-            setAutoPlay(false);
-            return prev;
-          }
-        });
-      }, 5000); // 5 seconds per slide
-      return () => {
-        if (autoPlayIntervalRef.current) {
-          clearInterval(autoPlayIntervalRef.current);
-          autoPlayIntervalRef.current = null;
-        }
-      };
-    } else {
-      if (autoPlayIntervalRef.current) {
-        clearInterval(autoPlayIntervalRef.current);
-        autoPlayIntervalRef.current = null;
-      }
-    }
-  }, [autoPlay, pages.length]);
-
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -319,24 +288,6 @@ export default function PDFPresentationViewer({ pdfUrl }) {
       {/* Main Content Area */}
       <div className={`flex relative ${isFullscreen ? "h-full" : "overflow-visible"}`}>
         {/* Feature Buttons Sidebar - Left side in fullscreen */}
-        {isFullscreen && (
-          <div className="bg-slate-50 border-r border-slate-200 flex flex-col gap-2 p-3 z-30">
-            {/* Auto-play */}
-            <button
-              type="button"
-              onClick={() => setAutoPlay(!autoPlay)}
-              className={`flex flex-col items-center gap-1 px-3 py-2 rounded-lg border transition-all ${
-                autoPlay
-                  ? "border-blue-500 bg-blue-50 text-blue-700"
-                  : "border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
-              }`}
-              title={autoPlay ? "Pause auto-play" : "Start auto-play"}
-            >
-              {autoPlay ? <FiPause className="w-5 h-5" /> : <FiPlay className="w-5 h-5" />}
-              <span className="text-xs font-medium">Auto-play</span>
-            </button>
-          </div>
-        )}
 
         {/* Slide Display Area */}
         <div className={`flex flex-col min-w-0 ${isFullscreen ? "flex-1" : ""}`}>
@@ -455,25 +406,6 @@ export default function PDFPresentationViewer({ pdfUrl }) {
               </button>
             </div>
 
-            {/* Feature Buttons Row - Only show when not in fullscreen */}
-            {!isFullscreen && (
-              <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-slate-200">
-                {/* Auto-play */}
-                <button
-                  type="button"
-                  onClick={() => setAutoPlay(!autoPlay)}
-                  className={`flex items-center gap-1 sm:gap-2 px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 rounded-lg border transition-all ${
-                    autoPlay
-                      ? "border-blue-500 bg-blue-50 text-blue-700"
-                      : "border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
-                  }`}
-                  title={autoPlay ? "Pause auto-play" : "Start auto-play"}
-                >
-                  {autoPlay ? <FiPause className="w-3 h-3 sm:w-4 sm:h-4" /> : <FiPlay className="w-3 h-3 sm:w-4 sm:h-4" />}
-                  <span className="text-xs sm:text-sm font-medium hidden sm:inline">Auto-play</span>
-                </button>
-              </div>
-            )}
           </div>
         </div>
       </div>

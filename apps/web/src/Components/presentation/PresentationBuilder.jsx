@@ -348,7 +348,7 @@ function getDefaultContent(type) {
     case "image":
       return { title: "Image Slide", imageUrl: "", caption: "" };
     case "video":
-      return { title: "Video Slide", videoUrl: "", autoplay: false };
+      return { title: "Video Slide", videoUrl: "" };
     case "chart":
       return { title: "Chart", chartType: "bar", data: {} };
     case "math":

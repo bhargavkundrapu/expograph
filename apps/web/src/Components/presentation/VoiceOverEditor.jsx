@@ -482,27 +482,6 @@ export default function VoiceOverEditor({ slide, onUpdate }) {
         </div>
       )}
 
-      {/* Auto-play Settings */}
-      {(audioUrl || ttsText) && (
-        <div className="pt-4 border-t border-slate-200">
-          <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={slide.voiceOver?.autoplay || false}
-              onChange={(e) => {
-                onUpdate({
-                  voiceOver: {
-                    ...slide.voiceOver,
-                    autoplay: e.target.checked,
-                  },
-                });
-              }}
-              className="w-4 h-4"
-            />
-            <span className="text-sm text-slate-700">Auto-play on slide show</span>
-          </label>
-        </div>
-      )}
     </div>
   );
 }
