@@ -30,6 +30,8 @@ import {
 } from "react-icons/fi";
 import { PanelLeftOpen } from "lucide-react";
 import CourseContentsSidebar from "../../../Components/ui/CourseContentsSidebar";
+import PromptEngineeringSections from "../../../Components/lessons/PromptEngineeringSections";
+import VibeCodingSections from "../../../Components/lessons/VibeCodingSections";
 import SlideDeckViewer from "../../../Components/presentation/SlideDeckViewer";
 import PDFPresentationViewer from "../../../Components/presentation/PDFPresentationViewer";
 import { CodeBlock } from "../../../Components/ui/code-block";
@@ -536,7 +538,7 @@ export default function StudentLesson() {
         {/* Content area with sidebar */}
         <div className="flex-1 flex overflow-hidden">
           {/* Desktop sidebar — normal flow */}
-          <div className="hidden md:block">
+          <div className="hidden md:flex md:self-stretch md:min-h-0">
             {sidebarVisible ? (
               <CourseContentsSidebar
                 courseTitle={course?.title || "Course"}
@@ -634,8 +636,39 @@ export default function StudentLesson() {
             <LessonContentSkeleton />
           ) : (
             <div className="max-w-6xl mx-auto">
-            {/* Goal Section - below navbar */}
-            {lesson?.goal?.trim() && (
+            {/* Structured sections detection */}
+            {(() => {
+              const steps = lesson?.learn_setup_steps;
+              const hasPE = Array.isArray(steps) && steps.length > 0 &&
+                typeof steps[0] === "object" && steps[0]?.type?.startsWith("SEC-");
+              const hasVC = Array.isArray(steps) && steps.length > 0 &&
+                typeof steps[0] === "object" && steps[0]?.type?.startsWith("VC-");
+
+              if (hasPE) {
+                return (
+                  <div className="px-4 md:px-8 pt-4 md:pt-6 pb-4 md:pb-8">
+                    <PromptEngineeringSections sections={steps} />
+                  </div>
+                );
+              }
+              if (hasVC) {
+                const top = steps.filter(s => ["VC-01_MISSION","VC-02_WHAT_YOULL_BUILD","VC-03_PREREQUISITES","VC-04_WORKFLOW"].includes(s.type));
+                return top.length > 0 ? (
+                  <div className="px-4 md:px-8 pt-4 md:pt-6 pb-2 md:pb-4">
+                    <VibeCodingSections sections={top} />
+                  </div>
+                ) : null;
+              }
+              return null;
+            })()}
+
+            {/* Goal Section - below navbar (regular lessons only) */}
+            {lesson?.goal?.trim() && !(
+              Array.isArray(lesson?.learn_setup_steps) &&
+              lesson.learn_setup_steps.length > 0 &&
+              typeof lesson.learn_setup_steps[0] === "object" &&
+              (lesson.learn_setup_steps[0]?.type?.startsWith("SEC-") || lesson.learn_setup_steps[0]?.type?.startsWith("VC-"))
+            ) && (
               <div className="px-4 md:px-8 pt-4 md:pt-6 pb-4 md:pb-6">
                 <div>
                   <h3 className="text-lg font-semibold text-slate-900 mb-3">Goal</h3>
@@ -900,8 +933,23 @@ export default function StudentLesson() {
                 </div>
               )}
 
-            {/* Learn and Setup - Step-based section (like Success looks like) */}
-            {((Array.isArray(lesson?.learn_setup_steps) && lesson.learn_setup_steps.length > 0) || lesson?.summary?.trim()) && (
+            {/* VC middle sections (Success Criteria) — after prompts, before success images */}
+            {(() => {
+              const steps = lesson?.learn_setup_steps;
+              const hasVC = Array.isArray(steps) && steps.length > 0 &&
+                typeof steps[0] === "object" && steps[0]?.type?.startsWith("VC-");
+              if (!hasVC) return null;
+              const mid = steps.filter(s => s.type === "VC-05_SUCCESS_CRITERIA");
+              return mid.length > 0 ? (
+                <div className="px-4 md:px-8 pb-4 md:pb-6">
+                  <VibeCodingSections sections={mid} />
+                </div>
+              ) : null;
+            })()}
+
+            {/* Learn and Setup - Step-based section (regular lessons only) */}
+            {!(Array.isArray(lesson?.learn_setup_steps) && lesson.learn_setup_steps.length > 0 && typeof lesson.learn_setup_steps[0] === "object" && (lesson.learn_setup_steps[0]?.type?.startsWith("SEC-") || lesson.learn_setup_steps[0]?.type?.startsWith("VC-"))) &&
+            ((Array.isArray(lesson?.learn_setup_steps) && lesson.learn_setup_steps.length > 0) || lesson?.summary?.trim()) && (
               <div className="px-4 md:px-8 pb-4 md:pb-8">
                 <div className="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 rounded-lg border-2 border-blue-200 shadow-lg overflow-hidden">
                   <button
@@ -1032,6 +1080,22 @@ export default function StudentLesson() {
                     </div>
                   </div>
                 );
+              })()}
+
+              {/* VC bottom sections (learning + closing) — after success images */}
+              {(() => {
+                const steps = lesson?.learn_setup_steps;
+                const hasVC = Array.isArray(steps) && steps.length > 0 &&
+                  typeof steps[0] === "object" && steps[0]?.type?.startsWith("VC-");
+                if (!hasVC) return null;
+                const bottom = steps.filter(s =>
+                  ["VC-06_UNDER_THE_HOOD","VC-07_PRO_TIPS","VC-08_COMMON_PITFALLS","VC-09_LEVEL_UP","VC-10_CHECKPOINT"].includes(s.type)
+                );
+                return bottom.length > 0 ? (
+                  <div className="px-4 md:px-8 pb-4 md:pb-8">
+                    <VibeCodingSections sections={bottom} />
+                  </div>
+                ) : null;
               })()}
 
               {/* Presentation (PDF) - Slides section */}
