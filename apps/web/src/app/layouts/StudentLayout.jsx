@@ -14,6 +14,7 @@ import {
   FiLogOut,
   FiAward,
   FiChevronRight,
+  FiHelpCircle,
 } from "react-icons/fi";
 
 export default function StudentLayout() {
@@ -31,6 +32,7 @@ export default function StudentLayout() {
     { path: "/lms/student/bonus-courses", label: "Bonus Courses", icon: FiFileText },
     { path: "/lms/student/client-lab", label: "Client Lab", icon: FiBriefcase },
     { path: "/lms/student/resume-builder", label: "Resume Builder", icon: FiAward },
+    { path: "/lms/student/contact", label: "Support", icon: FiHelpCircle },
   ];
 
   const mobileBottomItems = [

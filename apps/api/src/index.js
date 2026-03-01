@@ -7,9 +7,13 @@ const { pool } = require("./db/pool");
 const app = createApp();
 
 const server = app.listen(env.PORT, () => {
-  console.log(`✅ ExpoGraph API running on port ${env.PORT} (${env.NODE_ENV})`);
+  console.log(`ExpoGraph API running on port ${env.PORT} (${env.NODE_ENV})`);
   startAutoApprovalPoller();
 });
+
+server.keepAliveTimeout = 65_000;
+server.headersTimeout = 66_000;
+server.timeout = 60_000;
 
 function gracefulShutdown(signal) {
   console.log(`\n🛑 ${signal} received. Shutting down gracefully...`);

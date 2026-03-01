@@ -14,6 +14,7 @@ const SolutionsPage = lazy(() => import("../pages/solutions/SolutionsPage"));
 const CoursesPage = lazy(() => import("../pages/courses/CoursesPage"));
 const CourseDetailPage = lazy(() => import("../pages/courses/CourseDetailPage"));
 const FeatureDetailPage = lazy(() => import("../pages/features/FeatureDetailPage"));
+const ContactPage = lazy(() => import("../pages/contact/ContactPage"));
 const AccountPendingPage = lazy(() => import("../pages/payment/AccountPendingPage"));
 const PaymentFailurePage = lazy(() => import("../pages/payment/PaymentFailurePage"));
 const CourseContentsSidebarDemo = lazy(() => import("../pages/demo/CourseContentsSidebarDemo"));
@@ -48,6 +49,7 @@ const StudentWorkshops = lazy(() => import("../pages/lms/student/StudentWorkshop
 const StudentReferrals = lazy(() => import("../pages/lms/student/StudentReferrals"));
 const StudentQuestionBank = lazy(() => import("../pages/lms/student/StudentQuestionBank"));
 const StudentResumeBuilder = lazy(() => import("../pages/lms/student/StudentResumeBuilder"));
+const StudentContact = lazy(() => import("../pages/lms/student/StudentContact"));
 const StudentProfile = lazy(() => import("../pages/lms/student/StudentProfile"));
 
 const MentorHome = lazy(() => import("../pages/lms/mentor/MentorHome"));
@@ -98,6 +100,7 @@ export const router = createBrowserRouter([
       { path: "/courses", element: <L><CoursesPage /></L> },
       { path: "/courses/:slug", element: <L><CourseDetailPage /></L> },
       { path: "/features/:slug", element: <L><FeatureDetailPage /></L> },
+      { path: "/contact", element: <L><ContactPage /></L> },
       { path: "/demo/course-sidebar", element: <L><CourseContentsSidebarDemo /></L> },
       { path: "/login", element: <PublicOnly><LoginPage /></PublicOnly> },
       { path: "/account-pending", element: <L><AccountPendingPage /></L> },
@@ -395,6 +398,9 @@ export const router = createBrowserRouter([
           { path: "workshops/:id/details", element: <L><StudentWorkshops /></L> },
           { path: "workshops/:id/register", element: <L><StudentWorkshops /></L> },
           
+          // Contact / Support
+          { path: "contact", element: <L><StudentContact /></L> },
+
           // Referrals
           { path: "referrals", element: <L><StudentReferrals /></L> },
           { path: "referrals/list", element: <L><StudentReferrals /></L> },

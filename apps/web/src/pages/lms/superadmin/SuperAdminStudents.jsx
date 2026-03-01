@@ -24,7 +24,17 @@ import {
   FiCheck,
   FiRefreshCw,
   FiLock,
+  FiFilter,
+  FiChevronDown,
+  FiChevronUp,
+  FiChevronLeft,
+  FiChevronRight,
+  FiChevronsLeft,
+  FiChevronsRight,
+  FiBook,
 } from "react-icons/fi";
+
+const PAGE_SIZES = [10, 25, 50, 100];
 
 export default function SuperAdminStudents() {
   const { token } = useAuth();
@@ -58,6 +68,26 @@ export default function SuperAdminStudents() {
   const [showCredentialsModal, setShowCredentialsModal] = useState(false);
   const [studentCredentials, setStudentCredentials] = useState(null);
   const [resettingPassword, setResettingPassword] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
+  const [filters, setFilters] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    college: "",
+    dateFrom: "",
+    dateTo: "",
+  });
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+
+  const activeFilterCount = Object.values(filters).filter((v) => v.trim()).length + (searchQuery.trim() ? 1 : 0);
+
+  const clearFilters = () => {
+    setFilters({ name: "", email: "", phone: "", college: "", dateFrom: "", dateTo: "" });
+    setSearchQuery("");
+    setCurrentPage(1);
+  };
 
   // Fetch students
   useEffect(() => {
@@ -119,18 +149,47 @@ export default function SuperAdminStudents() {
 
   // Filter students
   useEffect(() => {
-    if (!searchQuery.trim()) {
-      setFilteredStudents(students);
-    } else {
-      const filtered = students.filter(
-        (student) =>
-          student.full_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          student.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          student.phone?.includes(searchQuery)
+    let result = students;
+
+    // Global search
+    const q = searchQuery.trim().toLowerCase();
+    if (q) {
+      result = result.filter(
+        (s) =>
+          s.full_name?.toLowerCase().includes(q) ||
+          s.email?.toLowerCase().includes(q) ||
+          s.phone?.includes(q) ||
+          s.college?.toLowerCase().includes(q)
       );
-      setFilteredStudents(filtered);
     }
-  }, [searchQuery, students]);
+
+    // Individual filters
+    const fn = filters.name.trim().toLowerCase();
+    if (fn) result = result.filter((s) => s.full_name?.toLowerCase().includes(fn));
+
+    const fe = filters.email.trim().toLowerCase();
+    if (fe) result = result.filter((s) => s.email?.toLowerCase().includes(fe));
+
+    const fp = filters.phone.trim();
+    if (fp) result = result.filter((s) => s.phone?.includes(fp));
+
+    const fc = filters.college.trim().toLowerCase();
+    if (fc) result = result.filter((s) => s.college?.toLowerCase().includes(fc));
+
+    if (filters.dateFrom) {
+      const from = new Date(filters.dateFrom);
+      from.setHours(0, 0, 0, 0);
+      result = result.filter((s) => new Date(s.created_at) >= from);
+    }
+    if (filters.dateTo) {
+      const to = new Date(filters.dateTo);
+      to.setHours(23, 59, 59, 999);
+      result = result.filter((s) => new Date(s.created_at) <= to);
+    }
+
+    setFilteredStudents(result);
+    setCurrentPage(1);
+  }, [searchQuery, students, filters]);
 
   const fetchStudents = async () => {
     try {
@@ -506,85 +565,300 @@ export default function SuperAdminStudents() {
             </button>
           </div>
 
-          {/* Filters */}
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
-            <div className="lg:col-span-3">
-              <div className="relative">
+          {/* Search + Filter Toggle */}
+          <div className="mb-6">
+            <div className="flex items-center gap-3">
+              <div className="relative flex-1">
                 <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                 <input
                   type="text"
-                  placeholder="Search by name, email, or phone..."
+                  placeholder="Quick search by name, email, phone, college..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
                 />
               </div>
+              <button
+                onClick={() => setShowFilters((p) => !p)}
+                className={`flex items-center gap-2 px-5 py-3 rounded-md border font-medium transition-all whitespace-nowrap ${
+                  showFilters || activeFilterCount > 0
+                    ? "bg-blue-50 border-blue-300 text-blue-700"
+                    : "bg-white border-slate-200 text-slate-700 hover:bg-slate-50"
+                }`}
+              >
+                <FiFilter className="w-4 h-4" />
+                Filters
+                {activeFilterCount > 0 && (
+                  <span className="ml-1 w-5 h-5 flex items-center justify-center rounded-full bg-blue-600 text-white text-xs font-bold">
+                    {activeFilterCount}
+                  </span>
+                )}
+                {showFilters ? <FiChevronUp className="w-4 h-4" /> : <FiChevronDown className="w-4 h-4" />}
+              </button>
             </div>
+
+            {/* Advanced Filters Panel */}
+            <AnimatePresence>
+              {showFilters && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="overflow-hidden"
+                >
+                  <div className="mt-4 bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-sm font-semibold text-slate-900">Advanced Filters</h3>
+                      {activeFilterCount > 0 && (
+                        <button
+                          onClick={clearFilters}
+                          className="text-xs font-medium text-red-600 hover:text-red-700 flex items-center gap-1"
+                        >
+                          <FiX className="w-3 h-3" />
+                          Clear all
+                        </button>
+                      )}
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {/* Name */}
+                      <div>
+                        <label className="block text-xs font-medium text-slate-600 mb-1.5">Name</label>
+                        <div className="relative">
+                          <FiUser className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                          <input
+                            type="text"
+                            placeholder="Filter by name"
+                            value={filters.name}
+                            onChange={(e) => setFilters((f) => ({ ...f, name: e.target.value }))}
+                            className="w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 transition-all"
+                          />
+                        </div>
+                      </div>
+                      {/* Email */}
+                      <div>
+                        <label className="block text-xs font-medium text-slate-600 mb-1.5">Email</label>
+                        <div className="relative">
+                          <FiMail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                          <input
+                            type="text"
+                            placeholder="Filter by email"
+                            value={filters.email}
+                            onChange={(e) => setFilters((f) => ({ ...f, email: e.target.value }))}
+                            className="w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 transition-all"
+                          />
+                        </div>
+                      </div>
+                      {/* Phone */}
+                      <div>
+                        <label className="block text-xs font-medium text-slate-600 mb-1.5">Phone</label>
+                        <div className="relative">
+                          <FiPhone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                          <input
+                            type="tel"
+                            placeholder="Filter by phone"
+                            value={filters.phone}
+                            onChange={(e) => setFilters((f) => ({ ...f, phone: e.target.value }))}
+                            className="w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 transition-all"
+                          />
+                        </div>
+                      </div>
+                      {/* College */}
+                      <div>
+                        <label className="block text-xs font-medium text-slate-600 mb-1.5">College</label>
+                        <div className="relative">
+                          <FiBook className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                          <input
+                            type="text"
+                            placeholder="Filter by college"
+                            value={filters.college}
+                            onChange={(e) => setFilters((f) => ({ ...f, college: e.target.value }))}
+                            className="w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 transition-all"
+                          />
+                        </div>
+                      </div>
+                      {/* Date From */}
+                      <div>
+                        <label className="block text-xs font-medium text-slate-600 mb-1.5">Joined From</label>
+                        <div className="relative">
+                          <FiCalendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                          <input
+                            type="date"
+                            value={filters.dateFrom}
+                            onChange={(e) => setFilters((f) => ({ ...f, dateFrom: e.target.value }))}
+                            className="w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 transition-all"
+                          />
+                        </div>
+                      </div>
+                      {/* Date To */}
+                      <div>
+                        <label className="block text-xs font-medium text-slate-600 mb-1.5">Joined To</label>
+                        <div className="relative">
+                          <FiCalendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                          <input
+                            type="date"
+                            value={filters.dateTo}
+                            onChange={(e) => setFilters((f) => ({ ...f, dateTo: e.target.value }))}
+                            className="w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 transition-all"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
           {/* Students Grid */}
-          {loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div key={i} className="bg-white rounded-md p-6 border border-slate-200 animate-pulse">
-                  <div className="h-12 w-12 bg-slate-200 rounded-full mb-4"></div>
-                  <div className="h-4 w-32 bg-slate-200 rounded mb-2"></div>
-                  <div className="h-4 w-48 bg-slate-200 rounded"></div>
+          {(() => {
+            const totalPages = Math.max(1, Math.ceil(filteredStudents.length / pageSize));
+            const safePage = Math.min(currentPage, totalPages);
+            const paginatedStudents = filteredStudents.slice((safePage - 1) * pageSize, safePage * pageSize);
+            const startIdx = (safePage - 1) * pageSize + 1;
+            const endIdx = Math.min(safePage * pageSize, filteredStudents.length);
+
+            const getPageNumbers = () => {
+              const pages = [];
+              const maxVisible = 5;
+              let start = Math.max(1, safePage - Math.floor(maxVisible / 2));
+              let end = Math.min(totalPages, start + maxVisible - 1);
+              if (end - start + 1 < maxVisible) start = Math.max(1, end - maxVisible + 1);
+              for (let i = start; i <= end; i++) pages.push(i);
+              return pages;
+            };
+
+            return loading ? (
+              <div className="space-y-4">
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <div key={i} className="bg-white rounded-xl p-6 border border-slate-200 animate-pulse flex items-center gap-4">
+                    <div className="h-10 w-10 bg-slate-200 rounded-full shrink-0"></div>
+                    <div className="flex-1">
+                      <div className="h-4 w-40 bg-slate-200 rounded mb-2"></div>
+                      <div className="h-3 w-56 bg-slate-200 rounded"></div>
+                    </div>
+                    <div className="h-9 w-20 bg-slate-200 rounded-lg"></div>
+                  </div>
+                ))}
+              </div>
+            ) : filteredStudents.length === 0 ? (
+              <div className="bg-white rounded-xl p-12 border border-slate-200 text-center">
+                <FiUsers className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-slate-900 mb-2">No students found</h3>
+                <p className="text-slate-600">
+                  {searchQuery || activeFilterCount > 0 ? "Try different filters" : "Get started by adding your first student"}
+                </p>
+              </div>
+            ) : (
+              <>
+                <div className="space-y-4">
+                  {paginatedStudents.map((student, index) => (
+                    <motion.div
+                      key={student.id}
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.03 }}
+                      className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm hover:shadow-md transition-all flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+                    >
+                      <div className="flex items-center gap-4 flex-1 min-w-0">
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">
+                          {student.full_name?.charAt(0)?.toUpperCase() || "S"}
+                        </div>
+                        <div className="flex-1 min-w-0 space-y-1.5">
+                          <div className="flex items-center gap-3 flex-wrap">
+                            <span className="text-slate-900 font-medium truncate">{student.full_name || "Unnamed Student"}</span>
+                            <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium border ${
+                              student.is_active ? "bg-green-100 text-green-800 border-green-200" : "bg-red-100 text-red-800 border-red-200"
+                            }`}>
+                              {student.is_active ? "Active" : "Inactive"}
+                            </span>
+                          </div>
+                          <div className="flex flex-wrap gap-4 text-sm text-slate-500">
+                            <span className="flex items-center gap-1.5">
+                              <FiMail className="w-4 h-4 shrink-0" />
+                              <span className="truncate">{student.email}</span>
+                            </span>
+                            {student.phone && (
+                              <span className="flex items-center gap-1.5">
+                                <FiPhone className="w-4 h-4 shrink-0" />
+                                {student.phone}
+                              </span>
+                            )}
+                            {student.college && (
+                              <span className="text-slate-400 truncate">{student.college}</span>
+                            )}
+                          </div>
+                          <p className="text-slate-400 text-xs">
+                            Joined {new Date(student.created_at).toLocaleDateString()}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <button
+                          onClick={() => openDetails(student)}
+                          className="px-4 py-2 bg-slate-50 text-slate-700 font-medium rounded-lg hover:bg-slate-100 transition-colors flex items-center gap-2 text-sm"
+                        >
+                          <FiEye className="w-4 h-4" />
+                          Details
+                        </button>
+                        <button
+                          onClick={() => openEdit(student)}
+                          className="px-4 py-2 bg-blue-50 text-blue-600 font-medium rounded-lg hover:bg-blue-100 transition-colors flex items-center gap-2 text-sm"
+                        >
+                          <FiEdit2 className="w-4 h-4" />
+                          Edit
+                        </button>
+                      </div>
+                    </motion.div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          ) : filteredStudents.length === 0 ? (
-            <div className="bg-white rounded-md p-12 border border-slate-200 text-center">
-              <FiUsers className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-slate-900 mb-2">No students found</h3>
-              <p className="text-slate-600">
-                {searchQuery ? "Try a different search term" : "Get started by adding your first student"}
-              </p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredStudents.map((student, index) => (
-                <motion.div
-                  key={student.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.05 }}
-                  className="bg-white rounded-md p-6 border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300"
-                >
-                  <div className="flex items-start gap-4 mb-4">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold text-lg flex-shrink-0">
-                      {student.full_name?.charAt(0)?.toUpperCase() || "S"}
+
+                {/* Pagination */}
+                {filteredStudents.length > PAGE_SIZES[0] && (
+                  <div className="mt-8 bg-white border border-slate-200 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div className="flex items-center gap-3 text-sm text-slate-600">
+                      <span>Showing <strong>{startIdx}–{endIdx}</strong> of <strong>{filteredStudents.length}</strong></span>
+                      <span className="text-slate-300">|</span>
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-slate-500">Per page</span>
+                        <select
+                          value={pageSize}
+                          onChange={(e) => { setPageSize(Number(e.target.value)); setCurrentPage(1); }}
+                          className="border border-slate-200 rounded-md px-2 py-1 text-sm bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500/40"
+                        >
+                          {PAGE_SIZES.map((s) => <option key={s} value={s}>{s}</option>)}
+                        </select>
+                      </div>
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-lg font-bold text-slate-900 truncate">
-                        {student.full_name || "Unnamed Student"}
-                      </h3>
-                      <p className="text-sm text-slate-600 truncate">{student.email}</p>
-                      {student.phone && (
-                        <p className="text-xs text-slate-500 mt-1">{student.phone}</p>
-                      )}
+                    <div className="flex items-center gap-1">
+                      <button onClick={() => setCurrentPage(1)} disabled={safePage <= 1}
+                        className="p-2 rounded-lg hover:bg-slate-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors" title="First">
+                        <FiChevronsLeft className="w-4 h-4 text-slate-600" />
+                      </button>
+                      <button onClick={() => setCurrentPage((p) => Math.max(1, p - 1))} disabled={safePage <= 1}
+                        className="p-2 rounded-lg hover:bg-slate-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors" title="Previous">
+                        <FiChevronLeft className="w-4 h-4 text-slate-600" />
+                      </button>
+                      {getPageNumbers().map((p) => (
+                        <button key={p} onClick={() => setCurrentPage(p)}
+                          className={`w-9 h-9 rounded-lg text-sm font-medium transition-colors ${
+                            p === safePage ? "bg-blue-600 text-white shadow-sm" : "text-slate-600 hover:bg-slate-100"
+                          }`}
+                        >{p}</button>
+                      ))}
+                      <button onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))} disabled={safePage >= totalPages}
+                        className="p-2 rounded-lg hover:bg-slate-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors" title="Next">
+                        <FiChevronRight className="w-4 h-4 text-slate-600" />
+                      </button>
+                      <button onClick={() => setCurrentPage(totalPages)} disabled={safePage >= totalPages}
+                        className="p-2 rounded-lg hover:bg-slate-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors" title="Last">
+                        <FiChevronsRight className="w-4 h-4 text-slate-600" />
+                      </button>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => openEdit(student)}
-                      className="flex-1 px-4 py-2 bg-blue-50 text-blue-600 font-medium rounded-lg hover:bg-blue-100 transition-colors flex items-center justify-center gap-2"
-                    >
-                      <FiEdit2 className="w-4 h-4" />
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => openDetails(student)}
-                      className="flex-1 px-4 py-2 bg-slate-50 text-slate-700 font-medium rounded-lg hover:bg-slate-100 transition-colors flex items-center justify-center gap-2"
-                    >
-                      <FiEye className="w-4 h-4" />
-                      Details
-                    </button>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          )}
+                )}
+              </>
+            );
+          })()}
         </div>
         </div>
         <CredentialsModal />
@@ -907,6 +1181,12 @@ export default function SuperAdminStudents() {
                     <div className="text-xs font-semibold text-slate-500 mb-1">Phone Number</div>
                     <div className="text-sm font-medium text-slate-900">
                       {student.phone || "Not provided"}
+                    </div>
+                  </div>
+                  <div className="bg-slate-50 rounded-lg p-4">
+                    <div className="text-xs font-semibold text-slate-500 mb-1">College</div>
+                    <div className="text-sm font-medium text-slate-900">
+                      {student.college || "Not provided"}
                     </div>
                   </div>
                   <div className="bg-slate-50 rounded-lg p-4">

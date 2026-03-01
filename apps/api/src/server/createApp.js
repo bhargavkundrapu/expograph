@@ -123,11 +123,22 @@ app.use(cors(corsOptions));
 app.options(/.*/, cors(corsOptions));
 
 
+  // Request timeout — kill any request that takes longer than 30s
+  app.use((req, res, next) => {
+    req.setTimeout(30_000);
+    res.setTimeout(30_000, () => {
+      if (!res.headersSent) {
+        res.status(503).json({ ok: false, error: "Request timeout" });
+      }
+    });
+    next();
+  });
+
+  // Public health (before tenant resolver so it always works)
+  app.get("/health", (req, res) => res.status(200).send("OK"));
+
   // Tenant resolver must run before auth
   app.use(resolveTenant);
-
-  // Public health
-  app.get("/health", (req, res) => res.status(200).send("OK"));
   
   
   app.use((req, res, next) => {

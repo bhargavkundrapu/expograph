@@ -41,15 +41,6 @@ function requirePermission(permissionKey) {
 
     req.permissions = perms;
 
-    // Debug logging in development
-    if (process.env.NODE_ENV !== 'production') {
-      console.log(`[requirePermission] User ${userId} in tenant ${tenantId}:`, {
-        permission: permissionKey,
-        hasPermission: perms.includes(permissionKey),
-        allPermissions: perms
-      });
-    }
-
     if (!perms.includes(permissionKey)) {
       throw new HttpError(403, "Forbidden: missing permission");
     }

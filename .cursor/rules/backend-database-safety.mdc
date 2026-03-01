@@ -1,0 +1,33 @@
+---
+description: Critical backend/database safety rules to prevent pool exhaustion and server hangs
+globs: apps/api/**/*.js
+alwaysApply: false
+---
+
+# Backend Database Safety
+
+## NEVER add heavy SQL operations to list queries
+
+- No `LEFT JOIN LATERAL` on large tables in list endpoints (e.g. `listStudents`, `listAll`)
+- No sub-selects or correlated subqueries on `payment_orders` or other high-row tables
+- Keep list queries to simple JOINs on indexed foreign keys only
+- Heavy lookups (backfill, stats) belong in single-record detail endpoints only
+
+## NEVER add DB columns to queries without verifying migration
+
+Before referencing a column like `u.college`, confirm the migration that adds it has been applied. If uncertain, use safe patterns or skip the column.
+
+## Connection pool protection
+
+- All queries MUST have timeouts via `query_timeout` and `statement_timeout` in pool config
+- `withTransaction` must wrap ROLLBACK in try-catch so broken connections still release
+- Background pollers (auto-approval, etc.) must be rate-limited with batch caps
+- Never run unbounded loops of DB operations — always cap iterations
+
+## Always restart after DB-related code changes
+
+After changing SQL queries or pool config, kill the old server process and restart fresh. Stale connections from the old process will hang indefinitely.
+
+## Request timeouts are mandatory
+
+Every Express server must have HTTP-level timeouts (`server.timeout`, `res.setTimeout`) to prevent connection accumulation when DB is slow.

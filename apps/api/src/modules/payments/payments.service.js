@@ -179,7 +179,13 @@ async function handleCallback({ razorpay_payment_id, razorpay_order_id, razorpay
   const baseUrl = (order.redirect_origin || env.PUBLIC_WEB_URL).replace(/\/$/, "");
 
   if (existingUser) {
-    // Existing student: directly unlock the course, no approval needed
+    // Existing student: update details from order, then unlock the course
+    await paymentsRepo.upsertUserFromPayment({
+      email: order.customer_email,
+      fullName: order.customer_name,
+      phone: order.customer_phone,
+      college: order.customer_college,
+    });
     const roleId = await findRoleIdForTenant({ tenantId: order.tenant_id, roleName: "Student" });
     if (roleId) {
       await upsertMembership({ tenantId: order.tenant_id, userId: existingUser.id, roleId });
@@ -266,26 +272,30 @@ async function handleWebhook({ rawBody, signature }) {
 async function tryAutoApprove(approvalId, email) {
   try {
     await approvalsService.approveById({ approvalId, approvedByUserId: null });
-    console.log(`[AutoApproval] ✅ Approved ${approvalId} (${email})`);
+    console.log(`[AutoApproval] Approved ${approvalId} (${email})`);
     return true;
   } catch (err) {
-    console.error(`[AutoApproval] ⚠ Failed for ${approvalId} (${email}):`, err.message);
+    console.error(`[AutoApproval] Failed for ${approvalId} (${email}):`, err.message);
     return false;
   }
 }
 
-const AUTO_APPROVE_INTERVAL_MS = 30_000;
+const AUTO_APPROVE_INTERVAL_MS = 60_000;
+const MAX_AUTO_APPROVE_BATCH = 5;
 let pollerRunning = false;
 
 async function pollPendingApprovals() {
   if (pollerRunning) return;
   pollerRunning = true;
   try {
-    const { rows: tenants } = await query(`SELECT id FROM tenants LIMIT 50`);
+    const { rows: tenants } = await query(`SELECT id FROM tenants LIMIT 10`);
     for (const tenant of tenants) {
       const pending = await approvalsRepo.listByStatus({ tenantId: tenant.id, status: "pending" });
+      let approved = 0;
       for (const approval of pending) {
+        if (approved >= MAX_AUTO_APPROVE_BATCH) break;
         await tryAutoApprove(approval.id, approval.customer_email);
+        approved++;
       }
     }
   } catch (err) {

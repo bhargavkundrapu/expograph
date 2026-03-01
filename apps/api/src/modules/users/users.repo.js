@@ -156,6 +156,7 @@ async function listStudents({ tenantId, search, roleName = "Student" }) {
        u.email,
        u.full_name,
        u.phone,
+       u.college,
        u.is_active,
        u.created_at,
        m.id AS membership_id,
@@ -183,11 +184,12 @@ async function listStudents({ tenantId, search, roleName = "Student" }) {
 async function getStudentWithStats({ tenantId, userId }) {
   // Get basic user info
   const userRows = await query(
-    `SELECT 
+    `SELECT
        u.id,
        u.email,
        u.full_name,
        u.phone,
+       u.college,
        u.is_active,
        u.created_at,
        m.id AS membership_id,
@@ -204,7 +206,28 @@ async function getStudentWithStats({ tenantId, userId }) {
   if (!userRows.rows[0]) return null;
   
   const user = userRows.rows[0];
-  
+
+  // Backfill phone/college from payment_orders if missing
+  if (!user.phone || !user.college) {
+    const poRows = await query(
+      `SELECT customer_phone, customer_college FROM payment_orders
+       WHERE LOWER(customer_email) = LOWER($1) AND status = 'paid'
+       ORDER BY created_at DESC LIMIT 1`,
+      [user.email]
+    );
+    const po = poRows.rows[0];
+    if (po) {
+      if (!user.phone && po.customer_phone) {
+        user.phone = po.customer_phone;
+        query(`UPDATE users SET phone = $1, updated_at = now() WHERE id = $2 AND phone IS NULL`, [po.customer_phone, user.id]).catch(() => {});
+      }
+      if (!user.college && po.customer_college) {
+        user.college = po.customer_college;
+        query(`UPDATE users SET college = $1, updated_at = now() WHERE id = $2 AND college IS NULL`, [po.customer_college, user.id]).catch(() => {});
+      }
+    }
+  }
+
   // Get progress stats
   const progressRows = await query(
     `SELECT

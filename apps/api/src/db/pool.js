@@ -6,6 +6,8 @@ const isNeon = /neon\.tech/i.test(env.DATABASE_URL);
 let pool;
 
 const POOL_MAX = parseInt(process.env.DB_POOL_MAX, 10) || 25;
+const QUERY_TIMEOUT_MS = 15_000;
+const CONNECTION_TIMEOUT_MS = 10_000;
 
 if (isNeon) {
   const { Pool: NeonPool, neonConfig } = require("@neondatabase/serverless");
@@ -14,8 +16,10 @@ if (isNeon) {
   pool = new NeonPool({
     connectionString: env.DATABASE_URL,
     max: POOL_MAX,
-    idleTimeoutMillis: 30_000,
-    connectionTimeoutMillis: 30_000,
+    idleTimeoutMillis: 20_000,
+    connectionTimeoutMillis: CONNECTION_TIMEOUT_MS,
+    query_timeout: QUERY_TIMEOUT_MS,
+    statement_timeout: QUERY_TIMEOUT_MS,
   });
 } else {
   const { Pool } = require("pg");
@@ -24,8 +28,10 @@ if (isNeon) {
     connectionString: env.DATABASE_URL,
     ssl: useSSL ? { rejectUnauthorized: true } : undefined,
     max: POOL_MAX,
-    idleTimeoutMillis: 30_000,
-    connectionTimeoutMillis: 20_000,
+    idleTimeoutMillis: 20_000,
+    connectionTimeoutMillis: CONNECTION_TIMEOUT_MS,
+    query_timeout: QUERY_TIMEOUT_MS,
+    statement_timeout: QUERY_TIMEOUT_MS,
   });
 }
 

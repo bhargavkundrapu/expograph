@@ -38,6 +38,10 @@ export function Header() {
 			label: 'Features',
 			href: '/academy#features',
 		},
+		{
+			label: 'Contact',
+			href: '/contact',
+		},
 	];
 
 	React.useEffect(() => {

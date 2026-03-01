@@ -72,7 +72,7 @@ function OtpInput({ length = 6, value, onChange, disabled }) {
   );
 }
 
-export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill }) {
+export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill, isLoggedIn }) {
   const [form, setForm] = useState({ name: "", email: "", phone: "", college: "" });
   const [emailTouched, setEmailTouched] = useState(false);
   const [priceBreakdown, setPriceBreakdown] = useState(null);
@@ -89,8 +89,16 @@ export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill }
   const verifiedEmailRef = useRef("");
   const submittingRef = useRef(false);
 
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [step, setStep] = useState("form");
+
+  const isAuth = !!(isLoggedIn && prefill?.email);
+
+  // When the modal opens, decide the flow
   useEffect(() => {
-    if (open && prefill) {
+    if (!open) return;
+    if (prefill) {
       setForm({
         name: prefill.name ?? "",
         email: prefill.email ?? "",
@@ -98,7 +106,14 @@ export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill }
         college: prefill.college ?? "",
       });
     }
-  }, [open, prefill]);
+    if (isAuth) {
+      setEmailVerified(true);
+      verifiedEmailRef.current = (prefill.email ?? "").trim().toLowerCase();
+      setStep("summary");
+    } else {
+      setStep("form");
+    }
+  }, [open]); // only re-run when open changes
 
   useEffect(() => {
     if (!open || !item?.type || !item?.id) {
@@ -116,15 +131,15 @@ export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill }
       .finally(() => setPriceLoading(false));
   }, [open, item?.type, item?.id]);
 
-  // Reset verification when email changes
+  // Reset verification when email changes (only for guest users)
   useEffect(() => {
-    if (form.email.trim().toLowerCase() !== verifiedEmailRef.current) {
+    if (!isAuth && form.email.trim().toLowerCase() !== verifiedEmailRef.current) {
       setEmailVerified(false);
       setOtpSent(false);
       setOtpValue("");
       setOtpError("");
     }
-  }, [form.email]);
+  }, [form.email, isAuth]);
 
   const startCooldown = useCallback(() => {
     setCooldown(COOLDOWN_SEC);
@@ -143,10 +158,6 @@ export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill }
   useEffect(() => {
     return () => clearInterval(cooldownRef.current);
   }, []);
-
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [step, setStep] = useState("form");
 
   const reset = () => {
     setForm({ name: "", email: "", phone: "", college: "" });
@@ -217,7 +228,7 @@ export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill }
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    if (e?.preventDefault) e.preventDefault();
     if (submittingRef.current) return;
     if (!emailVerified) {
       setError("Please verify your email before proceeding.");
@@ -572,6 +583,120 @@ export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill }
                   </button>
                 </div>
               </form>
+            </>
+          )}
+
+          {step === "summary" && (
+            <>
+              <style>{`
+                .buy-summary-form input::placeholder { color: #94a3b8; }
+              `}</style>
+              <div className="flex items-center gap-3 mb-1">
+                <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+                  <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                </div>
+                <div className="min-w-0">
+                  <h2 className="text-lg font-bold text-slate-900 truncate">{form.name || form.email}</h2>
+                  <p className="text-slate-500 text-xs truncate flex items-center gap-1">
+                    {form.email}
+                    <svg className="w-3 h-3 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
+                  </p>
+                </div>
+              </div>
+
+              <p className="text-slate-600 text-sm mt-3 mb-4">{item?.title}</p>
+
+              {error && (
+                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+                  {error}
+                </div>
+              )}
+
+              {/* Editable fields for missing info */}
+              <div className="buy-summary-form space-y-3 mb-4">
+                {!form.name && (
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Name *</label>
+                    <input
+                      type="text"
+                      value={form.name}
+                      onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
+                      style={{ color: "#0f172a", backgroundColor: "#fff" }}
+                      className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm"
+                      placeholder="Your name"
+                    />
+                  </div>
+                )}
+                {(!form.phone || form.phone.trim().length < 10) && (
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Phone *</label>
+                    <input
+                      type="tel"
+                      value={form.phone}
+                      onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
+                      style={{ color: "#0f172a", backgroundColor: "#fff" }}
+                      className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm"
+                      placeholder="10-digit mobile number"
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* Price summary */}
+              <div className="rounded-xl border border-slate-200 bg-slate-50/80 p-4 mb-5">
+                <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 mb-3">Price summary</p>
+                {priceLoading ? (
+                  <div className="h-12 flex items-center justify-center text-slate-400 text-sm">Loading…</div>
+                ) : priceBreakdown ? (
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-slate-600">Course / Pack price</span>
+                      <span className="font-medium text-slate-900">{formatRupees(priceBreakdown.base_amount)}</span>
+                    </div>
+                    {priceBreakdown.platform_fee > 0 && (
+                      <div className="flex justify-between text-sm">
+                        <span className="text-slate-600">Platform fee ({priceBreakdown.platform_fee_percent}%)</span>
+                        <span className="font-medium text-slate-900">{formatRupees(priceBreakdown.platform_fee)}</span>
+                      </div>
+                    )}
+                    <div className="border-t border-slate-200 pt-2 mt-2 flex justify-between text-sm">
+                      <span className="font-semibold text-slate-900">Total</span>
+                      <span className="font-bold text-slate-900">
+                        {formatRupees((priceBreakdown.base_amount || 0) + (priceBreakdown.platform_fee || 0))}
+                      </span>
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-sm text-slate-500">Could not load price details.</p>
+                )}
+              </div>
+
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={handleClose}
+                  className="flex-1 py-3 px-4 border border-slate-300 text-slate-700 rounded-lg font-medium hover:bg-slate-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSubmit}
+                  disabled={loading || priceLoading || !form.name.trim() || form.phone.trim().length < 10}
+                  className="flex-1 py-3 px-4 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                >
+                  {loading ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
+                      Opening…
+                    </span>
+                  ) : (
+                    "Pay & continue"
+                  )}
+                </button>
+              </div>
             </>
           )}
 
