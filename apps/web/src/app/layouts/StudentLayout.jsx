@@ -70,7 +70,7 @@ export default function StudentLayout() {
 
   useEffect(() => {
     const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute("content", "#000000");
+    if (meta) meta.setAttribute("content", "#0f172a");
     return () => { if (meta) meta.setAttribute("content", "#000000"); };
   }, []);
 
