@@ -48,6 +48,7 @@ export default function StudentLayout() {
   };
 
   const isLessonPage = location.pathname.match(/\/lms\/student\/courses\/.+\/modules\/.+\/lessons\/.+/);
+  const isWhiteBgPage = location.pathname === "/lms/student/contact";
 
   const handleLogout = () => {
     setProfileOpen(false);
@@ -129,6 +130,14 @@ export default function StudentLayout() {
                     >
                       <FiUser className="w-4 h-4" />
                       <span>My Profile</span>
+                      <FiChevronRight className="w-4 h-4 ml-auto text-slate-500" />
+                    </button>
+                    <button
+                      onClick={() => { setProfileOpen(false); navigate("/lms/student/contact"); }}
+                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-700/50 transition-colors text-sm"
+                    >
+                      <FiHelpCircle className="w-4 h-4" />
+                      <span>Contact Us</span>
                       <FiChevronRight className="w-4 h-4 ml-auto text-slate-500" />
                     </button>
                     <button
@@ -261,9 +270,9 @@ export default function StudentLayout() {
         <StudentSearchModal open={searchModalOpen} onClose={() => setSearchModalOpen(false)} token={token} />
 
         {/* ── Main Content ── */}
-        <div className="flex-1 flex flex-col overflow-hidden lg:rounded-tl-lg bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 shadow-xl relative z-10">
+        <div className={`flex-1 flex flex-col overflow-hidden lg:rounded-tl-lg shadow-xl relative z-10 ${isWhiteBgPage ? "bg-white" : "bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900"}`}>
           <main className="flex-1 overflow-y-auto overflow-x-hidden pb-20 md:pb-0 lg:rounded-tl-lg min-h-0">
-            <div className="min-h-full lg:rounded-tl-lg overflow-hidden bg-transparent">
+            <div className={`min-h-full lg:rounded-tl-lg overflow-hidden ${isWhiteBgPage ? "bg-white" : "bg-transparent"}`}>
               <Outlet />
             </div>
           </main>

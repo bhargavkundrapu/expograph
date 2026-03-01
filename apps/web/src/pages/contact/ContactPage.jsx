@@ -4,19 +4,21 @@ import { TubesBackground } from "../../Components/ui/neon-flow";
 import { FiMail, FiPhone, FiMapPin, FiSend, FiMessageCircle, FiClock, FiCheckCircle } from "react-icons/fi";
 import "../../styles/academy-tokens.css";
 
+const WA_NUMBER = "919014110638";
+
 const CONTACT_INFO = [
   {
     icon: FiMail,
     label: "Email",
-    value: "support@expograph.in",
-    href: "mailto:support@expograph.in",
+    value: "kundrapu.bhargav@expograph.in",
+    href: "mailto:kundrapu.bhargav@expograph.in",
     color: "from-violet-400 to-fuchsia-400",
   },
   {
     icon: FiPhone,
     label: "Phone",
-    value: "+91 83099 84473",
-    href: "tel:+918309984473",
+    value: "+91 90141 10638",
+    href: "tel:+919014110638",
     color: "from-cyan-400 to-blue-400",
   },
   {
@@ -44,28 +46,36 @@ const TOPICS = [
   "Other",
 ];
 
+function buildWhatsAppURL({ name, email, topic, message }) {
+  const lines = [
+    `*Name:* ${name}`,
+    `*Email:* ${email}`,
+    `*Topic:* ${topic}`,
+    "",
+    message,
+  ];
+  return `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(lines.join("\n"))}`;
+}
+
 export default function ContactPage() {
   const [form, setForm] = useState({ name: "", email: "", topic: "", message: "" });
   const [submitted, setSubmitted] = useState(false);
-  const [sending, setSending] = useState(false);
 
   const handleChange = (e) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setSending(true);
-    setTimeout(() => {
-      setSending(false);
-      setSubmitted(true);
-    }, 1200);
-  };
-
   const canSubmit = form.name.trim() && form.email.trim() && form.topic && form.message.trim().length >= 10;
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!canSubmit) return;
+    window.open(buildWhatsAppURL(form), "_blank");
+    setSubmitted(true);
+  };
+
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "#000000", fontFamily: "var(--font-dm, 'DM Sans', sans-serif)" }}>
+    <div className="min-h-screen relative w-full" style={{ fontFamily: "var(--font-dm, 'DM Sans', sans-serif)", backgroundColor: "black", color: "var(--text-secondary)" }}>
       <Header />
 
       {/* Hero */}
@@ -114,7 +124,7 @@ export default function ContactPage() {
       {/* Form section */}
       <section className="px-4 pb-20 sm:pb-28" style={{ backgroundColor: "#000000" }}>
         <div className="max-w-5xl mx-auto grid md:grid-cols-5 gap-8 md:gap-12">
-          {/* Left — why reach out */}
+          {/* Left */}
           <div className="md:col-span-2 flex flex-col justify-center">
             <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
               We&apos;re here to{" "}
@@ -146,7 +156,7 @@ export default function ContactPage() {
                 <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500/20">
                   <FiCheckCircle className="w-7 h-7 text-emerald-400" />
                 </div>
-                <h3 className="text-xl font-semibold text-white mb-2">Message sent!</h3>
+                <h3 className="text-xl font-semibold text-white mb-2">Message sent via WhatsApp!</h3>
                 <p className="text-sm text-white/50 mb-6">
                   Thanks for reaching out. We&apos;ll get back to you within 24 hours.
                 </p>
@@ -212,20 +222,11 @@ export default function ContactPage() {
                 </div>
                 <button
                   type="submit"
-                  disabled={!canSubmit || sending}
-                  className="w-full flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-violet-500 to-fuchsia-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-500/20 hover:shadow-violet-500/30 hover:brightness-110 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                  disabled={!canSubmit}
+                  className="w-full flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-violet-500 to-fuchsia-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-500/20 hover:shadow-violet-500/30 hover:brightness-110 transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                 >
-                  {sending ? (
-                    <>
-                      <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                      Sending...
-                    </>
-                  ) : (
-                    <>
-                      <FiSend className="w-4 h-4" />
-                      Send message
-                    </>
-                  )}
+                  <FiSend className="w-4 h-4" />
+                  Send via WhatsApp
                 </button>
               </form>
             )}
