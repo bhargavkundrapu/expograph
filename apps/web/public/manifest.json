@@ -1,12 +1,12 @@
 {
-  "name": "ExpoGraph – Learn AI, Vibe Code & Build Real Projects",
+  "name": "ExpoGraph",
   "short_name": "ExpoGraph",
   "description": "Master AI Agents, Vibe Coding & Prompt Engineering with hands-on courses, real client projects and career-ready skills at ExpoGraph Academy.",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#000000",
-  "theme_color": "#7c3aed",
+  "theme_color": "#0f172a",
   "categories": ["education", "productivity"],
   "icons": [
     {
