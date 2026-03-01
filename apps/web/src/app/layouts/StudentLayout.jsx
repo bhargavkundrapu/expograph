@@ -68,6 +68,12 @@ export default function StudentLayout() {
 
   useEffect(() => { setProfileOpen(false); }, [location.pathname]);
 
+  useEffect(() => {
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute("content", "#000000");
+    return () => { if (meta) meta.setAttribute("content", "#000000"); };
+  }, []);
+
   if (isLessonPage) {
     return <Outlet />;
   }
