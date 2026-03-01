@@ -17,7 +17,7 @@ const htmlTemplate = (otpCode, appName, { heading, description } = {}) => `
 <body style="margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,sans-serif;background:#f8fafc;">
   <table width="100%" cellpadding="0" cellspacing="0" style="max-width:480px;margin:0 auto;padding:40px 20px;">
     <tr>
-      <td style="background:linear-gradient(135deg,#2563eb 0%,#7c3aed 100%);border-radius:16px 16px 0 0;padding:32px;text-align:center;">
+      <td style="background:black;border-radius:16px 16px 0 0;padding:32px;text-align:center;">
         <span style="font-size:24px;font-weight:700;color:#fff;">${appName}</span>
       </td>
     </tr>
