@@ -7,13 +7,17 @@ function formatRupees(paise) {
 }
 
 const loadRazorpay = () => {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     if (window.Razorpay) return resolve(window.Razorpay);
     const script = document.createElement("script");
     script.src = "https://checkout.razorpay.com/v1/checkout.js";
     script.async = true;
     script.onload = () => resolve(window.Razorpay);
+    script.onerror = () => reject(new Error("Failed to load payment gateway. Please check your connection and try again."));
     document.body.appendChild(script);
+    setTimeout(() => {
+      if (!window.Razorpay) reject(new Error("Payment gateway took too long to load. Please refresh and try again."));
+    }, 15000);
   });
 };
 
@@ -83,6 +87,7 @@ export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill }
   const [cooldown, setCooldown] = useState(0);
   const cooldownRef = useRef(null);
   const verifiedEmailRef = useRef("");
+  const submittingRef = useRef(false);
 
   useEffect(() => {
     if (open && prefill) {
@@ -157,6 +162,7 @@ export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill }
     setCooldown(0);
     clearInterval(cooldownRef.current);
     verifiedEmailRef.current = "";
+    submittingRef.current = false;
   };
 
   const handleClose = () => {
@@ -212,10 +218,12 @@ export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (submittingRef.current) return;
     if (!emailVerified) {
       setError("Please verify your email before proceeding.");
       return;
     }
+    submittingRef.current = true;
     setError("");
     setLoading(true);
 
@@ -257,8 +265,7 @@ export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill }
           college: form.college.trim() || "",
         },
         handler: async (response) => {
-          setStep("success");
-          setLoading(false);
+          setLoading(true);
           setError("");
           try {
             const verifyRes = await apiFetch("/api/v1/payments/razorpay/verify-complete", {
@@ -271,6 +278,8 @@ export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill }
             });
             const unlocked = verifyRes?.unlocked ?? verifyRes?.data?.unlocked;
             const redirect = verifyRes?.redirect ?? verifyRes?.data?.redirect;
+            setStep("success");
+            setLoading(false);
             if (unlocked) {
               onSuccess?.();
               return;
@@ -279,12 +288,13 @@ export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill }
               window.location.href = redirect;
               return;
             }
+            onSuccess?.();
           } catch (e) {
             console.error("[Payment] Verify failed:", e);
+            setStep("success");
+            setLoading(false);
             setError(e?.message || "Could not complete registration. Please go to login and contact support.");
-            return;
           }
-          onSuccess?.();
         },
         modal: { ondismiss: () => setLoading(false) },
         redirect: false,
@@ -306,6 +316,7 @@ export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill }
       const msg = err instanceof ApiError ? err.message : (err?.message || "Something went wrong");
       setError(msg);
       setLoading(false);
+      submittingRef.current = false;
       onError?.(err);
     }
   };

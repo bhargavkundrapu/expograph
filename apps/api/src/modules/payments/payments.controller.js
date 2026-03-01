@@ -34,12 +34,12 @@ const callback = asyncHandler(async (req, res) => {
       razorpay_order_id,
       razorpay_signature,
     });
-    const { env } = require("../config/env");
+    const { env } = require("../../config/env");
     redirectUrl = result.redirect || (result.unlocked ? `${env.PUBLIC_WEB_URL}/lms/student/courses` : `${env.PUBLIC_WEB_URL}/account-pending`);
     console.log(`[Payments] Callback success`);
   } catch (err) {
     console.error("[Payments] Callback error:", err.message, err.stack);
-    const { env } = require("../config/env");
+    const { env } = require("../../config/env");
     redirectUrl = `${env.PUBLIC_WEB_URL}/account-pending`;
   }
   res.redirect(302, redirectUrl);
@@ -77,6 +77,13 @@ const webhook = asyncHandler(async (req, res) => {
 
 const emailVerifyRateLimit = new Map();
 const RATE_LIMIT_MS = 60_000;
+
+setInterval(() => {
+  const now = Date.now();
+  for (const [key, ts] of emailVerifyRateLimit) {
+    if (now - ts > RATE_LIMIT_MS * 2) emailVerifyRateLimit.delete(key);
+  }
+}, 5 * 60 * 1000);
 
 const sendEmailVerifyOtp = asyncHandler(async (req, res) => {
   const schema = z.object({ email: z.string().email() });
@@ -117,8 +124,9 @@ const confirmEmailVerifyOtp = asyncHandler(async (req, res) => {
   const email = parsed.data.email.trim().toLowerCase();
   const otp = parsed.data.otp.trim();
 
-  const { valid } = await verifyOtp(email, otp);
-  if (!valid) throw new HttpError(401, "Invalid or expired code. Please request a new one.");
+  const result = await verifyOtp(email, otp);
+  if (result.locked) throw new HttpError(429, "Too many failed attempts. Please request a new code.");
+  if (!result.valid) throw new HttpError(401, "Invalid or expired code. Please request a new one.");
 
   res.status(200).json({ ok: true, verified: true });
 });

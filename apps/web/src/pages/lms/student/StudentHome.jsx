@@ -128,14 +128,51 @@ export default function StudentHome() {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <div className="flex flex-col lg:flex-row gap-6 px-4 sm:px-6 lg:px-6 xl:px-8 py-4 sm:py-6 lg:py-8">
+      <div className="flex flex-col lg:flex-row gap-4 lg:gap-6 px-4 sm:px-6 lg:px-6 xl:px-8 py-4 sm:py-6 lg:py-8">
         {/* Main Content Area - Left Side */}
-        <div className="flex-1 min-w-0 space-y-6 lg:space-y-8">
+        <div className="flex-1 min-w-0 space-y-4 lg:space-y-8">
           {/* Welcome Header */}
-          <div className="mb-4 sm:mb-6 lg:mb-8">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-slate-900 mb-2 sm:mb-3">
+          <div className="mb-2 lg:mb-8">
+            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-5xl font-bold text-slate-900 mb-1 sm:mb-3">
               Welcome {user?.fullName || user?.full_name || user?.name || "Student"} 👋
             </h1>
+          </div>
+
+          {/* Mobile-only: Progress + Events compact strip */}
+          <div className="flex lg:hidden gap-3 -mt-2">
+            {/* Compact Progress */}
+            <div className="flex-1 bg-white rounded-xl shadow-sm p-3 border border-slate-100">
+              <div className="flex items-center gap-3">
+                <div className="relative w-12 h-12 flex-shrink-0">
+                  <svg className="transform -rotate-90 w-full h-full">
+                    <circle cx="50%" cy="50%" r="42%" stroke="#e2e8f0" strokeWidth="5" fill="none" />
+                    <circle cx="50%" cy="50%" r="42%" stroke="#3b82f6" strokeWidth="5" fill="none" strokeDasharray={`${2 * Math.PI * 0.42}`} strokeDashoffset={`${2 * Math.PI * 0.42 * (1 - ((progress.completed ?? 0) / 100))}`} strokeLinecap="round" style={{ transformOrigin: 'center' }} />
+                  </svg>
+                  <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-slate-900">{progress.completed ?? 0}%</span>
+                </div>
+                <div className="min-w-0">
+                  <p className="text-xs font-semibold text-slate-900">Progress</p>
+                  <p className="text-[10px] text-slate-500">{schedule.filter((i) => (i.progress || 0) < 100).length} lessons left</p>
+                </div>
+              </div>
+            </div>
+            {/* Compact Events */}
+            <button
+              onClick={() => navigate("/lms/student/workshops")}
+              className="flex-1 bg-white rounded-xl shadow-sm p-3 border border-slate-100 text-left"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center flex-shrink-0">
+                  <FiCalendar className="w-5 h-5 text-purple-600" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-xs font-semibold text-slate-900">Events</p>
+                  <p className="text-[10px] text-slate-500">
+                    {events.length > 0 ? `${events.length} upcoming` : "No events"}
+                  </p>
+                </div>
+              </div>
+            </button>
           </div>
 
           {/* Workshop Carousel */}
@@ -227,7 +264,7 @@ export default function StudentHome() {
                                     {isPractice ? <><FiCheckCircle className="w-2.5 h-2.5 sm:w-3 sm:h-3" />{activityType}</> : <><FiBookOpen className="w-2.5 h-2.5 sm:w-3 sm:h-3" />{activityType}</>}
                                   </span>
                                 )}
-                                {item.duration && (
+                                {item.duration && !/^0\s/i.test(String(item.duration).trim()) && (
                                   <div className="flex items-center gap-1 text-[10px] sm:text-xs text-slate-500">
                                     <FiClock className="w-2.5 h-2.5 sm:w-3 sm:h-3 flex-shrink-0" />
                                     <span>{item.duration}</span>
@@ -256,8 +293,8 @@ export default function StudentHome() {
 
         </div>
 
-        {/* Right Sidebar - Widgets */}
-        <div className="w-full lg:w-72 xl:w-80 2xl:w-96 flex-shrink-0 space-y-3 sm:space-y-4 md:space-y-6">
+        {/* Right Sidebar - Widgets (desktop only, mobile shows compact version above) */}
+        <div className="hidden lg:block w-full lg:w-72 xl:w-80 2xl:w-96 flex-shrink-0 space-y-3 sm:space-y-4 md:space-y-6">
           {/* Events Card - Live from API */}
           <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
             <div className="flex items-center justify-between mb-3 sm:mb-4">

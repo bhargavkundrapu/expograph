@@ -75,7 +75,7 @@ export default function StudentResumeBuilder() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-6 lg:rounded-tl-lg overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-4 md:p-6 lg:rounded-tl-lg overflow-hidden">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-2xl font-bold text-slate-900 mb-2 flex items-center gap-2">
           <FiFileText className="w-7 h-7" /> Resume Builder

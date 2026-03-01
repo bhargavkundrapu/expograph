@@ -7,6 +7,7 @@ import { homePathForRole } from "../../app/roles";
 const RESEND_COOLDOWN_SEC = 60;
 
 const LOGO_URL = "https://res.cloudinary.com/da2wrgabu/image/upload/v1772253658/Graph_2_pbetc4.png";
+const ICON_URL = "https://res.cloudinary.com/da2wrgabu/image/upload/v1772280495/e_x_1_m5jb9s.png";
 
 const testimonials = [
   { name: "Arjun S.", role: "Vibe Coding Student", text: "Vibe Coding taught me to build full apps with smart prompts. I shipped my first SaaS in 2 weeks flat." },
@@ -188,7 +189,7 @@ export default function LoginPage() {
             transition={{ duration: 0.7 }}
           >
             <Link to="/" className="inline-block mb-8">
-              <img src={LOGO_URL} alt="ExpoGraph" className="h-12 w-auto" />
+              <img src={LOGO_URL} alt="ExpoGraph" className="h-16 w-auto" />
             </Link>
 
             <h2 className="text-3xl xl:text-4xl font-bold text-white leading-tight mb-3">
@@ -226,7 +227,7 @@ export default function LoginPage() {
               >
                 {[...testimonials, ...testimonials].map((t, i) => (
                   <div
-                    key={i}
+                    key={`${t.name}-${i}`}
                     className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4"
                   >
                     <div className="flex items-center gap-1 mb-2">
@@ -273,7 +274,7 @@ export default function LoginPage() {
             {/* Mobile-only: logo + social proof summary */}
             <div className="lg:hidden text-center mb-6">
               <Link to="/" className="inline-block mb-4">
-                <img src={LOGO_URL} alt="ExpoGraph" className="h-10 w-auto mx-auto" />
+                <img src={LOGO_URL} alt="ExpoGraph" className="h-14 w-auto mx-auto" />
               </Link>
               <div className="flex justify-center gap-5 mb-4">
                 {[
@@ -302,12 +303,10 @@ export default function LoginPage() {
             </div>
 
             <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] backdrop-blur-xl p-7 sm:p-8 md:p-10 shadow-[0_0_60px_-12px_rgba(124,58,237,0.15)]">
-              {/* Desktop: logo inside card */}
+              {/* Card header with icon */}
               <div className="text-center mb-6">
-                <div className="hidden lg:block mb-4">
-                  <Link to="/" className="inline-block">
-                    <img src={LOGO_URL} alt="ExpoGraph" className="h-9 w-auto mx-auto" />
-                  </Link>
+                <div className="flex items-center justify-center mb-4">
+                  <img src={ICON_URL} alt="ExpoGraph" className="h-16 w-16 rounded-2xl object-contain" />
                 </div>
                 <h1 className="text-2xl md:text-3xl font-bold text-white mb-1">
                   Welcome Back

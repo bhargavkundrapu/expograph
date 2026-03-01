@@ -18,6 +18,7 @@ async function createApproval({
      (tenant_id, payment_order_id, item_type, item_id, customer_name, customer_email, customer_phone, customer_college,
       razorpay_order_id, razorpay_payment_id, status)
      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, 'pending')
+     ON CONFLICT (payment_order_id) DO NOTHING
      RETURNING *`,
     [
       tenantId,
@@ -32,6 +33,13 @@ async function createApproval({
       razorpayPaymentId ?? null,
     ]
   );
+  if (!rows[0]) {
+    const existing = await query(
+      `SELECT * FROM approvals WHERE payment_order_id = $1 LIMIT 1`,
+      [paymentOrderId]
+    );
+    return existing.rows[0];
+  }
   return rows[0];
 }
 

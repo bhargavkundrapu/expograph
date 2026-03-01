@@ -33,6 +33,7 @@ export default function StudentCourses() {
   const [showBuyModal, setShowBuyModal] = useState(false);
   const [buyItem, setBuyItem] = useState(null);
   const openedFromUrlRef = useRef(false);
+  const [fetchError, setFetchError] = useState("");
 
   // Check if we're on the bonus courses page
   const isBonusCoursesPage = location.pathname.includes("bonus-courses");
@@ -64,10 +65,12 @@ export default function StudentCourses() {
   const fetchCourses = async () => {
     try {
       setLoading(true);
+      setFetchError("");
       const res = await apiFetch("/api/v1/student/courses", { token }).catch(() => ({ data: [] }));
       setCourses(res?.data || []);
     } catch (error) {
       console.error("Failed to fetch courses:", error);
+      setFetchError(error?.message || "Failed to load courses. Please refresh the page.");
       setCourses([]);
     } finally {
       setLoading(false);
@@ -167,6 +170,17 @@ export default function StudentCourses() {
     return <StudentCoursesSkeleton />;
   }
 
+  if (fetchError) {
+    return (
+      <div className="p-8 text-center">
+        <p className="text-red-500 mb-3">{fetchError}</p>
+        <button onClick={fetchCourses} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+          Retry
+        </button>
+      </div>
+    );
+  }
+
   // Show "Coming Soon" for bonus courses
   if (isBonusCoursesPage) {
     return (
@@ -258,14 +272,14 @@ export default function StudentCourses() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 p-8">
+    <div className="min-h-screen bg-slate-50 p-4 md:p-8">
       <div className="max-w-7xl mx-auto">
         {/* Header Section */}
-        <div className="mb-8">
-          <div className="flex items-start justify-between mb-4">
-    <div>
+        <div className="mb-4 md:mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-4">
+            <div>
               <p className="text-xs uppercase tracking-wider text-slate-500 mb-1">MY LEARNINGS</p>
-              <h1 className="text-3xl md:text-4xl font-bold text-slate-900 mb-2">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 mb-1 sm:mb-2">
                 {courses.length > 0 ? courses[0]?.learning_path_name || "My Learning Path" : "My Learnings"}
               </h1>
               {totalDuration > 0 && (
@@ -274,7 +288,7 @@ export default function StudentCourses() {
             </div>
             {courses.length > 0 && (
               <div className="flex items-center gap-3">
-                <div className="w-48 bg-slate-200 rounded-full h-2">
+                <div className="w-32 sm:w-48 bg-slate-200 rounded-full h-2">
                   <div
                     className="bg-blue-500 rounded-full h-2 transition-all duration-500"
                     style={{ width: `${overallProgress}%` }}
@@ -298,7 +312,7 @@ export default function StudentCourses() {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
             {filteredCourses.map((course, index) => {
               const progress = course.progress || 0;
               const isCompleted = progress === 100;
@@ -343,7 +357,7 @@ export default function StudentCourses() {
                       </div>
                     </div>
                   )}
-                  <div className={`p-6 ${locked ? "opacity-75" : ""}`}>
+                  <div className={`p-4 md:p-6 ${locked ? "opacity-75" : ""}`}>
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 flex items-center justify-center">

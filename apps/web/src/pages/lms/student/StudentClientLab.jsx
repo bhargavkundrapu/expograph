@@ -26,6 +26,7 @@ export default function StudentClientLab() {
   const [taskDetail, setTaskDetail] = useState(null);
   const [submitForm, setSubmitForm] = useState({ pr_link: "", notes: "" });
   const [saving, setSaving] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   const fetchMe = useCallback(async () => {
     if (!token) return;
@@ -123,7 +124,7 @@ export default function StudentClientLab() {
         await fetchAssignedTasks();
       }
     } catch (e) {
-      alert(e?.message || "Failed to submit");
+      setSubmitError(e?.message || "Failed to submit");
     } finally {
       setSaving(false);
     }
@@ -140,7 +141,7 @@ export default function StudentClientLab() {
   // Not eligible and no assignments: full locked screen
   if (!eligible && !hasAssignments) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8 lg:rounded-tl-lg overflow-hidden">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-4 md:p-8 lg:rounded-tl-lg overflow-hidden">
         <div className="max-w-xl mx-auto text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -179,7 +180,7 @@ export default function StudentClientLab() {
   if (taskId && taskDetail) {
     const latest = taskDetail.latest_submission;
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8 lg:rounded-tl-lg overflow-hidden">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-4 md:p-8 lg:rounded-tl-lg overflow-hidden">
         <div className="max-w-2xl mx-auto">
           {!eligible && (
             <div className="mb-4 p-4 bg-amber-50 border border-amber-200 rounded-2xl text-amber-800 text-sm">
@@ -245,6 +246,7 @@ export default function StudentClientLab() {
                   >
                     <FiSend className="w-4 h-4" /> {saving ? "Submitting…" : "Submit"}
                   </button>
+                  {submitError && <p className="text-xs text-red-500 mt-1">{submitError}</p>}
                 </div>
               )}
             </div>
@@ -258,7 +260,7 @@ export default function StudentClientLab() {
   if (projectId && projectDetail) {
     const projectTasks = projectDetail.tasks || [];
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8 lg:rounded-tl-lg overflow-hidden">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-4 md:p-8 lg:rounded-tl-lg overflow-hidden">
         <div className="max-w-2xl mx-auto">
           {!eligible && (
             <div className="mb-4 p-4 bg-amber-50 border border-amber-200 rounded-2xl text-amber-800 text-sm">
@@ -310,7 +312,7 @@ export default function StudentClientLab() {
 
   // Default: list assigned projects and tasks (LMS portal style)
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8 lg:rounded-tl-lg overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-4 md:p-8 lg:rounded-tl-lg overflow-hidden">
       <div className="max-w-4xl mx-auto">
         {!eligible && hasAssignments && (
           <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-2xl text-amber-800 text-sm flex items-start gap-2">

@@ -63,12 +63,17 @@ function createApp() {
 
   app.set("trust proxy", 1);
   app.use(
-  helmet({
-    crossOriginResourcePolicy: { policy: "cross-origin" },
-  })
-);
-  app.use(morgan("combined"));
-
+    helmet({
+      crossOriginResourcePolicy: { policy: "cross-origin" },
+      contentSecurityPolicy: false,
+    })
+  );
+  app.use((req, res, next) => {
+    res.setHeader("X-Content-Type-Options", "nosniff");
+    res.setHeader("X-Frame-Options", "DENY");
+    res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+    next();
+  });
   // Razorpay webhook needs raw body for signature verification - must be before express.json
   app.post(
     "/api/v1/payments/razorpay/webhook",
@@ -86,19 +91,19 @@ function createApp() {
   // CORS
  
 
-const allowlist = new Set([
+const defaultOrigins = [
   "http://localhost:5173",
   "http://localhost:5174",
   "http://localhost:5175",
   "http://localhost:4173",
   "https://expograph.in",
   "https://www.expograph.in",
-]);
+];
+const allowlist = new Set([...defaultOrigins, ...env.CORS_ORIGINS]);
 
 function isAllowed(origin) {
   if (!origin) return true; // curl/postman
   if (allowlist.has(origin)) return true;
-  if (origin.endsWith(".vercel.app")) return true; // previews
   return false;
 }
 

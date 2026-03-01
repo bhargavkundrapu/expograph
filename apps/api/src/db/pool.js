@@ -5,14 +5,15 @@ const isNeon = /neon\.tech/i.test(env.DATABASE_URL);
 
 let pool;
 
+const POOL_MAX = parseInt(process.env.DB_POOL_MAX, 10) || 25;
+
 if (isNeon) {
-  // Neon serverless driver uses HTTPS/WebSockets - bypasses firewall blocking TCP 5432
   const { Pool: NeonPool, neonConfig } = require("@neondatabase/serverless");
   const ws = require("ws");
   neonConfig.webSocketConstructor = ws;
   pool = new NeonPool({
     connectionString: env.DATABASE_URL,
-    max: 10,
+    max: POOL_MAX,
     idleTimeoutMillis: 30_000,
     connectionTimeoutMillis: 30_000,
   });
@@ -21,8 +22,8 @@ if (isNeon) {
   const useSSL = env.DATABASE_URL?.includes("sslmode=require");
   pool = new Pool({
     connectionString: env.DATABASE_URL,
-    ssl: useSSL ? { rejectUnauthorized: false } : undefined,
-    max: 10,
+    ssl: useSSL ? { rejectUnauthorized: true } : undefined,
+    max: POOL_MAX,
     idleTimeoutMillis: 30_000,
     connectionTimeoutMillis: 20_000,
   });

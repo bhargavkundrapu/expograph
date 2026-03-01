@@ -45,4 +45,20 @@ const resumePdfLimiter = rateLimit({
     req.auth?.userId ? `resume:u:${req.auth.userId}` : `resume:ip:${ipKeyGenerator(req.ip, 64)}`,
 });
 
-module.exports = { authLimiter, mediaTokenLimiter, progressLimiter, resumePdfLimiter };
+const paymentLimiter = rateLimit({
+  windowMs: 5 * 60 * 1000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { ok: false, error: "Too many payment requests. Please try again in a few minutes." },
+});
+
+const publicApiLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000,
+  max: 60,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { ok: false, error: "Too many requests. Please slow down." },
+});
+
+module.exports = { authLimiter, mediaTokenLimiter, progressLimiter, resumePdfLimiter, paymentLimiter, publicApiLimiter };

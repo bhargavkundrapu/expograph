@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { FiX, FiMaximize2, FiMinimize2 } from "react-icons/fi";
+import { sanitizeHtml } from "../../utils/sanitize";
 import Reveal from "reveal.js";
 import Markdown from "reveal.js/plugin/markdown/markdown.esm.js";
 import Highlight from "reveal.js/plugin/highlight/highlight.esm.js";
@@ -299,7 +300,7 @@ export default function PresentationViewer({ presentation, onClose }) {
               <div
                 className="reveal-markdown"
                 dangerouslySetInnerHTML={{
-                  __html: slide.content.content
+                  __html: sanitizeHtml(slide.content.content
                     .split("\n\n")
                     .map((para) => {
                       if (para.trim().startsWith("#")) {
@@ -307,7 +308,7 @@ export default function PresentationViewer({ presentation, onClose }) {
                       }
                       return `<p>${para}</p>`;
                     })
-                    .join(""),
+                    .join("")),
                 }}
                 style={{ fontSize: "1.5em", lineHeight: "1.6", flex: 1 }}
               />
@@ -316,7 +317,7 @@ export default function PresentationViewer({ presentation, onClose }) {
               <div
                 key={fragment.id}
                 className={`fragment ${fragment.animation || "fade-in"}`}
-                dangerouslySetInnerHTML={{ __html: fragment.content }}
+                dangerouslySetInnerHTML={{ __html: sanitizeHtml(fragment.content) }}
                 style={{ fontSize: "1.5em", marginTop: "1em" }}
               />
             ))}

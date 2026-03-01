@@ -69,9 +69,13 @@ async function verifyOtpAndLogin({ tenant, body }) {
   const email = parsed.data.email.trim().toLowerCase();
   const otp = parsed.data.otp.trim();
 
-  const { valid } = await verifyOtp(email, otp);
-  if (!valid) {
-    throw new HttpError(401, "Invalid or expired OTP. Please request a new code.");
+  const result = await verifyOtp(email, otp);
+  if (result.locked) {
+    throw new HttpError(429, "Too many failed attempts. Please request a new OTP.");
+  }
+  if (!result.valid) {
+    const hint = result.attemptsLeft != null ? ` (${result.attemptsLeft} attempts left)` : "";
+    throw new HttpError(401, `Invalid or expired OTP. Please try again${hint}.`);
   }
 
   const user = await findUserByEmail(email);
@@ -101,7 +105,7 @@ async function verifyOtpAndLogin({ tenant, body }) {
 
   return {
     token,
-    user: { id: user.id, email: user.email, fullName: user.full_name },
+    user: { id: user.id, email: user.email, fullName: user.full_name, phone: user.phone || "" },
     tenant: { id: tenant.id, slug: tenant.slug, name: tenant.name },
     role: membershipWithRole.role_name,
     permissions,
@@ -146,7 +150,7 @@ async function adminLogin({ tenant, body }) {
 
   return {
     token,
-    user: { id: user.id, email: user.email, fullName: user.full_name },
+    user: { id: user.id, email: user.email, fullName: user.full_name, phone: user.phone || "" },
     tenant: { id: tenant.id, slug: tenant.slug, name: tenant.name },
     role: membershipWithRole.role_name,
     permissions,

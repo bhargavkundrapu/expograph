@@ -23,6 +23,7 @@ export default function StudentReferrals() {
   const [loading, setLoading] = useState(true);
   const [referrals, setReferrals] = useState([]);
   const [referralLink, setReferralLink] = useState("");
+  const [copied, setCopied] = useState(false);
   const [stats, setStats] = useState({
     total_referrals: 0,
     successful_referrals: 0,
@@ -82,7 +83,8 @@ export default function StudentReferrals() {
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(referralLink);
-    alert("Referral link copied to clipboard!");
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   const handleShare = async () => {
@@ -106,7 +108,7 @@ export default function StudentReferrals() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-4 md:p-8">
       <div className="max-w-7xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -128,7 +130,7 @@ export default function StudentReferrals() {
             className="bg-white/80 backdrop-blur-sm rounded-md p-6 border-2 border-cyan-200/50 shadow-lg"
           >
             <div className="flex items-center justify-between mb-4">
-              <div className="p-3 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-md text-white">
+              <div className="p-3 bg-slate-700 rounded-md text-white">
                 <FiUsers className="w-6 h-6" />
               </div>
               <span className="text-3xl font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
@@ -210,10 +212,10 @@ export default function StudentReferrals() {
             </div>
             <button
               onClick={handleCopyLink}
-              className="px-6 py-4 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-semibold rounded-md hover:from-cyan-600 hover:to-blue-600 transition-all flex items-center gap-2"
+              className="px-6 py-4 bg-slate-800 text-white font-semibold rounded-md hover:bg-slate-900 transition-all flex items-center gap-2"
             >
               <FiCopy className="w-5 h-5" />
-              Copy
+              {copied ? "Copied!" : "Copy"}
             </button>
             <button
               onClick={handleShare}
@@ -247,7 +249,7 @@ export default function StudentReferrals() {
                   className="p-4 bg-gradient-to-r from-slate-50 to-cyan-50 rounded-md border-2 border-slate-200 flex items-center justify-between"
                 >
                   <div className="flex items-center gap-4">
-                    <div className="p-3 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-md text-white">
+                    <div className="p-3 bg-slate-700 rounded-md text-white">
                       <FiUsers className="w-5 h-5" />
                     </div>
                     <div>

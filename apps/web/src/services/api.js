@@ -1,5 +1,5 @@
 import { getOrCreateDeviceId } from "./device";
-import { getToken } from "./session";
+import { getToken, clearSession } from "./session";
 
 const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
 
@@ -62,7 +62,14 @@ export async function apiFetch(path, options = {}) {
 
       const error = new ApiError(msg, res.status, json);
 
-      // Suppress console errors for 403 Forbidden (permission issues are handled in UI)
+      if (res.status === 401 && token) {
+        clearSession();
+        if (typeof window !== "undefined" && !window.location.pathname.startsWith("/login")) {
+          window.location.href = "/login";
+        }
+        throw error;
+      }
+
       if (res.status === 403) {
         // Still throw the error so components can handle it, but don't log to console
         throw error;

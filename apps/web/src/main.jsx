@@ -1,9 +1,29 @@
-import { StrictMode } from "react";
+import { StrictMode, Component } from "react";
 import { createRoot } from "react-dom/client";
 import * as Sentry from "@sentry/react";
 
 import "./index.css";
 import App from "./App.jsx";
+
+class GlobalErrorBoundary extends Component {
+  state = { hasError: false };
+  static getDerivedStateFromError() { return { hasError: true }; }
+  componentDidCatch(err, info) { console.error("[ErrorBoundary]", err, info); }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "100vh", fontFamily: "system-ui, sans-serif", padding: "2rem", textAlign: "center" }}>
+          <h1 style={{ fontSize: "1.5rem", marginBottom: "0.5rem" }}>Something went wrong</h1>
+          <p style={{ color: "#666", marginBottom: "1rem" }}>An unexpected error occurred. Please try refreshing the page.</p>
+          <button onClick={() => window.location.reload()} style={{ padding: "0.5rem 1.5rem", borderRadius: "0.375rem", background: "#2563eb", color: "#fff", border: "none", cursor: "pointer", fontSize: "1rem" }}>
+            Refresh Page
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 // Suppress harmless console errors from third-party services and browser extensions
 const originalError = console.error;
@@ -84,8 +104,10 @@ if (import.meta.env.PROD && SENTRY_DSN) {
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <Sentry.ErrorBoundary fallback={<div>Something went wrong.</div>}>
-      <App />
-    </Sentry.ErrorBoundary>
+    <GlobalErrorBoundary>
+      <Sentry.ErrorBoundary fallback={<div>Something went wrong.</div>}>
+        <App />
+      </Sentry.ErrorBoundary>
+    </GlobalErrorBoundary>
   </StrictMode>
 );

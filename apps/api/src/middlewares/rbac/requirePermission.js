@@ -2,9 +2,16 @@
 const { HttpError } = require("../../utils/httpError");
 const { listPermissionsForUser } = require("../../modules/rbac/rbac.repo");
 
-// small cache: key -> { perms, expiresAt }
 const cache = new Map();
-const TTL_MS = 10_000; // Reduced from 60s to 10s to ensure fresh permissions
+const TTL_MS = 10_000;
+const MAX_PERM_CACHE = 1000;
+
+setInterval(() => {
+  const now = Date.now();
+  for (const [k, v] of cache) {
+    if (v.expiresAt <= now) cache.delete(k);
+  }
+}, 60 * 1000);
 
 function requirePermission(permissionKey) {
   return async function (req, res, next) {
@@ -25,6 +32,10 @@ function requirePermission(permissionKey) {
       perms = cached.perms;
     } else {
       perms = await listPermissionsForUser({ tenantId, userId });
+      if (cache.size >= MAX_PERM_CACHE) {
+        const firstKey = cache.keys().next().value;
+        cache.delete(firstKey);
+      }
       cache.set(cacheKey, { perms, expiresAt: now + TTL_MS });
     }
 

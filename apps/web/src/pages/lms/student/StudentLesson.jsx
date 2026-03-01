@@ -25,6 +25,8 @@ import {
   FiX,
   FiHome,
   FiUser,
+  FiChevronLeft,
+  FiBookOpen,
 } from "react-icons/fi";
 import { PanelLeftOpen } from "lucide-react";
 import CourseContentsSidebar from "../../../Components/ui/CourseContentsSidebar";
@@ -64,6 +66,7 @@ export default function StudentLesson() {
   const [allModules, setAllModules] = useState([]);
   const [sidebarVisible, setSidebarVisible] = useState(true);
   const [markCompleteLoading, setMarkCompleteLoading] = useState(false);
+  const [markCompleteError, setMarkCompleteError] = useState("");
   const [copiedIndex, setCopiedIndex] = useState(null);
   const [activePromptTab, setActivePromptTab] = useState("prompts");
   const [summaryExpanded, setSummaryExpanded] = useState(false);
@@ -154,11 +157,13 @@ export default function StudentLesson() {
       isManualNavigationRef.current = false;
       return;
     }
-    
+
+    const ac = new AbortController();
     if (!courseDataLoadedRef.current) {
-      fetchCourseData();
+      fetchCourseData(ac.signal);
     }
-    fetchLessonData(courseSlug, moduleSlug, lessonSlug, courseDataLoadedRef.current);
+    fetchLessonData(courseSlug, moduleSlug, lessonSlug, courseDataLoadedRef.current, ac.signal);
+    return () => ac.abort();
   }, [token, courseSlug, moduleSlug, lessonSlug]);
 
   // Fetch video token if needed for Cloudflare Stream
@@ -172,12 +177,14 @@ export default function StudentLesson() {
     }
   }, [lesson?.id, lesson?.video_provider, lesson?.video_id, token]);
 
-  const fetchCourseData = async () => {
-    // Only fetch course data once (prevents sidebar reload on lesson changes)
+  const fetchCourseData = async (signal) => {
     if (courseDataLoadedRef.current) return;
     
     try {
-      const res = await apiFetch(`/api/v1/student/courses/${courseSlug}`, { token }).catch(() => ({ data: null }));
+      const res = await apiFetch(`/api/v1/student/courses/${courseSlug}`, { token, signal }).catch((err) => {
+        if (err?.name === "AbortError") throw err;
+        return { data: null };
+      });
       if (res?.data?.course) {
         setCourse(res.data.course);
         setAllModules(res.data.course.modules || []);
@@ -188,12 +195,13 @@ export default function StudentLesson() {
         courseDataLoadedRef.current = true;
       }
     } catch (error) {
+      if (error?.name === "AbortError") return;
       console.error("Failed to fetch course data:", error);
     }
   };
 
 
-  const fetchLessonData = async (courseSlugParam, moduleSlugParam, lessonSlugParam, isContentUpdate = false) => {
+  const fetchLessonData = async (courseSlugParam, moduleSlugParam, lessonSlugParam, isContentUpdate = false, signal) => {
     try {
       if (isContentUpdate) {
         setContentLoading(true);
@@ -201,7 +209,10 @@ export default function StudentLesson() {
         setLoading(true);
       }
       
-      const res = await apiFetch(`/api/v1/student/courses/${courseSlugParam}/modules/${moduleSlugParam}/lessons/${lessonSlugParam}`, { token }).catch(() => ({ data: null }));
+      const res = await apiFetch(`/api/v1/student/courses/${courseSlugParam}/modules/${moduleSlugParam}/lessons/${lessonSlugParam}`, { token, signal }).catch((err) => {
+        if (err?.name === "AbortError") throw err;
+        return { data: null };
+      });
       
       if (res?.data) {
         const lessonData = res.data.lesson || res.data;
@@ -237,8 +248,10 @@ export default function StudentLesson() {
         setVideoReady(false);
       }
     } catch (error) {
+      if (error?.name === "AbortError") return;
       console.error("Failed to fetch lesson data:", error);
     } finally {
+      if (signal?.aborted) return;
       if (isContentUpdate) {
         setContentLoading(false);
       } else {
@@ -296,6 +309,7 @@ export default function StudentLesson() {
     if (markCompleteLoading || completed) return;
     try {
       setMarkCompleteLoading(true);
+      setMarkCompleteError("");
       const res = await apiFetch(`/api/v1/student/courses/${courseSlug}/modules/${moduleSlug}/lessons/${lessonSlug}/complete`, {
         method: "POST",
         token,
@@ -303,7 +317,6 @@ export default function StudentLesson() {
 
       if (res?.ok) {
         setCompleted(true);
-        // Update sidebar immediately: allModules so CourseContentsSidebar shows green check
         setAllModules((prev) =>
           prev.map((mod) => ({
             ...mod,
@@ -315,12 +328,10 @@ export default function StudentLesson() {
         setModuleLessons((prev) =>
           prev.map((l) => (l.id === lesson?.id ? { ...l, completed: true } : l))
         );
-        // Refetch course from server so progress/sidebar stay in sync with DB
         fetchCourseData();
       }
     } catch (error) {
-      const msg = error?.message || "Failed to mark lesson as complete. Please try again.";
-      alert(msg);
+      setMarkCompleteError(error?.message || "Failed to mark lesson as complete. Please try again.");
     } finally {
       setMarkCompleteLoading(false);
     }
@@ -496,68 +507,104 @@ export default function StudentLesson() {
   return (
     <div className="flex h-screen w-full overflow-hidden bg-slate-100">
       <main className="flex-1 flex flex-col min-w-0">
-        {/* Navbar */}
-        <nav className="flex-shrink-0 bg-white border-b border-slate-200 shadow-sm px-6 py-4">
+        {/* Navbar — hidden on mobile, visible on md+ */}
+        <nav className="hidden md:block flex-shrink-0 bg-white border-b border-slate-200 shadow-sm px-6 py-4">
           <div className="flex items-center justify-between">
-            {/* Logo - 2.png for main/navbar (light background) */}
             <div className="flex items-center gap-2">
               <img src="/2.png" alt="ExpoGraph" className="h-13 w-64 ml-8 object-contain object-left" />
             </div>
-
-            {/* Navigation Links */}
             <div className="flex items-center gap-15 mr-16">
-              <button
-                onClick={() => navigate("/lms/student")}
-                className="text-slate-700 hover:text-slate-900 text-lg font-large transition-colors "
-              >
-                Home
-              </button>
-              <button
-                onClick={() => navigate("/lms/student/profile")}
-                className="text-slate-700 hover:text-slate-900 text-lg font-large transition-colors"
-              >
-                Profile
-              </button>
+              <button onClick={() => navigate("/lms/student")} className="text-slate-700 hover:text-slate-900 text-lg font-large transition-colors">Home</button>
+              <button onClick={() => navigate("/lms/student/profile")} className="text-slate-700 hover:text-slate-900 text-lg font-large transition-colors">Profile</button>
             </div>
           </div>
         </nav>
 
+        {/* Mobile lesson top bar */}
+        <div className="flex md:hidden items-center gap-2 px-3 py-2.5 bg-white border-b border-slate-200 safe-area-pt">
+          <button onClick={() => navigate("/lms/student/courses")} className="p-1.5 -ml-1 rounded-lg text-slate-600 hover:bg-slate-100 active:bg-slate-200 transition-colors">
+            <FiChevronLeft className="w-5 h-5" />
+          </button>
+          <div className="flex-1 min-w-0">
+            <p className="text-xs text-slate-500 truncate">{moduleTitle || course?.title || "Course"}</p>
+            <p className="text-sm font-semibold text-slate-900 truncate">{lesson?.title || "Lesson"}</p>
+          </div>
+          <button onClick={() => setSidebarVisible(true)} className="p-2 rounded-lg text-slate-600 hover:bg-slate-100 active:bg-slate-200 transition-colors">
+            <FiBookOpen className="w-5 h-5" />
+          </button>
+        </div>
+
         {/* Content area with sidebar */}
         <div className="flex-1 flex overflow-hidden">
-          {/* Sidebar */}
-          {sidebarVisible ? (
-            <CourseContentsSidebar
-              courseTitle={course?.title || "Course"}
-              modules={sidebarModules}
-              totalDuration={getTotalCourseDuration() || "0 mins"}
-              currentLessonId={lesson?.id ? String(lesson.id) : undefined}
-              currentLessonSlug={lessonSlug}
-              onBack={() => navigate("/lms/student/courses")}
-              onClose={() => setSidebarVisible(false)}
-              onLessonSelect={async (item, moduleSlugParam) => {
-                const full = allLessons.find((l) => String(l.id) === item.id);
-                if (full && !full.locked) {
-                  // Mark as manual navigation to prevent useEffect from triggering
-                  isManualNavigationRef.current = true;
-                  // Use moduleSlugParam from callback, fallback to full.moduleSlug
-                  const targetModuleSlug = moduleSlugParam || full.moduleSlug;
-                  // Update URL first (for sharing)
-                  navigate(`/lms/student/courses/${courseSlug}/modules/${targetModuleSlug}/lessons/${full.slug}`, { replace: true });
-                  // Fetch new lesson data (only content area updates)
-                  await fetchLessonData(courseSlug, targetModuleSlug, full.slug, true);
-                }
-              }}
-            />
-          ) : null}
+          {/* Desktop sidebar — normal flow */}
+          <div className="hidden md:block">
+            {sidebarVisible ? (
+              <CourseContentsSidebar
+                courseTitle={course?.title || "Course"}
+                modules={sidebarModules}
+                totalDuration={getTotalCourseDuration() || "0 mins"}
+                currentLessonId={lesson?.id ? String(lesson.id) : undefined}
+                currentLessonSlug={lessonSlug}
+                onBack={() => navigate("/lms/student/courses")}
+                onClose={() => setSidebarVisible(false)}
+                onLessonSelect={async (item, moduleSlugParam) => {
+                  const full = allLessons.find((l) => String(l.id) === item.id);
+                  if (full && !full.locked) {
+                    isManualNavigationRef.current = true;
+                    const targetModuleSlug = moduleSlugParam || full.moduleSlug;
+                    navigate(`/lms/student/courses/${courseSlug}/modules/${targetModuleSlug}/lessons/${full.slug}`, { replace: true });
+                    await fetchLessonData(courseSlug, targetModuleSlug, full.slug, true);
+                  }
+                }}
+              />
+            ) : null}
+          </div>
+
+          {/* Mobile sidebar — full-screen overlay */}
+          <AnimatePresence>
+            {sidebarVisible && (
+              <motion.div
+                initial={{ x: "-100%" }}
+                animate={{ x: 0 }}
+                exit={{ x: "-100%" }}
+                transition={{ type: "tween", duration: 0.25 }}
+                className="md:hidden fixed inset-0 z-[60] flex"
+              >
+                <div className="w-full max-w-[320px] flex flex-col bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900">
+                  <CourseContentsSidebar
+                    courseTitle={course?.title || "Course"}
+                    modules={sidebarModules}
+                    totalDuration={getTotalCourseDuration() || "0 mins"}
+                    currentLessonId={lesson?.id ? String(lesson.id) : undefined}
+                    currentLessonSlug={lessonSlug}
+                    onBack={() => navigate("/lms/student/courses")}
+                    onClose={() => setSidebarVisible(false)}
+                    className="!w-full !min-w-0"
+                    onLessonSelect={async (item, moduleSlugParam) => {
+                      const full = allLessons.find((l) => String(l.id) === item.id);
+                      if (full && !full.locked) {
+                        isManualNavigationRef.current = true;
+                        const targetModuleSlug = moduleSlugParam || full.moduleSlug;
+                        navigate(`/lms/student/courses/${courseSlug}/modules/${targetModuleSlug}/lessons/${full.slug}`, { replace: true });
+                        setSidebarVisible(false);
+                        await fetchLessonData(courseSlug, targetModuleSlug, full.slug, true);
+                      }
+                    }}
+                  />
+                </div>
+                <div className="flex-1 bg-black/50" onClick={() => setSidebarVisible(false)} />
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* Main content area */}
           <div className="flex-1 flex flex-col min-w-0 relative">
-            {/* Open contents button */}
+            {/* Open contents button — desktop only */}
             {!sidebarVisible && (
               <button
                 type="button"
                 onClick={() => setSidebarVisible(true)}
-                className="absolute left-0 top-0 z-50 w-12 h-12 bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 border-r border-b border-slate-900 text-white flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2 hover:from-slate-800 hover:via-slate-700 hover:to-slate-800 transition-colors"
+                className="hidden md:flex absolute left-0 top-0 z-50 w-12 h-12 bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 border-r border-b border-slate-900 text-white items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2 hover:from-slate-800 hover:via-slate-700 hover:to-slate-800 transition-colors"
                 aria-label="Open course contents"
               >
                 <PanelLeftOpen className="w-6 h-6" strokeWidth={2} aria-hidden />
@@ -566,9 +613,9 @@ export default function StudentLesson() {
 
         {/* Main content - scrollable */}
         <div className="flex-1 overflow-y-auto bg-white relative">
-          {/* Fixed Navbar - Module Name > Lesson Name */}
+          {/* Fixed Navbar - Module Name > Lesson Name (hidden on mobile, shown on mobile top bar instead) */}
           {(moduleTitle || lesson?.title) && (
-            <div className="sticky top-0 z-40 bg-white border-b border-slate-200 shadow-sm">
+            <div className="hidden md:block sticky top-0 z-40 bg-white border-b border-slate-200 shadow-sm">
               <div className="max-w-6xl mx-auto px-8 py-3">
                 <nav className="flex items-center gap-2 text-sm">
                   {moduleTitle && (
@@ -590,7 +637,7 @@ export default function StudentLesson() {
             <div className="max-w-6xl mx-auto">
             {/* Goal Section - below navbar */}
             {lesson?.goal?.trim() && (
-              <div className="px-8 pt-6 pb-6">
+              <div className="px-4 md:px-8 pt-4 md:pt-6 pb-4 md:pb-6">
                 <div>
                   <h3 className="text-lg font-semibold text-slate-900 mb-3">Goal</h3>
                   <div className="bg-slate-50 border-l-4 border-blue-500 pl-4 py-3">
@@ -606,12 +653,12 @@ export default function StudentLesson() {
             (lesson.video_provider === "vimeo" && lesson.video_id) ||
             lesson.video_url ||
             (lesson.video_id && lesson.video_id.startsWith("http")) ? (
-              <div className="px-8 pb-8">
+              <div className="px-4 md:px-8 pb-4 md:pb-8">
                 <div className="max-w-3xl mx-auto">
                 {/* Cloudflare Stream Video Player */}
                 {lesson.video_provider === "cloudflare_stream" && lesson.video_id ? (
                   <div className="bg-black overflow-hidden shadow-xl relative">
-                    <div className="aspect-video bg-black relative" style={{ maxHeight: "450px" }}>
+                    <div className="aspect-video bg-black relative md:max-h-[450px]">
                       {videoTokenLoading ? (
                         <div className="absolute inset-0 flex items-center justify-center bg-black text-white">
                           <div className="text-center">
@@ -654,7 +701,7 @@ export default function StudentLesson() {
                   </div>
                 ) : lesson.video_provider === "youtube" && lesson.video_id ? (
                   <div className="bg-black overflow-hidden shadow-xl">
-                    <div className="aspect-video bg-black" style={{ maxHeight: "450px" }}>
+                    <div className="aspect-video bg-black md:max-h-[450px]">
                       <iframe
                         src={`https://www.youtube.com/embed/${lesson.video_id}?cc_load_policy=1&modestbranding=1`}
                         title={lesson.title}
@@ -667,7 +714,7 @@ export default function StudentLesson() {
                   </div>
                 ) : lesson.video_provider === "vimeo" && lesson.video_id ? (
                   <div className="bg-black overflow-hidden shadow-xl">
-                    <div className="aspect-video bg-black" style={{ maxHeight: "450px" }}>
+                    <div className="aspect-video bg-black md:max-h-[450px]">
                       <iframe
                         src={`https://player.vimeo.com/video/${lesson.video_id}`}
                         title={lesson.title}
@@ -680,7 +727,7 @@ export default function StudentLesson() {
                   </div>
                 ) : lesson.video_url ? (
                   <div className="bg-black overflow-hidden shadow-xl relative">
-                    <div className="aspect-video bg-black relative" style={{ maxHeight: "450px" }}>
+                    <div className="aspect-video bg-black relative md:max-h-[450px]">
                       <video
                         key={`vid-${lesson.id}-${captionsBlobUrl ? "cc" : "nocc"}`}
                         ref={videoRef}
@@ -721,7 +768,7 @@ export default function StudentLesson() {
                   </div>
                 ) : lesson.video_id && lesson.video_id.startsWith("http") ? (
                   <div className="bg-black overflow-hidden shadow-xl relative">
-                    <div className="aspect-video bg-black relative" style={{ maxHeight: "450px" }}>
+                    <div className="aspect-video bg-black relative md:max-h-[450px]">
                       <video
                         key={`vid-${lesson.id}-${captionsBlobUrl ? "cc" : "nocc"}`}
                         ref={videoRef}
@@ -768,18 +815,18 @@ export default function StudentLesson() {
               {/* Prompts - classic tabs design - only show if at least one prompt exists */}
               {lesson?.prompts && typeof lesson.prompts === "object" && 
               (lesson.prompts.prompts != null || lesson.prompts.commands != null || lesson.prompts.error_resolve != null) && (
-                <div className="px-8 pb-8">
+                <div className="px-4 md:px-8 pb-4 md:pb-8">
                   <div className="mt-8">
                   <Tabs
                     value={activePromptTab}
                     onValueChange={setActivePromptTab}
                     className="w-full border border-slate-300 bg-white rounded-none"
                   >
-                    <TabsList className="w-full justify-start h-auto p-0 bg-slate-50 border-b border-slate-300 rounded-none gap-0">
+                    <TabsList className="w-full justify-start h-auto p-0 bg-slate-50 border-b border-slate-300 rounded-none gap-0 overflow-x-auto">
                       {lesson.prompts.prompts != null && (
                         <TabsTrigger
                           value="prompts"
-                          className="px-5 py-3 text-sm font-normal text-slate-600 border-b-2 border-transparent rounded-none data-[state=active]:text-slate-900 data-[state=active]:border-slate-900 data-[state=active]:bg-transparent data-[state=active]:font-medium hover:text-slate-800 transition-colors"
+                          className="px-3 md:px-5 py-2.5 md:py-3 text-xs md:text-sm font-normal text-slate-600 border-b-2 border-transparent rounded-none data-[state=active]:text-slate-900 data-[state=active]:border-slate-900 data-[state=active]:bg-transparent data-[state=active]:font-medium hover:text-slate-800 transition-colors whitespace-nowrap"
                         >
                           Prompts
                         </TabsTrigger>
@@ -787,7 +834,7 @@ export default function StudentLesson() {
                       {lesson.prompts.commands != null && (
                         <TabsTrigger
                           value="commands"
-                          className="px-5 py-3 text-sm font-normal text-slate-600 border-b-2 border-transparent rounded-none data-[state=active]:text-slate-900 data-[state=active]:border-slate-900 data-[state=active]:bg-transparent data-[state=active]:font-medium hover:text-slate-800 transition-colors"
+                          className="px-3 md:px-5 py-2.5 md:py-3 text-xs md:text-sm font-normal text-slate-600 border-b-2 border-transparent rounded-none data-[state=active]:text-slate-900 data-[state=active]:border-slate-900 data-[state=active]:bg-transparent data-[state=active]:font-medium hover:text-slate-800 transition-colors whitespace-nowrap"
                         >
                           Commands
                         </TabsTrigger>
@@ -795,7 +842,7 @@ export default function StudentLesson() {
                       {lesson.prompts.error_resolve != null && (
                         <TabsTrigger
                           value="error_resolve"
-                          className="px-5 py-3 text-sm font-normal text-slate-600 border-b-2 border-transparent rounded-none data-[state=active]:text-slate-900 data-[state=active]:border-slate-900 data-[state=active]:bg-transparent data-[state=active]:font-medium hover:text-slate-800 transition-colors"
+                          className="px-3 md:px-5 py-2.5 md:py-3 text-xs md:text-sm font-normal text-slate-600 border-b-2 border-transparent rounded-none data-[state=active]:text-slate-900 data-[state=active]:border-slate-900 data-[state=active]:bg-transparent data-[state=active]:font-medium hover:text-slate-800 transition-colors whitespace-nowrap"
                         >
                           Error handling
                         </TabsTrigger>
@@ -856,7 +903,7 @@ export default function StudentLesson() {
 
             {/* Learn and Setup - Step-based section (like Success looks like) */}
             {((Array.isArray(lesson?.learn_setup_steps) && lesson.learn_setup_steps.length > 0) || lesson?.summary?.trim()) && (
-              <div className="px-8 pb-8">
+              <div className="px-4 md:px-8 pb-4 md:pb-8">
                 <div className="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 rounded-lg border-2 border-blue-200 shadow-lg overflow-hidden">
                   <button
                     type="button"
@@ -948,8 +995,8 @@ export default function StudentLesson() {
                 const currentIndex = Math.min(selectedSuccessImageIndex, urls.length - 1);
                 const currentUrl = urls[currentIndex];
                 return (
-                  <div className="px-8 pb-8">
-                    <div className="mt-8">
+                  <div className="px-4 md:px-8 pb-4 md:pb-8">
+                    <div className="mt-4 md:mt-8">
                       <h3 className="text-lg font-semibold text-slate-900 mb-3">Success looks like</h3>
                       {urls.length > 1 && (
                         <div className="flex items-center gap-2 mb-3">
@@ -990,7 +1037,7 @@ export default function StudentLesson() {
 
               {/* Presentation (PDF) - Slides section */}
               {lesson?.pdf_url && (
-                <div className="px-8 pt-8 pb-8">
+                <div className="px-4 md:px-8 pt-4 md:pt-8 pb-4 md:pb-8">
                   <h3 className="text-lg font-semibold text-slate-900 mb-3">Slides</h3>
                   <div className="flex justify-center">
                     <PDFPresentationViewer pdfUrl={lesson.pdf_url} />
@@ -1000,7 +1047,7 @@ export default function StudentLesson() {
 
               {/* Resources (cheatsheets, links, text) */}
               {resources?.length > 0 && (
-                <div className="px-8 pb-8">
+                <div className="px-4 md:px-8 pb-4 md:pb-8">
                   <div className="mt-8">
                     <h3 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
                       <FiLayers className="w-5 h-5 text-slate-600" />
@@ -1060,10 +1107,10 @@ export default function StudentLesson() {
               )}
 
               {/* Mark as complete + Next Lesson - visible at bottom */}
-              <div className="px-8 pb-8">
-                <div className="mt-10 pt-8 border-t border-slate-200 flex flex-wrap items-center justify-between gap-4">
+              <div className="px-4 md:px-8 pb-4 md:pb-8">
+                <div className="mt-6 md:mt-10 pt-4 md:pt-8 border-t border-slate-200 flex flex-col sm:flex-row flex-wrap items-start sm:items-center justify-between gap-3 md:gap-4">
                   <div>
-                    {!completed ? (
+                    {!completed ? (<>
                       <button
                         type="button"
                         onClick={handleMarkComplete}
@@ -1083,7 +1130,10 @@ export default function StudentLesson() {
                           </>
                         )}
                       </button>
-                    ) : (
+                      {markCompleteError && (
+                        <p className="text-xs text-red-500 mt-1">{markCompleteError}</p>
+                      )}
+                    </>) : (
                       <div className="flex items-center gap-2 text-slate-600 text-sm" role="status" aria-label="Lesson completed">
                         <FiCheckCircle className="w-4 h-4 flex-shrink-0 text-green-600" />
                         <span>Completed</span>

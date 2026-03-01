@@ -127,7 +127,7 @@ export function CourseContentsSidebar({
   return (
     <aside
       className={cn(
-        "flex flex-col w-[360px] min-w-[360px] min-h-0 self-stretch bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 border-r border-slate-900 text-white",
+        "flex flex-col w-full md:w-[360px] min-w-0 md:min-w-[360px] min-h-0 self-stretch bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 border-r border-slate-900 text-white",
         className
       )}
       role="navigation"

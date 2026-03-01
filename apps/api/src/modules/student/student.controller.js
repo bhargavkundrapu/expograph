@@ -279,6 +279,38 @@ const deleteBookmark = asyncHandler(async (req, res) => {
 });
 
 // Profile
+const getProfile = asyncHandler(async (req, res) => {
+  const { userId } = req.auth;
+  const user = await usersRepo.findUserById(userId);
+  if (!user) throw new HttpError(404, "User not found");
+
+  let phone = user.phone || "";
+
+  if (!phone && user.email) {
+    try {
+      const { rows } = await query(
+        `SELECT customer_phone FROM payment_orders WHERE LOWER(customer_email) = LOWER($1) AND customer_phone IS NOT NULL ORDER BY created_at DESC LIMIT 1`,
+        [user.email]
+      );
+      if (rows[0]?.customer_phone) {
+        phone = rows[0].customer_phone;
+        await query(`UPDATE users SET phone = $1 WHERE id = $2 AND phone IS NULL`, [phone, userId]).catch(() => {});
+      }
+    } catch (_) {}
+  }
+
+  res.json({
+    ok: true,
+    data: {
+      id: user.id,
+      email: user.email,
+      fullName: user.full_name,
+      full_name: user.full_name,
+      phone,
+    },
+  });
+});
+
 const updateProfile = asyncHandler(async (req, res) => {
   const { userId } = req.auth;
   const parsed = UpdateProfileSchema.safeParse(req.body);
@@ -337,5 +369,6 @@ module.exports = {
   listBookmarks,
   createBookmark,
   deleteBookmark,
+  getProfile,
   updateProfile,
 };

@@ -14,6 +14,15 @@ async function findUserByEmail(email) {
   return rows[0] ?? null;
 }
 
+async function findUserById(id) {
+  if (!id) return null;
+  const { rows } = await query(
+    `SELECT id, email, phone, full_name, is_active FROM users WHERE id = $1 LIMIT 1`,
+    [id]
+  );
+  return rows[0] ?? null;
+}
+
 async function createUser({ email, fullName, passwordHash }) {
   const { rows } = await query(
     `INSERT INTO users (email, full_name, password_hash)
@@ -492,6 +501,7 @@ async function deleteMentor({ userId }) {
 
 module.exports = {
   findUserByEmail,
+  findUserById,
   createUser,
   findRoleIdForTenant,
   upsertMembership,

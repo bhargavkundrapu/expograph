@@ -8,6 +8,7 @@ export default function StudentProfile() {
   const { user, token, updateUser } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [profileLoaded, setProfileLoaded] = useState(false);
   const [formData, setFormData] = useState({
     fullName: user?.fullName || user?.full_name || "",
     email: user?.email || "",
@@ -15,8 +16,33 @@ export default function StudentProfile() {
     bio: user?.bio || "",
   });
 
-  // Update form data when user changes
   useEffect(() => {
+    if (!token) return;
+    let cancelled = false;
+    apiFetch("/api/v1/student/profile", { token })
+      .then((res) => {
+        if (cancelled) return;
+        const d = res?.data;
+        if (d) {
+          const phone = d.phone ?? d.customer_phone ?? "";
+          setFormData((prev) => ({
+            fullName: d.fullName || d.full_name || prev.fullName,
+            email: d.email || prev.email,
+            phone: phone || prev.phone,
+            bio: prev.bio,
+          }));
+          if (updateUser) {
+            updateUser({ ...user, fullName: d.fullName || d.full_name, email: d.email, phone });
+          }
+        }
+      })
+      .catch(() => {})
+      .finally(() => { if (!cancelled) setProfileLoaded(true); });
+    return () => { cancelled = true; };
+  }, [token]);
+
+  useEffect(() => {
+    if (profileLoaded) return;
     setFormData({
       fullName: user?.fullName || user?.full_name || "",
       email: user?.email || "",
@@ -69,21 +95,21 @@ export default function StudentProfile() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-4 md:p-8">
       <div className="max-w-4xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white/80 backdrop-blur-sm rounded-md p-8 border-2 border-cyan-200/50 shadow-xl"
+          className="bg-white rounded-2xl p-4 md:p-8 border border-indigo-100 shadow-lg"
         >
-          <div className="flex items-center justify-between mb-8">
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6 md:mb-8">
+            <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">
               My Profile
             </h1>
             {!isEditing ? (
               <button
                 onClick={() => setIsEditing(true)}
-                className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-semibold rounded-md hover:from-cyan-600 hover:to-blue-600 transition-all flex items-center gap-2"
+                className="px-6 py-3 bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-semibold rounded-xl hover:from-indigo-600 hover:to-violet-700 transition-all flex items-center gap-2 shadow-md"
               >
                 <FiEdit className="w-5 h-5" />
                 Edit Profile
@@ -92,7 +118,7 @@ export default function StudentProfile() {
               <div className="flex gap-2">
                 <button
                   onClick={() => setIsEditing(false)}
-                  className="px-6 py-3 bg-white border-2 border-slate-200 text-slate-700 font-semibold rounded-md hover:bg-slate-50 transition-all flex items-center gap-2"
+                  className="px-6 py-3 bg-white border border-indigo-200 text-slate-700 font-semibold rounded-xl hover:bg-indigo-50 transition-all flex items-center gap-2"
                 >
                   <FiX className="w-5 h-5" />
                   Cancel
@@ -100,7 +126,7 @@ export default function StudentProfile() {
                 <button
                   onClick={handleSave}
                   disabled={saving}
-                  className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-semibold rounded-md hover:from-cyan-600 hover:to-blue-600 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-6 py-3 bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-semibold rounded-xl hover:from-indigo-600 hover:to-violet-700 transition-all flex items-center gap-2 shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <FiSave className="w-5 h-5" />
                   {saving ? "Saving..." : "Save"}
@@ -110,12 +136,12 @@ export default function StudentProfile() {
           </div>
 
           <div className="space-y-6">
-            <div className="flex items-center gap-6">
-              <div className="w-24 h-24 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-full flex items-center justify-center text-white text-3xl font-bold">
+            <div className="flex items-center gap-4 md:gap-6">
+              <div className="w-16 h-16 md:w-24 md:h-24 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-full flex items-center justify-center text-white text-2xl md:text-3xl font-bold flex-shrink-0 shadow-lg">
                 {(user?.fullName || user?.full_name || user?.name || "U")?.charAt(0)?.toUpperCase()}
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-slate-800">{user?.fullName || user?.full_name || user?.name || "Student"}</h2>
+                <h2 className="text-lg md:text-2xl font-bold text-slate-800 break-words">{user?.fullName || user?.full_name || user?.name || "Student"}</h2>
                 <p className="text-slate-600">{user?.email}</p>
               </div>
             </div>
@@ -128,7 +154,7 @@ export default function StudentProfile() {
                     type="text"
                     value={formData.fullName}
                     onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                    className="w-full px-4 py-3 bg-gradient-to-r from-cyan-50 to-blue-50 border-2 border-cyan-200 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-400"
+                    className="w-full px-4 py-3 bg-indigo-50/50 border border-indigo-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400"
                   />
                 ) : (
                   <p className="px-4 py-3 bg-slate-50 rounded-md text-slate-800">{formData.fullName || "Not set"}</p>
@@ -142,7 +168,7 @@ export default function StudentProfile() {
                     type="email"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full px-4 py-3 bg-gradient-to-r from-cyan-50 to-blue-50 border-2 border-cyan-200 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-400"
+                    className="w-full px-4 py-3 bg-indigo-50/50 border border-indigo-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400"
                   />
                 ) : (
                   <p className="px-4 py-3 bg-slate-50 rounded-md text-slate-800">{formData.email || "Not set"}</p>
@@ -156,7 +182,7 @@ export default function StudentProfile() {
                     type="tel"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full px-4 py-3 bg-gradient-to-r from-cyan-50 to-blue-50 border-2 border-cyan-200 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-400"
+                    className="w-full px-4 py-3 bg-indigo-50/50 border border-indigo-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400"
                   />
                 ) : (
                   <p className="px-4 py-3 bg-slate-50 rounded-md text-slate-800">{formData.phone || "Not set"}</p>
@@ -171,7 +197,7 @@ export default function StudentProfile() {
                   value={formData.bio}
                   onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
                   rows={4}
-                  className="w-full px-4 py-3 bg-gradient-to-r from-cyan-50 to-blue-50 border-2 border-cyan-200 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-400 resize-none"
+                  className="w-full px-4 py-3 bg-indigo-50/50 border border-indigo-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 resize-none"
                   placeholder="Tell us about yourself..."
                 />
               ) : (

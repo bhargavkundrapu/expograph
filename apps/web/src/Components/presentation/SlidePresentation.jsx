@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { sanitizeHtml } from "../../utils/sanitize";
 import {
   FiChevronLeft,
   FiChevronRight,
@@ -152,7 +153,7 @@ export default function SlidePresentation({ slides = [], autoPlay = false, autoP
                       <span className="text-emerald-600 font-semibold text-sm">Output</span>
                     </div>
                     <div className="bg-slate-50 rounded-lg p-4 border border-slate-200">
-                      <div dangerouslySetInnerHTML={{ __html: slide.output }} />
+                      <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(slide.output) }} />
                     </div>
                   </div>
                 )}
@@ -173,7 +174,7 @@ export default function SlidePresentation({ slides = [], autoPlay = false, autoP
                     )}
                     {slide.realWorldExample.example && (
                       <div className="mt-4 bg-white rounded-lg p-4 border border-blue-200">
-                        <div dangerouslySetInnerHTML={{ __html: slide.realWorldExample.example }} />
+                        <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(slide.realWorldExample.example) }} />
                       </div>
                     )}
                   </div>
@@ -209,7 +210,7 @@ export default function SlidePresentation({ slides = [], autoPlay = false, autoP
                     <p className="text-slate-700 mb-4">{slide.subtopic.explanation}</p>
                     {slide.subtopic.example && (
                       <div className="bg-white rounded-lg p-4 border border-purple-200">
-                        <div dangerouslySetInnerHTML={{ __html: slide.subtopic.example }} />
+                        <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(slide.subtopic.example) }} />
                       </div>
                     )}
                   </div>
