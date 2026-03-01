@@ -23,10 +23,9 @@ import {
   FiTarget,
   FiImage,
   FiX,
-  FiHome,
-  FiUser,
   FiChevronLeft,
   FiBookOpen,
+  FiSearch,
 } from "react-icons/fi";
 import { PanelLeftOpen } from "lucide-react";
 import CourseContentsSidebar from "../../../Components/ui/CourseContentsSidebar";
@@ -37,6 +36,11 @@ import PDFPresentationViewer from "../../../Components/presentation/PDFPresentat
 import { CodeBlock } from "../../../Components/ui/code-block";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "../../../Components/ui/tabs";
 import { SLIDES as htmlBasicSlides, SLIDE_COUNT as htmlBasicSlideCount } from "../../../data/slides/htmlBasicElements.jsx";
+import LessonSearchModal from "../../../Components/student/LessonSearchModal";
+
+const preloadProfile = () => import("./StudentProfile");
+const preloadHome = () => import("./StudentHome");
+const preloadCourses = () => import("./StudentCourses");
 
 export default function StudentLesson() {
   const navigate = useNavigate();
@@ -74,10 +78,16 @@ export default function StudentLesson() {
   const [selectedSuccessImageIndex, setSelectedSuccessImageIndex] = useState(0);
   const [selectedLearnStepIndex, setSelectedLearnStepIndex] = useState(0);
   const [captionsEnabled, setCaptionsEnabled] = useState(true);
+  const [searchModalOpen, setSearchModalOpen] = useState(false);
   const captionsBlobUrlRef = useRef(null);
   const videoRef = useRef(null);
   const courseDataLoadedRef = useRef(false);
   const isManualNavigationRef = useRef(false);
+
+  useEffect(() => {
+    const t = setTimeout(() => { preloadProfile(); preloadHome(); preloadCourses(); }, 2000);
+    return () => clearTimeout(t);
+  }, []);
 
   // Reset success image index, learn step, and captions when lesson changes
   useEffect(() => {
@@ -437,6 +447,30 @@ export default function StudentLesson() {
   );
   const moduleTitle = currentModule?.title || "";
 
+  const handleSearchLessonSelect = useCallback((item) => {
+    if (item.locked) return;
+    setSearchModalOpen(false);
+    isManualNavigationRef.current = true;
+    navigate(
+      `/lms/student/courses/${courseSlug}/modules/${item.moduleSlug}/lessons/${item.slug}`,
+      { replace: true }
+    );
+    fetchLessonData(courseSlug, item.moduleSlug, item.slug, true);
+  }, [courseSlug, navigate]);
+
+  const handleSearchModuleSelect = useCallback((mod) => {
+    setSearchModalOpen(false);
+    const firstLesson = allModules.find((m) => m.slug === mod.slug)?.lessons?.[0];
+    if (firstLesson && !firstLesson.locked) {
+      isManualNavigationRef.current = true;
+      navigate(
+        `/lms/student/courses/${courseSlug}/modules/${mod.slug}/lessons/${firstLesson.slug}`,
+        { replace: true }
+      );
+      fetchLessonData(courseSlug, mod.slug, firstLesson.slug, true);
+    }
+  }, [courseSlug, navigate, allModules]);
+
   const nextLesson = useMemo(() => {
     if (!allLessons.length || !lesson?.id) return null;
     const idx = allLessons.findIndex((l) => String(l.id) === String(lesson.id));
@@ -509,28 +543,46 @@ export default function StudentLesson() {
     <div className="flex h-screen w-full overflow-hidden bg-slate-100">
       <main className="flex-1 flex flex-col min-w-0">
         {/* Navbar — hidden on mobile, visible on md+ */}
-        <nav className="hidden md:block flex-shrink-0 bg-white border-b border-slate-200 shadow-sm px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
+        <nav className="hidden md:block flex-shrink-0 bg-white border-b border-slate-200 shadow-sm px-6 py-3">
+          <div className="flex items-center justify-between gap-4">
+            <button onClick={() => navigate("/lms/student")} className="flex items-center gap-2 flex-shrink-0 cursor-pointer hover:opacity-80 transition-opacity">
               <img src="/2.png" alt="ExpoGraph" className="h-13 w-64 ml-8 object-contain object-left" />
-            </div>
-            <div className="flex items-center gap-15 mr-16">
-              <button onClick={() => navigate("/lms/student")} className="text-slate-700 hover:text-slate-900 text-lg font-large transition-colors">Home</button>
-              <button onClick={() => navigate("/lms/student/profile")} className="text-slate-700 hover:text-slate-900 text-lg font-large transition-colors">Profile</button>
+            </button>
+            <div className="flex items-center gap-6 mr-16">
+              <button
+                type="button"
+                onClick={() => setSearchModalOpen(true)}
+                className="w-56 lg:w-72 flex items-center gap-2.5 pl-3.5 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-400 hover:text-slate-500 hover:border-slate-300 hover:bg-white transition-all text-left"
+              >
+                <FiSearch className="w-4 h-4 flex-shrink-0" />
+                <span className="truncate">Search modules, lessons, sections...</span>
+              </button>
+              <button onMouseEnter={preloadHome} onClick={() => navigate("/lms/student")} className="text-slate-700 hover:text-slate-900 text-lg font-medium transition-colors whitespace-nowrap">Home</button>
+              <button
+                onMouseEnter={preloadProfile}
+                onClick={() => navigate("/lms/student/profile")}
+                className="text-slate-700 hover:text-slate-900 text-lg font-medium transition-colors whitespace-nowrap"
+              >Profile</button>
             </div>
           </div>
         </nav>
 
         {/* Mobile lesson top bar */}
-        <div className="flex md:hidden items-center gap-2 px-3 py-2.5 bg-white border-b border-slate-200 safe-area-pt">
-          <button onClick={() => navigate("/lms/student/courses")} className="p-1.5 -ml-1 rounded-lg text-slate-600 hover:bg-slate-100 active:bg-slate-200 transition-colors">
+        <div className="flex md:hidden items-center gap-2 px-3 py-2 bg-white border-b border-slate-200 safe-area-pt">
+          <button onTouchStart={preloadCourses} onClick={() => navigate("/lms/student/courses")} className="p-1.5 -ml-1 rounded-lg text-slate-600 hover:bg-slate-100 active:bg-slate-200 transition-colors flex-shrink-0">
             <FiChevronLeft className="w-5 h-5" />
           </button>
           <div className="flex-1 min-w-0">
             <p className="text-xs text-slate-500 truncate">{moduleTitle || course?.title || "Course"}</p>
             <p className="text-sm font-semibold text-slate-900 truncate">{lesson?.title || "Lesson"}</p>
           </div>
-          <button onClick={() => setSidebarVisible(true)} className="p-2 rounded-lg text-slate-600 hover:bg-slate-100 active:bg-slate-200 transition-colors">
+          <button
+            onClick={() => setSearchModalOpen(true)}
+            className="p-2 rounded-lg text-slate-600 hover:bg-slate-100 active:bg-slate-200 transition-colors flex-shrink-0"
+          >
+            <FiSearch className="w-5 h-5" />
+          </button>
+          <button onClick={() => setSidebarVisible(true)} className="p-2 rounded-lg text-slate-600 hover:bg-slate-100 active:bg-slate-200 transition-colors flex-shrink-0">
             <FiBookOpen className="w-5 h-5" />
           </button>
         </div>
@@ -1247,6 +1299,17 @@ export default function StudentLesson() {
           </motion.div>
         </div>
       )}
+
+      <LessonSearchModal
+        open={searchModalOpen}
+        onClose={() => setSearchModalOpen(false)}
+        token={token}
+        allLessons={allLessons}
+        currentLessonId={lesson?.id}
+        courseSlug={courseSlug}
+        onLessonSelect={handleSearchLessonSelect}
+        onModuleSelect={handleSearchModuleSelect}
+      />
     </div>
   );
 }

@@ -260,7 +260,7 @@ function SectionChallenge({ data }) {
   const [open, setOpen] = useState(false);
   return (
     <SectionWrapper id="sec-challenge">
-      <div className="bg-gradient-to-r from-orange-500 to-pink-500 rounded-xl p-5 text-white shadow-lg">
+      <div className="bg-gradient-to-r from-cyan-600 to-teal-500 rounded-xl p-5 text-white shadow-lg">
         <div className="flex items-center gap-3 mb-2">
           <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
             <FiAward className="w-4 h-4" />

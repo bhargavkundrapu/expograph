@@ -192,7 +192,7 @@ export default function SuperAdminLeads() {
   return (
     <>
       {actionLoading && <ActionLoading message="Processing your request..." />}
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-4 sm:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
@@ -205,7 +205,7 @@ export default function SuperAdminLeads() {
         </motion.div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
           {[
             { label: "Total Leads", value: stats.total, color: "from-blue-500 to-blue-600" },
             { label: "New", value: stats.new, color: "from-yellow-500 to-yellow-600" },
@@ -401,43 +401,43 @@ export default function SuperAdminLeads() {
               <table className="w-full">
                 <thead className="bg-gradient-to-r from-blue-50 to-indigo-50">
                   <tr>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase">Name</th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase">Contact</th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase">Source</th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase">Status</th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase">Created</th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase">Actions</th>
+                    <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs font-semibold text-slate-700 uppercase">Name</th>
+                    <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs font-semibold text-slate-700 uppercase">Contact</th>
+                    <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs font-semibold text-slate-700 uppercase">Source</th>
+                    <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs font-semibold text-slate-700 uppercase">Status</th>
+                    <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs font-semibold text-slate-700 uppercase">Created</th>
+                    <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs font-semibold text-slate-700 uppercase">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200">
                   {filteredLeads.length === 0 ? (
                     <tr>
-                      <td colSpan={6} className="px-6 py-12 text-center text-slate-500">
+                      <td colSpan={6} className="px-3 sm:px-6 py-12 text-center text-slate-500">
                         No leads found
                       </td>
                     </tr>
                   ) : (
                     filteredLeads.map((lead) => (
                       <tr key={lead.id} className="hover:bg-slate-50 transition-colors">
-                        <td className="px-6 py-4">
+                        <td className="px-3 sm:px-6 py-3 sm:py-4">
                           <div className="font-medium text-slate-900">{lead.name || "Unnamed Lead"}</div>
                         </td>
-                        <td className="px-6 py-4">
+                        <td className="px-3 sm:px-6 py-3 sm:py-4">
                           <div className="text-sm text-slate-600">{lead.email || "-"}</div>
                           {lead.phone && <div className="text-xs text-slate-500">{lead.phone}</div>}
                         </td>
-                        <td className="px-6 py-4">
+                        <td className="px-3 sm:px-6 py-3 sm:py-4">
                           <span className="text-sm text-slate-600 capitalize">{lead.source || "Unknown"}</span>
                         </td>
-                        <td className="px-6 py-4">
+                        <td className="px-3 sm:px-6 py-3 sm:py-4">
                           <span className={`px-2 py-1 rounded-full text-xs font-medium ${STATUS_COLORS[lead.status] || STATUS_COLORS.new}`}>
                             {lead.status || "new"}
                           </span>
                         </td>
-                        <td className="px-6 py-4 text-sm text-slate-600">
+                        <td className="px-3 sm:px-6 py-3 sm:py-4 text-sm text-slate-600">
                           {lead.created_at ? new Date(lead.created_at).toLocaleDateString() : "-"}
                         </td>
-                        <td className="px-6 py-4">
+                        <td className="px-3 sm:px-6 py-3 sm:py-4">
                           <div className="flex items-center gap-2">
                             <button
                               onClick={() => openDetails(lead)}
@@ -469,7 +469,7 @@ export default function SuperAdminLeads() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white rounded-md p-8 border border-slate-200 shadow-lg"
+            className="bg-white rounded-md p-4 sm:p-6 lg:p-8 border border-slate-200 shadow-lg"
           >
             <div className="mb-6">
               <button
@@ -541,7 +541,7 @@ export default function SuperAdminLeads() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white rounded-md p-8 border border-slate-200 shadow-lg"
+            className="bg-white rounded-md p-4 sm:p-6 lg:p-8 border border-slate-200 shadow-lg"
           >
             <div className="mb-6">
               <button

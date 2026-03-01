@@ -329,12 +329,12 @@ export default function SuperAdminWorkshops() {
   // Cards View
   if (view === "cards") {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-4 sm:p-6 lg:p-8">
         <div className="max-w-7xl mx-auto">
           <motion.h1
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-3xl md:text-4xl font-bold text-slate-900 mb-8"
+            className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 mb-8"
           >
             Events & Workshops Management
           </motion.h1>
@@ -346,7 +346,7 @@ export default function SuperAdminWorkshops() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
               onClick={() => navigate("/lms/superadmin/workshops/list")}
-              className="bg-white rounded-md p-8 border border-slate-200 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
+              className="bg-white rounded-md p-4 sm:p-6 lg:p-8 border border-slate-200 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
             >
               <div className="flex items-center justify-between mb-6">
                 <div className="w-16 h-16 rounded-md bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center text-white group-hover:scale-110 transition-transform">
@@ -382,7 +382,7 @@ export default function SuperAdminWorkshops() {
                 });
                 navigate("/lms/superadmin/workshops/create");
               }}
-              className="bg-white rounded-md p-8 border border-slate-200 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
+              className="bg-white rounded-md p-4 sm:p-6 lg:p-8 border border-slate-200 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
             >
               <div className="flex items-center justify-between mb-6">
                 <div className="w-16 h-16 rounded-md bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white group-hover:scale-110 transition-transform">
@@ -401,10 +401,10 @@ export default function SuperAdminWorkshops() {
   // List View
   if (view === "list") {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-4 sm:p-6 lg:p-8">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
             <div>
               <button
                 onClick={() => navigate("/lms/superadmin/workshops/cards")}
@@ -413,7 +413,7 @@ export default function SuperAdminWorkshops() {
                 <FiX className="w-4 h-4 rotate-45" />
                 <span>Back</span>
               </button>
-              <h1 className="text-3xl md:text-4xl font-bold text-slate-900">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900">
                 All Workshops ({filteredWorkshops.length})
               </h1>
             </div>
@@ -590,9 +590,9 @@ export default function SuperAdminWorkshops() {
   // Add Workshop View (continuing in next response due to length)
   if (view === "add") {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-4 sm:p-6 lg:p-8">
         <div className="max-w-3xl mx-auto">
-          <div className="bg-white rounded-md p-8 border border-slate-200 shadow-lg">
+          <div className="bg-white rounded-md p-4 sm:p-6 lg:p-8 border border-slate-200 shadow-lg">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold text-slate-900">Create New Workshop</h2>
               <button
@@ -756,9 +756,9 @@ export default function SuperAdminWorkshops() {
   // Edit Workshop View (similar to Add but with editForm)
   if (view === "edit") {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-4 sm:p-6 lg:p-8">
         <div className="max-w-3xl mx-auto">
-          <div className="bg-white rounded-md p-8 border border-slate-200 shadow-lg">
+          <div className="bg-white rounded-md p-4 sm:p-6 lg:p-8 border border-slate-200 shadow-lg">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold text-slate-900">Edit Workshop</h2>
               <button
@@ -927,11 +927,11 @@ export default function SuperAdminWorkshops() {
     const endsAt = workshop.ends_at ? new Date(workshop.ends_at) : null;
 
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-4 sm:p-6 lg:p-8">
         <div className="max-w-6xl mx-auto">
-          <div className="bg-white rounded-md p-8 border border-slate-200 shadow-lg">
+          <div className="bg-white rounded-md p-4 sm:p-6 lg:p-8 border border-slate-200 shadow-lg">
             {/* Header */}
-            <div className="flex items-center justify-between mb-8">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
               <div className="flex items-center gap-4">
                 <div className="w-16 h-16 rounded-full bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center text-white font-bold text-2xl">
                   {workshop.title?.charAt(0)?.toUpperCase() || "W"}
@@ -1109,7 +1109,7 @@ export default function SuperAdminWorkshops() {
             </div>
 
             {/* Actions */}
-            <div className="flex items-center gap-4 pt-6 mt-8 border-t border-slate-200">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-6 mt-8 border-t border-slate-200">
               <button
                 onClick={() => openEdit(selectedWorkshop)}
                 className="px-6 py-3 bg-gradient-to-r from-orange-500 to-red-600 text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"

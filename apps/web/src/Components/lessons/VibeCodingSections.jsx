@@ -307,7 +307,7 @@ function SectionLevelUp({ data }) {
   const [showHint, setShowHint] = useState(false);
   return (
     <Wrap id="vc-levelup">
-      <div className="relative overflow-hidden bg-gradient-to-r from-orange-500 to-pink-600 rounded-2xl p-6 text-white shadow-xl">
+      <div className="relative overflow-hidden bg-gradient-to-r from-purple-600 to-indigo-700 rounded-2xl p-6 text-white shadow-xl">
         <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full blur-xl" />
         <div className="relative">
           <div className="flex items-center gap-3 mb-3">

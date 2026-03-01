@@ -211,9 +211,9 @@ export default function SuperAdminClientLabRealWorld() {
 
   return (
     <div className="min-h-screen bg-slate-50 lg:rounded-tl-lg overflow-hidden">
-      <div className="max-w-6xl mx-auto p-6">
+      <div className="max-w-6xl mx-auto p-4 sm:p-6">
         {/* Header */}
-        <div className="mb-8 flex items-center justify-between">
+        <div className="mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             {view === "project-detail" && (
               <button
@@ -232,7 +232,7 @@ export default function SuperAdminClientLabRealWorld() {
               {view === "submissions" && "Submissions Review"}
             </h1>
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <button
               onClick={() => navigate(BASE)}
               className={`px-4 py-2 rounded-xl font-medium border border-slate-200 ${view === "projects" ? "bg-indigo-600 text-white border-indigo-600" : "bg-white text-slate-700"}`}
@@ -320,7 +320,7 @@ export default function SuperAdminClientLabRealWorld() {
                 <div className="px-4 py-3 border-b border-slate-200 font-medium text-slate-700">Tasks</div>
                 <ul className="divide-y divide-slate-100">
                   {(projectDetail.tasks || []).map((t) => (
-                    <li key={t.id} className="px-4 py-3 flex items-center justify-between gap-4">
+                    <li key={t.id} className="px-4 py-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                       <div className="flex-1 min-w-0">
                         <div className="font-medium text-slate-900">{t.title}</div>
                         <div className="flex items-center gap-2 mt-1">
@@ -387,7 +387,7 @@ export default function SuperAdminClientLabRealWorld() {
                   .filter((s) => s.status === "pending")
                   .map((s) => (
                     <div key={s.id} className="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
-                      <div className="flex items-start justify-between gap-4">
+                      <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
                         <div>
                           <div className="font-medium text-slate-900">{s.task_title} — {s.project_title}</div>
                           <div className="text-sm text-slate-500">{s.student_name || s.student_email}</div>
@@ -404,7 +404,7 @@ export default function SuperAdminClientLabRealWorld() {
                             placeholder="Feedback (optional)"
                             value={reviewFeedback[s.id] ?? ""}
                             onChange={(e) => setReviewFeedback((prev) => ({ ...prev, [s.id]: e.target.value }))}
-                            className="text-sm border border-slate-300 rounded-lg px-2 py-1 w-48"
+                            className="text-sm border border-slate-300 rounded-lg px-2 py-1 w-full sm:w-48"
                           />
                           <div className="flex gap-2">
                             <button

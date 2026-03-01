@@ -235,12 +235,12 @@ export default function SuperAdminMentors() {
   // Cards View
   if (view === "cards") {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-4 sm:p-6 lg:p-8">
         <div className="max-w-7xl mx-auto">
           <motion.h1
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-3xl md:text-4xl font-bold text-slate-900 mb-8"
+            className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 mb-8"
           >
             Mentors Management
           </motion.h1>
@@ -252,7 +252,7 @@ export default function SuperAdminMentors() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
               onClick={() => navigate("/lms/superadmin/mentors/list")}
-              className="bg-white rounded-md p-8 border border-slate-200 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
+              className="bg-white rounded-md p-4 sm:p-6 lg:p-8 border border-slate-200 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
             >
               <div className="flex items-center justify-between mb-6">
                 <div className="w-16 h-16 rounded-md bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center text-white group-hover:scale-110 transition-transform">
@@ -278,7 +278,7 @@ export default function SuperAdminMentors() {
                 setAddForm({ fullName: "", email: "", phone: "" });
                 navigate("/lms/superadmin/mentors/create");
               }}
-              className="bg-white rounded-md p-8 border border-slate-200 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
+              className="bg-white rounded-md p-4 sm:p-6 lg:p-8 border border-slate-200 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
             >
               <div className="flex items-center justify-between mb-6">
                 <div className="w-16 h-16 rounded-md bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white group-hover:scale-110 transition-transform">
@@ -297,10 +297,10 @@ export default function SuperAdminMentors() {
   // List View
   if (view === "list") {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-4 sm:p-6 lg:p-8">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 sm:mb-8">
             <div>
               <button
                 onClick={() => navigate("/lms/superadmin/mentors/cards")}
@@ -309,7 +309,7 @@ export default function SuperAdminMentors() {
                 <FiX className="w-4 h-4 rotate-45" />
                 <span>Back</span>
               </button>
-              <h1 className="text-3xl md:text-4xl font-bold text-slate-900">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900">
                 All Mentors ({filteredMentors.length})
               </h1>
             </div>
@@ -318,7 +318,7 @@ export default function SuperAdminMentors() {
                 setAddForm({ fullName: "", email: "", phone: "" });
                 navigate("/lms/superadmin/mentors/create");
               }}
-              className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"
+              className="w-full sm:w-auto justify-center px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"
             >
               <FiUserPlus className="w-5 h-5" />
               Add Mentor
@@ -412,9 +412,9 @@ export default function SuperAdminMentors() {
   // Add Mentor View
   if (view === "add") {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-4 sm:p-6 lg:p-8">
         <div className="max-w-2xl mx-auto">
-          <div className="bg-white rounded-md p-8 border border-slate-200 shadow-lg">
+          <div className="bg-white rounded-md p-4 sm:p-6 lg:p-8 border border-slate-200 shadow-lg">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold text-slate-900">Add New Mentor</h2>
               <button
@@ -472,7 +472,7 @@ export default function SuperAdminMentors() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-4 pt-4">
+              <div className="flex flex-wrap gap-3 pt-4">
                 <button
                   onClick={handleAddMentor}
                   disabled={saving || !addForm.email || !addForm.fullName}
@@ -504,9 +504,9 @@ export default function SuperAdminMentors() {
   // Edit Mentor View
   if (view === "edit") {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-4 sm:p-6 lg:p-8">
         <div className="max-w-2xl mx-auto">
-          <div className="bg-white rounded-md p-8 border border-slate-200 shadow-lg">
+          <div className="bg-white rounded-md p-4 sm:p-6 lg:p-8 border border-slate-200 shadow-lg">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold text-slate-900">Edit Mentor</h2>
               <button
@@ -564,7 +564,7 @@ export default function SuperAdminMentors() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-4 pt-4">
+              <div className="flex flex-wrap gap-3 pt-4">
                 <button
                   onClick={handleEditMentor}
                   disabled={saving || !editForm.email || !editForm.fullName}
@@ -599,9 +599,9 @@ export default function SuperAdminMentors() {
     const students = mentor.students || [];
 
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-4 sm:p-6 lg:p-8">
         <div className="max-w-4xl mx-auto">
-          <div className="bg-white rounded-md p-8 border border-slate-200 shadow-lg">
+          <div className="bg-white rounded-md p-4 sm:p-6 lg:p-8 border border-slate-200 shadow-lg">
             {/* Header */}
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center gap-4">

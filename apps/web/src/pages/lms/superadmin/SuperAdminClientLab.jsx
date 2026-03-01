@@ -285,7 +285,7 @@ export default function SuperAdminClientLab() {
   // Cards View
   if (view === "cards") {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-4 sm:p-6 lg:p-8">
         <div className="max-w-7xl mx-auto">
           <motion.h1
             initial={{ opacity: 0, y: -20 }}
@@ -302,7 +302,7 @@ export default function SuperAdminClientLab() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0 }}
               onClick={() => navigate("/lms/superadmin/client-lab/real-world")}
-              className="bg-white rounded-md p-8 border-2 border-indigo-200 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
+              className="bg-white rounded-md p-4 sm:p-6 lg:p-8 border-2 border-indigo-200 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
             >
               <div className="flex items-center justify-between mb-6">
                 <div className="w-16 h-16 rounded-md bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white group-hover:scale-110 transition-transform">
@@ -319,7 +319,7 @@ export default function SuperAdminClientLab() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
               onClick={() => navigate("/lms/superadmin/client-lab/list")}
-              className="bg-white rounded-md p-8 border border-slate-200 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
+              className="bg-white rounded-md p-4 sm:p-6 lg:p-8 border border-slate-200 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
             >
               <div className="flex items-center justify-between mb-6">
                 <div className="w-16 h-16 rounded-md bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center text-white group-hover:scale-110 transition-transform">
@@ -353,7 +353,7 @@ export default function SuperAdminClientLab() {
                 });
                 navigate("/lms/superadmin/client-lab/projects/create");
               }}
-              className="bg-white rounded-md p-8 border border-slate-200 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
+              className="bg-white rounded-md p-4 sm:p-6 lg:p-8 border border-slate-200 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
             >
               <div className="flex items-center justify-between mb-6">
                 <div className="w-16 h-16 rounded-md bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white group-hover:scale-110 transition-transform">
@@ -372,10 +372,10 @@ export default function SuperAdminClientLab() {
   // List View
   if (view === "list") {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-4 sm:p-6 lg:p-8">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
             <div>
               <button
                 onClick={() => navigate("/lms/superadmin/client-lab/cards")}
@@ -520,9 +520,9 @@ export default function SuperAdminClientLab() {
   // Create Project View
   if (view === "add") {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-4 sm:p-6 lg:p-8">
         <div className="max-w-4xl mx-auto">
-          <div className="bg-white rounded-md p-8 border border-slate-200 shadow-lg">
+          <div className="bg-white rounded-md p-4 sm:p-6 lg:p-8 border border-slate-200 shadow-lg">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold text-slate-900">Create New Project</h2>
               <button
@@ -629,9 +629,9 @@ export default function SuperAdminClientLab() {
   // Edit Project View
   if (view === "edit" && selectedProject) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-4 sm:p-6 lg:p-8">
         <div className="max-w-4xl mx-auto">
-          <div className="bg-white rounded-md p-8 border border-slate-200 shadow-lg">
+          <div className="bg-white rounded-md p-4 sm:p-6 lg:p-8 border border-slate-200 shadow-lg">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold text-slate-900">Edit Project</h2>
               <button
@@ -746,11 +746,11 @@ export default function SuperAdminClientLab() {
     const project = selectedProject;
 
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-4 sm:p-6 lg:p-8">
         <div className="max-w-4xl mx-auto">
-          <div className="bg-white rounded-md p-8 border border-slate-200 shadow-lg">
+          <div className="bg-white rounded-md p-4 sm:p-6 lg:p-8 border border-slate-200 shadow-lg">
             {/* Header */}
-            <div className="flex items-center justify-between mb-8">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
               <div className="flex items-center gap-4">
                 <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center text-white font-bold text-2xl">
                   <FiBriefcase className="w-8 h-8" />

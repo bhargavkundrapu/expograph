@@ -430,7 +430,7 @@ export default function SuperAdminCourses() {
   // Main View - All Courses Card + Create Course Card
   if (view === "main") {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50 p-8">
+      <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50 p-4 sm:p-6 lg:p-8">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="mb-8">
@@ -588,11 +588,11 @@ export default function SuperAdminCourses() {
   // Courses List View
   if (view === "course-list" || (view === "course" && !courseId)) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50 p-8">
+      <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50 p-4 sm:p-6 lg:p-8">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="mb-8">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
               <div>
                 <button
                   onClick={() => navigate("/lms/superadmin/courses")}
@@ -614,7 +614,7 @@ export default function SuperAdminCourses() {
             </div>
             
             {/* Level Filter */}
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <span className="text-sm text-slate-600">Filter by level:</span>
               <button
                 onClick={() => setFilterLevel("all")}
@@ -945,7 +945,7 @@ export default function SuperAdminCourses() {
   // Modules List View (when courseId is present)
   if (view === "course" && courseId) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50 p-8">
+      <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50 p-4 sm:p-6 lg:p-8">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="mb-8">
@@ -956,13 +956,13 @@ export default function SuperAdminCourses() {
               <FiArrowLeft className="w-4 h-4" />
               <span>Back to Courses</span>
             </button>
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div>
                 <p className="text-xs uppercase tracking-wider text-slate-500 mb-1">MODULES</p>
                 <h1 className="text-3xl md:text-4xl font-bold text-slate-900">{course?.title || "Course"}</h1>
                 {getStatusBadge(course?.status)}
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <button
                   onClick={() => course && openEditCourse(course)}
                   className="px-4 py-2 bg-slate-100 text-slate-700 font-semibold rounded-md hover:bg-slate-200 flex items-center gap-2"
@@ -1318,7 +1318,7 @@ export default function SuperAdminCourses() {
   // Lessons List View (when moduleId is present)
   if (view === "modules" && moduleId) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50 p-8">
+      <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50 p-4 sm:p-6 lg:p-8">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="mb-8">
@@ -1329,7 +1329,7 @@ export default function SuperAdminCourses() {
               <FiArrowLeft className="w-4 h-4" />
               <span>Back to Modules</span>
             </button>
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div>
                 <p className="text-xs uppercase tracking-wider text-slate-500 mb-1">LESSONS</p>
                 <div className="flex items-center gap-3">
@@ -1344,7 +1344,7 @@ export default function SuperAdminCourses() {
                   )}
                 </div>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <button
                   onClick={() => module && openEditModule(module)}
                   className="px-4 py-2 bg-slate-100 text-slate-700 font-semibold rounded-md hover:bg-slate-200 flex items-center gap-2"

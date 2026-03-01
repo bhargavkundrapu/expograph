@@ -135,7 +135,7 @@ export default function SuperAdminApprovals() {
   const ICON_CLS = "absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400";
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-4 sm:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
           <h1 className="text-3xl md:text-4xl font-bold text-slate-900">Payment Approvals</h1>

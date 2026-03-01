@@ -3,6 +3,7 @@ import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useAuth } from "../../../app/providers/AuthProvider";
 import { apiFetch } from "../../../services/api";
 import { ButtonLoading } from "../../../Components/common/LoadingStates";
+import StructuredSectionEditor, { isStructuredSections } from "../../../Components/admin/StructuredSectionEditor";
 import {
   FiArrowLeft,
   FiSave,
@@ -136,7 +137,10 @@ export default function SuperAdminLessonEditor() {
               }
             : undefined,
           success_image_urls: (Array.isArray(lessonForm.success_image_urls) ? lessonForm.success_image_urls : []).filter((u) => u && String(u).trim()),
-          learn_setup_steps: (Array.isArray(lessonForm.learn_setup_steps) ? lessonForm.learn_setup_steps : []).filter((s) => s && String(s).trim()),
+          learn_setup_steps: (Array.isArray(lessonForm.learn_setup_steps) ? lessonForm.learn_setup_steps : []).filter((s) => {
+            if (s && typeof s === "object" && s.type) return true;
+            return s && String(s).trim();
+          }),
         },
       });
 
@@ -164,7 +168,7 @@ export default function SuperAdminLessonEditor() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-4 sm:p-6 lg:p-8">
         <div className="max-w-4xl mx-auto">
           <div className="bg-white rounded-lg shadow-sm p-12 text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
@@ -331,47 +335,58 @@ export default function SuperAdminLessonEditor() {
 
             <div>
               <label className="block text-sm font-semibold text-slate-900 mb-2">
-                Learn and Setup steps (Optional)
+                {isStructuredSections(lessonForm.learn_setup_steps)
+                  ? "Course Sections (Structured Content)"
+                  : "Learn and Setup steps (Optional)"}
               </label>
-              <p className="text-xs text-slate-500 mb-2">Add multiple steps for the "Learn and Setup" section. Students will see Step 0, Step 1, etc.</p>
-              <div className="space-y-3">
-                {(lessonForm.learn_setup_steps || []).map((step, idx) => (
-                  <div key={idx} className="border border-slate-200 rounded-md p-3 bg-slate-50">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-xs font-semibold text-slate-600">Step {idx}</span>
-                      <button
-                        type="button"
-                        onClick={() => setLessonForm((f) => ({
-                          ...f,
-                          learn_setup_steps: (f.learn_setup_steps || []).filter((_, i) => i !== idx),
-                        }))}
-                        className="p-1 text-red-600 hover:bg-red-50 rounded"
-                        title="Remove step"
-                      >
-                        <FiX className="w-4 h-4" />
-                      </button>
-                    </div>
-                    <textarea
-                      value={step}
-                      onChange={(e) => setLessonForm((f) => {
-                        const steps = [...(f.learn_setup_steps || [])];
-                        steps[idx] = e.target.value;
-                        return { ...f, learn_setup_steps: steps };
-                      })}
-                      placeholder={`Step ${idx} content...`}
-                      rows={4}
-                      className="w-full px-4 py-3 bg-white border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all resize-none text-sm"
-                    />
+              {isStructuredSections(lessonForm.learn_setup_steps) ? (
+                <StructuredSectionEditor
+                  sections={lessonForm.learn_setup_steps}
+                  onChange={(updated) => setLessonForm((f) => ({ ...f, learn_setup_steps: updated }))}
+                />
+              ) : (
+                <>
+                  <p className="text-xs text-slate-500 mb-2">Add multiple steps for the "Learn and Setup" section. Students will see Step 0, Step 1, etc.</p>
+                  <div className="space-y-3">
+                    {(lessonForm.learn_setup_steps || []).map((step, idx) => (
+                      <div key={idx} className="border border-slate-200 rounded-md p-3 bg-slate-50">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-xs font-semibold text-slate-600">Step {idx}</span>
+                          <button
+                            type="button"
+                            onClick={() => setLessonForm((f) => ({
+                              ...f,
+                              learn_setup_steps: (f.learn_setup_steps || []).filter((_, i) => i !== idx),
+                            }))}
+                            className="p-1 text-red-600 hover:bg-red-50 rounded"
+                            title="Remove step"
+                          >
+                            <FiX className="w-4 h-4" />
+                          </button>
+                        </div>
+                        <textarea
+                          value={step}
+                          onChange={(e) => setLessonForm((f) => {
+                            const steps = [...(f.learn_setup_steps || [])];
+                            steps[idx] = e.target.value;
+                            return { ...f, learn_setup_steps: steps };
+                          })}
+                          placeholder={`Step ${idx} content...`}
+                          rows={4}
+                          className="w-full px-4 py-3 bg-white border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all resize-none text-sm"
+                        />
+                      </div>
+                    ))}
+                    <button
+                      type="button"
+                      onClick={() => setLessonForm((f) => ({ ...f, learn_setup_steps: [...(f.learn_setup_steps || []), ""] }))}
+                      className="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1"
+                    >
+                      + Add step
+                    </button>
                   </div>
-                ))}
-                <button
-                  type="button"
-                  onClick={() => setLessonForm((f) => ({ ...f, learn_setup_steps: [...(f.learn_setup_steps || []), ""] }))}
-                  className="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1"
-                >
-                  + Add step
-                </button>
-              </div>
+                </>
+              )}
             </div>
 
             <div>

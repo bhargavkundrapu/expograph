@@ -472,7 +472,7 @@ export default function SuperAdminStudents() {
   if (view === "cards") {
     return (
       <>
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-4 sm:p-6 lg:p-8">
           <div className="max-w-7xl mx-auto">
             <motion.h1
               initial={{ opacity: 0, y: -20 }}
@@ -537,10 +537,10 @@ export default function SuperAdminStudents() {
   if (view === "list") {
     return (
       <>
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-4 sm:p-6 lg:p-8">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 sm:mb-8">
             <div>
               <button
                 onClick={() => navigate("/lms/superadmin/students/cards")}
@@ -549,7 +549,7 @@ export default function SuperAdminStudents() {
                 <FiX className="w-4 h-4 rotate-45" />
                 <span>Back</span>
               </button>
-              <h1 className="text-3xl md:text-4xl font-bold text-slate-900">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900">
                 All Students ({filteredStudents.length})
               </h1>
             </div>
@@ -558,7 +558,7 @@ export default function SuperAdminStudents() {
                 setAddForm({ fullName: "", email: "", phone: "", password: "", generatePassword: true });
                 navigate("/lms/superadmin/students/create");
               }}
-              className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"
+              className="px-5 py-2.5 sm:px-6 sm:py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2 w-full sm:w-auto justify-center"
             >
               <FiUserPlus className="w-5 h-5" />
               Add Student
@@ -870,11 +870,11 @@ export default function SuperAdminStudents() {
   if (view === "add") {
     return (
       <>
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-4 sm:p-6 lg:p-8">
         <div className="max-w-2xl mx-auto">
-          <div className="bg-white rounded-md p-8 border border-slate-200 shadow-lg">
+          <div className="bg-white rounded-md p-4 sm:p-6 lg:p-8 border border-slate-200 shadow-lg">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-slate-900">Add New Student</h2>
+              <h2 className="text-xl sm:text-2xl font-bold text-slate-900">Add New Student</h2>
               <button
                 onClick={() => navigate("/lms/superadmin/students/list")}
                 className="p-2 rounded-lg hover:bg-slate-100 transition-colors"
@@ -1002,11 +1002,11 @@ export default function SuperAdminStudents() {
   if (view === "edit") {
     return (
       <>
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-4 sm:p-6 lg:p-8">
         <div className="max-w-2xl mx-auto">
-          <div className="bg-white rounded-md p-8 border border-slate-200 shadow-lg">
+          <div className="bg-white rounded-md p-4 sm:p-6 lg:p-8 border border-slate-200 shadow-lg">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-slate-900">Edit Student</h2>
+              <h2 className="text-xl sm:text-2xl font-bold text-slate-900">Edit Student</h2>
               <button
                 onClick={() => navigate("/lms/superadmin/students/list")}
                 className="p-2 rounded-lg hover:bg-slate-100 transition-colors"
@@ -1102,25 +1102,25 @@ export default function SuperAdminStudents() {
 
     return (
       <>
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-4 sm:p-6 lg:p-8">
           <div className="max-w-4xl mx-auto">
-            <div className="bg-white rounded-md p-8 border border-slate-200 shadow-lg">
+            <div className="bg-white rounded-md p-4 sm:p-6 lg:p-8 border border-slate-200 shadow-lg">
               {/* Header */}
-              <div className="flex items-center justify-between mb-8">
-              <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-2xl">
+              <div className="flex items-start justify-between gap-4 mb-6 sm:mb-8">
+              <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+                <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-xl sm:text-2xl flex-shrink-0">
                   {student.full_name?.charAt(0)?.toUpperCase() || "S"}
                 </div>
-                <div>
-                  <h2 className="text-2xl font-bold text-slate-900">
+                <div className="min-w-0">
+                  <h2 className="text-xl sm:text-2xl font-bold text-slate-900 truncate">
                     {student.full_name || "Unnamed Student"}
                   </h2>
-                  <p className="text-slate-600">{student.email}</p>
+                  <p className="text-slate-600 text-sm sm:text-base truncate">{student.email}</p>
                 </div>
               </div>
               <button
                 onClick={() => navigate("/lms/superadmin/students/list")}
-                className="p-2 rounded-lg hover:bg-slate-100 transition-colors"
+                className="p-2 rounded-lg hover:bg-slate-100 transition-colors flex-shrink-0"
               >
                 <FiX className="w-6 h-6 text-slate-600" />
               </button>
@@ -1238,34 +1238,34 @@ export default function SuperAdminStudents() {
               </div>
 
               {/* Actions */}
-              <div className="flex items-center gap-4 pt-6 border-t border-slate-200">
+              <div className="flex flex-wrap gap-3 pt-6 border-t border-slate-200">
                 <button
                   onClick={() => openEdit(selectedStudent)}
-                  className="px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"
+                  className="px-4 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2 text-sm sm:text-base"
                 >
-                  <FiEdit2 className="w-5 h-5" />
-                  Edit Student
+                  <FiEdit2 className="w-4 h-4 sm:w-5 sm:h-5" />
+                  Edit
                 </button>
                 <button
                   onClick={() => handleResetPassword(student.id, student.email)}
                   disabled={resettingPassword}
-                  className="px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-600 text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2 disabled:opacity-50"
+                  className="px-4 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-amber-500 to-orange-600 text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2 disabled:opacity-50 text-sm sm:text-base"
                 >
                   {resettingPassword ? (
                     <ButtonLoading text="Resetting..." size="sm" />
                   ) : (
                     <>
-                      <FiRefreshCw className="w-5 h-5" />
+                      <FiRefreshCw className="w-4 h-4 sm:w-5 sm:h-5" />
                       Reset Password
                     </>
                   )}
                 </button>
                 <button
                   onClick={() => handleDeleteStudent(selectedStudent.id)}
-                  className="px-6 py-3 bg-red-50 text-red-600 font-semibold rounded-md hover:bg-red-100 transition-colors flex items-center gap-2"
+                  className="px-4 sm:px-6 py-2.5 sm:py-3 bg-red-50 text-red-600 font-semibold rounded-md hover:bg-red-100 transition-colors flex items-center gap-2 text-sm sm:text-base"
                 >
-                  <FiTrash2 className="w-5 h-5" />
-                  Remove Student
+                  <FiTrash2 className="w-4 h-4 sm:w-5 sm:h-5" />
+                  Remove
                 </button>
               </div>
               </div>

@@ -1,8 +1,18 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { Link, useLocation, useNavigate, Outlet } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../providers/AuthProvider";
 import StudentSearchModal from "../../Components/student/StudentSearchModal";
+
+const preloadProfile = () => import("../../pages/lms/student/StudentProfile");
+const preloadMap = {
+  "/lms/student": () => import("../../pages/lms/student/StudentHome"),
+  "/lms/student/courses": () => import("../../pages/lms/student/StudentCourses"),
+  "/lms/student/bonus-courses": () => import("../../pages/lms/student/StudentCourses"),
+  "/lms/student/client-lab": () => import("../../pages/lms/student/StudentClientLab"),
+  "/lms/student/resume-builder": () => import("../../pages/lms/student/StudentResumeBuilder"),
+  "/lms/student/contact": () => import("../../pages/lms/student/StudentContact"),
+};
 import {
   FiHome,
   FiBookOpen,
@@ -74,6 +84,11 @@ export default function StudentLayout() {
     return () => { if (meta) meta.setAttribute("content", "#000000"); };
   }, []);
 
+  useEffect(() => {
+    const timer = setTimeout(preloadProfile, 3000);
+    return () => clearTimeout(timer);
+  }, []);
+
   if (isLessonPage) {
     return <Outlet />;
   }
@@ -131,6 +146,7 @@ export default function StudentLayout() {
                   </div>
                   <div className="p-2">
                     <button
+                      onMouseEnter={preloadProfile}
                       onClick={() => { setProfileOpen(false); navigate("/lms/student/profile"); }}
                       className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-700/50 transition-colors text-sm"
                     >
@@ -221,6 +237,7 @@ export default function StudentLayout() {
                   <Link
                     key={item.path}
                     to={item.path}
+                    onMouseEnter={() => preloadMap[item.path]?.()}
                     className={`group relative flex items-center gap-3 px-3 py-2.5 rounded-md transition-all duration-200 ${active ? "bg-gradient-to-r from-blue-600/20 to-purple-600/20 text-white border-l-2 border-blue-500" : "text-slate-300 hover:text-white hover:bg-slate-700/30"}`}
                     title={sidebarCollapsed ? item.label : ""}
                   >
@@ -251,7 +268,7 @@ export default function StudentLayout() {
                     </div>
                   </div>
                   <div className="flex items-center gap-1 px-2">
-                    <button className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-700/30 transition-colors text-sm" onClick={() => navigate("/lms/student/profile")}>
+                    <button onMouseEnter={preloadProfile} className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-700/30 transition-colors text-sm" onClick={() => navigate("/lms/student/profile")}>
                       <FiUser className="w-4 h-4" /><span>Profile</span>
                     </button>
                     <button className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-slate-300 hover:text-red-400 hover:bg-slate-700/30 transition-colors text-sm" onClick={handleLogout}>
@@ -295,6 +312,7 @@ export default function StudentLayout() {
               <Link
                 key={item.path}
                 to={item.path}
+                onTouchStart={() => preloadMap[item.path]?.()}
                 className={`flex flex-col items-center justify-center gap-0.5 py-1.5 px-3 rounded-xl min-w-0 transition-all duration-200 ${active ? "text-blue-400" : "text-slate-500 active:text-slate-300"}`}
               >
                 <div className="relative">

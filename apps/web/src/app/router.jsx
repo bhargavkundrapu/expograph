@@ -27,15 +27,11 @@ const SuperAdminCreateLesson = lazy(() => import("../pages/lms/superadmin/SuperA
 const SuperAdminViewLesson = lazy(() => import("../pages/lms/superadmin/SuperAdminViewLesson"));
 const SuperAdminWorkshops = lazy(() => import("../pages/lms/superadmin/SuperAdminWorkshops"));
 const SuperAdminCertificates = lazy(() => import("../pages/lms/superadmin/SuperAdminCertificates"));
-const SuperAdminPodcasts = lazy(() => import("../pages/lms/superadmin/SuperAdminPodcasts"));
 const SuperAdminClientLab = lazy(() => import("../pages/lms/superadmin/SuperAdminClientLab"));
 const SuperAdminClientLabRealWorld = lazy(() => import("../pages/lms/superadmin/SuperAdminClientLabRealWorld"));
-const SuperAdminInternships = lazy(() => import("../pages/lms/superadmin/SuperAdminInternships"));
 const SuperAdminApprovals = lazy(() => import("../pages/lms/superadmin/SuperAdminApprovals"));
 const SuperAdminStudents = lazy(() => import("../pages/lms/superadmin/SuperAdminStudents"));
 const SuperAdminMentors = lazy(() => import("../pages/lms/superadmin/SuperAdminMentors"));
-const SuperAdminPlayground = lazy(() => import("../pages/lms/superadmin/SuperAdminPlayground"));
-const SuperAdminPresentation = lazy(() => import("../pages/lms/superadmin/SuperAdminPresentation"));
 
 const StudentHome = lazy(() => import("../pages/lms/student/StudentHome"));
 const StudentCourses = lazy(() => import("../pages/lms/student/StudentCourses"));
@@ -69,9 +65,9 @@ const TenantAdminUsers = lazy(() => import("../pages/lms/admin/TenantAdminUsers"
 
 function LazyFallback() {
   return (
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "60vh" }}>
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "60vh", opacity: 0, animation: "lazyFadeIn 0.3s ease 300ms forwards" }}>
       <div style={{ width: 32, height: 32, border: "3px solid #e5e7eb", borderTopColor: "#2563eb", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} />
-      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+      <style>{`@keyframes spin{to{transform:rotate(360deg)}}@keyframes lazyFadeIn{to{opacity:1}}`}</style>
     </div>
   );
 }
@@ -154,19 +150,6 @@ export const router = createBrowserRouter([
           { path: "certificates/:id/details", element: <L><SuperAdminCertificates /></L> },
           { path: "certificates/:id/verify", element: <L><SuperAdminCertificates /></L> },
           
-          // Podcasts
-          { path: "podcasts", element: <L><SuperAdminPodcasts /></L> },
-          { path: "podcasts/cards", element: <L><SuperAdminPodcasts /></L> },
-          { path: "podcasts/list", element: <L><SuperAdminPodcasts /></L> },
-          { path: "podcasts/episodes", element: <L><SuperAdminPodcasts /></L> },
-          { path: "podcasts/episodes/create", element: <L><SuperAdminPodcasts /></L> },
-          { path: "podcasts/episodes/:id", element: <L><SuperAdminPodcasts /></L> },
-          { path: "podcasts/episodes/:id/edit", element: <L><SuperAdminPodcasts /></L> },
-          { path: "podcasts/episodes/:id/details", element: <L><SuperAdminPodcasts /></L> },
-          { path: "podcasts/series", element: <L><SuperAdminPodcasts /></L> },
-          { path: "podcasts/series/create", element: <L><SuperAdminPodcasts /></L> },
-          { path: "podcasts/series/:id", element: <L><SuperAdminPodcasts /></L> },
-          
           // Client Lab
           { path: "client-lab", element: <Navigate to="client-lab/real-world" replace /> },
           { path: "client-lab/cards", element: <L><SuperAdminClientLab /></L> },
@@ -182,39 +165,6 @@ export const router = createBrowserRouter([
           { path: "client-lab/real-world", element: <L><SuperAdminClientLabRealWorld /></L> },
           { path: "client-lab/real-world/submissions", element: <L><SuperAdminClientLabRealWorld /></L> },
           { path: "client-lab/real-world/projects/:id", element: <L><SuperAdminClientLabRealWorld /></L> },
-          
-          // Internships
-          { path: "internships", element: <L><SuperAdminInternships /></L> },
-          { path: "internships/cards", element: <L><SuperAdminInternships /></L> },
-          { path: "internships/list", element: <L><SuperAdminInternships /></L> },
-          { path: "internships/projects", element: <L><SuperAdminInternships /></L> },
-          { path: "internships/projects/create", element: <L><SuperAdminInternships /></L> },
-          { path: "internships/projects/:id", element: <L><SuperAdminInternships /></L> },
-          { path: "internships/projects/:id/edit", element: <L><SuperAdminInternships /></L> },
-          { path: "internships/projects/:id/details", element: <L><SuperAdminInternships /></L> },
-          { path: "internships/batches", element: <L><SuperAdminInternships /></L> },
-          { path: "internships/batches/create", element: <L><SuperAdminInternships /></L> },
-          { path: "internships/batches/:id", element: <L><SuperAdminInternships /></L> },
-          { path: "internships/applications", element: <L><SuperAdminInternships /></L> },
-          { path: "internships/applications/:id", element: <L><SuperAdminInternships /></L> },
-          
-          // Playground
-          { path: "playground", element: <L><SuperAdminPlayground /></L> },
-          { path: "playground/cards", element: <L><SuperAdminPlayground /></L> },
-          { path: "playground/list", element: <L><SuperAdminPlayground /></L> },
-          { path: "playground/templates", element: <L><SuperAdminPlayground /></L> },
-          { path: "playground/templates/create", element: <L><SuperAdminPlayground /></L> },
-          { path: "playground/templates/:id", element: <L><SuperAdminPlayground /></L> },
-          { path: "playground/templates/:id/edit", element: <L><SuperAdminPlayground /></L> },
-          { path: "playground/templates/:id/details", element: <L><SuperAdminPlayground /></L> },
-          { path: "playground/categories", element: <L><SuperAdminPlayground /></L> },
-          
-          // Presentations
-          { path: "presentations", element: <L><SuperAdminPresentation /></L> },
-          { path: "presentations/create", element: <L><SuperAdminPresentation /></L> },
-          { path: "presentations/:id", element: <L><SuperAdminPresentation /></L> },
-          { path: "presentations/:id/edit", element: <L><SuperAdminPresentation /></L> },
-          { path: "presentations/:id/view", element: <L><SuperAdminPresentation /></L> },
           
           // Students Management
           { path: "students", element: <L><SuperAdminStudents /></L> },

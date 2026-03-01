@@ -125,7 +125,7 @@ export default function SuperAdminFeatureFlags() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-4 sm:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
@@ -133,7 +133,7 @@ export default function SuperAdminFeatureFlags() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
-          <div className="flex items-center justify-between mb-2">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-2 gap-4">
             <h1 className="text-3xl md:text-4xl font-bold text-slate-900">Feature Flags</h1>
             <button
               onClick={() => {

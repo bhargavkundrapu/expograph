@@ -148,7 +148,7 @@ export default function SuperAdminAnalytics() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-4 sm:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
@@ -156,9 +156,9 @@ export default function SuperAdminAnalytics() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
-          <div className="flex items-center justify-between mb-2">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-2 gap-4">
             <h1 className="text-3xl md:text-4xl font-bold text-slate-900">Analytics Dashboard</h1>
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-3">
               <select
                 value={timeRange}
                 onChange={(e) => setTimeRange(e.target.value)}
@@ -183,7 +183,7 @@ export default function SuperAdminAnalytics() {
         </motion.div>
 
         {/* Key Metrics */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 mb-8">
           <MetricCard
             title="Total Students"
             value={stats.totalStudents}
@@ -266,25 +266,25 @@ export default function SuperAdminAnalytics() {
             <table className="w-full">
               <thead className="bg-gradient-to-r from-blue-50 to-indigo-50">
                 <tr>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase">Course</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase">Enrollments</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase">Completions</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase">Completion Rate</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase">Progress</th>
+                  <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs font-semibold text-slate-700 uppercase">Course</th>
+                  <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs font-semibold text-slate-700 uppercase">Enrollments</th>
+                  <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs font-semibold text-slate-700 uppercase">Completions</th>
+                  <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs font-semibold text-slate-700 uppercase">Completion Rate</th>
+                  <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs font-semibold text-slate-700 uppercase">Progress</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200">
                 {topCourses.map((course, idx) => (
                   <tr key={idx} className="hover:bg-slate-50 transition-colors">
-                    <td className="px-6 py-4">
+                    <td className="px-3 sm:px-6 py-3 sm:py-4">
                       <div className="font-medium text-slate-900">{course.name}</div>
                     </td>
-                    <td className="px-6 py-4 text-slate-700">{course.enrollments}</td>
-                    <td className="px-6 py-4 text-slate-700">{course.completions}</td>
-                    <td className="px-6 py-4">
+                    <td className="px-3 sm:px-6 py-3 sm:py-4 text-slate-700">{course.enrollments}</td>
+                    <td className="px-3 sm:px-6 py-3 sm:py-4 text-slate-700">{course.completions}</td>
+                    <td className="px-3 sm:px-6 py-3 sm:py-4">
                       <span className="font-medium text-green-600">{course.completionRate}%</span>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-3 sm:px-6 py-3 sm:py-4">
                       <div className="w-full bg-slate-100 rounded-full h-2">
                         <div
                           className="bg-gradient-to-r from-green-500 to-emerald-600 h-2 rounded-full"

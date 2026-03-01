@@ -146,7 +146,7 @@ export default function SuperAdminCoursePacks() {
   }
 
   return (
-    <div className="p-8 max-w-5xl">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-5xl">
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-2xl font-bold text-white">Course Packs</h1>
@@ -169,7 +169,7 @@ export default function SuperAdminCoursePacks() {
           packs.map((pack) => (
             <div
               key={pack.id}
-              className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-6 flex items-center justify-between gap-4"
+              className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
             >
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-3">

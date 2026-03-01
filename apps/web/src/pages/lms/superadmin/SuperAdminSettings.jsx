@@ -171,7 +171,7 @@ export default function SuperAdminSettings() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-4 sm:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
@@ -193,7 +193,7 @@ export default function SuperAdminSettings() {
         </div>
 
         {/* Tab Content */}
-        <div className="bg-white rounded-md p-8 border border-slate-200 shadow-lg">
+        <div className="bg-white rounded-md p-4 sm:p-6 lg:p-8 border border-slate-200 shadow-lg">
           {/* General Settings Tab */}
           {activeTab === "general" && (
             <motion.div
@@ -904,7 +904,7 @@ export default function SuperAdminSettings() {
 
           {/* Save Button - Fixed at bottom */}
           <div className="border-t border-slate-200 pt-6 mt-8">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
               <button
                 onClick={() => {
                   if (confirm("Discard all unsaved changes?")) {
