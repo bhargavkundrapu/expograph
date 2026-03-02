@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @plugin "tailwindcss-animate";
+@custom-variant dark (&:where(.dark, .dark *));
 @import "./styles/academy-tokens.css";
 @import "./styles/academy-premium.css";
 
@@ -399,4 +400,208 @@ label:focus:not(input):not(select):not(textarea) {
 
 /* Accessibility: focus rings are handled by Tailwind focus-visible:ring-* in components.
    We only removed outline from non-interactive text elements above. */
+
+/* ============================================
+   Premium Micro-interactions & Animations
+   ============================================ */
+
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateX(-8px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes subtlePulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-fade-slide-up {
+  animation: fadeSlideUp 0.3s ease-out both;
+}
+
+.animate-fade-slide-in {
+  animation: fadeSlideIn 0.3s ease-out both;
+}
+
+.animate-subtle-pulse {
+  animation: subtlePulse 2s ease-in-out infinite;
+}
+
+/* Staggered children animations */
+.stagger-children > * {
+  animation: fadeSlideUp 0.35s ease-out both;
+}
+.stagger-children > *:nth-child(1) { animation-delay: 0ms; }
+.stagger-children > *:nth-child(2) { animation-delay: 50ms; }
+.stagger-children > *:nth-child(3) { animation-delay: 100ms; }
+.stagger-children > *:nth-child(4) { animation-delay: 150ms; }
+.stagger-children > *:nth-child(5) { animation-delay: 200ms; }
+.stagger-children > *:nth-child(6) { animation-delay: 250ms; }
+
+/* Premium hover effects */
+.hover-lift {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.hover-glow {
+  transition: box-shadow 0.2s ease;
+}
+.hover-glow:hover {
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.15);
+}
+
+/* Progress bar animation */
+.progress-bar-animated {
+  transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Button press effect */
+.btn-press {
+  transition: transform 0.1s ease;
+}
+.btn-press:active {
+  transform: scale(0.97);
+}
+
+/* ============================================
+   Dark Mode Overrides for Student LMS
+   ============================================ */
+
+.dark .lms-content-area {
+  background: linear-gradient(to bottom, #0f172a, #1e293b, #0f172a);
+}
+
+.dark .lms-card {
+  background: #1e293b;
+  border-color: rgba(51, 65, 85, 0.5);
+  color: #e2e8f0;
+}
+
+.dark .lms-card-white {
+  background: #1e293b;
+  color: #e2e8f0;
+}
+
+/* ============================================
+   Student Content Dark Mode
+   Auto-transforms all student pages when dark
+   ============================================ */
+
+/* Root page backgrounds */
+.student-dark-content [class*="bg-gradient-to-br"][class*="from-slate-50"],
+.student-dark-content [class*="bg-gradient-to-b"][class*="from-slate-50"],
+.student-dark-content > div > [class*="bg-white"],
+.student-dark-content [class*="min-h-screen"][class*="bg-white"] {
+  background: linear-gradient(to bottom right, #0f172a, #1e293b, #0f172a) !important;
+}
+
+.student-dark-content [class*="min-h-screen"][class*="bg-slate-50"] {
+  background: #0f172a !important;
+}
+
+/* Cards and panels */
+.student-dark-content [class*="bg-white/80"],
+.student-dark-content [class*="bg-white/90"],
+.student-dark-content .rounded-2xl[class*="bg-white"],
+.student-dark-content .rounded-xl[class*="bg-white"],
+.student-dark-content .rounded-lg[class*="bg-white"],
+.student-dark-content .rounded-md[class*="bg-white"] {
+  background: #1e293b !important;
+  border-color: rgba(51, 65, 85, 0.6) !important;
+}
+
+/* Sub-cards with light gradient backgrounds */
+.student-dark-content [class*="bg-gradient-to-r"][class*="from-cyan-50"],
+.student-dark-content [class*="bg-gradient-to-r"][class*="from-emerald-50"],
+.student-dark-content [class*="bg-gradient-to-r"][class*="from-amber-50"],
+.student-dark-content [class*="bg-gradient-to-r"][class*="from-purple-50"],
+.student-dark-content [class*="bg-gradient-to-br"][class*="from-cyan-50"],
+.student-dark-content [class*="bg-gradient-to-br"][class*="from-indigo-50"],
+.student-dark-content [class*="bg-gradient-to-br"][class*="from-purple-50"],
+.student-dark-content [class*="bg-gradient-to-r"][class*="from-slate-50"] {
+  background: rgba(30, 41, 59, 0.7) !important;
+}
+
+/* Light bg elements */
+.student-dark-content [class*="bg-slate-50"]:not([class*="min-h-screen"]),
+.student-dark-content [class*="bg-indigo-50"],
+.student-dark-content [class*="bg-emerald-50"],
+.student-dark-content [class*="bg-violet-100"],
+.student-dark-content [class*="bg-cyan-100"] {
+  background: rgba(30, 41, 59, 0.5) !important;
+}
+
+/* Borders */
+.student-dark-content [class*="border-slate-200"],
+.student-dark-content [class*="border-slate-300"],
+.student-dark-content [class*="border-indigo-100"],
+.student-dark-content [class*="border-indigo-200"],
+.student-dark-content [class*="border-cyan-200"],
+.student-dark-content [class*="border-cyan-300"] {
+  border-color: rgba(51, 65, 85, 0.5) !important;
+}
+
+/* Primary text headings */
+.student-dark-content .text-slate-900,
+.student-dark-content .text-slate-800 {
+  color: #f1f5f9 !important;
+}
+
+/* Secondary text */
+.student-dark-content .text-slate-700 {
+  color: #cbd5e1 !important;
+}
+
+.student-dark-content .text-slate-600 {
+  color: #94a3b8 !important;
+}
+
+.student-dark-content .text-slate-500 {
+  color: #64748b !important;
+}
+
+/* Form inputs */
+.student-dark-content input:not([type="radio"]):not([type="checkbox"]),
+.student-dark-content textarea,
+.student-dark-content select {
+  background-color: rgba(15, 23, 42, 0.5) !important;
+  border-color: rgba(51, 65, 85, 0.6) !important;
+  color: #e2e8f0 !important;
+}
+
+.student-dark-content input::placeholder,
+.student-dark-content textarea::placeholder {
+  color: #64748b !important;
+}
+
+/* Hover states for cards */
+.student-dark-content [class*="hover:bg-slate-50"]:hover,
+.student-dark-content [class*="hover:bg-slate-100"]:hover {
+  background-color: rgba(30, 41, 59, 0.7) !important;
+}
+
+/* Smooth theme transition */
+*, *::before, *::after {
+  transition-property: background-color, border-color, color;
+  transition-duration: 0s;
+}
+
+.theme-transition, .theme-transition *, .theme-transition *::before, .theme-transition *::after {
+  transition-duration: 0.2s !important;
+  transition-timing-function: ease !important;
+}
 

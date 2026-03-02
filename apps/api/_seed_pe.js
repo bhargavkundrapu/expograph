@@ -496,7 +496,21 @@ if (require.main === module) {
   (async () => {
     console.log("Loading additional modules...");
     const m2 = require("./_seed_pe_m5_10");
+    const { BEST_AI_MAP } = require("./_patch_pe_best_ai");
     const ALL_MODULES = [...MODULES, ...m2.MODULES];
+
+    // Inject SEC-15_BEST_AI into every lesson's sections (after SEC-07)
+    for (const mod of ALL_MODULES) {
+      for (const lesson of mod.lessons) {
+        const aiData = BEST_AI_MAP[lesson.slug];
+        if (!aiData) continue;
+        const already = lesson.sections.some((s) => s.type === "SEC-15_BEST_AI");
+        if (already) continue;
+        const idx = lesson.sections.findIndex((s) => s.type === "SEC-07_GOOD_OUTPUT");
+        const insertAt = idx >= 0 ? idx + 1 : lesson.sections.length;
+        lesson.sections.splice(insertAt, 0, sec("SEC-15_BEST_AI", aiData));
+      }
+    }
     
     // Get course info
     const courses = await q("SELECT id, title, slug FROM courses WHERE slug ILIKE '%prompt%' OR title ILIKE '%prompt%' LIMIT 5");

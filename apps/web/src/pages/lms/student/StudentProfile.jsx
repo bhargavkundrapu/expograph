@@ -1,11 +1,17 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useAuth } from "../../../app/providers/AuthProvider";
+import { useTheme } from "../../../app/providers/ThemeProvider";
+import { useGamification, LEVELS } from "../../../app/providers/GamificationProvider";
 import { apiFetch } from "../../../services/api";
-import { FiUser, FiMail, FiPhone, FiEdit, FiSave, FiX } from "react-icons/fi";
+import { FiUser, FiMail, FiPhone, FiEdit, FiSave, FiX, FiTrendingUp } from "react-icons/fi";
+import { AchievementGrid } from "../../../Components/student/gamification/AchievementBadges";
+import WeeklyStreak from "../../../Components/student/gamification/WeeklyStreak";
 
 export default function StudentProfile() {
   const { user, token, updateUser } = useAuth();
+  const { isDark } = useTheme();
+  const { totalXP, currentLevel, nextLevel, levelProgress, currentStreak, bestStreak, lessonsCompleted, coursesCompleted, weeklyXP, weeklyXPGoal } = useGamification();
   const [isEditing, setIsEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [profileLoaded, setProfileLoaded] = useState(false);
@@ -53,21 +59,14 @@ export default function StudentProfile() {
 
   const handleSave = async () => {
     if (!token) return;
-    
     try {
       setSaving(true);
       const response = await apiFetch("/api/v1/student/profile", {
         token,
         method: "PATCH",
-        body: {
-          fullName: formData.fullName,
-          email: formData.email,
-          phone: formData.phone || undefined,
-        },
+        body: { fullName: formData.fullName, email: formData.email, phone: formData.phone || undefined },
       });
-      
       if (response?.data) {
-        // Update user in AuthProvider
         if (updateUser) {
           updateUser({
             ...user,
@@ -78,12 +77,11 @@ export default function StudentProfile() {
           });
         }
         setIsEditing(false);
-        // Update formData to reflect saved changes
         setFormData({
           fullName: response.data.fullName || response.data.full_name || "",
           email: response.data.email || "",
           phone: response.data.phone || "",
-          bio: formData.bio, // Keep bio as is since it's not updated
+          bio: formData.bio,
         });
       }
     } catch (error) {
@@ -94,119 +92,181 @@ export default function StudentProfile() {
     }
   };
 
+  const userName = formData.fullName || user?.fullName || user?.full_name || user?.name || "Student";
+  const userInitial = userName.charAt(0).toUpperCase();
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-4 md:p-8">
-      <div className="max-w-4xl mx-auto">
+    <div className={`min-h-screen p-4 sm:p-6 lg:p-8 transition-colors duration-200 ${isDark ? "bg-slate-900" : "bg-gradient-to-br from-slate-50 via-white to-slate-50"}`}>
+      <div className="max-w-5xl mx-auto space-y-6">
+
+        {/* Profile Header Card */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white rounded-2xl p-4 md:p-8 border border-indigo-100 shadow-lg"
+          className={`rounded-2xl overflow-hidden border shadow-lg ${isDark ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"}`}
         >
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6 md:mb-8">
-            <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">
-              My Profile
-            </h1>
-            {!isEditing ? (
-              <button
-                onClick={() => setIsEditing(true)}
-                className="px-6 py-3 bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-semibold rounded-xl hover:from-indigo-600 hover:to-violet-700 transition-all flex items-center gap-2 shadow-md"
-              >
-                <FiEdit className="w-5 h-5" />
-                Edit Profile
-              </button>
-            ) : (
-              <div className="flex gap-2">
-                <button
-                  onClick={() => setIsEditing(false)}
-                  className="px-6 py-3 bg-white border border-indigo-200 text-slate-700 font-semibold rounded-xl hover:bg-indigo-50 transition-all flex items-center gap-2"
-                >
-                  <FiX className="w-5 h-5" />
-                  Cancel
-                </button>
-                <button
-                  onClick={handleSave}
-                  disabled={saving}
-                  className="px-6 py-3 bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-semibold rounded-xl hover:from-indigo-600 hover:to-violet-700 transition-all flex items-center gap-2 shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <FiSave className="w-5 h-5" />
-                  {saving ? "Saving..." : "Save"}
-                </button>
+          {/* Banner */}
+          <div className="h-24 sm:h-32 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 relative">
+            <div className="absolute bottom-0 left-6 sm:left-8 translate-y-1/2">
+              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white text-3xl sm:text-4xl font-bold shadow-xl border-4 border-white dark:border-slate-800">
+                {userInitial}
               </div>
-            )}
+            </div>
           </div>
 
-          <div className="space-y-6">
-            <div className="flex items-center gap-4 md:gap-6">
-              <div className="w-16 h-16 md:w-24 md:h-24 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-full flex items-center justify-center text-white text-2xl md:text-3xl font-bold flex-shrink-0 shadow-lg">
-                {(user?.fullName || user?.full_name || user?.name || "U")?.charAt(0)?.toUpperCase()}
-              </div>
+          <div className="pt-12 sm:pt-14 px-6 sm:px-8 pb-6">
+            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 mb-4">
               <div>
-                <h2 className="text-lg md:text-2xl font-bold text-slate-800 break-words">{user?.fullName || user?.full_name || user?.name || "Student"}</h2>
-                <p className="text-slate-600">{user?.email}</p>
+                <h1 className={`text-xl sm:text-2xl font-bold ${isDark ? "text-white" : "text-slate-900"}`}>{userName}</h1>
+                <p className={`text-sm ${isDark ? "text-slate-400" : "text-slate-500"}`}>{formData.email}</p>
+                <div className="flex items-center gap-3 mt-2">
+                  <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${isDark ? "bg-indigo-500/20 text-indigo-300" : "bg-indigo-100 text-indigo-700"}`}>
+                    Lv.{currentLevel.level} {currentLevel.title}
+                  </span>
+                  <span className="text-xs text-slate-400">🔥 {currentStreak}d streak</span>
+                  <span className="text-xs text-slate-400">⚡ {totalXP.toLocaleString()} XP</span>
+                </div>
               </div>
+              {!isEditing ? (
+                <button
+                  onClick={() => setIsEditing(true)}
+                  className="px-5 py-2.5 bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-semibold rounded-xl hover:from-indigo-600 hover:to-violet-700 transition-all flex items-center gap-2 text-sm shadow-md"
+                >
+                  <FiEdit className="w-4 h-4" /> Edit Profile
+                </button>
+              ) : (
+                <div className="flex gap-2">
+                  <button onClick={() => setIsEditing(false)} className={`px-4 py-2.5 border font-medium rounded-xl transition-all flex items-center gap-1.5 text-sm ${isDark ? "bg-slate-700 border-slate-600 text-slate-300" : "bg-white border-slate-200 text-slate-700"}`}>
+                    <FiX className="w-4 h-4" /> Cancel
+                  </button>
+                  <button onClick={handleSave} disabled={saving} className="px-5 py-2.5 bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-semibold rounded-xl transition-all flex items-center gap-1.5 text-sm shadow-md disabled:opacity-50">
+                    <FiSave className="w-4 h-4" /> {saving ? "Saving..." : "Save"}
+                  </button>
+                </div>
+              )}
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">Full Name</label>
-                {isEditing ? (
-                  <input
-                    type="text"
-                    value={formData.fullName}
-                    onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                    className="w-full px-4 py-3 bg-indigo-50/50 border border-indigo-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400"
-                  />
-                ) : (
-                  <p className="px-4 py-3 bg-slate-50 rounded-md text-slate-800">{formData.fullName || "Not set"}</p>
-                )}
+            {/* Level progress */}
+            <div className={`p-3 rounded-xl ${isDark ? "bg-slate-700/30" : "bg-slate-50"}`}>
+              <div className="flex items-center justify-between text-xs mb-1">
+                <span className={isDark ? "text-slate-400" : "text-slate-500"}>Level {currentLevel.level}: {currentLevel.title}</span>
+                <span className={isDark ? "text-slate-400" : "text-slate-500"}>{nextLevel ? `${nextLevel.minXP - totalXP} XP to Level ${nextLevel.level}` : "Max Level!"}</span>
               </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">Email</label>
-                {isEditing ? (
-                  <input
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full px-4 py-3 bg-indigo-50/50 border border-indigo-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400"
-                  />
-                ) : (
-                  <p className="px-4 py-3 bg-slate-50 rounded-md text-slate-800">{formData.email || "Not set"}</p>
-                )}
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">Phone</label>
-                {isEditing ? (
-                  <input
-                    type="tel"
-                    value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full px-4 py-3 bg-indigo-50/50 border border-indigo-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400"
-                  />
-                ) : (
-                  <p className="px-4 py-3 bg-slate-50 rounded-md text-slate-800">{formData.phone || "Not set"}</p>
-                )}
+              <div className="h-2 rounded-full bg-slate-200 dark:bg-slate-600 overflow-hidden">
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: `${levelProgress}%` }}
+                  transition={{ duration: 1 }}
+                  className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-purple-500"
+                />
               </div>
             </div>
+          </div>
+        </motion.div>
 
-            <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-2">Bio</label>
+        {/* Stats Grid */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3"
+        >
+          {[
+            { label: "Total XP", value: totalXP.toLocaleString(), icon: "⚡", color: isDark ? "text-indigo-400" : "text-indigo-600" },
+            { label: "Level", value: currentLevel.title, icon: "🏅", color: isDark ? "text-amber-400" : "text-amber-600" },
+            { label: "Current Streak", value: `${currentStreak} days`, icon: "🔥", color: isDark ? "text-orange-400" : "text-orange-600" },
+            { label: "Best Streak", value: `${bestStreak} days`, icon: "🏆", color: isDark ? "text-yellow-400" : "text-yellow-600" },
+            { label: "Lessons Done", value: lessonsCompleted.toString(), icon: "📚", color: isDark ? "text-green-400" : "text-green-600" },
+            { label: "Weekly XP", value: `${weeklyXP}/${weeklyXPGoal}`, icon: "📊", color: isDark ? "text-blue-400" : "text-blue-600" },
+          ].map((stat, i) => (
+            <motion.div
+              key={stat.label}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 + i * 0.05 }}
+              className={`rounded-xl p-4 text-center border ${isDark ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100 shadow-sm"}`}
+            >
+              <span className="text-2xl block mb-1">{stat.icon}</span>
+              <p className={`text-base sm:text-lg font-bold ${stat.color}`}>{stat.value}</p>
+              <p className={`text-[10px] font-medium ${isDark ? "text-slate-500" : "text-slate-400"}`}>{stat.label}</p>
+            </motion.div>
+          ))}
+        </motion.div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Profile Details - Left */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 }}
+            className={`lg:col-span-2 rounded-2xl p-5 sm:p-6 border ${isDark ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100 shadow-sm"}`}
+          >
+            <h2 className={`text-base font-bold mb-4 flex items-center gap-2 ${isDark ? "text-white" : "text-slate-800"}`}>
+              <FiUser className="w-4 h-4 text-indigo-500" /> Personal Details
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {[
+                { label: "Full Name", key: "fullName", icon: FiUser, type: "text" },
+                { label: "Email", key: "email", icon: FiMail, type: "email" },
+                { label: "Phone", key: "phone", icon: FiPhone, type: "tel" },
+              ].map(field => {
+                const Icon = field.icon;
+                return (
+                  <div key={field.key}>
+                    <label className={`block text-xs font-semibold mb-1.5 flex items-center gap-1.5 ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+                      <Icon className="w-3.5 h-3.5" /> {field.label}
+                    </label>
+                    {isEditing ? (
+                      <input
+                        type={field.type}
+                        value={formData[field.key]}
+                        onChange={(e) => setFormData({ ...formData, [field.key]: e.target.value })}
+                        className={`w-full px-3.5 py-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 ${isDark ? "bg-slate-700/50 border-slate-600 text-white" : "bg-slate-50 border-slate-200"}`}
+                      />
+                    ) : (
+                      <p className={`px-3.5 py-2.5 rounded-xl text-sm ${isDark ? "bg-slate-700/30 text-slate-200" : "bg-slate-50 text-slate-800"}`}>
+                        {formData[field.key] || "Not set"}
+                      </p>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+            <div className="mt-4">
+              <label className={`block text-xs font-semibold mb-1.5 ${isDark ? "text-slate-400" : "text-slate-600"}`}>Bio</label>
               {isEditing ? (
                 <textarea
                   value={formData.bio}
                   onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
-                  rows={4}
-                  className="w-full px-4 py-3 bg-indigo-50/50 border border-indigo-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 resize-none"
+                  rows={3}
+                  className={`w-full px-3.5 py-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 resize-none ${isDark ? "bg-slate-700/50 border-slate-600 text-white placeholder-slate-500" : "bg-slate-50 border-slate-200"}`}
                   placeholder="Tell us about yourself..."
                 />
               ) : (
-                <p className="px-4 py-3 bg-slate-50 rounded-md text-slate-800 min-h-[100px]">
+                <p className={`px-3.5 py-2.5 rounded-xl text-sm min-h-[60px] ${isDark ? "bg-slate-700/30 text-slate-200" : "bg-slate-50 text-slate-800"}`}>
                   {formData.bio || "No bio added yet"}
                 </p>
               )}
             </div>
-          </div>
+          </motion.div>
+
+          {/* Streak widget - Right */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            <WeeklyStreak />
+          </motion.div>
+        </div>
+
+        {/* Achievement Badges */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.25 }}
+        >
+          <AchievementGrid maxShow={18} />
         </motion.div>
       </div>
     </div>

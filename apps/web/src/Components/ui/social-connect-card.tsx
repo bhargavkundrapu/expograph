@@ -1,7 +1,6 @@
 import * as React from "react";
 import {
   Linkedin,
-  Twitter,
   Instagram,
   Youtube,
   ChevronDown,
@@ -31,10 +30,9 @@ export interface SocialConnectCardProps extends React.HTMLAttributes<HTMLDivElem
 }
 
 const defaultSocialLinks: SocialLink[] = [
-  { name: "Instagram", href: "#", icon: Instagram, ariaLabel: "Instagram" },
-  { name: "Twitter", href: "#", icon: Twitter, ariaLabel: "Twitter" },
-  { name: "LinkedIn", href: "#", icon: Linkedin, ariaLabel: "LinkedIn" },
-  { name: "YouTube", href: "#", icon: Youtube, ariaLabel: "YouTube" },
+  { name: "Instagram", href: "https://www.instagram.com/expograph_tech/", icon: Instagram, ariaLabel: "Instagram" },
+  { name: "YouTube", href: "https://www.youtube.com/@Expograph-3", icon: Youtube, ariaLabel: "YouTube" },
+  { name: "LinkedIn", href: "https://www.linkedin.com/company/109629393/", icon: Linkedin, ariaLabel: "LinkedIn" },
 ];
 
 /**

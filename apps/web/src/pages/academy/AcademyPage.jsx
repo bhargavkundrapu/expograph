@@ -57,26 +57,26 @@ function HeroSkeleton() {
 
 const reviewsRow1 = [
   { name: "Arjun S.", role: "Vibe Coding Student", text: "The Vibe Coding course taught me to build full apps using smart prompts. I shipped my first SaaS in 2 weeks — at ₹99, this is unreal.", rating: 5, highlight: "Vibe Coding" },
-  { name: "Priya M.", role: "AI Agents Student", text: "The AI Agents course is next level. I automated my entire workflow and landed a freelance gig through Real Client Lab in 3 weeks.", rating: 5, highlight: "AI Agents" },
+  { name: "Priya M.", role: "AI Automations Student", text: "The AI Automations course is next level. I automated my entire workflow and landed a freelance gig through Real Client Lab in 3 weeks.", rating: 5, highlight: "AI Automations" },
   { name: "Rahul K.", role: "CS Student, 3rd Year", text: "Paid ₹15,000 elsewhere for worse content. Vibe Coding + Prompt Engineering at ₹99 each? ExpoGraph is honestly criminal — in a good way.", rating: 5, highlight: "Unbeatable Value" },
   { name: "Sneha D.", role: "Prompt Engineering Student", text: "Prompt Engineering taught me how to think like a 10x developer. The resume builder + MCA certificate helped me crack 3 interviews.", rating: 5, highlight: "Prompt Engineering" },
   { name: "Karthik V.", role: "Startup Founder", text: "I built my entire MVP using Vibe Coding techniques from ExpoGraph. Saved me lakhs in hiring costs — all from a ₹99 course.", rating: 5, highlight: "Vibe Coding" },
-  { name: "Meera J.", role: "B.Tech Student", text: "Took all 3 courses — Vibe Coding, Prompt Engineering, and AI Agents. Other platforms make you watch. ExpoGraph makes you BUILD.", rating: 5, highlight: "All 3 Courses" },
+  { name: "Meera J.", role: "B.Tech Student", text: "Took all 3 courses — Vibe Coding, Prompt Engineering, and AI Automations. Other platforms make you watch. ExpoGraph makes you BUILD.", rating: 5, highlight: "All 3 Courses" },
 ];
 
 const reviewsRow2 = [
-  { name: "Vikram T.", role: "Freelancer", text: "AI Agents + Real Client Lab = real portfolio pieces. Clients don't care about tutorials — they care about real work you've shipped.", rating: 5, highlight: "Real Client Lab" },
+  { name: "Vikram T.", role: "Freelancer", text: "AI Automations + Real Client Lab = real portfolio pieces. Clients don't care about tutorials — they care about real work you've shipped.", rating: 5, highlight: "Real Client Lab" },
   { name: "Ananya R.", role: "BCA Student", text: "Started with Prompt Engineering, then Vibe Coding — went from zero to building full apps in 8 weeks. The structured lessons are brilliant.", rating: 5, highlight: "Zero to Builder" },
   { name: "Deepak P.", role: "Working Professional", text: "The Vibe Coding course respects your time. No fluff — just pure, actionable skills I use at my job daily. Worth every paisa.", rating: 5, highlight: "No Filler" },
   { name: "Riya G.", role: "MCA Student", text: "The MCA-recognised certificate with a unique ID got me 2 interview calls in a week. Employers were genuinely impressed.", rating: 5, highlight: "Verified Certificate" },
-  { name: "Aditya N.", role: "All-Access Pack User", text: "₹199 for all 3 courses — Vibe Coding, Prompt Engineering, AI Agents + Real Client Lab + Resume Builder. Best investment of my life.", rating: 5, highlight: "All-Access Pack" },
+  { name: "Aditya N.", role: "All-Access Pack User", text: "₹199 for all 3 courses — Vibe Coding, Prompt Engineering, AI Automations + Real Client Lab + Resume Builder. Best investment of my life.", rating: 5, highlight: "All-Access Pack" },
   { name: "Pooja S.", role: "Prompt Engineering Student", text: "Prompt Engineering changed everything. I'm 3x faster, building AI-powered tools, and charging premium freelance rates now.", rating: 5, highlight: "Prompt Engineering" },
 ];
 
 function ReviewCard({ r }) {
   const colors = {
     "Vibe Coding": "text-fuchsia-400 bg-fuchsia-500/10 border-fuchsia-500/20",
-    "AI Agents": "text-violet-400 bg-violet-500/10 border-violet-500/20",
+    "AI Automations": "text-violet-400 bg-violet-500/10 border-violet-500/20",
     "Prompt Engineering": "text-indigo-400 bg-indigo-500/10 border-indigo-500/20",
     "Unbeatable Value": "text-amber-400 bg-amber-500/10 border-amber-500/20",
     "Real Client Lab": "text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
@@ -118,15 +118,15 @@ function ReviewCard({ r }) {
 }
 
 const faqData = [
-  { q: "What is ExpoGraph Academy?", a: "ExpoGraph Academy teaches Vibe Coding, Prompt Engineering & AI Agents through structured lessons, smart prompts, and hands-on projects. You don't just watch — you build." },
-  { q: "What courses do you offer?", a: "We offer three focused courses: Vibe Coding (build apps using AI), Prompt Engineering (master the art of prompting), and AI Agents (automate workflows with intelligent agents). Together, they cover everything from building to deploying real-world AI-powered projects." },
+  { q: "What is ExpoGraph Academy?", a: "ExpoGraph Academy teaches Vibe Coding, Prompt Engineering & AI Automations through structured lessons, smart prompts, and hands-on projects. You don't just watch — you build." },
+  { q: "What courses do you offer?", a: "We offer three focused courses: Vibe Coding (build apps using AI), Prompt Engineering (master the art of prompting), and AI Automations (automate workflows with intelligent automations). Together, they cover everything from building to deploying real-world AI-powered projects." },
   { q: "What are Smart Prompts?", a: "Smart Prompts are structured prompt boxes you can copy and use directly. They help you learn vibe coding — how to think, prompt, and build like a professional developer." },
   { q: "What is the Real Client Lab?", a: "The Real Client Lab connects you with actual clients and real-world projects. You build, deliver, and grow your portfolio with work that matters — not just tutorials." },
   { q: "Do I get a Resume Builder?", a: "Yes! Our built-in Resume Builder helps you create a professional resume using your completed courses, projects, and Real Client Lab work — ready for employers." },
-  { q: "How much does it cost?", a: "Each course (Vibe Coding, Prompt Engineering, AI Agents) starts at just ₹99 and our all-access course pack is only ₹199 — that's all 3 courses + Real Client Lab + Resume Builder for less than a coffee." },
+  { q: "How much does it cost?", a: "Each course (Vibe Coding, Prompt Engineering, AI Automations) starts at just ₹99 and our all-access course pack is only ₹199 — that's all 3 courses + Real Client Lab + Resume Builder for less than a coffee." },
   { q: "Do I get certificates?", a: "Absolutely. Every course you complete earns you a verifiable certificate with a unique ID — issued by ExpoGraph, a company recognised by MCA, Government of India." },
   { q: "Is there community support?", a: "Yes! Join our community on Instagram, YouTube, and LinkedIn. Connect with fellow users, get tips, and stay updated on new courses and opportunities." },
-  { q: "How is ExpoGraph different from other platforms?", a: "Unlike generic platforms, ExpoGraph focuses on 3 cutting-edge courses — Vibe Coding, Prompt Engineering & AI Agents — with real client projects, smart AI prompts, and a resume builder. Everything you need to actually get hired, not just learn theory." },
+  { q: "How is ExpoGraph different from other platforms?", a: "Unlike generic platforms, ExpoGraph focuses on 3 cutting-edge courses — Vibe Coding, Prompt Engineering & AI Automations — with real client projects, smart AI prompts, and a resume builder. Everything you need to actually get hired, not just learn theory." },
 ];
 
 function SimpleFAQ() {
@@ -263,7 +263,7 @@ export default function AcademyPage() {
           }
           subtitle={
             <>
-              Master <strong className="text-white/90">Vibe Coding</strong>, <strong className="text-white/90">Prompt Engineering</strong> & <strong className="text-white/90">AI Agents</strong> — with smart prompts, structured lessons, and a{" "}
+              Master <strong className="text-white/90">Vibe Coding</strong>, <strong className="text-white/90">Prompt Engineering</strong> & <strong className="text-white/90">AI Automations</strong> — with smart prompts, structured lessons, and a{" "}
               <strong className="text-white/90">Real Client Lab</strong> to build for actual clients — all starting at just{" "}
               <strong className="text-emerald-400">₹99</strong>. You don't just learn — you ship real work and grow your career.
             </>
@@ -466,7 +466,7 @@ export default function AcademyPage() {
                 </div>
                 <div>
                   <h4 className="text-sm sm:text-base font-semibold text-white mb-1">Industry Recognized Skills</h4>
-                  <p className="text-xs sm:text-sm text-white/60 leading-relaxed">Our Vibe Coding, Prompt Engineering & AI Agents courses teach production-level tools and workflows — employers trust the skills you demonstrate.</p>
+                  <p className="text-xs sm:text-sm text-white/60 leading-relaxed">Our Vibe Coding, Prompt Engineering & AI Automations courses teach production-level tools and workflows — employers trust the skills you demonstrate.</p>
                 </div>
               </div>
             </div>
@@ -494,7 +494,7 @@ export default function AcademyPage() {
                   </span>
                 </h2>
                 <p className="mt-3 sm:mt-4 text-sm sm:text-base text-white/60 max-w-lg mx-auto md:mx-0 leading-relaxed">
-                  Other platforms charge ₹5,000–₹50,000 for generic tutorials. At ExpoGraph, you get Vibe Coding, Prompt Engineering & AI Agents — structured courses with smart prompts, a resume builder, MCA-recognised certificates & real client projects — all for a price anyone can afford.
+                  Other platforms charge ₹5,000–₹50,000 for generic tutorials. At ExpoGraph, you get Vibe Coding, Prompt Engineering & AI Automations — structured courses with smart prompts, a resume builder, MCA-recognised certificates & real client projects — all for a price anyone can afford.
                 </p>
               </div>
               <div className="flex flex-row md:flex-col items-center gap-4 sm:gap-5 shrink-0">
@@ -536,7 +536,7 @@ export default function AcademyPage() {
               </span>
             </h2>
             <p className="mt-3 sm:mt-4 text-sm sm:text-base md:text-lg text-white/60 max-w-2xl mx-auto">
-              From Vibe Coding to Prompt Engineering to AI Agents — our users are shipping real projects and landing real opportunities
+              From Vibe Coding to Prompt Engineering to AI Automations — our users are shipping real projects and landing real opportunities
             </p>
           </div>
         </div>
@@ -652,7 +652,9 @@ export default function AcademyPage() {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
                 {/* Instagram */}
                 <a
-                  href="#"
+                  href="https://www.instagram.com/expograph_tech/"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="group relative rounded-2xl border border-fuchsia-500/20 p-5 sm:p-6 transition-all duration-300 hover:border-fuchsia-500/40 hover:scale-[1.03] hover:shadow-lg hover:shadow-fuchsia-500/10"
                   style={{ background: "linear-gradient(135deg, rgba(253,29,29,0.06) 0%, rgba(252,176,69,0.06) 30%, rgba(131,58,180,0.06) 100%)" }}
                 >
@@ -672,7 +674,9 @@ export default function AcademyPage() {
 
                 {/* YouTube */}
                 <a
-                  href="#"
+                  href="https://www.youtube.com/@Expograph-3"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="group relative rounded-2xl border p-5 sm:p-6 transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-red-500/10"
                   style={{ borderColor: "rgba(255,0,0,0.15)", background: "rgba(255,0,0,0.04)" }}
                 >
@@ -692,7 +696,9 @@ export default function AcademyPage() {
 
                 {/* LinkedIn */}
                 <a
-                  href="#"
+                  href="https://www.linkedin.com/company/109629393/"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="group relative rounded-2xl border border-blue-500/20 bg-blue-500/5 p-5 sm:p-6 transition-all duration-300 hover:bg-blue-500/10 hover:border-blue-500/40 hover:scale-[1.03] hover:shadow-lg hover:shadow-blue-500/10"
                 >
                   <div className="absolute inset-0 bg-gradient-to-br from-blue-600/10 via-transparent to-transparent rounded-2xl opacity-60 pointer-events-none" />

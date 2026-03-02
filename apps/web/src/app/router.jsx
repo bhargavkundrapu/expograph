@@ -45,6 +45,8 @@ const StudentWorkshops = lazy(() => import("../pages/lms/student/StudentWorkshop
 const StudentReferrals = lazy(() => import("../pages/lms/student/StudentReferrals"));
 const StudentQuestionBank = lazy(() => import("../pages/lms/student/StudentQuestionBank"));
 const StudentResumeBuilder = lazy(() => import("../pages/lms/student/StudentResumeBuilder"));
+const StudentBookmarks = lazy(() => import("../pages/lms/student/StudentBookmarks"));
+const StudentCourseLanding = lazy(() => import("../pages/lms/student/StudentCourseLanding"));
 const StudentContact = lazy(() => import("../pages/lms/student/StudentContact"));
 const StudentProfile = lazy(() => import("../pages/lms/student/StudentProfile"));
 
@@ -295,12 +297,16 @@ export const router = createBrowserRouter([
           // Courses
           { path: "courses", element: <L><StudentCourses /></L> },
           { path: "courses/list", element: <L><StudentCourses /></L> },
+          { path: "courses/:courseSlug", element: <L><StudentCourseLanding /></L> },
           { path: "courses/:courseSlug/modules/:moduleSlug/lessons/:lessonSlug", element: <L><StudentLesson /></L> },
           { path: "courses/:courseSlug/modules/:moduleSlug/lessons/:lessonSlug/complete", element: <L><StudentLesson /></L> },
           
           // Bonus Courses
           { path: "bonus-courses", element: <L><StudentCourses /></L> },
           { path: "bonus-courses/list", element: <L><StudentCourses /></L> },
+          
+          // Bookmarks
+          { path: "bookmarks", element: <L><StudentBookmarks /></L> },
           
           // Question Bank
           { path: "question-bank", element: <L><StudentQuestionBank /></L> },

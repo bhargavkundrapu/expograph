@@ -10,15 +10,15 @@ module.exports = {
   goal: "Understand what Vibe Coding is and why it lets you build real apps 10x faster than traditional coding.",
   sections: [
     { type: "VC-01_MISSION", data: { headline: "Discover the superpower that lets non-coders ship real software — and coders ship 10x faster.", real_world: "Companies like Replit, Vercel, and thousands of indie makers already use AI-assisted coding to launch products in hours, not months." }},
-    { type: "VC-02_WHAT_YOULL_BUILD", data: { features: ["Mental model of how Vibe Coding works", "Understanding of the AI ↔ Developer feedback loop", "Confidence to start your first AI-powered project"], tech: ["Antigravity", "AI Agents", "Prompt-Driven Development"] }},
+    { type: "VC-02_WHAT_YOULL_BUILD", data: { features: ["Mental model of how Vibe Coding works", "Understanding of the AI ↔ Developer feedback loop", "Confidence to start your first AI-powered project"], tech: ["Antigravity", "AI Automations", "Prompt-Driven Development"] }},
     { type: "VC-04_WORKFLOW", data: { steps: [
       { title: "Read the lesson material", description: "Go through the PDF slides to understand the core philosophy behind Vibe Coding — letting AI write code while you steer the ship." },
       { title: "Understand the feedback loop", description: "Vibe Coding works in a cycle:\n1. You describe WHAT you want\n2. AI writes the code\n3. You verify it works\n4. You refine with follow-up prompts\n\nThis loop is the foundation of everything that follows." },
       { title: "Explore the tools landscape", description: "Familiarize yourself with tools like Antigravity, Cursor, GitHub Copilot, and Replit — each is a different flavor of AI-assisted coding." }
     ] }},
     { type: "VC-06_UNDER_THE_HOOD", data: { concepts: [
-      { term: "Vibe Coding", explanation: "A development approach where you describe what you want in plain English and AI agents generate the actual code — you guide the direction, AI handles the syntax." },
-      { term: "AI Agent", explanation: "An AI assistant that can read your codebase, understand context, and generate/modify code across multiple files — far more powerful than simple autocomplete." },
+      { term: "Vibe Coding", explanation: "A development approach where you describe what you want in plain English and AI automations generate the actual code — you guide the direction, AI handles the syntax." },
+      { term: "AI Automation", explanation: "An AI assistant that can read your codebase, understand context, and generate/modify code across multiple files — far more powerful than simple autocomplete." },
       { term: "Prompt-Driven Development", explanation: "Instead of writing code line-by-line, you write clear instructions (prompts) and the AI translates them into working code." }
     ] }},
     { type: "VC-07_PRO_TIPS", data: { tips: [
@@ -117,7 +117,7 @@ module.exports = {
   goal: "Set up your complete full-stack development environment so you're ready to build real apps.",
   sections: [
     { type: "VC-01_MISSION", data: { headline: "Build your developer cockpit — every tool configured, every account ready, zero excuses left.", real_world: "Professional developers spend their first day at any job setting up their environment. Do it once, build forever." }},
-    { type: "VC-02_WHAT_YOULL_BUILD", data: { features: ["Google Antigravity AI agent fully configured", "Full-stack project with React frontend + Node backend", "PostgreSQL database on Neon cloud", "Complete development environment ready to code"], tech: ["Antigravity", "React", "Node.js", "Neon PostgreSQL", "Vite"] }},
+    { type: "VC-02_WHAT_YOULL_BUILD", data: { features: ["Google Antigravity AI automation fully configured", "Full-stack project with React frontend + Node backend", "PostgreSQL database on Neon cloud", "Complete development environment ready to code"], tech: ["Antigravity", "React", "Node.js", "Neon PostgreSQL", "Vite"] }},
     { type: "VC-03_PREREQUISITES", data: { items: ["A computer with internet access", "A Google account for Antigravity", "Patience — this is a one-time setup that pays off forever"] }},
     { type: "VC-04_WORKFLOW", data: { steps: [
       { title: "Install Antigravity", description: "Download and install Google Antigravity from the official site. Sign in with your Google account. This is your AI coding partner for the entire course." },

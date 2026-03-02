@@ -145,49 +145,77 @@ export function StudentCourseTreeSkeleton() {
   );
 }
 
-// Student Lesson Skeleton
-export function StudentLessonSkeleton() {
+// Student Lesson Skeleton — course-aware full page skeleton
+export function StudentLessonSkeleton({ courseType }) {
   return (
-    <div className="min-h-screen bg-slate-50 animate-pulse">
-      <div className="flex h-screen overflow-hidden">
-        {/* Sidebar Skeleton */}
-        <div className="w-80 bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 border-r border-slate-900 p-4">
-          <div className="h-10 bg-slate-700 rounded mb-4"></div>
-          <div className="h-16 bg-slate-700 rounded mb-4"></div>
-          <div className="space-y-2">
-            {[1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className="h-12 bg-slate-700 rounded"></div>
-            ))}
+    <div className="flex h-screen w-full overflow-hidden bg-slate-100 animate-pulse">
+      <main className="flex-1 flex flex-col min-w-0">
+        {/* Navbar skeleton — hidden on mobile */}
+        <nav className="hidden md:block flex-shrink-0 bg-white border-b border-slate-200 px-6 py-3">
+          <div className="flex items-center justify-between gap-4">
+            <div className="h-10 bg-slate-100 rounded w-52 ml-8"></div>
+            <div className="flex items-center gap-6 mr-16">
+              <div className="w-56 lg:w-72 h-10 bg-slate-50 border border-slate-200 rounded-lg"></div>
+              <div className="h-5 bg-slate-100 rounded w-12"></div>
+              <div className="h-5 bg-slate-100 rounded w-14"></div>
+            </div>
           </div>
+        </nav>
+
+        {/* Mobile top bar skeleton */}
+        <div className="flex md:hidden items-center gap-2 px-3 py-2 bg-white border-b border-slate-200">
+          <div className="w-8 h-8 bg-slate-100 rounded-lg"></div>
+          <div className="flex-1 min-w-0">
+            <div className="h-3 bg-slate-100 rounded w-24 mb-1"></div>
+            <div className="h-4 bg-slate-200 rounded w-40"></div>
+          </div>
+          <div className="w-8 h-8 bg-slate-100 rounded-lg"></div>
+          <div className="w-8 h-8 bg-slate-100 rounded-lg"></div>
         </div>
 
-        {/* Main Content Skeleton */}
-        <div className="flex-1 overflow-y-auto bg-white">
-          <div className="max-w-6xl mx-auto p-8">
-            {/* Breadcrumb Skeleton */}
-            <div className="flex items-center gap-2 mb-6">
-              <div className="h-4 bg-slate-200 rounded w-24"></div>
-              <div className="h-4 bg-slate-200 rounded w-4"></div>
-              <div className="h-4 bg-slate-200 rounded w-32"></div>
+        <div className="flex-1 flex overflow-hidden">
+          {/* Sidebar skeleton — desktop only */}
+          <div className="hidden md:flex md:self-stretch md:min-h-0">
+            <div className="w-72 lg:w-80 bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 p-4 space-y-3">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-8 h-8 bg-slate-700 rounded"></div>
+                <div className="h-5 bg-slate-700 rounded w-32"></div>
+              </div>
+              <div className="h-12 bg-slate-700/60 rounded-lg"></div>
+              {/* Module with lessons */}
+              <div className="space-y-1 mt-4">
+                <div className="h-10 bg-slate-700/50 rounded-lg"></div>
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <div key={i} className="h-9 bg-slate-700/30 rounded-lg ml-3"></div>
+                ))}
+              </div>
+              <div className="space-y-1 mt-2">
+                <div className="h-10 bg-slate-700/50 rounded-lg"></div>
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="h-9 bg-slate-700/30 rounded-lg ml-3"></div>
+                ))}
+              </div>
             </div>
+          </div>
 
-            {/* Video Player Skeleton */}
-            <div className="bg-black rounded-lg shadow-xl mb-8" style={{ aspectRatio: '16/9' }}>
-              <div className="w-full h-full bg-slate-800 flex items-center justify-center">
-                <div className="w-16 h-16 bg-slate-700 rounded-full"></div>
+          {/* Main content area */}
+          <div className="flex-1 flex flex-col min-w-0">
+            {/* Breadcrumb bar */}
+            <div className="hidden md:block bg-white border-b border-slate-200">
+              <div className="max-w-6xl mx-auto px-8 py-3 flex items-center gap-2">
+                <div className="h-4 bg-slate-200 rounded w-28"></div>
+                <div className="h-4 bg-slate-100 rounded w-3"></div>
+                <div className="h-4 bg-slate-200 rounded w-36"></div>
               </div>
             </div>
 
-            {/* Content Skeleton */}
-            <div className="space-y-4">
-              <div className="h-8 bg-slate-200 rounded w-3/4"></div>
-              <div className="h-4 bg-slate-200 rounded w-full"></div>
-              <div className="h-4 bg-slate-200 rounded w-full"></div>
-              <div className="h-4 bg-slate-200 rounded w-2/3"></div>
+            {/* Content skeleton — course-specific */}
+            <div className="flex-1 overflow-y-auto bg-white">
+              <LessonContentSkeleton courseType={courseType} />
             </div>
           </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 }
@@ -236,24 +264,22 @@ export function ScheduleItemSkeleton({ count = 5 }) {
   );
 }
 
-// Lesson Content Skeleton (for content area only)
-export function LessonContentSkeleton() {
+// Lesson Content Skeleton (for content area only) — delegates to course-specific skeleton
+export function LessonContentSkeleton({ courseType }) {
+  if (courseType === "prompt-engineering") return <PromptEngineeringContentSkeleton />;
+  if (courseType === "vibe-coding") return <VibeCodingContentSkeleton />;
+  return <GenericLessonContentSkeleton />;
+}
+
+function GenericLessonContentSkeleton() {
   return (
     <div className="max-w-6xl mx-auto animate-pulse">
-      {/* Goal Section Skeleton */}
-      <div className="px-8 pt-8 pb-6">
-        <div className="bg-amber-50 border border-amber-200 p-4 flex items-start gap-3">
-          <div className="w-6 h-6 bg-amber-200 rounded flex-shrink-0"></div>
-          <div className="flex-1 space-y-2">
-            <div className="h-4 bg-amber-200 rounded w-32"></div>
-            <div className="h-4 bg-amber-200 rounded w-full"></div>
-            <div className="h-4 bg-amber-200 rounded w-3/4"></div>
-          </div>
+      <div className="px-4 md:px-8 pt-6 pb-6">
+        <div className="bg-slate-50 border-l-4 border-slate-300 pl-4 py-3">
+          <div className="h-5 bg-slate-200 rounded w-3/4"></div>
         </div>
       </div>
-
-      {/* Video Player Skeleton */}
-      <div className="px-8 pb-8">
+      <div className="px-4 md:px-8 pb-8">
         <div className="max-w-3xl mx-auto">
           <div className="bg-black overflow-hidden shadow-xl">
             <div className="aspect-video bg-slate-800 flex items-center justify-center" style={{ maxHeight: "450px" }}>
@@ -262,37 +288,478 @@ export function LessonContentSkeleton() {
           </div>
         </div>
       </div>
-
-      {/* Presentation Skeleton */}
-      <div className="px-8 pb-8">
-        <div className="max-w-4xl mx-auto">
-          <div className="bg-slate-100 border border-slate-300 h-[600px] flex items-center justify-center">
-            <div className="text-center space-y-3">
-              <div className="w-16 h-16 bg-slate-300 rounded mx-auto"></div>
-              <div className="h-4 bg-slate-300 rounded w-32 mx-auto"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Prompts Section Skeleton */}
-      <div className="px-8 pb-8">
-        <div className="border border-slate-300 bg-white rounded-none">
-          {/* Tabs Skeleton */}
+      <div className="px-4 md:px-8 pb-8">
+        <div className="border border-slate-300 bg-white">
           <div className="bg-slate-50 border-b border-slate-300 flex gap-0">
             <div className="px-5 py-3 bg-slate-200 w-32"></div>
             <div className="px-5 py-3 bg-slate-100 w-32"></div>
             <div className="px-5 py-3 bg-slate-100 w-40"></div>
           </div>
-          {/* Content Skeleton */}
           <div className="p-4">
             <div className="bg-slate-50 border border-slate-200 rounded p-4 space-y-3">
               <div className="h-4 bg-slate-200 rounded w-3/4"></div>
               <div className="h-4 bg-slate-200 rounded w-full"></div>
               <div className="h-4 bg-slate-200 rounded w-5/6"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Prompt Engineering course content skeleton — mirrors SEC-01 through SEC-14
+function PromptEngineeringContentSkeleton() {
+  return (
+    <div className="max-w-6xl mx-auto animate-pulse">
+      <div className="px-4 md:px-8 pt-4 md:pt-6 pb-4 md:pb-8 space-y-5">
+
+        {/* SEC-01 Goal — blue gradient card */}
+        <div className="bg-gradient-to-r from-blue-500/80 to-indigo-500/80 rounded-xl p-5">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-8 h-8 bg-white/20 rounded-lg"></div>
+            <div className="h-5 bg-white/25 rounded w-28"></div>
+          </div>
+          <div className="h-5 bg-white/20 rounded w-full"></div>
+          <div className="h-4 bg-white/15 rounded w-2/3 mt-2"></div>
+        </div>
+
+        {/* SEC-02 Use Case — amber card */}
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-5">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-8 h-8 bg-amber-100 rounded-lg"></div>
+            <div className="h-5 bg-amber-200 rounded w-36"></div>
+          </div>
+          <div className="h-4 bg-amber-100 rounded w-full mb-2"></div>
+          <div className="h-4 bg-amber-100 rounded w-4/5"></div>
+          <div className="flex gap-2 mt-3">
+            <div className="h-5 bg-amber-100 rounded-full w-16"></div>
+            <div className="h-5 bg-amber-100 rounded-full w-14"></div>
+            <div className="h-5 bg-amber-100 rounded-full w-20"></div>
+          </div>
+        </div>
+
+        {/* SEC-03 Bad Prompt — red prompt block */}
+        <div>
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-8 h-8 bg-red-100 rounded-lg"></div>
+            <div className="h-5 bg-slate-200 rounded w-36"></div>
+            <div className="h-5 bg-red-100 rounded-full w-20"></div>
+          </div>
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4 space-y-2">
+            <div className="h-4 bg-red-100 rounded w-full"></div>
+            <div className="h-4 bg-red-100 rounded w-5/6"></div>
+            <div className="h-4 bg-red-100 rounded w-3/4"></div>
+          </div>
+        </div>
+
+        {/* SEC-04 Bad Output — red output */}
+        <div>
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-8 h-8 bg-red-100 rounded-lg"></div>
+            <div className="h-5 bg-slate-200 rounded w-36"></div>
+            <div className="h-5 bg-red-100 rounded-full w-24"></div>
+          </div>
+          <div className="border-l-4 border-l-red-300 bg-red-50/50 rounded-r-lg p-4 space-y-2">
+            <div className="h-4 bg-red-100/70 rounded w-full"></div>
+            <div className="h-4 bg-red-100/70 rounded w-4/5"></div>
+          </div>
+        </div>
+
+        {/* SEC-05 Why Failed — slate card with reasons */}
+        <div className="bg-slate-50 border border-slate-200 rounded-xl p-5">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-8 h-8 bg-slate-200 rounded-lg"></div>
+            <div className="h-5 bg-slate-200 rounded w-32"></div>
+          </div>
+          <div className="space-y-2.5">
+            {[1, 2, 3].map(i => (
+              <div key={i} className="flex items-start gap-2.5">
+                <div className="w-5 h-5 bg-red-100 rounded-full flex-shrink-0"></div>
+                <div className="h-4 bg-slate-200 rounded w-full"></div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* SEC-06 Good Prompt — green prompt block */}
+        <div>
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-8 h-8 bg-emerald-100 rounded-lg"></div>
+            <div className="h-5 bg-slate-200 rounded w-28"></div>
+            <div className="h-5 bg-emerald-100 rounded-full w-20"></div>
+          </div>
+          <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4 space-y-2">
+            <div className="h-4 bg-emerald-100 rounded w-full"></div>
+            <div className="h-4 bg-emerald-100 rounded w-5/6"></div>
+            <div className="h-4 bg-emerald-100 rounded w-4/5"></div>
+            <div className="h-4 bg-emerald-100 rounded w-3/4"></div>
+          </div>
+          <div className="h-3 bg-emerald-100 rounded w-40 mt-2"></div>
+        </div>
+
+        {/* SEC-07 Good Output — green output */}
+        <div>
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-8 h-8 bg-emerald-100 rounded-lg"></div>
+            <div className="h-5 bg-slate-200 rounded w-40"></div>
+            <div className="h-5 bg-emerald-100 rounded-full w-24"></div>
+          </div>
+          <div className="border-l-4 border-l-emerald-300 bg-emerald-50/50 rounded-r-lg p-4 space-y-2">
+            <div className="h-4 bg-emerald-100/70 rounded w-full"></div>
+            <div className="h-4 bg-emerald-100/70 rounded w-5/6"></div>
+            <div className="h-4 bg-emerald-100/70 rounded w-3/4"></div>
+          </div>
+        </div>
+
+        {/* SEC-15 Best AI — recommendation card */}
+        <div className="rounded-xl border-2 border-slate-200 overflow-hidden">
+          <div className="bg-gradient-to-r from-emerald-400/80 to-teal-500/80 px-5 py-3 flex items-center gap-3">
+            <div className="w-8 h-8 bg-white/20 rounded-lg"></div>
+            <div>
+              <div className="h-4 bg-white/25 rounded w-24 mb-1"></div>
+              <div className="h-3 bg-white/15 rounded w-32"></div>
+            </div>
+          </div>
+          <div className="bg-white p-5">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 bg-emerald-100 rounded-xl flex-shrink-0"></div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="h-5 bg-slate-200 rounded w-20"></div>
+                  <div className="h-4 bg-slate-100 rounded-full w-14"></div>
+                  <div className="h-4 bg-emerald-50 rounded-full w-10"></div>
+                </div>
+                <div className="h-4 bg-slate-100 rounded w-full mb-1"></div>
+                <div className="h-4 bg-slate-100 rounded w-3/4"></div>
+                <div className="h-9 bg-emerald-100 rounded-lg w-32 mt-3"></div>
+              </div>
+            </div>
+            <div className="mt-4 pt-4 border-t border-slate-100">
+              <div className="h-3 bg-slate-100 rounded w-28 mb-2"></div>
+              <div className="flex gap-2">
+                <div className="h-7 bg-slate-50 border border-slate-200 rounded-lg w-20"></div>
+                <div className="h-7 bg-slate-50 border border-slate-200 rounded-lg w-20"></div>
+              </div>
+            </div>
+            <div className="mt-4 p-3 bg-amber-50/50 rounded-lg border border-amber-200/40">
+              <div className="h-4 bg-amber-100/50 rounded w-full"></div>
+            </div>
+          </div>
+        </div>
+
+        {/* SEC-08 Upgrade — violet card */}
+        <div className="bg-gradient-to-br from-violet-50 to-purple-50 border border-violet-200 rounded-xl p-5">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-8 h-8 bg-violet-100 rounded-lg"></div>
+            <div className="h-5 bg-violet-200 rounded w-20"></div>
+            <div className="h-5 bg-violet-100 rounded-full w-20"></div>
+          </div>
+          <div className="bg-violet-50 border border-violet-200 rounded-lg p-4 space-y-2">
+            <div className="h-4 bg-violet-100 rounded w-full"></div>
+            <div className="h-4 bg-violet-100 rounded w-5/6"></div>
+            <div className="h-4 bg-violet-100 rounded w-4/5"></div>
+          </div>
+          <div className="h-4 bg-violet-100 rounded w-48 mt-3"></div>
+        </div>
+
+        {/* SEC-09 Guided Practice — sky card */}
+        <div className="bg-sky-50 border border-sky-200 rounded-xl p-5">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-8 h-8 bg-sky-100 rounded-lg"></div>
+            <div className="h-5 bg-sky-200 rounded w-28"></div>
+          </div>
+          <div className="space-y-3">
+            {[1, 2, 3].map(i => (
+              <div key={i} className="flex items-start gap-3">
+                <div className="w-7 h-7 bg-sky-200 rounded-full flex-shrink-0"></div>
+                <div className="h-4 bg-sky-100 rounded w-full pt-1"></div>
+              </div>
+            ))}
+          </div>
+          <div className="mt-4 p-3 bg-white/60 rounded-lg border border-sky-200">
+            <div className="h-4 bg-sky-100 rounded w-3/4"></div>
+          </div>
+        </div>
+
+        {/* SEC-10 Challenge — cyan-teal gradient */}
+        <div className="bg-gradient-to-r from-cyan-500/80 to-teal-400/80 rounded-xl p-5">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-8 h-8 bg-white/20 rounded-lg"></div>
+            <div className="h-5 bg-white/25 rounded w-36"></div>
+          </div>
+          <div className="h-4 bg-white/20 rounded w-full mb-2"></div>
+          <div className="h-4 bg-white/15 rounded w-4/5"></div>
+        </div>
+
+        {/* SEC-11 Checklist — white card */}
+        <div className="border border-slate-200 rounded-xl p-5 bg-white">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-8 h-8 bg-slate-100 rounded-lg"></div>
+            <div className="h-5 bg-slate-200 rounded w-36"></div>
+          </div>
+          <div className="space-y-2.5">
+            {[1, 2, 3, 4].map(i => (
+              <div key={i} className="flex items-start gap-3">
+                <div className="w-4 h-4 bg-slate-200 rounded mt-0.5"></div>
+                <div className="h-4 bg-slate-100 rounded w-full"></div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* SEC-12 What You Learned — teal card */}
+        <div className="bg-teal-50 border border-teal-200 rounded-xl p-5">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-8 h-8 bg-teal-100 rounded-lg"></div>
+            <div className="h-5 bg-teal-200 rounded w-28"></div>
+          </div>
+          <div className="space-y-2">
+            {[1, 2, 3].map(i => (
+              <div key={i} className="flex items-start gap-2.5">
+                <div className="w-1.5 h-1.5 bg-teal-300 rounded-full mt-2 flex-shrink-0"></div>
+                <div className="h-4 bg-teal-100 rounded w-full"></div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* SEC-13 Mini Quiz — indigo card */}
+        <div className="border-2 border-indigo-200 rounded-xl p-5 bg-indigo-50/30">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-8 h-8 bg-indigo-100 rounded-lg"></div>
+            <div className="h-5 bg-indigo-200 rounded w-24"></div>
+          </div>
+          <div className="space-y-4">
+            <div>
+              <div className="h-4 bg-indigo-100 rounded w-3/4 mb-2"></div>
+              <div className="space-y-1.5">
+                {["A", "B", "C"].map(l => (
+                  <div key={l} className="h-9 bg-white border border-slate-200 rounded-lg"></div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* SEC-14 Takeaway — dark gradient */}
+        <div className="bg-gradient-to-r from-slate-800 to-slate-700 rounded-xl p-6 text-center">
+          <div className="h-5 w-5 bg-yellow-400/40 rounded mx-auto mb-2"></div>
+          <div className="h-5 bg-white/15 rounded w-2/3 mx-auto"></div>
+        </div>
+
+        {/* Mark complete / Next */}
+        <div className="pt-6 border-t border-slate-200 flex items-center justify-between">
+          <div className="h-10 bg-slate-100 border border-slate-200 rounded-md w-40"></div>
+          <div className="h-10 bg-blue-100 rounded-md w-32"></div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Vibe Coding course content skeleton — mirrors VC-01 through VC-10
+function VibeCodingContentSkeleton() {
+  return (
+    <div className="max-w-6xl mx-auto animate-pulse">
+      {/* Top sections: VC-01 to VC-04 */}
+      <div className="px-4 md:px-8 pt-4 md:pt-6 pb-2 md:pb-4 space-y-5">
+
+        {/* VC-01 Mission — blue-violet gradient */}
+        <div className="bg-gradient-to-br from-blue-500/80 via-indigo-500/80 to-violet-600/80 rounded-2xl p-6 md:p-8">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-10 h-10 bg-white/15 rounded-xl"></div>
+            <div className="h-3 bg-white/20 rounded w-20"></div>
+          </div>
+          <div className="h-6 bg-white/20 rounded w-full mb-2"></div>
+          <div className="h-6 bg-white/15 rounded w-3/4"></div>
+          <div className="h-4 bg-white/10 rounded w-2/3 mt-3"></div>
+        </div>
+
+        {/* VC-02 What You'll Build — white card */}
+        <div className="bg-white border border-slate-200 rounded-2xl p-6">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-9 h-9 bg-indigo-50 rounded-xl"></div>
+            <div className="h-5 bg-slate-200 rounded w-36"></div>
+          </div>
+          <div className="space-y-2.5">
+            {[1, 2, 3, 4].map(i => (
+              <div key={i} className="flex items-start gap-3">
+                <div className="w-5 h-5 bg-indigo-100 rounded-lg flex-shrink-0"></div>
+                <div className="h-4 bg-slate-100 rounded w-full"></div>
+              </div>
+            ))}
+          </div>
+          <div className="flex gap-2 mt-4 pt-3 border-t border-slate-100">
+            {[1, 2, 3].map(i => (
+              <div key={i} className="h-5 bg-slate-100 rounded-full w-16"></div>
+            ))}
+          </div>
+        </div>
+
+        {/* VC-03 Prerequisites — amber card */}
+        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-9 h-9 bg-amber-100 rounded-xl"></div>
+            <div className="h-5 bg-amber-200 rounded w-32"></div>
+          </div>
+          <div className="space-y-2">
+            {[1, 2, 3].map(i => (
+              <div key={i} className="flex items-start gap-2.5">
+                <div className="w-4 h-4 bg-amber-200 rounded-full flex-shrink-0 mt-0.5"></div>
+                <div className="h-4 bg-amber-100 rounded w-full"></div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* VC-04 Workflow — white card with steps */}
+        <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
+          <div className="px-6 py-4 bg-slate-50 border-b border-slate-100 flex items-center gap-3">
+            <div className="w-9 h-9 bg-blue-100 rounded-xl"></div>
+            <div className="h-5 bg-slate-200 rounded w-36"></div>
+          </div>
+          <div className="divide-y divide-slate-100">
+            {[1, 2, 3, 4, 5].map(i => (
+              <div key={i} className="flex items-center gap-4 px-6 py-4">
+                <div className="w-8 h-8 bg-blue-500/60 rounded-full flex-shrink-0"></div>
+                <div className="h-4 bg-slate-100 rounded w-full"></div>
+                <div className="w-4 h-4 bg-slate-200 rounded flex-shrink-0"></div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Prompts Tabs skeleton */}
+      <div className="px-4 md:px-8 pb-4 md:pb-8">
+        <div className="mt-8 border border-slate-300 bg-white">
+          <div className="bg-slate-50 border-b border-slate-300 flex gap-0">
+            <div className="px-5 py-3 bg-slate-200 w-24"></div>
+            <div className="px-5 py-3 bg-slate-100 w-28"></div>
+            <div className="px-5 py-3 bg-slate-100 w-32"></div>
+          </div>
+          <div className="p-4">
+            <div className="bg-slate-50 border border-slate-200 rounded p-4 space-y-3">
+              <div className="h-4 bg-slate-200 rounded w-full"></div>
+              <div className="h-4 bg-slate-200 rounded w-5/6"></div>
               <div className="h-4 bg-slate-200 rounded w-4/5"></div>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* VC-05 Success Criteria — emerald */}
+      <div className="px-4 md:px-8 pb-4 md:pb-6">
+        <div className="rounded-2xl p-5 border-2 border-emerald-200 bg-white">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-9 h-9 bg-emerald-100 rounded-xl"></div>
+            <div className="h-5 bg-emerald-200 rounded w-36"></div>
+          </div>
+          <div className="space-y-2.5">
+            {[1, 2, 3].map(i => (
+              <div key={i} className="flex items-start gap-3">
+                <div className="w-4 h-4 bg-emerald-200 rounded mt-0.5"></div>
+                <div className="h-4 bg-emerald-100 rounded w-full"></div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Success images placeholder */}
+      <div className="px-4 md:px-8 pb-4 md:pb-8">
+        <div className="mt-4">
+          <div className="h-5 bg-slate-200 rounded w-36 mb-3"></div>
+          <div className="border border-slate-200 bg-slate-100 h-48 md:h-64"></div>
+        </div>
+      </div>
+
+      {/* Bottom sections: VC-06 to VC-10 */}
+      <div className="px-4 md:px-8 pb-4 md:pb-8 space-y-5">
+
+        {/* VC-06 Under the Hood — slate collapsible */}
+        <div className="bg-slate-50 border border-slate-200 rounded-2xl">
+          <div className="flex items-center gap-3 px-5 py-4">
+            <div className="w-9 h-9 bg-slate-200 rounded-xl"></div>
+            <div className="flex-1">
+              <div className="h-5 bg-slate-200 rounded w-32 mb-1"></div>
+              <div className="h-3 bg-slate-100 rounded w-44"></div>
+            </div>
+            <div className="w-4 h-4 bg-slate-200 rounded"></div>
+          </div>
+        </div>
+
+        {/* VC-07 Pro Tips — violet */}
+        <div className="bg-gradient-to-br from-violet-50 to-purple-50 border border-violet-200 rounded-2xl p-5">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-9 h-9 bg-violet-100 rounded-xl"></div>
+            <div className="h-5 bg-violet-200 rounded w-20"></div>
+            <div className="h-5 bg-violet-100 rounded-full w-16"></div>
+          </div>
+          <div className="space-y-2.5">
+            {[1, 2, 3].map(i => (
+              <div key={i} className="flex items-start gap-2.5">
+                <div className="w-4 h-4 bg-violet-200 rounded flex-shrink-0 mt-0.5"></div>
+                <div className="h-4 bg-violet-100 rounded w-full"></div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* VC-08 Common Pitfalls — red */}
+        <div className="bg-red-50 border border-red-200 rounded-2xl p-5">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-9 h-9 bg-red-100 rounded-xl"></div>
+            <div className="h-5 bg-red-200 rounded w-28"></div>
+          </div>
+          <div className="space-y-3">
+            {[1, 2].map(i => (
+              <div key={i} className="bg-white/70 rounded-xl p-3.5 border border-red-100 space-y-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-5 h-5 bg-red-100 rounded-full"></div>
+                  <div className="h-4 bg-red-100 rounded w-3/4"></div>
+                </div>
+                <div className="h-4 bg-red-50 rounded w-full ml-7"></div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* VC-09 Level Up — purple gradient */}
+        <div className="bg-gradient-to-r from-purple-500/80 to-indigo-600/80 rounded-2xl p-6">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-9 h-9 bg-white/15 rounded-xl"></div>
+            <div className="h-5 bg-white/20 rounded w-36"></div>
+          </div>
+          <div className="h-4 bg-white/15 rounded w-full mb-2"></div>
+          <div className="h-4 bg-white/10 rounded w-4/5"></div>
+        </div>
+
+        {/* VC-10 Checkpoint — dark slate */}
+        <div className="bg-gradient-to-br from-slate-800 to-slate-700 rounded-2xl p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 bg-white/10 rounded-xl"></div>
+              <div className="h-5 bg-white/15 rounded w-32"></div>
+            </div>
+            <div className="h-5 bg-white/10 rounded-full w-10"></div>
+          </div>
+          <div className="w-full bg-white/10 rounded-full h-1.5 mb-4"></div>
+          <div className="space-y-2.5">
+            {[1, 2, 3].map(i => (
+              <div key={i} className="flex items-start gap-3">
+                <div className="w-4 h-4 bg-white/10 rounded mt-0.5"></div>
+                <div className="h-4 bg-white/10 rounded w-full"></div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Mark complete / Next */}
+        <div className="pt-6 border-t border-slate-200 flex items-center justify-between">
+          <div className="h-10 bg-slate-100 border border-slate-200 rounded-md w-40"></div>
+          <div className="h-10 bg-blue-100 rounded-md w-32"></div>
         </div>
       </div>
     </div>

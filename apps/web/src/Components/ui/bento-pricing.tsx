@@ -146,7 +146,7 @@ export function BentoPricing() {
     fetchData();
   }, []);
 
-  const courseDisplayNames = ["Vibe Coding", "Prompt Engineering", "AI Agents"];
+  const courseDisplayNames = ["Vibe Coding", "Prompt Engineering", "AI Automations"];
   const featuredPack = packs.find((p) => p.slug === "all-pack" || p.slug?.includes("pack")) || packs[0];
   const otherItems = [
     ...packs.filter((p) => p.id !== featuredPack?.id).map((p) => ({ ...p, displayTitle: p.title })),

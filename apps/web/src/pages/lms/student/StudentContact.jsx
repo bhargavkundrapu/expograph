@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTheme } from "../../../app/providers/ThemeProvider";
 import { FiMail, FiPhone, FiSend, FiCheckCircle, FiMessageCircle, FiHelpCircle } from "react-icons/fi";
 
 const WA_NUMBER = "919014110638";
@@ -18,6 +19,7 @@ function buildWhatsAppURL({ topic, message }) {
 }
 
 export default function StudentContact() {
+  const { isDark } = useTheme();
   const [form, setForm] = useState({ topic: "", message: "" });
   const [submitted, setSubmitted] = useState(false);
 
@@ -34,9 +36,9 @@ export default function StudentContact() {
 
   if (submitted) {
     return (
-      <div className="bg-white" style={{ minHeight: "calc(100vh - 60px)" }}>
+      <div className={`transition-colors duration-200 ${isDark ? "bg-slate-900" : "bg-white"}`} style={{ minHeight: "calc(100vh - 60px)" }}>
         <div className="flex items-center justify-center min-h-[60vh] px-4">
-          <div className="w-full max-w-md text-center rounded-2xl bg-emerald-50 border border-emerald-200 p-8">
+          <div className={`w-full max-w-md text-center rounded-2xl p-8 ${isDark ? "bg-emerald-500/10 border border-emerald-500/30" : "bg-emerald-50 border border-emerald-200"}`}>
             <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100">
               <FiCheckCircle className="w-7 h-7 text-emerald-600" />
             </div>
@@ -55,7 +57,7 @@ export default function StudentContact() {
   }
 
   return (
-    <div className="bg-white" style={{ minHeight: "calc(100vh - 60px)" }}>
+    <div className={`transition-colors duration-200 ${isDark ? "bg-slate-900" : "bg-white"}`} style={{ minHeight: "calc(100vh - 60px)" }}>
       <div className="w-full max-w-3xl mx-auto px-4 py-6 sm:py-10">
         {/* Header */}
         <div className="mb-6 sm:mb-8">
@@ -70,26 +72,26 @@ export default function StudentContact() {
         <div className="grid grid-cols-2 gap-3 mb-6 sm:mb-8">
           <a
             href="mailto:kundrapu.bhargav@expograph.in"
-            className="flex items-center gap-3 rounded-xl bg-slate-50 border border-slate-200 p-3.5 sm:p-4 hover:bg-slate-100 hover:border-slate-300 transition-all group"
+            className={`flex items-center gap-3 rounded-xl border p-3.5 sm:p-4 transition-all group ${isDark ? "bg-slate-800 border-slate-700 hover:bg-slate-700 hover:border-slate-600" : "bg-slate-50 border-slate-200 hover:bg-slate-100 hover:border-slate-300"}`}
           >
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-violet-100">
+            <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${isDark ? "bg-violet-500/20" : "bg-violet-100"}`}>
               <FiMail className="w-4 h-4 text-violet-600" />
             </div>
             <div className="min-w-0">
-              <p className="text-[11px] text-slate-400 uppercase tracking-wider">Email</p>
-              <p className="text-xs sm:text-sm text-slate-600 group-hover:text-slate-900 transition-colors truncate">kundrapu.bhargav@expograph.in</p>
+              <p className={`text-[11px] uppercase tracking-wider ${isDark ? "text-slate-500" : "text-slate-400"}`}>Email</p>
+              <p className={`text-xs sm:text-sm transition-colors truncate ${isDark ? "text-slate-300 group-hover:text-white" : "text-slate-600 group-hover:text-slate-900"}`}>kundrapu.bhargav@expograph.in</p>
             </div>
           </a>
           <a
             href="tel:+919014110638"
-            className="flex items-center gap-3 rounded-xl bg-slate-50 border border-slate-200 p-3.5 sm:p-4 hover:bg-slate-100 hover:border-slate-300 transition-all group"
+            className={`flex items-center gap-3 rounded-xl border p-3.5 sm:p-4 transition-all group ${isDark ? "bg-slate-800 border-slate-700 hover:bg-slate-700 hover:border-slate-600" : "bg-slate-50 border-slate-200 hover:bg-slate-100 hover:border-slate-300"}`}
           >
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-cyan-100">
+            <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${isDark ? "bg-cyan-500/20" : "bg-cyan-100"}`}>
               <FiPhone className="w-4 h-4 text-cyan-600" />
             </div>
             <div className="min-w-0">
-              <p className="text-[11px] text-slate-400 uppercase tracking-wider">Phone</p>
-              <p className="text-xs sm:text-sm text-slate-600 group-hover:text-slate-900 transition-colors truncate">+91 90141 10638</p>
+              <p className={`text-[11px] uppercase tracking-wider ${isDark ? "text-slate-500" : "text-slate-400"}`}>Phone</p>
+              <p className={`text-xs sm:text-sm transition-colors truncate ${isDark ? "text-slate-300 group-hover:text-white" : "text-slate-600 group-hover:text-slate-900"}`}>+91 90141 10638</p>
             </div>
           </a>
         </div>
@@ -97,7 +99,7 @@ export default function StudentContact() {
         {/* Form */}
         <form
           onSubmit={handleSubmit}
-          className="rounded-xl bg-slate-50 border border-slate-200 p-5 sm:p-6 space-y-4"
+          className={`rounded-xl border p-5 sm:p-6 space-y-4 ${isDark ? "bg-slate-800 border-slate-700" : "bg-slate-50 border-slate-200"}`}
         >
           <div className="flex items-center gap-2 mb-1">
             <FiMessageCircle className="w-4 h-4 text-slate-500" />

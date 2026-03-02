@@ -14,7 +14,7 @@ function formatPrice(paise: number | null | undefined) {
   return `₹${rupees.toLocaleString("en-IN")}`;
 }
 
-const courseDisplayNames = ["Vibe Coding", "Prompt Engineering", "AI Agents"];
+const courseDisplayNames = ["Vibe Coding", "Prompt Engineering", "AI Automations"];
 
 export function PricingWithChart() {
   const [courses, setCourses] = useState<
@@ -90,7 +90,7 @@ export function PricingWithChart() {
       price: "from-orange-400 to-amber-400",
       btn: "from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 shadow-orange-500/20",
     },
-    // AI Agents — teal-cyan
+    // AI Automations — teal-cyan
     {
       border: "border-teal-500/25",
       borderHover: "hover:border-teal-400/50",

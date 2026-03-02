@@ -2,8 +2,11 @@ import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../../app/providers/AuthProvider";
+import { useTheme } from "../../../app/providers/ThemeProvider";
+import { useDashboardPrefs } from "../../../app/providers/DashboardPrefsProvider";
 import { apiFetch } from "../../../services/api";
 import { StudentCoursesSkeleton } from "../../../Components/common/SkeletonLoaders";
+import PageTransition from "../../../Components/common/PageTransition";
 import {
   FiCheck,
   FiGlobe,
@@ -22,6 +25,8 @@ export default function StudentCourses() {
   const navigate = useNavigate();
   const location = useLocation();
   const { token, user } = useAuth();
+  const { isDark } = useTheme();
+  const { isPinned, togglePinCourse } = useDashboardPrefs();
   const [loading, setLoading] = useState(true);
   const [courses, setCourses] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -143,13 +148,19 @@ export default function StudentCourses() {
     return module.lessons.every((lesson) => lesson.completed);
   };
 
-  const filteredCourses = courses.filter((course) => {
-    const matchesSearch =
-      course.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      course.description?.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesLevel = filterLevel === "all" || course.level === filterLevel;
-    return matchesSearch && matchesLevel;
-  });
+  const filteredCourses = courses
+    .filter((course) => {
+      const matchesSearch =
+        course.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        course.description?.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesLevel = filterLevel === "all" || course.level === filterLevel;
+      return matchesSearch && matchesLevel;
+    })
+    .sort((a, b) => {
+      const aPinned = isPinned(a.slug) ? 1 : 0;
+      const bPinned = isPinned(b.slug) ? 1 : 0;
+      return bPinned - aPinned;
+    });
 
   // Calculate overall progress (enrolled courses only)
   const enrolledCourses = courses.filter((c) => c.enrolled);
@@ -184,22 +195,20 @@ export default function StudentCourses() {
   // Show "Coming Soon" for bonus courses
   if (isBonusCoursesPage) {
     return (
-      <div className="min-h-screen bg-slate-50 p-8">
+      <div className={`min-h-screen p-8 transition-colors duration-200 ${isDark ? "bg-slate-900" : "bg-slate-50"}`}>
         <div className="max-w-7xl mx-auto">
-          {/* Header Section */}
           <div className="mb-8">
             <div className="flex items-start justify-between mb-4">
               <div>
-                <p className="text-xs uppercase tracking-wider text-slate-500 mb-1">BONUS CONTENT</p>
-                <h1 className="text-3xl md:text-4xl font-bold text-slate-900 mb-2">
+                <p className={`text-xs uppercase tracking-wider mb-1 ${isDark ? "text-slate-400" : "text-slate-500"}`}>BONUS CONTENT</p>
+                <h1 className={`text-3xl md:text-4xl font-bold mb-2 ${isDark ? "text-white" : "text-slate-900"}`}>
                   Bonus Courses
                 </h1>
               </div>
             </div>
           </div>
 
-          {/* Coming Soon Card */}
-          <div className="bg-white rounded-lg border border-slate-200 shadow-sm p-12 text-center">
+          <div className={`rounded-lg border shadow-sm p-12 text-center ${isDark ? "bg-slate-800 border-slate-700" : "bg-white border-slate-200"}`}>
             <div className="max-w-md mx-auto">
               <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-6">
                 <FiClock className="w-10 h-10 text-white" />
@@ -272,14 +281,15 @@ export default function StudentCourses() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 p-4 md:p-8">
+    <PageTransition>
+    <div className={`min-h-screen p-4 md:p-8 transition-colors duration-200 ${isDark ? "bg-slate-900" : "bg-slate-50"}`}>
       <div className="max-w-7xl mx-auto">
         {/* Header Section */}
-        <div className="mb-4 md:mb-8">
+        <div className="mb-4 md:mb-8 animate-fade-slide-up">
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-4">
             <div>
-              <p className="text-xs uppercase tracking-wider text-slate-500 mb-1">MY LEARNINGS</p>
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 mb-1 sm:mb-2">
+              <p className={`text-xs uppercase tracking-wider mb-1 ${isDark ? "text-slate-400" : "text-slate-500"}`}>MY LEARNINGS</p>
+              <h1 className={`text-2xl sm:text-3xl md:text-4xl font-bold mb-1 sm:mb-2 ${isDark ? "text-white" : "text-slate-900"}`}>
                 {courses.length > 0 ? courses[0]?.learning_path_name || "My Learning Path" : "My Learnings"}
               </h1>
               {totalDuration > 0 && (
@@ -288,13 +298,13 @@ export default function StudentCourses() {
             </div>
             {courses.length > 0 && (
               <div className="flex items-center gap-3">
-                <div className="w-32 sm:w-48 bg-slate-200 rounded-full h-2">
+                <div className={`w-32 sm:w-48 rounded-full h-2 ${isDark ? "bg-slate-700" : "bg-slate-200"}`}>
                   <div
-                    className="bg-blue-500 rounded-full h-2 transition-all duration-500"
+                    className="bg-blue-500 rounded-full h-2 progress-bar-animated"
                     style={{ width: `${overallProgress}%` }}
                   />
                 </div>
-                <span className="text-sm text-slate-500 font-medium">{overallProgress}%</span>
+                <span className={`text-sm font-medium ${isDark ? "text-slate-400" : "text-slate-500"}`}>{overallProgress}%</span>
               </div>
             )}
           </div>
@@ -328,36 +338,15 @@ export default function StudentCourses() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.05 }}
-                  onClick={() => handleCourseClick(course)}
-                  className={`bg-white rounded-lg border shadow-sm transition-all overflow-hidden relative ${
-                    locked
-                      ? "border-slate-300 cursor-pointer hover:shadow-md"
-                      : "border-slate-200 hover:shadow-md cursor-pointer"
-                  }`}
+                  onClick={() => locked ? navigate(`/lms/student/courses/${course.slug}`) : handleCourseClick(course)}
+                  className={`rounded-lg border shadow-sm transition-all overflow-hidden relative hover-lift ${
+                    isDark
+                      ? locked ? "bg-slate-800 border-slate-700 cursor-pointer" : "bg-slate-800 border-slate-700 cursor-pointer"
+                      : locked ? "bg-white border-slate-300 cursor-pointer hover:shadow-md" : "bg-white border-slate-200 hover:shadow-md cursor-pointer"
+                  } ${isPinned(course.slug) ? "ring-2 ring-amber-400/60" : ""}`}
                 >
-                  {locked && (
-                    <div className="absolute inset-0 bg-slate-50/80 z-10 flex items-center justify-center rounded-lg opacity-0 hover:opacity-100 transition-opacity">
-                      <div className="text-center">
-                        <FiLock className="w-12 h-12 text-slate-400 mx-auto mb-2" />
-                        <p className="text-sm font-medium text-slate-700 mb-2">Locked</p>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            openBuyModal(course);
-                          }}
-                          disabled={!canBuy}
-                          className={`px-4 py-2 rounded-lg font-semibold text-sm transition-colors ${
-                            canBuy
-                              ? "bg-blue-600 hover:bg-blue-700 text-white"
-                              : "bg-slate-300 text-slate-500 cursor-not-allowed"
-                          }`}
-                        >
-                          Get Course {canBuy && priceRupees > 0 ? `(₹${priceRupees})` : ""}
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                  <div className={`p-4 md:p-6 ${locked ? "opacity-75" : ""}`}>
+                  
+                  <div className="p-4 md:p-6">
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 flex items-center justify-center">
@@ -385,42 +374,88 @@ export default function StudentCourses() {
                         )}
                       </div>
                     </div>
-                    <p className="text-xs uppercase tracking-wider text-slate-500 mb-2">COURSE</p>
-                    <h3 className="text-lg font-bold text-slate-900 mb-2">
-                      {index + 1}. {course.title || "Untitled Course"}
-                    </h3>
-                    <p className="text-sm text-slate-500 mb-4 line-clamp-2">
-                      {course.description || "No description available"}
-                    </p>
-                    <p className="text-sm text-slate-500 mb-4">
-                      {topicsCount} {topicsCount === 1 ? "Topic" : "Topics"}
-                    </p>
-                    {locked && canBuy && (
-                      <div className="mb-4">
+                    <p className={`text-xs uppercase tracking-wider mb-2 ${isDark ? "text-slate-400" : "text-slate-500"}`}>COURSE</p>
+                    {!locked && (
+                      <div className="flex items-center justify-between mb-2">
+                        <div />
                         <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            openBuyModal(course);
-                          }}
-                          className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg text-sm"
+                          onClick={(e) => { e.stopPropagation(); togglePinCourse(course.slug); }}
+                          className={`p-1.5 rounded-lg transition-all ${isPinned(course.slug) ? "text-amber-500 bg-amber-50 dark:bg-amber-500/10" : isDark ? "text-slate-600 hover:text-slate-400 hover:bg-slate-700" : "text-slate-300 hover:text-slate-500 hover:bg-slate-100"}`}
+                          title={isPinned(course.slug) ? "Unpin course" : "Pin to top"}
                         >
-                          Get Course — ₹{priceRupees}
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill={isPinned(course.slug) ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" className="w-4 h-4">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
+                          </svg>
                         </button>
                       </div>
                     )}
-                    {technologies.length > 0 && (
-                      <div className="flex flex-wrap gap-2">
-                        {technologies.slice(0, 3).map((tech, techIndex) => (
-                          <span
-                            key={techIndex}
-                            className="px-3 py-1 bg-slate-100 rounded-full text-xs text-slate-700 font-medium"
+                    <h3 className={`text-lg font-bold mb-2 ${isDark ? "text-white" : "text-slate-900"}`}>
+                      {index + 1}. {course.title || "Untitled Course"}
+                    </h3>
+                    {locked ? (
+                      <>
+                        <p className={`text-sm mb-3 ${isDark ? "text-slate-500" : "text-slate-400"}`}>
+                          Unlock this course to access all lessons and content.
+                        </p>
+                        <div className="flex flex-col gap-2">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              navigate(`/lms/student/courses/${course.slug}`);
+                            }}
+                            className={`w-full py-2.5 px-4 font-semibold rounded-xl text-sm transition-all flex items-center justify-center gap-2 border ${
+                              isDark ? "border-slate-600 text-slate-300 hover:bg-slate-700" : "border-slate-300 text-slate-700 hover:bg-slate-50"
+                            }`}
                           >
-                            {typeof tech === "string"
-                              ? tech.toUpperCase()
-                              : tech.name?.toUpperCase() || tech}
-                          </span>
-                        ))}
-                      </div>
+                            <FiBookOpen className="w-4 h-4" />
+                            Explore Course
+                          </button>
+                          {canBuy && (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                openBuyModal(course);
+                              }}
+                              className="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm transition-colors"
+                            >
+                              Get Course — ₹{priceRupees}
+                            </button>
+                          )}
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <p className={`text-sm mb-3 line-clamp-2 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                          {course.description || "No description available"}
+                        </p>
+                        <p className={`text-sm mb-3 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                          {topicsCount} {topicsCount === 1 ? "Topic" : "Topics"}
+                        </p>
+                        {technologies.length > 0 && (
+                          <div className="flex flex-wrap gap-2 mb-3">
+                            {technologies.slice(0, 3).map((tech, techIndex) => (
+                              <span
+                                key={techIndex}
+                                className={`px-3 py-1 rounded-full text-xs font-medium ${isDark ? "bg-slate-700 text-slate-300" : "bg-slate-100 text-slate-700"}`}
+                              >
+                                {typeof tech === "string"
+                                  ? tech.toUpperCase()
+                                  : tech.name?.toUpperCase() || tech}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/lms/student/courses/${course.slug}`);
+                          }}
+                          className="w-full mt-1 py-2.5 px-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold rounded-xl text-sm transition-all flex items-center justify-center gap-2 shadow-sm hover:shadow-md"
+                        >
+                          <FiBookOpen className="w-4 h-4" />
+                          Explore Course
+                        </button>
+                      </>
                     )}
                   </div>
                 </motion.div>
@@ -451,9 +486,8 @@ export default function StudentCourses() {
               className="fixed inset-0 z-50 flex items-center justify-center p-4"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
-                {/* Header */}
-                <div className="p-6 border-b border-slate-200 relative">
+              <div className={`rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col ${isDark ? "bg-slate-800 border border-slate-700" : "bg-white"}`}>
+                <div className={`p-6 border-b relative ${isDark ? "border-slate-700" : "border-slate-200"}`}>
                   <button
                     onClick={handleCloseModal}
                     className="absolute top-6 right-6 w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 transition-colors"
@@ -626,5 +660,6 @@ export default function StudentCourses() {
         isLoggedIn={!!token}
       />
     </div>
+    </PageTransition>
   );
 }

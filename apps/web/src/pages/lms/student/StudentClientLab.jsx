@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../../app/providers/AuthProvider";
+import { useTheme } from "../../../app/providers/ThemeProvider";
 import { apiFetch } from "../../../services/api";
 import { GenericPageSkeleton } from "../../../Components/common/SkeletonLoaders";
 import {
@@ -18,6 +19,7 @@ export default function StudentClientLab() {
   const navigate = useNavigate();
   const { projectId, taskId } = useParams();
   const { token } = useAuth();
+  const { isDark } = useTheme();
   const [loading, setLoading] = useState(true);
   const [me, setMe] = useState(null);
   const [projects, setProjects] = useState([]);
@@ -141,17 +143,17 @@ export default function StudentClientLab() {
   // Not eligible and no assignments: full locked screen
   if (!eligible && !hasAssignments) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-4 md:p-8 lg:rounded-tl-lg overflow-hidden">
+      <div className={`min-h-screen p-4 md:p-8 lg:rounded-tl-lg overflow-hidden transition-colors duration-200 ${isDark ? "bg-slate-900" : "bg-gradient-to-br from-slate-50 via-white to-slate-50"}`}>
         <div className="max-w-xl mx-auto text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white/90 backdrop-blur rounded-2xl border-2 border-slate-200 shadow-xl p-8"
+            className={`backdrop-blur rounded-2xl border-2 shadow-xl p-8 ${isDark ? "bg-slate-800/90 border-slate-700" : "bg-white/90 border-slate-200"}`}
           >
-            <div className="w-20 h-20 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-6">
+            <div className={`w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 ${isDark ? "bg-slate-700" : "bg-slate-100"}`}>
               <FiLock className="w-10 h-10 text-slate-500" />
             </div>
-            <h1 className="text-2xl font-bold text-slate-900 mb-2">Client Lab is locked</h1>
+            <h1 className={`text-2xl font-bold mb-2 ${isDark ? "text-white" : "text-slate-900"}`}>Client Lab is locked</h1>
             <p className="text-slate-600 mb-6">
               Complete at least 75% of your overall progress and finish all required courses to unlock Real-World Client Lab.
             </p>
@@ -180,16 +182,16 @@ export default function StudentClientLab() {
   if (taskId && taskDetail) {
     const latest = taskDetail.latest_submission;
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-4 md:p-8 lg:rounded-tl-lg overflow-hidden">
+      <div className={`min-h-screen p-4 md:p-8 lg:rounded-tl-lg overflow-hidden transition-colors duration-200 ${isDark ? "bg-slate-900" : "bg-gradient-to-br from-slate-50 via-white to-slate-50"}`}>
         <div className="max-w-2xl mx-auto">
           {!eligible && (
-            <div className="mb-4 p-4 bg-amber-50 border border-amber-200 rounded-2xl text-amber-800 text-sm">
+            <div className={`mb-4 p-4 border rounded-2xl text-sm ${isDark ? "bg-amber-500/10 border-amber-500/30 text-amber-300" : "bg-amber-50 border-amber-200 text-amber-800"}`}>
               Complete 75% overall progress and all required courses to submit work. You can view your assigned tasks below.
             </div>
           )}
           <button
             onClick={() => { navigate(projectId ? `/lms/student/client-lab/projects/${projectId}` : "/lms/student/client-lab"); }}
-            className="mb-6 flex items-center gap-2 text-slate-600 hover:text-slate-900 rounded-lg px-2 py-1 hover:bg-slate-100 transition-colors"
+            className={`mb-6 flex items-center gap-2 rounded-lg px-2 py-1 transition-colors ${isDark ? "text-slate-400 hover:text-white hover:bg-slate-800" : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"}`}
           >
             <FiArrowLeft className="w-5 h-5" /> Back
           </button>
@@ -260,16 +262,16 @@ export default function StudentClientLab() {
   if (projectId && projectDetail) {
     const projectTasks = projectDetail.tasks || [];
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-4 md:p-8 lg:rounded-tl-lg overflow-hidden">
+      <div className={`min-h-screen p-4 md:p-8 lg:rounded-tl-lg overflow-hidden transition-colors duration-200 ${isDark ? "bg-slate-900" : "bg-gradient-to-br from-slate-50 via-white to-slate-50"}`}>
         <div className="max-w-2xl mx-auto">
           {!eligible && (
-            <div className="mb-4 p-4 bg-amber-50 border border-amber-200 rounded-2xl text-amber-800 text-sm">
+            <div className={`mb-4 p-4 border rounded-2xl text-sm ${isDark ? "bg-amber-500/10 border-amber-500/30 text-amber-300" : "bg-amber-50 border-amber-200 text-amber-800"}`}>
               Complete 75% progress and all courses to submit work.
             </div>
           )}
           <button
             onClick={() => navigate("/lms/student/client-lab")}
-            className="mb-6 flex items-center gap-2 text-slate-600 hover:text-slate-900 rounded-lg px-2 py-1 hover:bg-slate-100"
+            className={`mb-6 flex items-center gap-2 rounded-lg px-2 py-1 ${isDark ? "text-slate-400 hover:text-white hover:bg-slate-800" : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"}`}
           >
             <FiArrowLeft className="w-5 h-5" /> Back to Client Lab
           </button>
@@ -312,10 +314,10 @@ export default function StudentClientLab() {
 
   // Default: list assigned projects and tasks (LMS portal style)
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-4 md:p-8 lg:rounded-tl-lg overflow-hidden">
+    <div className={`min-h-screen p-4 md:p-8 lg:rounded-tl-lg overflow-hidden transition-colors duration-200 ${isDark ? "bg-slate-900" : "bg-gradient-to-br from-slate-50 via-white to-slate-50"}`}>
       <div className="max-w-4xl mx-auto">
         {!eligible && hasAssignments && (
-          <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-2xl text-amber-800 text-sm flex items-start gap-2">
+          <div className={`mb-6 p-4 border rounded-2xl text-sm flex items-start gap-2 ${isDark ? "bg-amber-500/10 border-amber-500/30 text-amber-300" : "bg-amber-50 border-amber-200 text-amber-800"}`}>
             <FiLock className="w-4 h-4 shrink-0 mt-0.5" />
             <span>Complete 75% overall progress and all required courses to submit work. Your assigned items are shown below.</span>
           </div>

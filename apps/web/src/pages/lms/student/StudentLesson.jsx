@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../../app/providers/AuthProvider";
+import { useTheme } from "../../../app/providers/ThemeProvider";
 import { apiFetch } from "../../../services/api";
 import { StudentLessonSkeleton, LessonContentSkeleton } from "../../../Components/common/SkeletonLoaders";
 import { ButtonLoading } from "../../../Components/common/LoadingStates";
@@ -37,6 +38,12 @@ import { CodeBlock } from "../../../Components/ui/code-block";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "../../../Components/ui/tabs";
 import { SLIDES as htmlBasicSlides, SLIDE_COUNT as htmlBasicSlideCount } from "../../../data/slides/htmlBasicElements.jsx";
 import LessonSearchModal from "../../../Components/student/LessonSearchModal";
+import { useGamification } from "../../../app/providers/GamificationProvider";
+import { ConfettiBurst, XPFloat, LessonCompleteMessage } from "../../../Components/student/gamification/Confetti";
+import { BookmarkButton, LessonNotes } from "../../../Components/student/gamification/NotesBookmark";
+import ShareProgressModal from "../../../Components/student/gamification/ShareProgressModal";
+import KeyboardShortcutsModal from "../../../Components/student/KeyboardShortcutsModal";
+import { useKeyboardShortcuts } from "../../../hooks/useKeyboardShortcuts";
 
 const preloadProfile = () => import("./StudentProfile");
 const preloadHome = () => import("./StudentHome");
@@ -46,6 +53,11 @@ export default function StudentLesson() {
   const navigate = useNavigate();
   const { courseSlug, moduleSlug, lessonSlug } = useParams();
   const { token } = useAuth();
+  const { toggleMode } = useTheme();
+  const { recordLessonComplete, recordQuizComplete, recordPerfectQuiz, xpRewards } = useGamification();
+  const [showLessonConfetti, setShowLessonConfetti] = useState(false);
+  const [showXPFloat, setShowXPFloat] = useState(false);
+  const [xpFloatAmount, setXPFloatAmount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [contentLoading, setContentLoading] = useState(false);
   const [lesson, setLesson] = useState(null);
@@ -79,6 +91,8 @@ export default function StudentLesson() {
   const [selectedLearnStepIndex, setSelectedLearnStepIndex] = useState(0);
   const [captionsEnabled, setCaptionsEnabled] = useState(true);
   const [searchModalOpen, setSearchModalOpen] = useState(false);
+  const [shortcutsOpen, setShortcutsOpen] = useState(false);
+  const [shareModalOpen, setShareModalOpen] = useState(false);
   const captionsBlobUrlRef = useRef(null);
   const videoRef = useRef(null);
   const courseDataLoadedRef = useRef(false);
@@ -328,6 +342,11 @@ export default function StudentLesson() {
 
       if (res?.ok) {
         setCompleted(true);
+        recordLessonComplete();
+        setShowLessonConfetti(true);
+        setXPFloatAmount(xpRewards.lessonComplete);
+        setShowXPFloat(true);
+        setTimeout(() => setShowXPFloat(false), 1800);
         setAllModules((prev) =>
           prev.map((mod) => ({
             ...mod,
@@ -376,6 +395,14 @@ export default function StudentLesson() {
     setMcqScore({ correct, total: mcqs.length });
     setWrongAnswers(wrong);
     setMcqSubmitted(true);
+
+    recordQuizComplete();
+    const isPerfect = correct === mcqs.length;
+    if (isPerfect) recordPerfectQuiz();
+    setXPFloatAmount(isPerfect ? xpRewards.perfectQuiz : xpRewards.quizComplete);
+    setShowXPFloat(true);
+    if (isPerfect) setShowLessonConfetti(true);
+    setTimeout(() => setShowXPFloat(false), 1800);
   };
 
   const handleRetest = () => {
@@ -471,6 +498,13 @@ export default function StudentLesson() {
     }
   }, [courseSlug, navigate, allModules]);
 
+  const courseType = useMemo(() => {
+    const slug = (courseSlug || "").toLowerCase();
+    if (slug.includes("prompt")) return "prompt-engineering";
+    if (slug.includes("vibe") || slug.includes("coding")) return "vibe-coding";
+    return null;
+  }, [courseSlug]);
+
   const nextLesson = useMemo(() => {
     if (!allLessons.length || !lesson?.id) return null;
     const idx = allLessons.findIndex((l) => String(l.id) === String(lesson.id));
@@ -478,6 +512,36 @@ export default function StudentLesson() {
     const next = allLessons[idx + 1];
     return next?.locked ? null : next;
   }, [allLessons, lesson?.id]);
+
+  const prevLesson = useMemo(() => {
+    if (!allLessons.length || !lesson?.id) return null;
+    const idx = allLessons.findIndex((l) => String(l.id) === String(lesson.id));
+    if (idx <= 0) return null;
+    return allLessons[idx - 1];
+  }, [allLessons, lesson?.id]);
+
+  const handlePrevLesson = async () => {
+    if (!prevLesson) return;
+    isManualNavigationRef.current = true;
+    const targetModuleSlug = prevLesson.moduleSlug;
+    navigate(`/lms/student/courses/${courseSlug}/modules/${targetModuleSlug}/lessons/${prevLesson.slug}`, { replace: true });
+    await fetchLessonData(courseSlug, targetModuleSlug, prevLesson.slug, true);
+  };
+
+  useKeyboardShortcuts({
+    openSearch: () => setSearchModalOpen(true),
+    openHelp: () => setShortcutsOpen(true),
+    closeModal: () => {
+      if (shortcutsOpen) setShortcutsOpen(false);
+      else if (searchModalOpen) setSearchModalOpen(false);
+      else if (selectedResource) setSelectedResource(null);
+    },
+    markComplete: () => { if (!completed && !markCompleteLoading) handleMarkComplete(); },
+    nextLesson: handleNextLesson,
+    prevLesson: handlePrevLesson,
+    toggleSidebar: () => setSidebarVisible(v => !v),
+    toggleDarkMode: toggleMode,
+  }, !loading);
 
   // Prepare modules structure for sidebar - optimized for performance
   const sidebarModules = useMemo(() => {
@@ -518,7 +582,7 @@ export default function StudentLesson() {
   }, [allModules, lesson?.id, lessonSlug]);
 
   if (loading) {
-    return <StudentLessonSkeleton />;
+    return <StudentLessonSkeleton courseType={courseType} />;
   }
 
   if (!lesson) {
@@ -539,8 +603,13 @@ export default function StudentLesson() {
     );
   }
 
+  const lessonPath = `/lms/student/courses/${courseSlug}/modules/${moduleSlug}/lessons/${lessonSlug}`;
+  const lessonDisplayTitle = lesson?.title || lesson?.name || lessonSlug;
+
   return (
     <div className="flex h-screen w-full overflow-hidden bg-slate-100">
+      <ConfettiBurst active={showLessonConfetti} onDone={() => setShowLessonConfetti(false)} />
+      <XPFloat amount={xpFloatAmount} show={showXPFloat} />
       <main className="flex-1 flex flex-col min-w-0">
         {/* Navbar — hidden on mobile, visible on md+ */}
         <nav className="hidden md:block flex-shrink-0 bg-white border-b border-slate-200 shadow-sm px-6 py-3">
@@ -549,6 +618,7 @@ export default function StudentLesson() {
               <img src="/2.png" alt="ExpoGraph" className="h-13 w-64 ml-8 object-contain object-left" />
             </button>
             <div className="flex items-center gap-6 mr-16">
+              <BookmarkButton lessonPath={lessonPath} lessonTitle={lessonDisplayTitle} />
               <button
                 type="button"
                 onClick={() => setSearchModalOpen(true)}
@@ -685,7 +755,7 @@ export default function StudentLesson() {
             </div>
           )}
           {contentLoading ? (
-            <LessonContentSkeleton />
+            <LessonContentSkeleton courseType={courseType} />
           ) : (
             <div className="max-w-6xl mx-auto">
             {/* Structured sections detection */}
@@ -1266,6 +1336,17 @@ export default function StudentLesson() {
                     </button>
                   )}
                 </div>
+                {/* Completion message with share */}
+                <LessonCompleteMessage
+                  show={completed}
+                  lessonsLeft={moduleLessons.filter(l => !l.completed).length}
+                  moduleName={lesson?.module_title || moduleSlug}
+                  onShare={() => setShareModalOpen(true)}
+                />
+                {/* Notes */}
+                <div className="mt-4">
+                  <LessonNotes lessonPath={lessonPath} />
+                </div>
               </div>
             </div>
             )}
@@ -1309,6 +1390,19 @@ export default function StudentLesson() {
         courseSlug={courseSlug}
         onLessonSelect={handleSearchLessonSelect}
         onModuleSelect={handleSearchModuleSelect}
+      />
+
+      <KeyboardShortcutsModal
+        open={shortcutsOpen}
+        onClose={() => setShortcutsOpen(false)}
+        context="all"
+      />
+
+      <ShareProgressModal
+        open={shareModalOpen}
+        onClose={() => setShareModalOpen(false)}
+        lessonTitle={lessonDisplayTitle}
+        courseName={course?.title || courseSlug}
       />
     </div>
   );

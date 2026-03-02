@@ -11,10 +11,10 @@ const ICON_URL = "https://res.cloudinary.com/da2wrgabu/image/upload/v1772280495/
 
 const testimonials = [
   { name: "Arjun S.", role: "Vibe Coding Student", text: "Vibe Coding taught me to build full apps with smart prompts. I shipped my first SaaS in 2 weeks flat." },
-  { name: "Priya M.", role: "AI Agents Student", text: "The AI Agents course is next level. I automated my workflow and landed a freelance gig through Real Client Lab." },
+  { name: "Priya M.", role: "AI Automations Student", text: "The AI Automations course is next level. I automated my workflow and landed a freelance gig through Real Client Lab." },
   { name: "Rahul K.", role: "CS Student, 3rd Year", text: "Vibe Coding + Prompt Engineering at ₹99 each? I've paid ₹10K+ elsewhere for worse content. Absolute steal." },
   { name: "Sneha D.", role: "Prompt Engineering Student", text: "Prompt Engineering taught me to think like a 10x developer. The resume builder + certificate helped me crack 3 interviews." },
-  { name: "Vikram T.", role: "Freelancer", text: "AI Agents + Real Client Lab gave me actual portfolio pieces. No other platform does that at this price point." },
+  { name: "Vikram T.", role: "Freelancer", text: "AI Automations + Real Client Lab gave me actual portfolio pieces. No other platform does that at this price point." },
   { name: "Ananya R.", role: "BCA Student", text: "Started with Prompt Engineering, then Vibe Coding — went from zero to building full apps in 8 weeks. Brilliant." },
 ];
 
@@ -199,7 +199,7 @@ export default function LoginPage() {
               </span>
             </h2>
             <p className="text-base text-white/50 leading-relaxed mb-8 max-w-md">
-              Join 2,000+ users mastering Vibe Coding, Prompt Engineering & AI Agents — with smart prompts and real-world projects, all starting at just ₹99.
+              Join 2,000+ users mastering Vibe Coding, Prompt Engineering & AI Automations — with smart prompts and real-world projects, all starting at just ₹99.
             </p>
 
             {/* Stats row */}
