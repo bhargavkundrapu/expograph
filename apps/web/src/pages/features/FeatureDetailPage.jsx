@@ -102,13 +102,13 @@ const featureDetails = {
           { icon: <Target className="h-5 w-5" />, title: "Real Client Projects", desc: "Companies submit actual project briefs — landing pages, dashboards, APIs, mobile designs. You pick up tasks just like in a real job." },
           { icon: <Users className="h-5 w-5" />, title: "Mentor-Reviewed Work", desc: "Every submission is reviewed by an experienced mentor. You get real feedback — what's great, what needs improvement, and how to fix it." },
           { icon: <Award className="h-5 w-5" />, title: "Portfolio-Ready Output", desc: "Every completed project becomes a portfolio piece. Show employers you've built real things for real people, not just tutorials." },
-          { icon: <TrendingUp className="h-5 w-5" />, title: "Unlock with Progress", desc: "Reach 75% course completion to unlock the Client Lab. This ensures you have the skills to deliver professional-quality work." },
+          { icon: <TrendingUp className="h-5 w-5" />, title: "Unlock with All Pack", desc: "Real Client Lab is available only when you buy the All Pack (Vibe Coding + Prompt to Profit + AI Automations). Complete 75% progress and all courses to submit work." },
         ],
       },
       {
         title: "Your Journey in the Client Lab",
         steps: [
-          { num: "01", title: "Complete 75% of Your Course", desc: "Build a solid foundation first. Once you've mastered the basics and intermediate concepts, the Client Lab unlocks automatically." },
+          { num: "01", title: "Get the All Pack", desc: "Real Client Lab is included with the All Pack. Buy all three courses (Vibe Coding, Prompt to Profit, AI Automations) to unlock access." },
           { num: "02", title: "Pick a Project", desc: "Browse available client projects. Each one has a clear scope, deadline, and list of tasks. Choose what excites you." },
           { num: "03", title: "Submit Your Work", desc: "Complete tasks, submit your PR/work link with notes, and wait for mentor review. Just like a real development workflow." },
           { num: "04", title: "Iterate & Ship", desc: "Get feedback, make changes, and resubmit until approved. This cycle is exactly how professional teams work." },
@@ -324,6 +324,27 @@ export default function FeatureDetailPage() {
             </div>
           </div>
         </section>
+
+        {/* Locked callout for Real Client Lab */}
+        {slug === "real-client-lab" && (
+          <section className="px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 -mt-4 mb-4">
+            <div className="max-w-2xl mx-auto">
+              <div className="rounded-2xl border border-amber-500/30 bg-amber-500/10 p-5 text-center">
+                <p className="text-amber-200/90 font-medium mb-2">Locked for you?</p>
+                <p className="text-sm text-white/70 mb-4">
+                  Real Client Lab is available only with the All Pack. Buy all three courses (Vibe Coding, Prompt to Profit, AI Automations) to unlock.
+                </p>
+                <Link
+                  to="/courses"
+                  className="inline-flex items-center gap-2 px-6 py-2.5 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 rounded-xl text-amber-200 font-semibold transition-colors"
+                >
+                  Get All Pack
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* Section 1 — Feature grid */}
         <section

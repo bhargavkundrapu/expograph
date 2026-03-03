@@ -6,6 +6,7 @@ import HeroSection from "../../Components/ui/hero-section-9";
 import CallToAction1 from "../../Components/ui/call-to-action-1";
 import { FiUsers as Users, FiBriefcase as Briefcase, FiLink as LinkIcon, FiChevronDown } from "react-icons/fi";
 import { AcademyFeaturesGridLite } from "../../Components/ui/academy-features-grid-lite";
+import { AcademyCourseCardsSection } from "../../Components/ui/AcademyCourseCardsSection";
 import { TubesBackground } from "../../Components/ui/neon-flow";
 
 const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
@@ -299,6 +300,9 @@ export default function AcademyPage() {
           ]}
         />
       </section>
+
+      {/* Course Cards — Third section below Where Learning Meets */}
+      <AcademyCourseCardsSection />
 
       {/* Officially Recognised — MCA */}
       <section

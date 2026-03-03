@@ -20,6 +20,7 @@ import {
 } from "react-icons/fi";
 import { AnimatePresence } from "framer-motion";
 import { BuyNowModal } from "../../../Components/payments/BuyNowModal";
+import { COURSE_EXPLORE_DATA } from "../../../data/courseExploreData";
 
 export default function StudentCourses() {
   const navigate = useNavigate();
@@ -137,6 +138,12 @@ export default function StudentCourses() {
     setExpandedTopics(newExpanded);
   };
 
+  const isBonusCourse = (course) => {
+    const slug = (course.slug || "").toLowerCase().replace(/_/g, "-");
+    const title = (course.title || "").toLowerCase();
+    return slug.includes("ai-automations") || slug.includes("ai-automation") || slug.includes("ai-automat") || title.includes("ai automation");
+  };
+
   const formatDuration = (seconds) => {
     if (!seconds) return "0 Mins";
     const mins = Math.round(seconds / 60);
@@ -150,6 +157,7 @@ export default function StudentCourses() {
 
   const filteredCourses = courses
     .filter((course) => {
+      if (isBonusCourse(course)) return false; // AI Automations only in bonus courses, not in main list
       const matchesSearch =
         course.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         course.description?.toLowerCase().includes(searchQuery.toLowerCase());
@@ -192,39 +200,88 @@ export default function StudentCourses() {
     );
   }
 
-  // Show "Coming Soon" for bonus courses
+  // Bonus courses page — show AI Automations only (locked until All Pack purchased)
   if (isBonusCoursesPage) {
-    return (
-      <div className={`min-h-screen p-8 transition-colors duration-200 ${isDark ? "bg-slate-900" : "bg-slate-50"}`}>
-        <div className="max-w-7xl mx-auto">
-          <div className="mb-8">
-            <div className="flex items-start justify-between mb-4">
-              <div>
-                <p className={`text-xs uppercase tracking-wider mb-1 ${isDark ? "text-slate-400" : "text-slate-500"}`}>BONUS CONTENT</p>
-                <h1 className={`text-3xl md:text-4xl font-bold mb-2 ${isDark ? "text-white" : "text-slate-900"}`}>
-                  Bonus Courses
-                </h1>
-              </div>
-            </div>
-          </div>
+    const bonusFromApi = courses.filter((c) => isBonusCourse(c));
+    const aiAutomationsCourse = bonusFromApi[0] || null;
+    const aiData = COURSE_EXPLORE_DATA["ai-automations"];
+    const isUnlocked = aiAutomationsCourse?.enrolled ?? false;
+    const displayCourse = aiAutomationsCourse || {
+      id: "ai-automations",
+      slug: "ai-automations",
+      title: aiData?.title || "AI Automations",
+      description: aiData?.description || "Automate workflows with Make.com, n8n & AI — the skill companies pay for.",
+      enrolled: false,
+    };
 
-          <div className={`rounded-lg border shadow-sm p-12 text-center ${isDark ? "bg-slate-800 border-slate-700" : "bg-white border-slate-200"}`}>
-            <div className="max-w-md mx-auto">
-              <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                <FiClock className="w-10 h-10 text-white" />
-              </div>
-              <h2 className="text-2xl font-bold text-slate-900 mb-3">Coming Soon</h2>
-              <p className="text-slate-600 text-lg mb-6">
-                We're working hard to bring you exciting bonus courses. Stay tuned for updates!
+    return (
+      <PageTransition>
+        <div className={`min-h-screen p-4 md:p-8 transition-colors duration-200 ${isDark ? "bg-slate-900" : "bg-slate-50"}`}>
+          <div className="max-w-7xl mx-auto">
+            <div className="mb-8">
+              <p className={`text-xs uppercase tracking-wider mb-1 ${isDark ? "text-slate-400" : "text-slate-500"}`}>BONUS CONTENT</p>
+              <h1 className={`text-3xl md:text-4xl font-bold mb-2 ${isDark ? "text-white" : "text-slate-900"}`}>
+                Bonus Courses
+              </h1>
+              <p className={`text-sm ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+                Unlock these courses free when you buy the All Pack (Vibe Coding + Prompt Engineering + Prompt to Profit).
               </p>
-              <div className="flex items-center justify-center gap-2 text-sm text-slate-500">
-                <FiClock className="w-4 h-4" />
-                <span>Check back soon for new content</span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+              <div
+                key={displayCourse.id}
+                onClick={() => isUnlocked ? navigate(`/lms/student/courses/${displayCourse.slug}`) : null}
+                className={`rounded-xl border p-6 transition-all hover:shadow-lg ${
+                  isUnlocked ? "cursor-pointer" : "cursor-default"
+                } ${isDark ? "bg-slate-800 border-slate-700" : "bg-white border-slate-200"} ${
+                  !isUnlocked ? (isDark ? "opacity-90" : "opacity-95") : ""
+                }`}
+              >
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-xs font-bold text-amber-500 uppercase">Bonus</span>
+                  {!isUnlocked && (
+                    <span className="text-xs font-bold text-slate-500 uppercase flex items-center gap-1">
+                      <FiLock className="w-3 h-3" /> Locked
+                    </span>
+                  )}
+                </div>
+                <h3 className={`text-xl font-bold mt-2 mb-2 ${isDark ? "text-white" : "text-slate-900"}`}>
+                  {displayCourse.title}
+                </h3>
+                <p className={`text-sm mb-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+                  {displayCourse.description}
+                </p>
+                <p className={`text-sm mb-4 ${isDark ? "text-slate-500" : "text-slate-500"}`}>
+                  {isUnlocked
+                    ? "You have access — click to open and continue learning."
+                    : "Buy the All Pack to unlock this course free. Not sold separately."}
+                </p>
+                <div className="flex flex-col gap-2">
+                  <button
+                    onClick={(e) => { e.stopPropagation(); navigate("/courses/explore/ai-automations"); }}
+                    className={`w-full py-2.5 px-4 font-semibold rounded-xl text-sm flex items-center justify-center gap-2 ${
+                      isDark ? "border border-slate-600 text-slate-300 hover:bg-slate-700" : "border border-slate-300 text-slate-700 hover:bg-slate-50"
+                    }`}
+                  >
+                    <FiBookOpen className="w-4 h-4" />
+                    Explore Course
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      isUnlocked ? navigate(`/lms/student/courses/${displayCourse.slug}`) : navigate("/courses");
+                    }}
+                    className="w-full py-2.5 px-4 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-xl"
+                  >
+                    {isUnlocked ? "Open Course" : "Get All Pack to Unlock"}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </PageTransition>
     );
   }
 
@@ -362,8 +419,8 @@ export default function StudentCourses() {
                       </div>
                       <div className="flex items-center gap-2">
                         {locked ? (
-                          <span className="text-xs font-medium text-slate-500 bg-slate-100 px-2 py-1 rounded">
-                            🔒 Locked
+                          <span className={`text-xs font-medium px-2 py-1 rounded ${isBonusCourse(course) ? "text-amber-600 bg-amber-100 dark:bg-amber-500/15 dark:text-amber-400" : "text-slate-500 bg-slate-100 dark:bg-slate-700 dark:text-slate-400"}`}>
+                            {isBonusCourse(course) ? "🎁 Bonus" : "🔒 Locked"}
                           </span>
                         ) : isCompleted ? (
                           <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center">
@@ -395,13 +452,15 @@ export default function StudentCourses() {
                     {locked ? (
                       <>
                         <p className={`text-sm mb-3 ${isDark ? "text-slate-500" : "text-slate-400"}`}>
-                          Unlock this course to access all lessons and content.
+                          {isBonusCourse(course)
+                            ? "Get the All Pack (Vibe Coding + Prompt Engineering + Prompt to Profit) to unlock this bonus course free."
+                            : "Unlock this course to access all lessons and content."}
                         </p>
                         <div className="flex flex-col gap-2">
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              navigate(`/lms/student/courses/${course.slug}`);
+                              navigate(`/courses/explore/${course.slug}`);
                             }}
                             className={`w-full py-2.5 px-4 font-semibold rounded-xl text-sm transition-all flex items-center justify-center gap-2 border ${
                               isDark ? "border-slate-600 text-slate-300 hover:bg-slate-700" : "border-slate-300 text-slate-700 hover:bg-slate-50"
@@ -410,7 +469,17 @@ export default function StudentCourses() {
                             <FiBookOpen className="w-4 h-4" />
                             Explore Course
                           </button>
-                          {canBuy && (
+                          {isBonusCourse(course) ? (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                navigate("/courses");
+                              }}
+                              className="w-full py-2.5 px-4 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-xl text-sm transition-colors"
+                            >
+                              Get All Pack to Unlock
+                            </button>
+                          ) : canBuy ? (
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -420,7 +489,7 @@ export default function StudentCourses() {
                             >
                               Get Course — ₹{priceRupees}
                             </button>
-                          )}
+                          ) : null}
                         </div>
                       </>
                     ) : (
@@ -448,12 +517,21 @@ export default function StudentCourses() {
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            navigate(`/lms/student/courses/${course.slug}`);
+                            navigate(`/courses/explore/${course.slug}`);
                           }}
-                          className="w-full mt-1 py-2.5 px-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold rounded-xl text-sm transition-all flex items-center justify-center gap-2 shadow-sm hover:shadow-md"
+                          className="w-full mt-1 py-2.5 px-4 border border-indigo-500/30 text-indigo-400 hover:bg-indigo-500/10 font-semibold rounded-xl text-sm transition-all flex items-center justify-center gap-2 mb-2"
                         >
                           <FiBookOpen className="w-4 h-4" />
                           Explore Course
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/lms/student/courses/${course.slug}`);
+                          }}
+                          className="w-full py-2.5 px-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold rounded-xl text-sm transition-all flex items-center justify-center gap-2 shadow-sm hover:shadow-md"
+                        >
+                          Continue Learning
                         </button>
                       </>
                     )}

@@ -32,6 +32,8 @@ import { PanelLeftOpen } from "lucide-react";
 import CourseContentsSidebar from "../../../Components/ui/CourseContentsSidebar";
 import PromptEngineeringSections from "../../../Components/lessons/PromptEngineeringSections";
 import VibeCodingSections from "../../../Components/lessons/VibeCodingSections";
+import AiAutomationsSections from "../../../Components/lessons/AiAutomationsSections";
+import ChatGptBusinessSections from "../../../Components/lessons/ChatGptBusinessSections";
 import SlideDeckViewer from "../../../Components/presentation/SlideDeckViewer";
 import PDFPresentationViewer from "../../../Components/presentation/PDFPresentationViewer";
 import { CodeBlock } from "../../../Components/ui/code-block";
@@ -500,8 +502,10 @@ export default function StudentLesson() {
 
   const courseType = useMemo(() => {
     const slug = (courseSlug || "").toLowerCase();
+    if (slug.includes("profit") || slug.includes("chatgpt-business")) return "chatgpt-business";
     if (slug.includes("prompt")) return "prompt-engineering";
     if (slug.includes("vibe") || slug.includes("coding")) return "vibe-coding";
+    if (slug.includes("automat") || slug.includes("agent")) return "ai-automations";
     return null;
   }, [courseSlug]);
 
@@ -761,15 +765,33 @@ export default function StudentLesson() {
             {/* Structured sections detection */}
             {(() => {
               const steps = lesson?.learn_setup_steps;
+              const hasCBM = Array.isArray(steps) && steps.length > 0 &&
+                typeof steps[0] === "object" && steps[0]?.type?.startsWith("CBM-");
               const hasPE = Array.isArray(steps) && steps.length > 0 &&
                 typeof steps[0] === "object" && steps[0]?.type?.startsWith("SEC-");
               const hasVC = Array.isArray(steps) && steps.length > 0 &&
                 typeof steps[0] === "object" && steps[0]?.type?.startsWith("VC-");
+              const hasAA = Array.isArray(steps) && steps.length > 0 &&
+                typeof steps[0] === "object" && steps[0]?.type?.startsWith("AA-");
 
+              if (hasCBM) {
+                return (
+                  <div className="px-4 md:px-8 pt-4 md:pt-6 pb-4 md:pb-8">
+                    <ChatGptBusinessSections sections={steps} />
+                  </div>
+                );
+              }
               if (hasPE) {
                 return (
                   <div className="px-4 md:px-8 pt-4 md:pt-6 pb-4 md:pb-8">
                     <PromptEngineeringSections sections={steps} />
+                  </div>
+                );
+              }
+              if (hasAA) {
+                return (
+                  <div className="px-4 md:px-8 pt-4 md:pt-6 pb-4 md:pb-8">
+                    <AiAutomationsSections sections={steps} />
                   </div>
                 );
               }
@@ -789,7 +811,7 @@ export default function StudentLesson() {
               Array.isArray(lesson?.learn_setup_steps) &&
               lesson.learn_setup_steps.length > 0 &&
               typeof lesson.learn_setup_steps[0] === "object" &&
-              (lesson.learn_setup_steps[0]?.type?.startsWith("SEC-") || lesson.learn_setup_steps[0]?.type?.startsWith("VC-"))
+              (lesson.learn_setup_steps[0]?.type?.startsWith("SEC-") || lesson.learn_setup_steps[0]?.type?.startsWith("VC-") || lesson.learn_setup_steps[0]?.type?.startsWith("AA-") || lesson.learn_setup_steps[0]?.type?.startsWith("CBM-"))
             ) && (
               <div className="px-4 md:px-8 pt-4 md:pt-6 pb-4 md:pb-6">
                 <div>
@@ -1070,7 +1092,7 @@ export default function StudentLesson() {
             })()}
 
             {/* Learn and Setup - Step-based section (regular lessons only) */}
-            {!(Array.isArray(lesson?.learn_setup_steps) && lesson.learn_setup_steps.length > 0 && typeof lesson.learn_setup_steps[0] === "object" && (lesson.learn_setup_steps[0]?.type?.startsWith("SEC-") || lesson.learn_setup_steps[0]?.type?.startsWith("VC-"))) &&
+            {!(Array.isArray(lesson?.learn_setup_steps) && lesson.learn_setup_steps.length > 0 && typeof lesson.learn_setup_steps[0] === "object" && (lesson.learn_setup_steps[0]?.type?.startsWith("SEC-") || lesson.learn_setup_steps[0]?.type?.startsWith("VC-") || lesson.learn_setup_steps[0]?.type?.startsWith("AA-") || lesson.learn_setup_steps[0]?.type?.startsWith("CBM-"))) &&
             ((Array.isArray(lesson?.learn_setup_steps) && lesson.learn_setup_steps.length > 0) || lesson?.summary?.trim()) && (
               <div className="px-4 md:px-8 pb-4 md:pb-8">
                 <div className="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 rounded-lg border-2 border-blue-200 shadow-lg overflow-hidden">

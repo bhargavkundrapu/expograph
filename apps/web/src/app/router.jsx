@@ -6,13 +6,14 @@ import MentorLayout from "./layouts/MentorLayout";
 import StudentLayout from "./layouts/StudentLayout";
 import PublicOnly from "./PublicOnly";
 
-import AcademyPage from "../pages/academy/AcademyPage";
+import HomeOrRedirect from "./HomeOrRedirect";
 import LoginPage from "../pages/auth/LoginPage";
 import NotFoundPageRoute from "../pages/NotFoundPage";
 
 const SolutionsPage = lazy(() => import("../pages/solutions/SolutionsPage"));
 const CoursesPage = lazy(() => import("../pages/courses/CoursesPage"));
 const CourseDetailPage = lazy(() => import("../pages/courses/CourseDetailPage"));
+const CourseExplorePage = lazy(() => import("../pages/courses/CourseExplorePage"));
 const FeatureDetailPage = lazy(() => import("../pages/features/FeatureDetailPage"));
 const ContactPage = lazy(() => import("../pages/contact/ContactPage"));
 const AccountPendingPage = lazy(() => import("../pages/payment/AccountPendingPage"));
@@ -32,6 +33,7 @@ const SuperAdminClientLabRealWorld = lazy(() => import("../pages/lms/superadmin/
 const SuperAdminApprovals = lazy(() => import("../pages/lms/superadmin/SuperAdminApprovals"));
 const SuperAdminStudents = lazy(() => import("../pages/lms/superadmin/SuperAdminStudents"));
 const SuperAdminMentors = lazy(() => import("../pages/lms/superadmin/SuperAdminMentors"));
+const SuperAdminColleges = lazy(() => import("../pages/lms/superadmin/SuperAdminColleges"));
 
 const StudentHome = lazy(() => import("../pages/lms/student/StudentHome"));
 const StudentCourses = lazy(() => import("../pages/lms/student/StudentCourses"));
@@ -92,10 +94,11 @@ export const router = createBrowserRouter([
   {
     element: <SimpleLayout />,
     children: [
-      { path: "/", element: <AcademyPage /> },
-      { path: "/academy", element: <AcademyPage /> },
+      { path: "/", element: <HomeOrRedirect /> },
+      { path: "/academy", element: <HomeOrRedirect /> },
       { path: "/solutions", element: <L><SolutionsPage /></L> },
       { path: "/courses", element: <L><CoursesPage /></L> },
+      { path: "/courses/explore/:slug", element: <L><CourseExplorePage /></L> },
       { path: "/courses/:slug", element: <L><CourseDetailPage /></L> },
       { path: "/features/:slug", element: <L><FeatureDetailPage /></L> },
       { path: "/contact", element: <L><ContactPage /></L> },
@@ -189,6 +192,7 @@ export const router = createBrowserRouter([
           { path: "mentors/:id", element: <L><SuperAdminMentors /></L> },
           { path: "mentors/:id/details", element: <L><SuperAdminMentors /></L> },
           { path: "mentors/:id/edit", element: <L><SuperAdminMentors /></L> },
+          { path: "colleges", element: <L><SuperAdminColleges /></L> },
           { path: "mentors/:id/students", element: <L><SuperAdminMentors /></L> },
           { path: "mentors/:id/assignments", element: <L><SuperAdminMentors /></L> },
         ],

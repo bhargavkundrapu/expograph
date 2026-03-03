@@ -32,6 +32,7 @@ const { router: mentorClientLabRouter } = require("../modules/clientLab/clientLa
 const { router: usersAdminRouter } = require("../modules/users/users.routes.admin");
 const { router: approvalsAdminRouter } = require("../modules/approvals/approvals.routes.admin");
 const { router: dashboardRouter } = require("../modules/dashboard/dashboard.routes");
+const { router: collegesPublicRouter } = require("../modules/colleges/colleges.routes.public");
 
 const { router: lmsInternRouter } = require("../modules/internships/internships.routes.lms");
 const { router: mentorInternRouter } = require("../modules/internships/internships.routes.mentor");
@@ -174,6 +175,7 @@ app.use(
   app.use("/api/v1/mentor/client-lab", mentorClientLabRouter);
   app.use("/api/v1/public", leadsPublic);
   app.use("/api/v1/public", workshopsPublic);
+  app.use("/api/v1/public/colleges", collegesPublicRouter);
   app.use("/api/v1/public", certPublic);
   app.use("/api/v1/public", featureFlagsPublic);
 

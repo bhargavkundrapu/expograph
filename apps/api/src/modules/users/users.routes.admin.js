@@ -3,6 +3,7 @@ const express = require("express");
 const { requireAuth } = require("../../middlewares/auth/requireAuth");
 const { requireRole } = require("../../middlewares/rbac/requireRole");
 const ctrl = require("./users.controller");
+const collegesCtrl = require("../colleges/colleges.controller");
 
 const router = express.Router();
 
@@ -28,6 +29,17 @@ router.get("/mentors/:mentorId", ctrl.getMentorWithStudents);
 router.post("/mentors", ctrl.createMentor);
 router.patch("/mentors/:mentorId", ctrl.updateMentor);
 router.delete("/mentors/:mentorId", ctrl.deleteMentor);
+
+// SuperAdmin: Colleges (purchase form dropdown)
+router.get("/colleges", requireRole(["SuperAdmin"]), (req, res, next) => {
+  collegesCtrl.list(req, res).catch(next);
+});
+router.post("/colleges", requireRole(["SuperAdmin"]), (req, res, next) => {
+  collegesCtrl.add(req, res).catch(next);
+});
+router.delete("/colleges/:id", requireRole(["SuperAdmin"]), (req, res, next) => {
+  collegesCtrl.remove(req, res).catch(next);
+});
 
 module.exports = { router };
 

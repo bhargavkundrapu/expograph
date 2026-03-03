@@ -22,7 +22,7 @@ async function createCourseSmart({ tenantId, title, slug, description, level, cr
   for (let i = 0; i < 5; i++) {
     const candidate = i === 0 ? base : `${base}-${Math.random().toString(16).slice(2, 6)}`;
     try {
-      return await repo.createCourse({ tenantId, title, slug: candidate, description, level, status: "draft", createdBy });
+      return await repo.createCourse({ tenantId, title, slug: candidate, description, level, status: "published", createdBy });
     } catch (e) {
       if (isUniqueViolation(e)) continue;
       throw e;

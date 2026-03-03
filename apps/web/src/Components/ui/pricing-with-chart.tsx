@@ -1,12 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { Button } from "./button";
-import { CheckCircleIcon } from "lucide-react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./card";
+import { CheckCircleIcon, BookOpen } from "lucide-react";
 import { apiFetch } from "../../services/api";
 import { BuyNowModal } from "../payments/BuyNowModal";
 import { CoursesPageSkeleton } from "../common/SkeletonLoaders";
+import { COURSE_EXPLORE_DATA } from "../../data/courseExploreData";
 
 function formatPrice(paise: number | null | undefined) {
   if (paise == null || paise === undefined) return "—";
@@ -14,9 +15,36 @@ function formatPrice(paise: number | null | undefined) {
   return `₹${rupees.toLocaleString("en-IN")}`;
 }
 
-const courseDisplayNames = ["Vibe Coding", "Prompt Engineering", "AI Automations"];
+const courseDisplayNames: Record<string, string> = {
+  "vibe-coding": "Vibe Coding",
+  "prompt-engineering": "Prompt Engineering",
+  "prompt-to-profit": "Prompt to Profit",
+  "ai-automations": "AI Automations",
+};
+const BONUS_SLUGS = ["ai-automations"];
+const COURSE_ORDER = ["vibe-coding", "prompt-engineering", "prompt-to-profit", "ai-automations"];
+
+function matchCourse(co, orderSlug) {
+  const s = (co.slug || "").toLowerCase().replace(/_/g, "-");
+  const t = (co.title || "").toLowerCase().replace(/_/g, "-");
+  const combined = `${s} ${t}`;
+  const parts = orderSlug.split("-");
+  return parts.every((p) => combined.includes(p));
+}
+const PURPLE_STYLE = {
+  border: "border-purple-500/25",
+  borderHover: "hover:border-purple-400/50",
+  bg: "from-purple-950/40 via-[#0e0e18] to-[#0a0a0a]",
+  glow: "hover:shadow-[0_0_40px_-8px_rgba(124,58,237,0.2)]",
+  badge: "from-purple-600 to-purple-700",
+  badgeShadow: "shadow-purple-500/25",
+  check: "text-purple-400",
+  price: "from-purple-400 to-purple-500",
+  btn: "from-purple-600 to-purple-700 hover:from-purple-500 hover:to-purple-600 shadow-purple-500/20",
+};
 
 export function PricingWithChart() {
+  const navigate = useNavigate();
   const [courses, setCourses] = useState<
     { id: string; title: string; slug: string; price_in_paise?: number; description?: string }[]
   >([]);
@@ -65,196 +93,185 @@ export function PricingWithChart() {
     return <CoursesPageSkeleton />;
   }
 
-  const courseColors = [
-    // Vibe Coding — electric blue-violet
-    {
-      border: "border-violet-500/25",
-      borderHover: "hover:border-violet-400/50",
-      bg: "from-violet-950/40 via-[#0e0a18] to-[#0a0a0a]",
-      glow: "hover:shadow-[0_0_40px_-8px_rgba(139,92,246,0.25)]",
-      badge: "from-violet-500 to-indigo-600",
-      badgeShadow: "shadow-violet-500/25",
-      check: "text-violet-400",
-      price: "from-violet-400 to-indigo-400",
-      btn: "from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 shadow-violet-500/20",
-    },
-    // Prompt Engineering — warm orange-amber
-    {
-      border: "border-orange-500/25",
-      borderHover: "hover:border-orange-400/50",
-      bg: "from-orange-950/40 via-[#14100a] to-[#0a0a0a]",
-      glow: "hover:shadow-[0_0_40px_-8px_rgba(249,115,22,0.25)]",
-      badge: "from-orange-500 to-amber-600",
-      badgeShadow: "shadow-orange-500/25",
-      check: "text-orange-400",
-      price: "from-orange-400 to-amber-400",
-      btn: "from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 shadow-orange-500/20",
-    },
-    // AI Automations — teal-cyan
-    {
-      border: "border-teal-500/25",
-      borderHover: "hover:border-teal-400/50",
-      bg: "from-teal-950/40 via-[#0a1414] to-[#0a0a0a]",
-      glow: "hover:shadow-[0_0_40px_-8px_rgba(20,184,166,0.25)]",
-      badge: "from-teal-500 to-cyan-600",
-      badgeShadow: "shadow-teal-500/25",
-      check: "text-teal-400",
-      price: "from-teal-400 to-cyan-400",
-      btn: "from-teal-600 to-cyan-600 hover:from-teal-500 hover:to-cyan-500 shadow-teal-500/20",
-    },
-    // Fallback — rose
-    {
-      border: "border-rose-500/25",
-      borderHover: "hover:border-rose-500/50",
-      bg: "from-rose-950/40 via-[#140a0e] to-[#0a0a0a]",
-      glow: "hover:shadow-[0_0_40px_-8px_rgba(244,63,94,0.2)]",
-      badge: "from-rose-600 to-rose-700",
-      badgeShadow: "shadow-rose-500/25",
-      check: "text-rose-400",
-      price: "from-rose-400 to-rose-500",
-      btn: "from-rose-600 to-rose-700 hover:from-rose-500 hover:to-rose-600 shadow-rose-500/20",
-    },
-  ];
 
-  const firstCourseSpan = packs.length === 1 ? "md:col-span-8" :
-    packs.length === 2 ? "md:col-span-4" :
-    packs.length >= 3 ? "md:col-span-3" : "md:col-span-8";
-
-  const courseColSpans = [
-    firstCourseSpan,
-    "md:col-span-5",
-    "md:col-span-7",
-    "md:col-span-7",
-    "md:col-span-5",
-  ];
+  const allPack = packs.find((p) => (p.slug || "").includes("all-pack") || (p.slug || "").includes("pack")) || packs[0];
 
   return (
-    <div className="mx-auto w-full max-w-6xl">
-      {/* Heading */}
-      <div className="mx-auto mb-10 sm:mb-12 md:mb-14 max-w-2xl text-center">
-        <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl text-white drop-shadow-sm">
+    <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+      {/* Heading + marketing */}
+      <div className="mb-8 sm:mb-10">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white">
           Pricing that Scales with You
         </h1>
-        <p className="text-white/70 mt-3 sm:mt-4 text-sm sm:text-base leading-relaxed">
-          Choose the right plan to unlock powerful tools and insights.
-          Transparent pricing built for modern teams.
+        <p className="mt-2 text-sm text-white/60">
+          All starting at just <span className="text-emerald-400 font-semibold">₹99</span> — pick individual courses or go all-in with the All Pack for the best value.
         </p>
       </div>
 
-      {/* ── All cards in one grid: packs first, then courses ── */}
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-3 sm:gap-4">
-        {packs.map((pack, idx) => {
-          const packSpans =
-            packs.length === 1 ? ["md:col-span-4"] :
-            packs.length === 2 ? ["md:col-span-4", "md:col-span-4"] :
-            packs.length >= 3 ? ["md:col-span-3", "md:col-span-3", "md:col-span-3"] :
-            ["md:col-span-4"];
-          return (
-            <div
-              key={pack.id}
-              className={`col-span-1 ${packSpans[idx] || "md:col-span-4"} group`}
-            >
-              <div className="relative h-full overflow-hidden rounded-2xl border border-purple-500/25 bg-gradient-to-br from-purple-950/40 via-[#0e0e18] to-[#0a0a0a] p-5 sm:p-6 flex flex-col transition-all duration-300 hover:border-purple-500/50 hover:shadow-[0_0_40px_-8px_rgba(124,58,237,0.2)]">
-                <div className="flex items-start justify-between gap-3 mb-4">
-                  <div className="min-w-0">
-                    <span className="inline-block rounded-full bg-gradient-to-r from-purple-600 to-purple-700 px-3 py-1 text-[11px] font-semibold text-white shadow-lg shadow-purple-500/25 mb-3">
-                      Recommended
+      {/* Order: All Pack first, then Vibe Coding, Prompt Engineering, Prompt to Profit, AI Automations — aligned with third section */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+        {/* All Pack card first */}
+        <div key="all-pack" className="group flex flex-col">
+              <div className="relative h-full flex flex-col rounded-xl border border-white/10 bg-white/[0.03] p-6 transition-all duration-200 hover:border-white/20 hover:bg-white/[0.06]">
+                <div className="flex items-start justify-between gap-3 mb-3">
+                  <div className="min-w-0 flex-1">
+                    <span className="inline-flex items-center rounded-md bg-gradient-to-r from-amber-500/30 to-amber-400/20 text-amber-400 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider mb-3 border border-amber-500/30 shadow-[0_0_12px_rgba(251,191,36,0.3)]">
+                      ★ Recommended
                     </span>
-                    <h3 className="text-lg sm:text-xl font-bold text-white leading-tight truncate">
-                      {pack.title}
+                    <h3 className="text-lg font-bold text-white leading-tight">
+                      {allPack?.title || "All Pack"}
                     </h3>
-                    <p className="text-sm text-white/55 line-clamp-2 mt-1 leading-relaxed">
-                      {pack.description || "Access all included courses"}
-                    </p>
+                    <span className="text-xl font-bold text-purple-400 mt-1 block">
+                      {formatPrice(allPack?.price_in_paise)}
+                    </span>
                   </div>
-                  <span className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-purple-400 to-purple-500 bg-clip-text text-transparent whitespace-nowrap shrink-0">
-                    {formatPrice(pack.price_in_paise)}
-                  </span>
+                </div>
+                <p className="text-sm text-white/55 line-clamp-2 mb-4">
+                  {allPack?.description || "Access all included courses"}
+                </p>
+
+                <ul className="text-white/60 space-y-1.5 text-sm mb-3">
+                  <li className="flex items-center gap-2">
+                    <CheckCircleIcon className="h-3.5 w-3.5 text-purple-400 shrink-0" />
+                    <span className="font-medium text-white/90">Vibe Coding</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircleIcon className="h-3.5 w-3.5 text-purple-400 shrink-0" />
+                    <span className="font-medium text-white/90">Prompt Engineering</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircleIcon className="h-3.5 w-3.5 text-purple-400 shrink-0" />
+                    <span className="font-medium text-white/90">Prompt to Profit</span>
+                  </li>
+                </ul>
+
+                <div className="mb-3 pt-3 border-t border-white/10">
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-amber-400/90 mb-2">Extra Features</p>
+                  <ul className="text-white/70 space-y-1.5 text-sm">
+                    <li className="flex items-center gap-2">
+                      <CheckCircleIcon className="h-3.5 w-3.5 text-amber-400 shrink-0" />
+                      <span className="font-medium text-amber-400/95">AI Automations (Bonus)</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircleIcon className="h-3.5 w-3.5 text-purple-400 shrink-0" />
+                      <span className="font-semibold text-purple-300">Real Client Lab</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircleIcon className="h-3.5 w-3.5 text-purple-400 shrink-0" />
+                      <span className="font-medium text-white/90">Resume Builder</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircleIcon className="h-3.5 w-3.5 text-purple-400 shrink-0" />
+                      <span className="font-medium text-white/90">MCA-recognised certificates</span>
+                    </li>
+                  </ul>
                 </div>
 
-                {pack.courses?.length ? (
-                  <ul className="text-white/70 space-y-1.5 text-sm mb-5 flex-1">
-                    {pack.courses.slice(0, 4).map((c, i) => (
-                      <li key={i} className="flex items-center gap-2">
-                        <CheckCircleIcon className="h-3.5 w-3.5 text-purple-400 shrink-0" />
-                        <span className="font-medium text-white/90 truncate">{c.title}</span>
-                      </li>
-                    ))}
-                    {pack.courses.length > 4 && (
-                      <li className="text-white/40 text-xs pl-5.5">+{pack.courses.length - 4} more</li>
-                    )}
-                  </ul>
-                ) : (
-                  <ul className="text-white/70 space-y-1.5 text-sm mb-5 flex-1">
-                    {["Unlimited access", "Priority support", "Lifetime access"].map((f, i) => (
-                      <li key={i} className="flex items-center gap-2">
-                        <CheckCircleIcon className="h-3.5 w-3.5 text-purple-400 shrink-0" />
-                        {f}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-
-                <Button
-                  onClick={() => handleGetCourse({ type: "pack", id: pack.id, title: pack.title })}
-                  disabled={(pack.price_in_paise ?? 0) < 100}
-                  className="w-full h-11 bg-gradient-to-r from-purple-600 to-purple-700 text-white font-semibold hover:from-purple-500 hover:to-purple-600 border-0 shadow-lg shadow-purple-500/20 rounded-xl transition-all duration-200"
+                <Link
+                  to="/courses/explore/all-pack"
+                  className="inline-flex w-full h-9 mb-2 items-center justify-center gap-2 rounded-lg border border-white/20 text-white/90 hover:bg-white/10 transition-colors text-sm"
                 >
-                  Get Pack
-                </Button>
+                  <BookOpen className="h-4 w-4" />
+                  Explore Pack
+                </Link>
+                {allPack && (
+                  <Button
+                    onClick={() => handleGetCourse({ type: "pack", id: allPack.id, title: allPack.title })}
+                    disabled={(allPack.price_in_paise ?? 0) < 100}
+                    className="w-full h-10 bg-purple-600 hover:bg-purple-500 text-white font-semibold rounded-lg transition-colors"
+                  >
+                    Get Pack
+                  </Button>
+                )}
               </div>
             </div>
-          );
-        })}
 
-        {/* ── Courses: bento varied widths, each with unique color ── */}
-        {courses.map((c, i) => {
-            const displayTitle = courseDisplayNames[i] ?? c.title;
-            const canBuy = (c.price_in_paise ?? 0) >= 100;
-            const clr = courseColors[i % courseColors.length];
-            const span = courseColSpans[i % courseColSpans.length];
+        {/* Courses: Vibe Coding, Prompt Engineering, Prompt to Profit, AI Automations */}
+        {COURSE_ORDER.map((orderSlug) => {
+            const c = courses.find((co) => (co.slug || "").toLowerCase().replace(/_/g, "-").includes(orderSlug) || matchCourse(co, orderSlug));
+            const displayTitle = courseDisplayNames[orderSlug] ?? c?.title ?? orderSlug.replace(/-/g, " ").replace(/\b\w/g, (l: string) => l.toUpperCase());
+            const isBonus = BONUS_SLUGS.some((b) => orderSlug.includes(b));
+            const canBuy = !isBonus && !!c && (Number(c.price_in_paise) ?? 0) >= 100;
 
             return (
-              <div
-                key={c.id}
-                className={`col-span-1 ${span} group`}
-              >
-                <div className={`relative h-full overflow-hidden rounded-2xl border ${clr.border} bg-gradient-to-br ${clr.bg} p-5 sm:p-6 flex flex-col transition-all duration-300 ${clr.borderHover} ${clr.glow}`}>
+              <div key={c?.id || orderSlug} className="group flex flex-col">
+                <div className="relative h-full flex flex-col rounded-xl border border-white/10 bg-white/[0.03] p-6 transition-all duration-200 hover:border-white/20 hover:bg-white/[0.06]">
                   <div className="flex items-start justify-between gap-3 mb-3">
-                    <div className="min-w-0">
-                      <span className={`inline-block rounded-full bg-gradient-to-r ${clr.badge} px-3 py-1 text-[11px] font-semibold text-white shadow-lg ${clr.badgeShadow} mb-3`}>
-                        Individual
+                    <div className="min-w-0 flex-1">
+                      <span className={`inline-block rounded-md px-2 py-1 text-[10px] font-bold uppercase tracking-wider mb-2 ${isBonus ? "bg-amber-500/20 text-amber-400" : "bg-purple-500/20 text-purple-400"}`}>
+                        {isBonus ? "Bonus" : "Individual"}
                       </span>
-                      <h3 className="text-lg sm:text-xl font-bold text-white leading-tight">
+                      <h3 className="text-base font-bold text-white leading-tight">
                         {displayTitle}
                       </h3>
-                      <p className="text-sm text-white/50 line-clamp-2 mt-1 leading-relaxed">
-                        {c.description || "Self-paced learning"}
-                      </p>
+                      {!isBonus && (
+                        <span className="text-lg font-bold text-purple-400 mt-1 block">
+                          {formatPrice(c?.price_in_paise)}
+                        </span>
+                      )}
                     </div>
-                    <span className={`text-xl sm:text-2xl font-bold bg-gradient-to-r ${clr.price} bg-clip-text text-transparent whitespace-nowrap shrink-0`}>
-                      {formatPrice(c.price_in_paise)}
-                    </span>
                   </div>
 
-                  <ul className="text-white/60 space-y-1.5 text-sm mb-5 flex-1">
-                    {["Self-paced learning", "Certificate on completion", "Lifetime access"].map(
-                      (f, idx) => (
-                        <li key={idx} className="flex items-center gap-2">
-                          <CheckCircleIcon className={`h-3.5 w-3.5 ${clr.check} shrink-0`} />
-                          {f}
-                        </li>
-                      )
-                    )}
+                  <p className="text-sm text-white/55 line-clamp-2 mb-4">
+                    {c?.description || "Self-paced learning"}
+                  </p>
+
+                  <ul className="text-white/60 space-y-1.5 text-sm mb-3 flex-1">
+                    {isBonus
+                      ? ["Free when you buy All Pack", "12 modules • 62 lessons", "MCA-recognised certificate"].map((f, idx) => (
+                          <li key={idx} className="flex items-center gap-2">
+                            <CheckCircleIcon className="h-3.5 w-3.5 text-purple-400 shrink-0" />
+                            {f}
+                          </li>
+                        ))
+                      : ["Self-paced learning", "MCA-recognised certificate on completion"].map(
+                          (f, idx) => (
+                            <li key={idx} className="flex items-center gap-2">
+                              <CheckCircleIcon className="h-3.5 w-3.5 text-purple-400 shrink-0" />
+                              {f}
+                            </li>
+                          )
+                        )}
                   </ul>
 
-                  <Button
-                    onClick={() => handleGetCourse({ type: "course", id: c.id, title: displayTitle })}
-                    disabled={!canBuy}
-                    className={`w-full h-10 sm:h-11 bg-gradient-to-r ${clr.btn} text-white font-semibold border-0 shadow-lg rounded-xl transition-all duration-200`}
+                  {(COURSE_EXPLORE_DATA[orderSlug]?.tools?.length > 0) && (
+                    <div className="mb-4">
+                      <p className="text-[10px] font-semibold uppercase tracking-wider text-white/40 mb-2">You&apos;ll work with</p>
+                      <div className="flex flex-wrap gap-1.5">
+                        {(COURSE_EXPLORE_DATA[orderSlug].tools || []).slice(0, 5).map((t, i) => (
+                          <span key={i} className="px-2 py-0.5 rounded-md bg-white/5 border border-white/10 text-[11px] text-white/80">
+                            {t}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  <Link
+                    to={`/courses/explore/${orderSlug}`}
+                    className="inline-flex w-full h-9 mb-2 items-center justify-center gap-2 rounded-lg border border-white/20 text-white/90 hover:bg-white/10 transition-colors text-sm"
                   >
-                    Get Course
-                  </Button>
+                    <BookOpen className="h-4 w-4" />
+                    Explore Course
+                  </Link>
+                  {isBonus ? (
+                    <p className="text-center text-xs text-amber-400/90 py-1">
+                      Buy All Pack to get this course free
+                    </p>
+                  ) : (
+                    <Button
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        if (c) handleGetCourse({ type: "course", id: c.id, title: displayTitle });
+                      }}
+                      disabled={!canBuy}
+                      className="w-full h-10 bg-purple-600 hover:bg-purple-500 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      Get Course
+                    </Button>
+                  )}
                 </div>
               </div>
             );

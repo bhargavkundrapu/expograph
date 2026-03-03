@@ -72,8 +72,11 @@ function OtpInput({ length = 6, value, onChange, disabled }) {
   );
 }
 
+const OTHER_OPTION_VALUE = "Others (Working Professional / Not Listed)";
+
 export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill, isLoggedIn }) {
   const [form, setForm] = useState({ name: "", email: "", phone: "", college: "" });
+  const [colleges, setColleges] = useState([]);
   const [emailTouched, setEmailTouched] = useState(false);
   const [priceBreakdown, setPriceBreakdown] = useState(null);
   const [priceLoading, setPriceLoading] = useState(false);
@@ -130,6 +133,13 @@ export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill, 
       .catch(() => setPriceBreakdown(null))
       .finally(() => setPriceLoading(false));
   }, [open, item?.type, item?.id]);
+
+  useEffect(() => {
+    if (!open) return;
+    apiFetch("/api/v1/public/colleges")
+      .then((res) => setColleges(res?.data ?? []))
+      .catch(() => setColleges([]));
+  }, [open]);
 
   // Reset verification when email changes (only for guest users)
   useEffect(() => {
@@ -527,16 +537,22 @@ export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill, 
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">College</label>
-                  <input
-                    type="text"
+                  <label className="block text-sm font-medium text-slate-700 mb-1">College / Others</label>
+                  <select
                     value={form.college}
                     onChange={(e) => setForm((f) => ({ ...f, college: e.target.value }))}
-                    autoComplete="organization"
                     style={{ color: "#0f172a", backgroundColor: "#ffffff", caretColor: "#0f172a" }}
-                    className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                    placeholder="College or institution"
-                  />
+                    className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20fill%3D%22none%22%20viewBox%3D%220%200%2024%2024%22%20stroke%3D%22%236b7280%22%3E%3Cpath%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%222%22%20d%3D%22M19%209l-7%207-7-7%22%2F%3E%3C%2Fsvg%3E')] bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat pr-10"
+                  >
+                    <option value="">Select college or others</option>
+                    {colleges.map((c) => (
+                      <option key={c.id} value={c.name}>{c.name}</option>
+                    ))}
+                    <option value={OTHER_OPTION_VALUE}>{OTHER_OPTION_VALUE}</option>
+                    {form.college && !colleges.some((c) => c.name === form.college) && form.college !== OTHER_OPTION_VALUE && (
+                      <option value={form.college}>{form.college}</option>
+                    )}
+                  </select>
                 </div>
 
                 {/* Price summary */}

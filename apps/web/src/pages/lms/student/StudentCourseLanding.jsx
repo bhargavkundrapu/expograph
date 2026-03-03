@@ -77,6 +77,18 @@ const COURSE_TOOLS = {
     "Redis", "BullMQ", "Playwright", "Sentry", "ESLint",
     "Prettier", "Postman", "CI/CD", "HTTPS",
   ],
+  "ai-automat": [
+    "Make.com", "n8n", "APIs", "Webhooks", "ChatGPT",
+    "AI Automations", "MCP", "System Prompts", "Google Sheets",
+    "Slack", "Gmail", "CRM", "Zapier", "OpenAI API",
+    "JSON", "OAuth", "Error Handling", "Freelancing",
+  ],
+  "profit": [
+    "ChatGPT", "Business Copy", "Email Marketing", "Funnel Strategy",
+    "Landing Pages", "SEO", "Facebook Ads", "YouTube", "LinkedIn",
+    "Twitter", "Instagram", "Copywriting", "Customer Service",
+    "SMS Marketing", "Podcast", "GCCF", "3R Loop", "CRAFTED",
+  ],
 };
 
 function getToolsForCourse(courseSlug, course, modules) {
@@ -90,6 +102,8 @@ function getToolsForCourse(courseSlug, course, modules) {
   }
 
   const courseTitle = (course?.title || course?.name || "").toLowerCase();
+  if (courseTitle.includes("profit") || courseTitle.includes("chatgpt business")) return COURSE_TOOLS["profit"];
+  if (courseTitle.includes("automat") || courseTitle.includes("agent")) return COURSE_TOOLS["ai-automat"];
   if (courseTitle.includes("prompt") || courseTitle.includes("ai")) return COURSE_TOOLS["prompt-engineering"];
   if (courseTitle.includes("vibe") || courseTitle.includes("coding") || courseTitle.includes("full")) return COURSE_TOOLS["vibe-coding"];
 

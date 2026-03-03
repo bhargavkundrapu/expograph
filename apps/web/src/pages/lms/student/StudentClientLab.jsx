@@ -153,9 +153,9 @@ export default function StudentClientLab() {
             <div className={`w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 ${isDark ? "bg-slate-700" : "bg-slate-100"}`}>
               <FiLock className="w-10 h-10 text-slate-500" />
             </div>
-            <h1 className={`text-2xl font-bold mb-2 ${isDark ? "text-white" : "text-slate-900"}`}>Client Lab is locked</h1>
+            <h1 className={`text-2xl font-bold mb-2 ${isDark ? "text-white" : "text-slate-900"}`}>Real Client Lab is locked for you</h1>
             <p className="text-slate-600 mb-6">
-              Complete at least 75% of your overall progress and finish all required courses to unlock Real-World Client Lab.
+              Buy the All Pack (all three courses: Vibe Coding, Prompt to Profit, AI Automations) to unlock Real Client Lab. Complete 75% progress and finish all courses to submit work.
             </p>
             <div className="mb-4">
               <div className="flex justify-between text-sm text-slate-600 mb-1">
@@ -170,7 +170,7 @@ export default function StudentClientLab() {
               </div>
             </div>
             <p className="text-sm text-slate-500">
-              Keep learning to unlock client projects and real-world tasks.
+              Want access? Get the All Pack to unlock Real Client Lab + AI Automations.
             </p>
           </motion.div>
         </div>
