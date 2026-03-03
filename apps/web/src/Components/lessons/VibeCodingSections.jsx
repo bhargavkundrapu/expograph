@@ -5,6 +5,7 @@ import {
   FiTrendingUp, FiShield, FiCopy, FiChevronDown,
   FiChevronUp, FiArrowRight, FiStar, FiCode,
 } from "react-icons/fi";
+import StartLessonBlocks from "./StartLessonBlocks";
 
 /* ── Shared helpers ─────────────────────────────────────────── */
 
@@ -389,7 +390,26 @@ function SectionCheckpoint({ data }) {
 
 /* ── Registry ────────────────────────────────────────────────── */
 
+function SectionStart({ data }) {
+  if (data?.blocks?.length) return <StartLessonBlocks blocks={data.blocks} accent="indigo" />;
+  const content = (data?.content ?? "") || "";
+  const paras = content ? content.split(/\n\n+/).filter(Boolean) : [];
+  return (
+    <div id="start-lesson" className="scroll-mt-20 max-w-3xl">
+      <div className="prose prose-slate prose-lg max-w-none">
+        {paras.length > 0 ? paras.map((p, i) => (
+          <p key={i} className="text-slate-700 leading-relaxed mb-4 last:mb-0">{p}</p>
+        )) : (
+          <p className="text-slate-500 italic">Content loading...</p>
+        )}
+      </div>
+    </div>
+  );
+}
+
 const VC_RENDERERS = {
+  "VC-START": SectionStart,
+  "VC-YOU_ONLY": SectionStart,
   "VC-01_MISSION": SectionMission,
   "VC-02_WHAT_YOULL_BUILD": SectionWhatYoullBuild,
   "VC-03_PREREQUISITES": SectionPrerequisites,
@@ -410,7 +430,8 @@ export default function VibeCodingSections({ sections }) {
         if (!sec || typeof sec !== "object") return null;
         const Renderer = VC_RENDERERS[sec.type];
         if (!Renderer) return null;
-        return <Renderer key={`${sec.type}-${i}`} data={sec.data} />;
+        const sectionData = sec.data ?? sec;
+        return <Renderer key={`${sec.type}-${i}`} data={sectionData} />;
       })}
     </div>
   );

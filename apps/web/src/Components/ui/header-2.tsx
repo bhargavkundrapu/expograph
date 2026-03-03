@@ -5,12 +5,18 @@ import { Button, buttonVariants } from './button';
 import { cn } from '../../lib/utils';
 import { MenuToggleIcon } from './menu-toggle-icon';
 import { useScroll } from './use-scroll';
+import { useAuth } from '../../app/providers/AuthProvider';
+import { homePathForRole } from '../../app/roles';
 
 export function Header() {
 	const [open, setOpen] = React.useState(false);
 	const scrolled = useScroll(10);
 	const navigate = useNavigate();
 	const location = useLocation();
+	const { token, role } = useAuth();
+	const isLoggedIn = !!(token && role);
+	const portalPath = isLoggedIn ? homePathForRole(role) : '/login';
+	const portalLabel = isLoggedIn ? 'LMS Portal' : 'Login';
 
 	const handleHashLink = (href: string) => {
 		const [path, hash] = href.split('#');
@@ -100,8 +106,8 @@ export function Header() {
 							</a>
 						)
 					))}
-					<Link to="/login">
-						<Button>Login</Button>
+					<Link to={portalPath}>
+						<Button>{portalLabel}</Button>
 					</Link>
 				</div>
 				<Button size="icon" variant="outline" onClick={() => setOpen(!open)} className="md:hidden">
@@ -162,8 +168,8 @@ export function Header() {
 						)}
 					</div>
 					<div className="flex flex-col gap-2">
-						<Link to="/login" onClick={() => setOpen(false)}>
-							<Button className="w-full">Login</Button>
+						<Link to={portalPath} onClick={() => setOpen(false)}>
+							<Button className="w-full">{portalLabel}</Button>
 						</Link>
 					</div>
 				</div>

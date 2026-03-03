@@ -796,7 +796,7 @@ export default function StudentLesson() {
                 );
               }
               if (hasVC) {
-                const top = steps.filter(s => ["VC-01_MISSION","VC-02_WHAT_YOULL_BUILD","VC-03_PREREQUISITES","VC-04_WORKFLOW"].includes(s.type));
+                const top = steps.filter(s => ["VC-START","VC-YOU_ONLY","VC-01_MISSION","VC-02_WHAT_YOULL_BUILD","VC-03_PREREQUISITES","VC-04_WORKFLOW"].includes(s.type));
                 return top.length > 0 ? (
                   <div className="px-4 md:px-8 pt-4 md:pt-6 pb-2 md:pb-4">
                     <VibeCodingSections sections={top} />

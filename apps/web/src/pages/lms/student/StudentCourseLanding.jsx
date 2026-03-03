@@ -546,7 +546,7 @@ export default function StudentCourseLanding() {
           setShowBuyModal(false);
           fetchCourseData();
         }}
-        prefill={user ? { name: user.fullName || user.full_name || user.name || "", email: user.email, phone: user.phone } : undefined}
+        prefill={user ? { name: user.fullName || user.full_name || user.name || "", email: user.email, phone: user.phone, college: user.college || "" } : undefined}
         isLoggedIn={!!token}
       />
     </PageTransition>

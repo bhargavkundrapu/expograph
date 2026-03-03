@@ -5,6 +5,7 @@ import {
   FiLayers, FiFileText, FiEdit3, FiAward, FiBookOpen, FiStar,
   FiCopy, FiChevronDown, FiChevronUp, FiTag, FiExternalLink,
 } from "react-icons/fi";
+import StartLessonBlocks from "./StartLessonBlocks";
 
 function CopyButton({ text }) {
   const [copied, setCopied] = useState(false);
@@ -505,6 +506,42 @@ function SectionOneLineTakeaway({ data }) {
 }
 
 const CBM_RENDERERS = {
+  "CBM-START": function SectionStart({ data }) {
+    const blocks = data?.blocks;
+    if (blocks && Array.isArray(blocks) && blocks.length > 0) {
+      return <StartLessonBlocks blocks={blocks} accent="orange" />;
+    }
+    const content = (data && (data.content ?? (typeof data === "string" ? data : ""))) || "";
+    const paras = content ? content.split(/\n\n+/).filter(Boolean) : [];
+    return (
+      <div id="start-lesson" className="scroll-mt-20 max-w-3xl">
+        <div className="prose prose-slate prose-lg max-w-none">
+          {paras.length > 0 ? paras.map((p, i) => (
+            <p key={i} className="text-slate-700 leading-relaxed mb-4 last:mb-0">{p}</p>
+          )) : (
+            <p className="text-slate-500 italic">Content loading...</p>
+          )}
+        </div>
+      </div>
+    );
+  },
+  "CBM-YOU_ONLY": function SectionStart({ data }) {
+    const blocks = data?.blocks;
+    if (blocks && Array.isArray(blocks) && blocks.length > 0) {
+      return <StartLessonBlocks blocks={blocks} accent="orange" />;
+    }
+    const content = (data && (data.content ?? (typeof data === "string" ? data : ""))) || "";
+    const paras = content ? content.split(/\n\n+/).filter(Boolean) : [];
+    return (
+      <div id="start-lesson" className="scroll-mt-20 max-w-3xl prose prose-slate prose-lg max-w-none">
+        {paras.length > 0 ? paras.map((p, i) => (
+          <p key={i} className="text-slate-700 leading-relaxed mb-4 last:mb-0">{p}</p>
+        )) : (
+          <p className="text-slate-500 italic">Content loading...</p>
+        )}
+      </div>
+    );
+  },
   "CBM-00_LESSON_ID": SectionLessonId,
   "CBM-01_OUTCOME_GOAL": SectionOutcomeGoal,
   "CBM-02_WHERE_YOU_USE_IT": SectionWhereYouUseIt,
@@ -533,7 +570,8 @@ export default function ChatGptBusinessSections({ sections }) {
         if (!sec || typeof sec !== "object") return null;
         const Renderer = CBM_RENDERERS[sec.type];
         if (!Renderer) return null;
-        return <Renderer key={`${sec.type}-${i}`} data={sec.data} />;
+        const sectionData = sec.data ?? sec;
+        return <Renderer key={`${sec.type}-${i}`} data={sectionData} />;
       })}
     </div>
   );

@@ -5,6 +5,7 @@ import {
   FiEdit3, FiAward, FiList, FiBookOpen, FiHelpCircle, FiStar,
   FiCopy, FiChevronDown, FiChevronUp, FiExternalLink,
 } from "react-icons/fi";
+import StartLessonBlocks from "./StartLessonBlocks";
 
 function CopyButton({ text }) {
   const [copied, setCopied] = useState(false);
@@ -500,7 +501,29 @@ function SectionBestAI({ data }) {
   );
 }
 
+function SectionStart({ data }) {
+  const blocks = data?.blocks;
+  if (blocks && Array.isArray(blocks) && blocks.length > 0) {
+    return <StartLessonBlocks blocks={blocks} accent="indigo" />;
+  }
+  const content = (data && (data.content ?? (typeof data === "string" ? data : ""))) || "";
+  const paras = content ? content.split(/\n\n+/).filter(Boolean) : [];
+  return (
+    <div id="start-lesson" className="scroll-mt-20 max-w-3xl">
+      <div className="prose prose-slate prose-lg max-w-none">
+        {paras.length > 0 ? paras.map((p, i) => (
+          <p key={i} className="text-slate-700 leading-relaxed mb-4 last:mb-0">{p}</p>
+        )) : (
+          <p className="text-slate-500 italic">Content loading...</p>
+        )}
+      </div>
+    </div>
+  );
+}
+
 const SECTION_RENDERERS = {
+  "SEC-START": SectionStart,
+  "SEC-YOU_ONLY": SectionStart,
   "SEC-01_GOAL": SectionGoal,
   "SEC-02_USE_CASE": SectionUseCase,
   "SEC-03_BAD_PROMPT": SectionBadPrompt,
@@ -527,7 +550,8 @@ export default function PromptEngineeringSections({ sections }) {
         if (!sec || typeof sec !== "object") return null;
         const Renderer = SECTION_RENDERERS[sec.type];
         if (!Renderer) return null;
-        return <Renderer key={`${sec.type}-${i}`} data={sec.data} />;
+        const sectionData = sec.data ?? sec;
+        return <Renderer key={`${sec.type}-${i}`} data={sectionData} />;
       })}
     </div>
   );

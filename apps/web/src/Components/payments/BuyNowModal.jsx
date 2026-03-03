@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { apiFetch, ApiError } from "../../services/api";
+import { useAuth } from "../../app/providers/AuthProvider";
 
 function formatRupees(paise) {
   return `₹${(paise / 100).toFixed(2)}`;
@@ -75,6 +76,7 @@ function OtpInput({ length = 6, value, onChange, disabled }) {
 const OTHER_OPTION_VALUE = "Others (Working Professional / Not Listed)";
 
 export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill, isLoggedIn }) {
+  const { tenant } = useAuth();
   const [form, setForm] = useState({ name: "", email: "", phone: "", college: "" });
   const [colleges, setColleges] = useState([]);
   const [emailTouched, setEmailTouched] = useState(false);
@@ -136,10 +138,11 @@ export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill, 
 
   useEffect(() => {
     if (!open) return;
-    apiFetch("/api/v1/public/colleges")
-      .then((res) => setColleges(res?.data ?? []))
+    const tenantSlug = tenant?.slug || "expograph";
+    apiFetch("/api/v1/public/colleges", { headers: { "X-Tenant-Slug": tenantSlug } })
+      .then((res) => setColleges(Array.isArray(res?.data) ? res.data : []))
       .catch(() => setColleges([]));
-  }, [open]);
+  }, [open, tenant?.slug]);
 
   // Reset verification when email changes (only for guest users)
   useEffect(() => {
@@ -630,7 +633,7 @@ export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill, 
                 </div>
               )}
 
-              {/* Editable fields for missing info */}
+              {/* Editable fields for missing info + college */}
               <div className="buy-summary-form space-y-3 mb-4">
                 {!form.name && (
                   <div>
@@ -658,6 +661,24 @@ export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill, 
                     />
                   </div>
                 )}
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">College / Others</label>
+                  <select
+                    value={form.college}
+                    onChange={(e) => setForm((f) => ({ ...f, college: e.target.value }))}
+                    style={{ color: "#0f172a", backgroundColor: "#fff" }}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20fill%3D%22none%22%20viewBox%3D%220%200%2024%2024%22%20stroke%3D%22%236b7280%22%3E%3Cpath%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%222%22%20d%3D%22M19%209l-7%207-7-7%22%2F%3E%3C%2Fsvg%3E')] bg-[length:1rem] bg-[right_0.5rem_center] bg-no-repeat pr-8"
+                  >
+                    <option value="">Select college or others</option>
+                    {colleges.map((c) => (
+                      <option key={c.id} value={c.name}>{c.name}</option>
+                    ))}
+                    <option value={OTHER_OPTION_VALUE}>{OTHER_OPTION_VALUE}</option>
+                    {form.college && !colleges.some((c) => c.name === form.college) && form.college !== OTHER_OPTION_VALUE && (
+                      <option value={form.college}>{form.college}</option>
+                    )}
+                  </select>
+                </div>
               </div>
 
               {/* Price summary */}

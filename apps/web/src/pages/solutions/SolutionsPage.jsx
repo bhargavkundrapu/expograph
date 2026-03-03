@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useAuth } from "../../app/providers/AuthProvider";
+import { homePathForRole } from "../../app/roles";
 
 export default function SolutionsPage() {
   const { token, role } = useAuth();
@@ -124,7 +125,7 @@ export default function SolutionsPage() {
               </Link>
               {token ? (
                 <Link
-                  to={role === "Student" ? "/lms/student" : role === "SuperAdmin" ? "/lms/superadmin" : "/lms/admin"}
+                  to={homePathForRole(role)}
                   className="px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-md shadow-lg hover:shadow-xl transition-all duration-300"
                 >
                   Dashboard

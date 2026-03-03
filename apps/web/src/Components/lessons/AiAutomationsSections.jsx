@@ -6,6 +6,7 @@ import {
   FiHelpCircle, FiCopy, FiChevronDown, FiChevronUp,
   FiCheck, FiStar, FiTarget, FiPlay, FiExternalLink,
 } from "react-icons/fi";
+import StartLessonBlocks from "./StartLessonBlocks";
 
 function CopyBtn({ text }) {
   const [copied, setCopied] = useState(false);
@@ -612,7 +613,26 @@ function SectionQuickQuiz({ data }) {
 
 /* ── Registry ────────────────────────────────────────────────── */
 
+function SectionStart({ data }) {
+  if (data?.blocks?.length) return <StartLessonBlocks blocks={data.blocks} accent="emerald" />;
+  const content = (data?.content ?? "") || "";
+  const paras = content ? content.split(/\n\n+/).filter(Boolean) : [];
+  return (
+    <div id="start-lesson" className="scroll-mt-20 max-w-3xl">
+      <div className="prose prose-slate prose-lg max-w-none">
+        {paras.length > 0 ? paras.map((p, i) => (
+          <p key={i} className="text-slate-700 leading-relaxed mb-4 last:mb-0">{p}</p>
+        )) : (
+          <p className="text-slate-500 italic">Content loading...</p>
+        )}
+      </div>
+    </div>
+  );
+}
+
 const AA_RENDERERS = {
+  "AA-START": SectionStart,
+  "AA-YOU_ONLY": SectionStart,
   "AA-01_TODAYS_WIN": SectionTodaysWin,
   "AA-15_TRY_IT_YOURSELF": SectionTryItYourself,
   "AA-02_WHY_CARE": SectionWhyCare,
@@ -638,7 +658,8 @@ export default function AiAutomationsSections({ sections }) {
         if (!sec || typeof sec !== "object") return null;
         const Renderer = AA_RENDERERS[sec.type];
         if (!Renderer) return null;
-        return <Renderer key={`${sec.type}-${i}`} data={sec.data} />;
+        const sectionData = sec.data ?? sec;
+        return <Renderer key={`${sec.type}-${i}`} data={sectionData} />;
       })}
     </div>
   );

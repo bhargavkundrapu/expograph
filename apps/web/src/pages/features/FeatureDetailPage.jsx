@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import { useParams, Link, useNavigate, useLocation } from "react-router-dom";
 import { Header } from "../../Components/ui/header-2";
+import { useAuth } from "../../app/providers/AuthProvider";
+import { homePathForRole } from "../../app/roles";
 import { featureData } from "../../Components/ui/academy-features-grid";
 import { TubesBackground } from "../../Components/ui/neon-flow";
 import {
@@ -259,6 +261,9 @@ const accentColors = {
 export default function FeatureDetailPage() {
   const { slug } = useParams();
   const navigate = useNavigate();
+  const { token, role } = useAuth();
+  const portalPath = token && role ? homePathForRole(role) : "/login";
+  const portalLabel = token && role ? "LMS Portal" : "Login";
   const { pathname } = useLocation();
   const detail = featureDetails[slug];
   const feature = featureData.find((f) => f.slug === slug);
@@ -477,10 +482,10 @@ export default function FeatureDetailPage() {
                 <ArrowRight className="h-4 w-4" />
               </Link>
               <Link
-                to="/login"
+                to={portalPath}
                 className="inline-flex items-center gap-2 px-6 py-3 sm:px-8 sm:py-3.5 rounded-full text-white/70 font-medium border border-white/10 hover:border-white/20 hover:text-white transition-all"
               >
-                Login
+                {portalLabel}
               </Link>
             </div>
           </div>

@@ -1,4 +1,4 @@
-require("dotenv").config();
+require("dotenv").config({ path: require("path").join(__dirname, ".env") });
 const { Pool } = require("pg");
 
 const m1_3 = require("./_vc_data_m1_m3");

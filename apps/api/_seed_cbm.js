@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-require("dotenv").config();
+require("dotenv").config({ path: require("path").join(__dirname, ".env") });
 const { Pool } = require("pg");
 
 const { MODULES_M1_M5 } = require("./_cbm_data_m1_m5");

@@ -4,7 +4,7 @@
  * and CBM-17_TRY_IT_YOURSELF to all Prompt to Profit lessons (after CBM-11).
  * Run: node _patch_try_it.js
  */
-require("dotenv").config();
+require("dotenv").config({ path: require("path").join(__dirname, ".env") });
 const { Pool } = require("pg");
 
 const DATABASE_URL = process.env.DATABASE_URL;

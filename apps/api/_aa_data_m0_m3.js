@@ -13,6 +13,36 @@ const MODULES_0_3 = [
   slug: "m0-welcome-mindset",
   lessons: [
 
+    /* ── L0: Start ── */
+    {
+      title: "Start",
+      slug: "start",
+      goal: "Get complete clarity on how to learn this course and feel excited to start.",
+      summary: "A warm guide to getting the most from AI Automations — how to use every section, learn step by step, and practice with love.",
+      sections: [
+        sec("AA-START", { blocks: [
+          { type: "hero", text: "Hey, we're so glad you're here. This lesson is just for you." },
+          { type: "intro", text: "Before you dive in, we want you to know exactly how this course works. Every lesson follows a clear structure. Here's how each part helps you learn:" },
+          { type: "section", title: "Today's Win", text: "Tells you what you'll get from the lesson — the real outcome. Read it first. It sets your intention and gets you curious about what you're building.", color: "emerald", icon: "zap" },
+          { type: "section", title: "Why Care", text: "Shows why this matters — the benefit, the real-world example. Answers 'why should I care?' Keeps you motivated. Don't skip it.", color: "orange", icon: "heart" },
+          { type: "section", title: "Simple Meaning", text: "Breaks down the key concept in plain language. If something sounds technical, this makes it clear. Use it when you're confused.", color: "blue", icon: "book" },
+          { type: "section", title: "Where It's Used", text: "Shows real examples — how companies and creators use this. Connects the lesson to the real world. See the possibilities.", color: "indigo", icon: "target" },
+          { type: "section", title: "Flow", text: "Walks you through the big idea: input, steps, output. Your mental model. Understand this before you build.", color: "teal", icon: "check" },
+          { type: "section", title: "Tool Setup", text: "Lists what you need — Make.com, n8n, Google account, etc. Get these ready. No surprises mid-lesson.", color: "amber", icon: "alert" },
+          { type: "section", title: "Build Steps", text: "Your action plan. Step by step, with instructions and tips. Open Make.com or n8n and follow along. This is where learning happens.", color: "emerald", icon: "zap" },
+          { type: "section", title: "Test Like a Pro", text: "Quick checklist to verify you did it right. Use it. Catch mistakes early.", color: "teal", icon: "check" },
+          { type: "section", title: "Common Mistakes", text: "Shows what goes wrong and how to fix it. Read before you build. Save hours of debugging.", color: "rose", icon: "alert" },
+          { type: "section", title: "Upgrade Mode", text: "Ideas to go further — extra features, better workflows. Use when you're ready to level up.", color: "violet", icon: "star" },
+          { type: "section", title: "Mini Task & Try It Yourself", text: "Small exercises and hands-on building. Do them. Practice is how skills stick. Create the automation. Test it.", color: "emerald", icon: "zap" },
+          { type: "section", title: "Key Notes & Quick Quiz", text: "Summary and recap. Lock it in. Wrong answers are fine — they show what to review.", color: "blue", icon: "book" },
+          { type: "section", title: "Money Angle", text: "In later lessons — shows you how to sell this skill. Your automation skills can become income.", color: "amber", icon: "star" },
+          { type: "flow", steps: ["Read the lesson", "Do the Build Steps", "Try It Yourself", "Take the quiz", "Log it in your Automation Journal"] },
+          { type: "tip", text: "Create an Automation Journal — a simple doc or sheet where you log what you build. It becomes your portfolio. You don't need to code. The tools are visual. You drag, you connect, you test. You've got this." },
+          { type: "closing", text: "You've got everything it takes. Now let's go." }
+        ] })
+      ]
+    },
+
     /* ── L1: What is Automation (and Why Learn It) ── */
     {
       title: "What is Automation (and Why Learn It)",

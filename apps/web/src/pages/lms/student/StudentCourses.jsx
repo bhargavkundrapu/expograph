@@ -734,7 +734,7 @@ export default function StudentCourses() {
         onClose={() => { setShowBuyModal(false); setBuyItem(null); }}
         item={buyItem}
         onSuccess={handleBuySuccess}
-        prefill={user ? { name: user.fullName || user.full_name || user.name || "", email: user.email, phone: user.phone } : undefined}
+        prefill={user ? { name: user.fullName || user.full_name || user.name || "", email: user.email, phone: user.phone, college: user.college || "" } : undefined}
         isLoggedIn={!!token}
       />
     </div>

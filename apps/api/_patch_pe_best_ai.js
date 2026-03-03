@@ -5,13 +5,13 @@
  *
  * Run: node _patch_pe_best_ai.js
  */
-require("dotenv").config();
+require("dotenv").config({ path: require("path").join(__dirname, ".env") });
 const { Pool } = require("pg");
 
 const DATABASE_URL = process.env.DATABASE_URL;
 const pool = new Pool({
   connectionString: DATABASE_URL,
-  ssl: DATABASE_URL.includes("sslmode=require") ? { rejectUnauthorized: false } : false,
+  ssl: DATABASE_URL?.includes("sslmode=require") ? { rejectUnauthorized: false } : false,
 });
 
 const BEST_AI_MAP = {

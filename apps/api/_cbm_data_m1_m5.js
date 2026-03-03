@@ -14,6 +14,33 @@ const MODULES_M1_M5 = [
   lessons: [
 
     {
+      title: "Start",
+      slug: "start",
+      goal: "Get complete clarity on how to learn this course and feel excited to start.",
+      summary: "A warm guide to getting the most from Prompt to Profit — how to use every section, learn step by step, and practice with love.",
+      sections: [
+        sec("CBM-START", { blocks: [
+          { type: "hero", text: "Hey, we're so glad you're here. This lesson is just for you." },
+          { type: "intro", text: "Before you dive in, we want you to know exactly how this course works. Every lesson follows a clear structure. Here's how each part helps you learn:" },
+          { type: "section", title: "Outcome Goal", text: "Tells you what you'll get from the lesson. Read it first. It sets your intention and keeps you focused.", color: "blue", icon: "target" },
+          { type: "section", title: "Where You Use It", text: "Shows real business scenarios — emails, proposals, copy, research. It answers 'when will I actually use this?'", color: "amber", icon: "briefcase" },
+          { type: "section", title: "Inputs You Need", text: "Lists what you should have ready — goal, context, format. Your prep checklist before you prompt.", color: "teal", icon: "check" },
+          { type: "section", title: "Bad vs Good Prompt", text: "Learn by contrast. Don't skip these. Copy the good one and try it in ChatGPT right away.", color: "emerald", icon: "zap" },
+          { type: "section", title: "Why It Failed", text: "Breaks down why the bad prompt flopped. Builds your intuition so you stop making those mistakes.", color: "rose", icon: "alert" },
+          { type: "section", title: "Upgrade Prompt Pro", text: "The pro version. Use it when you're ready to level up.", color: "violet", icon: "star" },
+          { type: "section", title: "3 Variations", text: "Three ways to use the same skill. Pick the one that fits your task. Save the others for later.", color: "orange", icon: "zap" },
+          { type: "section", title: "Prompt Card Final", text: "Your cheat sheet. Keep it handy. Use it every time you prompt.", color: "indigo", icon: "book" },
+          { type: "section", title: "Guided Practice & Try It Yourself", text: "Hands-on. Open ChatGPT. Do the steps. Don't skip. Practice is how prompts become second nature.", color: "teal", icon: "check" },
+          { type: "section", title: "Challenge Task", text: "Pushes you a little. Give it a shot. That's growth.", color: "orange", icon: "zap" },
+          { type: "section", title: "Checklist & What You Learned", text: "Confirms you're ready. Summarizes key points. A quick recap before you move on.", color: "blue", icon: "check" },
+          { type: "flow", steps: ["Read the lesson", "Try the prompts in ChatGPT", "Do the practice", "Check the checklist", "Add one prompt to your playbook"] },
+          { type: "tip", text: "If you ever feel stuck, come back here. Re-read this. Take a breath. You're on the right path. We built this course with love for learners like you." },
+          { type: "closing", text: "You've got everything it takes. Build that playbook. Now let's go." }
+        ] })
+      ]
+    },
+
+    {
       title: "How to Master ChatGPT",
       slug: "how-to-master-chatgpt",
       goal: "Learn the mindset and habits that separate ChatGPT power users from casual users.",

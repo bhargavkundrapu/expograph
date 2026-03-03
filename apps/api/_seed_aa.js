@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-require("dotenv").config();
+require("dotenv").config({ path: require("path").join(__dirname, ".env") });
 const { Pool } = require("pg");
 const jwt = require("jsonwebtoken");
 
@@ -14,7 +14,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 const pool = new Pool({
   connectionString: DATABASE_URL,
-  ssl: DATABASE_URL.includes("sslmode=require") ? { rejectUnauthorized: false } : false,
+  ssl: DATABASE_URL?.includes("sslmode=require") ? { rejectUnauthorized: false } : false,
 });
 
 async function q(sql, params) {

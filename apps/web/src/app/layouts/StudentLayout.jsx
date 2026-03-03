@@ -121,14 +121,14 @@ export default function StudentLayout() {
   return (
     <div className={`min-h-screen transition-colors duration-200 ${isDark ? "bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950" : "bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900"}`}>
       {/* ── Mobile Top Bar ── */}
-      <header className="sticky top-0 z-50 md:hidden bg-slate-900/95 backdrop-blur-md border-b border-slate-700/50">
+      <header className="sticky top-0 z-50 md:hidden bg-slate-900/95 backdrop-blur-md">
         <div className="flex items-center gap-3 px-4 py-3">
           <Link to="/lms/student"><img src="/1.png" alt="ExpoGraph" className="h-7 w-auto object-contain flex-shrink-0 max-w-[100px]" /></Link>
 
           <button
             type="button"
             onClick={() => setSearchModalOpen(true)}
-            className="flex-1 flex items-center gap-2 px-3 py-2 bg-slate-800/70 border border-slate-700/50 rounded-xl text-slate-400 text-sm btn-press"
+            className="flex-1 flex items-center gap-2 px-3 py-2 bg-slate-800/70 rounded-xl text-slate-400 text-sm btn-press"
           >
             <FiSearch className="w-4 h-4 flex-shrink-0" />
             <span className="truncate">Search courses...</span>
@@ -158,9 +158,9 @@ export default function StudentLayout() {
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.9, y: -8 }}
                   transition={{ duration: 0.15 }}
-                  className="absolute right-0 top-12 w-64 bg-slate-800 border border-slate-700/70 rounded-2xl shadow-2xl overflow-hidden z-[60]"
+                  className="absolute right-0 top-12 w-64 bg-slate-800 rounded-2xl shadow-2xl overflow-hidden z-[60]"
                 >
-                  <div className="p-4 bg-gradient-to-br from-blue-600/20 to-purple-600/20 border-b border-slate-700/50">
+                  <div className="p-4 bg-gradient-to-br from-blue-600/20 to-purple-600/20">
                     <div className="flex items-center gap-3">
                       <div className="w-11 h-11 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white font-bold text-lg flex-shrink-0">
                         {userInitial}
@@ -214,7 +214,7 @@ export default function StudentLayout() {
                       <span>Support</span>
                       <FiChevronRight className="w-4 h-4 ml-auto text-slate-500" />
                     </button>
-                    <div className="my-1 border-t border-slate-700/40" />
+                    <div className="my-1" />
                     <button
                       onClick={handleLogout}
                       className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-colors text-sm"
@@ -235,9 +235,9 @@ export default function StudentLayout() {
         <motion.aside
           initial={false}
           animate={{ width: sidebarCollapsed ? "80px" : "280px" }}
-          className="hidden md:flex fixed md:static inset-y-0 left-0 z-50 bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 border-r border-slate-900 flex-col transition-all duration-300 ease-in-out w-64"
+          className="hidden md:flex fixed md:static inset-y-0 left-0 z-50 bg-slate-900 flex-col transition-all duration-300 ease-in-out w-64"
         >
-          <div className="h-20 flex items-center justify-between px-4 border-b border-slate-900">
+          <div className="h-20 flex items-center justify-between px-4">
             <AnimatePresence mode="wait">
               {!sidebarCollapsed ? (
                 <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="flex items-center">
@@ -258,14 +258,14 @@ export default function StudentLayout() {
             </button>
           </div>
 
-          <div className="px-4 pt-4 pb-4 border-b border-slate-900">
+          <div className="px-4 pt-4 pb-4">
             <AnimatePresence mode="wait">
               {!sidebarCollapsed ? (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="relative">
                   <button
                     type="button"
                     onClick={() => setSearchModalOpen(true)}
-                    className="w-full flex items-center gap-3 pl-3 pr-3 py-2.5 bg-slate-800/50 border border-slate-700/50 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-700/50 hover:border-slate-600/50 transition-all text-left"
+                    className="w-full flex items-center gap-3 pl-3 pr-3 py-2.5 bg-slate-800/50 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-700/50 transition-all text-left"
                   >
                     <FiSearch className="w-4 h-4 flex-shrink-0" />
                     <span className="text-sm truncate flex-1">Search courses, modules...</span>
@@ -311,7 +311,7 @@ export default function StudentLayout() {
           </nav>
 
           {/* Dark mode & shortcuts row */}
-          <div className="border-t border-slate-700/40 px-2 pt-2 pb-1">
+          <div className="px-2 pt-2 pb-1">
             <AnimatePresence mode="wait">
               {!sidebarCollapsed ? (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-1">
@@ -345,7 +345,7 @@ export default function StudentLayout() {
             </AnimatePresence>
           </div>
 
-          <div className="border-t border-slate-900 p-4">
+          <div className="p-4">
             <AnimatePresence mode="wait">
               {!sidebarCollapsed ? (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-2">
@@ -394,7 +394,7 @@ export default function StudentLayout() {
       </div>
 
       {/* ── Mobile Bottom Navigation ── */}
-      <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-slate-900/95 backdrop-blur-md border-t border-slate-700/50 safe-area-pb">
+      <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-slate-900/95 backdrop-blur-md safe-area-pb">
         <div className="flex items-center justify-around px-1 py-1.5">
           {mobileBottomItems.map((item) => {
             const Icon = item.icon;

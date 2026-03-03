@@ -175,7 +175,7 @@ app.use(
   app.use("/api/v1/mentor/client-lab", mentorClientLabRouter);
   app.use("/api/v1/public", leadsPublic);
   app.use("/api/v1/public", workshopsPublic);
-  app.use("/api/v1/public/colleges", collegesPublicRouter);
+  app.use("/api/v1/public", collegesPublicRouter);
   app.use("/api/v1/public", certPublic);
   app.use("/api/v1/public", featureFlagsPublic);
 

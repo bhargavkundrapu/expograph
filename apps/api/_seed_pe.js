@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-require("dotenv").config();
+require("dotenv").config({ path: require("path").join(__dirname, ".env") });
 const { Pool } = require("pg");
 const jwt = require("jsonwebtoken");
 const path = require("path");
@@ -8,7 +8,7 @@ const DATABASE_URL = process.env.DATABASE_URL;
 const JWT_SECRET = process.env.JWT_SECRET;
 const API_BASE = process.env.PUBLIC_API_URL || "http://localhost:4000";
 
-const pool = new Pool({ connectionString: DATABASE_URL, ssl: DATABASE_URL.includes("sslmode=require") ? { rejectUnauthorized: false } : false });
+const pool = new Pool({ connectionString: DATABASE_URL, ssl: DATABASE_URL?.includes("sslmode=require") ? { rejectUnauthorized: false } : false });
 
 async function q(sql, params) {
   const { rows } = await pool.query(sql, params);
@@ -24,6 +24,31 @@ const MODULES = [
     title: "Foundations",
     slug: "m1-foundations",
     lessons: [
+      {
+        title: "Start",
+        slug: "start",
+        goal: "Get complete clarity on how to learn this course and feel excited to start.",
+        summary: "A warm guide to getting the most from Prompt Engineering — how to use every section, learn step by step, and practice with love.",
+        sections: [
+          sec("SEC-START", { blocks: [
+            { type: "hero", text: "Hey, we're so glad you're here. This lesson is just for you." },
+            { type: "intro", text: "Before you dive in, we want you to know exactly how this course works — so you never feel lost, never overwhelmed, and always excited about what comes next. Every lesson follows a clear structure. Here's how each part helps you learn:" },
+            { type: "section", title: "Your Mission", text: "Tells you what you'll get from the lesson — the one thing that will change after you finish. Read it first. It sets your intention and gets you curious.", color: "blue", icon: "target" },
+            { type: "section", title: "Use Case", text: "Shows you when you'll actually use this in real life — study, coding, projects, interviews. It answers 'why does this matter to me?' and keeps you motivated.", color: "amber", icon: "briefcase" },
+            { type: "section", title: "Bad Prompt & Good Prompt", text: "Where the magic happens. You'll see a weak prompt, then a strong one. Don't skim. Compare them. Notice what changed. Copy the good one and try it yourself.", color: "emerald", icon: "zap" },
+            { type: "section", title: "Why Failed", text: "Breaks down why the bad prompt flopped. Read this — it builds your intuition so you stop making those mistakes before you even run the prompt.", color: "rose", icon: "alert" },
+            { type: "section", title: "Upgrade Prompt", text: "Takes the good prompt one step further. This is the pro version. Use it when you're ready to level up.", color: "violet", icon: "star" },
+            { type: "section", title: "Guided Practice", text: "Hands-on steps. Do them. Really. Open ChatGPT or Claude and try. Practice is not optional — it's how prompts stick.", color: "teal", icon: "check" },
+            { type: "section", title: "Challenge", text: "Pushes you a little. It's okay if it feels hard. That's growth. Give it a shot.", color: "orange", icon: "zap" },
+            { type: "section", title: "Checklist", text: "Your confirmation. Before you move on, tick those boxes in your mind. You deserve to feel ready.", color: "blue", icon: "check" },
+            { type: "section", title: "What You Learned & Mini Quiz", text: "Summarizes key points and locks it in. Wrong answers are just another chance to learn.", color: "indigo", icon: "book" },
+            { type: "section", title: "Best AI", text: "Shows you which tool works best for that lesson. Use it.", color: "violet", icon: "zap" },
+            { type: "flow", steps: ["Read the lesson", "Try the prompts in ChatGPT or Claude", "Do the practice", "Check the checklist", "Move on — no rushing, no guilt"] },
+            { type: "tip", text: "If you ever feel stuck, come back here. Re-read this. Take a breath. You're on the right path. We built this course with love for learners like you." },
+            { type: "closing", text: "You've got everything it takes. Your pace is yours. Now let's go." }
+          ] })
+        ]
+      },
       {
         title: "Prompt Anatomy & GCCF Model",
         slug: "prompt-anatomy-gccf",
@@ -513,9 +538,16 @@ if (require.main === module) {
     }
     
     // Get course info
-    const courses = await q("SELECT id, title, slug FROM courses WHERE slug ILIKE '%prompt%' OR title ILIKE '%prompt%' LIMIT 5");
-    if (!courses.length) { console.error("No Prompt Engineering course found!"); process.exit(1); }
-    const course = courses[0];
+    let course = (await q("SELECT id, title, slug FROM courses WHERE slug = 'prompt-engineering' LIMIT 1"))[0];
+    if (!course) {
+      const fallback = await q("SELECT id, title, slug FROM courses WHERE (slug ILIKE '%prompt%' AND slug NOT ILIKE '%profit%') OR title ILIKE '%prompt engineering%' LIMIT 1");
+      course = fallback[0];
+    }
+    if (!course) {
+      const any = await q("SELECT id, title, slug FROM courses WHERE slug ILIKE '%prompt%' OR title ILIKE '%prompt%' LIMIT 1");
+      if (!any.length) { console.error("No Prompt Engineering course found!"); process.exit(1); }
+      course = any[0];
+    }
     console.log(`Course: ${course.title} (${course.id})`);
 
     const tenants = await q("SELECT id, slug FROM tenants LIMIT 1");
