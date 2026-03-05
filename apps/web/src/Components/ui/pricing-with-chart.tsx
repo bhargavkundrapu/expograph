@@ -277,12 +277,12 @@ export function PricingWithChart() {
               </li>
             </ul>
           </div>
-          <div className="relative flex justify-end p-4 pt-0">
+          <div className="relative p-4 pt-0">
             {allPack && (
               <Button
                 onClick={() => handleGetCourse({ type: "pack", id: allPack.id, title: allPack.title })}
                 disabled={(allPack.price_in_paise ?? 0) < 100}
-                className="h-10 bg-purple-600 hover:bg-purple-500 text-white font-semibold rounded-lg border-0"
+                className="w-full h-10 bg-purple-600 hover:bg-purple-500 text-white font-semibold rounded-lg border-0"
               >
                 Get Pack
               </Button>
