@@ -522,6 +522,7 @@ if (require.main === module) {
     console.log("Loading additional modules...");
     const m2 = require("./_seed_pe_m5_10");
     const { BEST_AI_MAP } = require("./_patch_pe_best_ai");
+    const { buildDictionaryLesson } = require("./_seed_pe_dictionary");
     const ALL_MODULES = [...MODULES, ...m2.MODULES];
 
     // Inject SEC-15_BEST_AI into every lesson's sections (after SEC-07)
@@ -535,6 +536,14 @@ if (require.main === module) {
         const insertAt = idx >= 0 ? idx + 1 : lesson.sections.length;
         lesson.sections.splice(insertAt, 0, sec("SEC-15_BEST_AI", aiData));
       }
+    }
+
+    // Add Dictionary lesson at the end of every module (default prompt + 20+ keywords per lesson)
+    for (const mod of ALL_MODULES) {
+      const lessonsWithoutDict = mod.lessons.filter((l) => l.slug !== "dictionary");
+      const dictLesson = buildDictionaryLesson(lessonsWithoutDict, mod.title);
+      mod.lessons.push(dictLesson);
+      console.log(`  Dictionary lesson added to module: ${mod.title}`);
     }
     
     // Get course info

@@ -11,6 +11,7 @@ import { apiFetch } from "../../services/api";
 import { BuyNowModal } from "../payments/BuyNowModal";
 import { CoursesPageSkeleton } from "../common/SkeletonLoaders";
 import { COURSE_EXPLORE_DATA } from "../../data/courseExploreData";
+import { PriceCountdown, getOfferEndsAt24h } from "./price-countdown";
 
 function formatPrice(paise: number | null | undefined) {
   if (paise == null || paise === undefined) return "—";
@@ -94,6 +95,7 @@ export function PricingWithChart() {
 
 
   const allPack = packs.find((p) => (p.slug || "").includes("all-pack") || (p.slug || "").includes("pack")) || packs[0];
+  const offerEndsAt = getOfferEndsAt24h();
 
   // Bento grid: row1 [All Pack 5][Vibe 3], row2 [PE 4][PtP 4], row3 [AA 8]
   const vibeCourse = courses.find((co) => (co.slug || "").toLowerCase().replace(/_/g, "-").includes("vibe-coding") || matchCourse(co, "vibe-coding"));
@@ -175,18 +177,25 @@ export function PricingWithChart() {
         {isBonus ? (
           <p className="text-center text-xs text-amber-400/90 py-1">Buy All Pack to get this course free</p>
         ) : (
-          <Button
-            type="button"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              if (course) handleGetCourse({ type: "course", id: course.id, title: displayTitle });
-            }}
-            disabled={!canBuy}
-            className="w-full h-10 bg-purple-600 hover:bg-purple-500 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            Get Course
-          </Button>
+          <>
+            {canBuy && (
+              <div className="mb-2.5 min-h-[1.5rem] flex items-center justify-center">
+                <PriceCountdown endsAt={offerEndsAt} className="text-center" />
+              </div>
+            )}
+            <Button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (course) handleGetCourse({ type: "course", id: course.id, title: displayTitle });
+              }}
+              disabled={!canBuy}
+              className="w-full h-10 bg-purple-600 hover:bg-purple-500 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Get Course
+            </Button>
+          </>
         )}
       </div>
     );
@@ -280,13 +289,20 @@ export function PricingWithChart() {
           </div>
           <div className="relative p-4 pt-0">
             {allPack && (
-              <Button
-                onClick={() => handleGetCourse({ type: "pack", id: allPack.id, title: allPack.title })}
-                disabled={(allPack.price_in_paise ?? 0) < 100}
-                className="w-full h-10 bg-purple-600 hover:bg-purple-500 text-white font-semibold rounded-lg border-0"
-              >
-                Get Pack
-              </Button>
+              <>
+                {(allPack.price_in_paise ?? 0) >= 100 && (
+                  <div className="mb-2.5 min-h-[1.5rem] flex items-center justify-center">
+                    <PriceCountdown endsAt={offerEndsAt} className="text-center" />
+                  </div>
+                )}
+                <Button
+                  onClick={() => handleGetCourse({ type: "pack", id: allPack.id, title: allPack.title })}
+                  disabled={(allPack.price_in_paise ?? 0) < 100}
+                  className="w-full h-10 bg-purple-600 hover:bg-purple-500 text-white font-semibold rounded-lg border-0"
+                >
+                  Get Pack
+                </Button>
+              </>
             )}
           </div>
         </div>
@@ -339,6 +355,7 @@ export function PricingWithChart() {
           setModalOpen(false);
           setSelectedItem(null);
         }}
+        fromCourseRoute
       />
     </div>
   );

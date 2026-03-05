@@ -7,7 +7,6 @@ import { useGamification } from "../../../app/providers/GamificationProvider";
 import { apiFetch } from "../../../services/api";
 import { StudentHomeSkeleton } from "../../../Components/common/SkeletonLoaders";
 import WorkshopCarousel from "../../../Components/dashboard/WorkshopCarousel";
-import DashboardCustomizer from "../../../Components/student/DashboardCustomizer";
 import PageTransition from "../../../Components/common/PageTransition";
 import DailyMotivation from "../../../Components/student/gamification/DailyMotivation";
 import DailyChallenge from "../../../Components/student/gamification/DailyChallenge";
@@ -29,7 +28,6 @@ import {
   FiChevronRight,
   FiInfo,
   FiLock,
-  FiSliders,
 } from "react-icons/fi";
 
 function EventsWidget({ isDark, events, navigate }) {
@@ -280,7 +278,6 @@ export default function StudentHome() {
   const [currentCourse, setCurrentCourse] = useState(null);
   const [progress, setProgress] = useState({ completed: 0, streak: 0, consistency: 0 });
   const [events, setEvents] = useState([]);
-  const [customizerOpen, setCustomizerOpen] = useState(false);
   const gamification = useGamification();
   const { setLastContinue, milestoneCelebrated, celebrateMilestone } = gamification;
   const [milestonePopup, setMilestonePopup] = useState(null);
@@ -399,13 +396,6 @@ export default function StudentHome() {
                 }
               />
             </div>
-            <button
-              onClick={() => setCustomizerOpen(true)}
-              className={`flex-shrink-0 mt-2 p-2.5 rounded-xl border transition-all hover-lift btn-press ${isDark ? "bg-slate-800 border-slate-700 text-slate-300 hover:text-white hover:bg-slate-700" : "bg-white border-slate-200 text-slate-500 hover:text-slate-700 hover:bg-slate-50"}`}
-              title="Customize dashboard"
-            >
-              <FiSliders className="w-4 h-4 sm:w-5 sm:h-5" />
-            </button>
           </div>
 
           <ContinueBanner currentCourse={currentCourse} schedule={schedule} />
@@ -424,8 +414,6 @@ export default function StudentHome() {
           {sideWidgetIds.map(id => renderSideWidget(id))}
         </div>
       </div>
-
-      <DashboardCustomizer open={customizerOpen} onClose={() => setCustomizerOpen(false)} />
     </div>
     </PageTransition>
   );

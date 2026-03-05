@@ -83,6 +83,7 @@ function SearchableCollegeSelect({ value, onChange, colleges, placeholder = "Sel
   const listRef = useRef(null);
   const inputRef = useRef(null);
   const searchInputRef = useRef(null);
+  const justSelectedRef = useRef(false);
 
   const optionNames = [
     "",
@@ -170,8 +171,20 @@ function SearchableCollegeSelect({ value, onChange, colleges, placeholder = "Sel
         id="college-combobox"
         readOnly
         value={value}
-        onFocus={() => setIsOpen(true)}
-        onClick={() => setIsOpen(true)}
+        onFocus={() => {
+          if (justSelectedRef.current) {
+            justSelectedRef.current = false;
+            return;
+          }
+          setIsOpen(true);
+        }}
+        onClick={() => {
+          if (justSelectedRef.current) {
+            justSelectedRef.current = false;
+            return;
+          }
+          setIsOpen(true);
+        }}
         onKeyDown={handleTriggerKeyDown}
         placeholder={placeholder}
         style={{ color: "#0f172a", backgroundColor: "#fff", cursor: "pointer" }}
@@ -222,7 +235,17 @@ function SearchableCollegeSelect({ value, onChange, colleges, placeholder = "Sel
   );
 }
 
-export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill, isLoggedIn }) {
+const LOGIN_PATH = "/login";
+
+function buildLoginUrlWithParams(email) {
+  const params = new URLSearchParams();
+  params.set("purchased", "1");
+  if (email && String(email).trim()) params.set("email", String(email).trim());
+  const q = params.toString();
+  return `${LOGIN_PATH}${q ? `?${q}` : ""}`;
+}
+
+export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill, isLoggedIn, fromCourseRoute }) {
   const { tenant } = useAuth();
   const [form, setForm] = useState({ name: "", email: "", phone: "", college: "" });
   const [colleges, setColleges] = useState([]);
@@ -366,7 +389,8 @@ export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill, 
 
   const handleVerifyOtp = async () => {
     const email = form.email.trim().toLowerCase();
-    if (otpValue.length < 6) {
+    const code = String(otpValue).trim().slice(0, 6);
+    if (code.length < 6) {
       setOtpError("Please enter the full 6-digit code.");
       return;
     }
@@ -375,13 +399,15 @@ export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill, 
     try {
       await apiFetch("/api/v1/payments/verify-email/confirm", {
         method: "POST",
-        body: { email, otp: otpValue },
+        body: { email, otp: code },
       });
       setEmailVerified(true);
       verifiedEmailRef.current = email;
       setOtpError("");
     } catch (err) {
-      setOtpError(err?.message || "Invalid code. Please try again.");
+      const msg = err?.message || "";
+      const isWrongOtp = err?.status === 400 || err?.status === 401 || /invalid|expired|wrong otp/i.test(msg);
+      setOtpError(isWrongOtp ? "Wrong OTP. Please try again or request a new code." : msg || "Something went wrong. Please try again.");
     } finally {
       setOtpLoading(false);
     }
@@ -448,15 +474,24 @@ export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill, 
               },
             });
             const unlocked = verifyRes?.unlocked ?? verifyRes?.data?.unlocked;
-            const redirect = verifyRes?.redirect ?? verifyRes?.data?.redirect;
+            const apiRedirect = verifyRes?.redirect ?? verifyRes?.data?.redirect;
             setStep("success");
             setLoading(false);
+
+            // Course route: always redirect to login after success (new or existing account)
+            if (fromCourseRoute) {
+              const loginUrl = buildLoginUrlWithParams(form.email?.trim());
+              window.location.href = loginUrl;
+              return;
+            }
+
+            // LMS route: existing user just unlocked — stay on page
             if (unlocked) {
               onSuccess?.();
               return;
             }
-            if (redirect) {
-              window.location.href = redirect;
+            if (apiRedirect) {
+              window.location.href = apiRedirect;
               return;
             }
             onSuccess?.();
@@ -628,6 +663,13 @@ export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill, 
                         animate={{ opacity: 1, height: "auto" }}
                         exit={{ opacity: 0, height: 0 }}
                         className="overflow-hidden"
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            if (String(otpValue).trim().length >= 6 && !otpLoading) handleVerifyOtp();
+                          }
+                        }}
                       >
                         <div className="mt-3 p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-3">
                           <p className="text-sm text-slate-600 text-center">
@@ -638,6 +680,10 @@ export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill, 
                             onChange={setOtpValue}
                             disabled={otpLoading}
                           />
+                          <p className="text-[11px] text-amber-700 bg-amber-50 border border-amber-200 rounded-md px-2.5 py-2 flex items-center gap-2">
+                            <svg className="w-3.5 h-3.5 flex-shrink-0 text-amber-600" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" /></svg>
+                            <span>If you don&apos;t see the email, check your <strong>spam or junk</strong> folder.</span>
+                          </p>
                           {otpError && (
                             <p className="text-red-500 text-xs text-center">{otpError}</p>
                           )}

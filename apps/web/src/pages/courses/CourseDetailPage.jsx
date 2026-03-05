@@ -170,6 +170,7 @@ export default function CourseDetailPage() {
         onClose={() => setModalOpen(false)}
         item={buyTarget}
         onSuccess={() => setModalOpen(false)}
+        fromCourseRoute
       />
     </div>
   );

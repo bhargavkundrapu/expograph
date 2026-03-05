@@ -111,6 +111,37 @@ const SEC_SCHEMA = {
     color: "slate",
     fields: [{ key: "line", label: "Takeaway Line", type: "text" }],
   },
+  "SEC-15_BEST_AI": {
+    label: "Best AI",
+    icon: FiZap,
+    color: "violet",
+    fields: [],
+  },
+  "SEC-DICT-NAV": {
+    label: "Dictionary — Nav Links",
+    icon: FiBookOpen,
+    color: "indigo",
+    fields: [{ key: "links", label: "Links", type: "json" }],
+  },
+  "SEC-DICT-INTRO": {
+    label: "Dictionary — Intro",
+    icon: FiBookOpen,
+    color: "indigo",
+    fields: [
+      { key: "headline", label: "Headline", type: "text" },
+      { key: "description", label: "Description", type: "textarea" },
+    ],
+  },
+  "SEC-DICT-ENTRY": {
+    label: "Dictionary — Lesson Entry",
+    icon: FiBookOpen,
+    color: "indigo",
+    fields: [
+      { key: "lessonTitle", label: "Lesson Title", type: "text" },
+      { key: "defaultPrompt", label: "Default Prompt", type: "textarea" },
+      { key: "keywords", label: "Keywords", type: "json" },
+    ],
+  },
 };
 
 const VC_SCHEMA = {

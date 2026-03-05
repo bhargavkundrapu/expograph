@@ -33,8 +33,11 @@ export interface CourseContentsSidebarProps {
   courseTitle?: string;
   modules?: ModuleItem[];
   totalDuration?: string;
+  /** Current lesson ID (unique) – use for correct module when slug is reused (e.g. Dictionary in every module). */
   currentLessonId?: string;
   currentLessonSlug?: string;
+  /** Current module slug from URL – used for active/expanded module so duplicate lesson slugs (e.g. dictionary) don't open the wrong module. */
+  currentModuleSlug?: string;
   onBack?: () => void;
   onClose?: () => void;
   onLessonSelect?: (lesson: LessonItem, moduleSlug: string) => void;
@@ -47,59 +50,61 @@ export function CourseContentsSidebar({
   totalDuration = "0 mins",
   currentLessonId,
   currentLessonSlug,
+  currentModuleSlug,
   onBack,
   onClose,
   onLessonSelect,
   className,
 }: CourseContentsSidebarProps) {
-  // Track expanded state for each module - initialize immediately
+  // Which module is active: prefer URL module slug (fixes Dictionary in every module), then lesson ID (unique), then lesson slug
+  const activeModuleId = useMemo(() => {
+    if (modules.length === 0) return null;
+    if (currentModuleSlug) {
+      const bySlug = modules.find((mod) => mod.slug === currentModuleSlug);
+      if (bySlug) return bySlug.id;
+    }
+    if (currentLessonId) {
+      const byLessonId = modules.find((mod) =>
+        mod.lessons.some((l) => String(l.id) === String(currentLessonId))
+      );
+      if (byLessonId) return byLessonId.id;
+    }
+    if (currentLessonSlug) {
+      const byLessonSlug = modules.find((mod) =>
+        mod.lessons.some((l) => l.slug === currentLessonSlug)
+      );
+      return byLessonSlug?.id ?? null;
+    }
+    return modules[0]?.id ?? null;
+  }, [modules, currentModuleSlug, currentLessonId, currentLessonSlug]);
+
+  // Track expanded state – expand the active module so duplicate lesson slugs (e.g. Dictionary) don't open wrong module
   const [expandedModules, setExpandedModules] = useState<Set<string>>(() => {
     const initial = new Set<string>();
     if (modules.length > 0) {
-      // Find module with current lesson immediately
-      const moduleWithCurrent = modules.find((mod) =>
-        mod.lessons.some(
-          (l) => l.id === currentLessonId || l.slug === currentLessonSlug
-        )
-      );
-      if (moduleWithCurrent) {
-        initial.add(moduleWithCurrent.id);
-      } else if (modules[0]) {
-        // Expand first module if no current lesson found
-        initial.add(modules[0].id);
-      }
+      const id = currentModuleSlug
+        ? modules.find((m) => m.slug === currentModuleSlug)?.id
+        : currentLessonId
+          ? modules.find((m) => m.lessons.some((l) => String(l.id) === String(currentLessonId)))?.id
+          : currentLessonSlug
+            ? modules.find((m) => m.lessons.some((l) => l.slug === currentLessonSlug))?.id
+            : modules[0]?.id;
+      if (id) initial.add(id);
+      else if (modules[0]) initial.add(modules[0].id);
     }
     return initial;
   });
 
-  // Update expanded modules when current lesson changes - optimized
   useEffect(() => {
-    if (modules.length === 0) return;
-    
-    // Find module with current lesson
-    let moduleWithCurrent: ModuleItem | undefined;
-    for (const mod of modules) {
-      if (mod.lessons.some(
-        (l) => l.id === currentLessonId || l.slug === currentLessonSlug
-      )) {
-        moduleWithCurrent = mod;
-        break;
-      }
-    }
-    
-    // Only update if module needs to be expanded
-    if (moduleWithCurrent) {
+    if (activeModuleId) {
       setExpandedModules((prev) => {
-        // Check if already expanded to avoid unnecessary updates
-        if (prev.has(moduleWithCurrent!.id)) {
-          return prev;
-        }
+        if (prev.has(activeModuleId)) return prev;
         const updated = new Set(prev);
-        updated.add(moduleWithCurrent!.id);
+        updated.add(activeModuleId);
         return updated;
       });
     }
-  }, [modules, currentLessonId, currentLessonSlug]);
+  }, [activeModuleId]);
 
   const toggleModule = useCallback((moduleId: string) => {
     setExpandedModules((prev) => {
@@ -113,14 +118,9 @@ export function CourseContentsSidebar({
     });
   }, []);
 
-  // Check if a module is active (contains the current lesson)
   const isModuleActive = useCallback(
-    (module: ModuleItem) => {
-      return module.lessons.some(
-        (l) => l.id === currentLessonId || l.slug === currentLessonSlug
-      );
-    },
-    [currentLessonId, currentLessonSlug]
+    (module: ModuleItem) => (activeModuleId ? module.id === activeModuleId : false),
+    [activeModuleId]
   );
 
 

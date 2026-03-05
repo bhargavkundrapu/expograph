@@ -274,6 +274,7 @@ export function BentoPricing() {
         onClose={() => setModalOpen(false)}
         item={selectedItem}
         onSuccess={() => setModalOpen(false)}
+        fromCourseRoute
       />
     </div>
   );

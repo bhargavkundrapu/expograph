@@ -99,14 +99,8 @@ const sendEmailVerifyOtp = asyncHandler(async (req, res) => {
   }
 
   const { otpCode } = await createOtp(email);
-  await sendOtpEmail({
-    to: email,
-    otpCode,
-    appName: req.tenant?.name || "ExpoGraph",
-    subject: "Verify your email — ExpoGraph",
-    heading: "Email verification code",
-    description: "Enter this code to confirm your email before completing your purchase. It expires in 10 minutes.",
-  });
+  // Use same payload as login OTP so deliverability matches (same subject/body = same inbox behavior)
+  await sendOtpEmail({ to: email, otpCode, appName: req.tenant?.name || "ExpoGraph" });
 
   emailVerifyRateLimit.set(email, Date.now());
 
@@ -126,7 +120,7 @@ const confirmEmailVerifyOtp = asyncHandler(async (req, res) => {
 
   const result = await verifyOtp(email, otp);
   if (result.locked) throw new HttpError(429, "Too many failed attempts. Please request a new code.");
-  if (!result.valid) throw new HttpError(401, "Invalid or expired code. Please request a new one.");
+  if (!result.valid) throw new HttpError(400, "Wrong OTP. Please try again or request a new code.");
 
   res.status(200).json({ ok: true, verified: true });
 });

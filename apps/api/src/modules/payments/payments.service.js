@@ -172,14 +172,18 @@ async function handleCallback({ razorpay_payment_id, razorpay_order_id, razorpay
   const normalizedEmail = String(order.customer_email || "").trim().toLowerCase();
   let existingUser = null;
   if (normalizedEmail) {
-    const { rows } = await query(`SELECT id FROM users WHERE LOWER(email) = $1 AND is_active = true LIMIT 1`, [normalizedEmail]);
+    // Look up by email only (include inactive): link purchase to existing account and reactivate if needed
+    const { rows } = await query(
+      `SELECT id FROM users WHERE LOWER(email) = $1 LIMIT 1`,
+      [normalizedEmail]
+    );
     existingUser = rows[0] ?? null;
   }
 
   const baseUrl = (order.redirect_origin || env.PUBLIC_WEB_URL).replace(/\/$/, "");
 
   if (existingUser) {
-    // Existing student: update details from order, then unlock the course
+    // Existing account (active or inactive): update profile, ensure Student role, enroll in course/pack (idempotent)
     await paymentsRepo.upsertUserFromPayment({
       email: order.customer_email,
       fullName: order.customer_name,

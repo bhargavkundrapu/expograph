@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../../app/providers/AuthProvider";
 import { useTheme } from "../../../app/providers/ThemeProvider";
-import { apiFetch } from "../../../services/api";
+import { apiFetch, ApiError } from "../../../services/api";
 import { StudentLessonSkeleton, LessonContentSkeleton } from "../../../Components/common/SkeletonLoaders";
 import { ButtonLoading } from "../../../Components/common/LoadingStates";
 import { Stream } from "@cloudflare/stream-react";
@@ -55,7 +55,7 @@ export default function StudentLesson() {
   const navigate = useNavigate();
   const { courseSlug, moduleSlug, lessonSlug } = useParams();
   const { token } = useAuth();
-  const { toggleMode } = useTheme();
+  const { toggleMode, isDark } = useTheme();
   const { recordLessonComplete, recordQuizComplete, recordPerfectQuiz, xpRewards } = useGamification();
   const [showLessonConfetti, setShowLessonConfetti] = useState(false);
   const [showXPFloat, setShowXPFloat] = useState(false);
@@ -95,6 +95,7 @@ export default function StudentLesson() {
   const [searchModalOpen, setSearchModalOpen] = useState(false);
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
   const [shareModalOpen, setShareModalOpen] = useState(false);
+  const [accessDenied, setAccessDenied] = useState(false);
   const captionsBlobUrlRef = useRef(null);
   const videoRef = useRef(null);
   const courseDataLoadedRef = useRef(false);
@@ -206,12 +207,8 @@ export default function StudentLesson() {
 
   const fetchCourseData = async (signal) => {
     if (courseDataLoadedRef.current) return;
-    
     try {
-      const res = await apiFetch(`/api/v1/student/courses/${courseSlug}`, { token, signal }).catch((err) => {
-        if (err?.name === "AbortError") throw err;
-        return { data: null };
-      });
+      const res = await apiFetch(`/api/v1/student/courses/${courseSlug}`, { token, signal });
       if (res?.data?.course) {
         setCourse(res.data.course);
         setAllModules(res.data.course.modules || []);
@@ -223,6 +220,11 @@ export default function StudentLesson() {
       }
     } catch (error) {
       if (error?.name === "AbortError") return;
+      if (error instanceof ApiError && error.status === 403) {
+        setAccessDenied(true);
+        setLoading(false);
+        return;
+      }
       console.error("Failed to fetch course data:", error);
     }
   };
@@ -235,12 +237,7 @@ export default function StudentLesson() {
       } else {
         setLoading(true);
       }
-      
-      const res = await apiFetch(`/api/v1/student/courses/${courseSlugParam}/modules/${moduleSlugParam}/lessons/${lessonSlugParam}`, { token, signal }).catch((err) => {
-        if (err?.name === "AbortError") throw err;
-        return { data: null };
-      });
-      
+      const res = await apiFetch(`/api/v1/student/courses/${courseSlugParam}/modules/${moduleSlugParam}/lessons/${lessonSlugParam}`, { token, signal });
       if (res?.data) {
         const lessonData = res.data.lesson || res.data;
         // Ensure prompts is parsed if it's a string
@@ -276,7 +273,11 @@ export default function StudentLesson() {
       }
     } catch (error) {
       if (error?.name === "AbortError") return;
-      console.error("Failed to fetch lesson data:", error);
+      if (error instanceof ApiError && error.status === 403) {
+        setAccessDenied(true);
+      } else {
+        console.error("Failed to fetch lesson data:", error);
+      }
     } finally {
       if (signal?.aborted) return;
       if (isContentUpdate) {
@@ -553,8 +554,10 @@ export default function StudentLesson() {
     
     return allModules.map((module) => {
       const lessons = (module.lessons || []).map((l) => {
-        // Fast active check: compare IDs and slugs directly
-        const active = currentLessonIdStr === String(l.id) || l.slug === lessonSlug;
+        // Active = same lesson by ID (unique), or same slug only in current module (so duplicate slugs like "dictionary" don't show active in every module)
+        const active =
+          currentLessonIdStr === String(l.id) ||
+          (l.slug === lessonSlug && module.slug === moduleSlug);
         
         // Check if lesson has video
         const hasVideo = !!(
@@ -583,10 +586,41 @@ export default function StudentLesson() {
         lessons,
       };
     });
-  }, [allModules, lesson?.id, lessonSlug]);
+  }, [allModules, lesson?.id, lessonSlug, moduleSlug]);
 
   if (loading) {
     return <StudentLessonSkeleton courseType={courseType} />;
+  }
+
+  if (accessDenied) {
+    const isBonusCourse = (courseSlug || "").toLowerCase().replace(/_/g, "-").includes("ai-automation");
+    return (
+      <div className={`min-h-screen flex items-center justify-center p-6 ${isDark ? "bg-slate-900" : "bg-slate-100"}`}>
+        <div className="max-w-md w-full rounded-2xl border border-amber-200 dark:border-amber-500/30 bg-amber-50 dark:bg-slate-800 p-8 text-center shadow-lg">
+          <FiLock className="w-16 h-16 text-amber-500 mx-auto mb-4" />
+          <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Access to this course is locked</h2>
+          <p className="text-sm text-slate-600 dark:text-slate-400 mb-6">
+            {isBonusCourse
+              ? "AI Automations is a bonus course. Unlock it by buying the All Pack or all three courses: Vibe Coding, Prompt Engineering, and Prompt to Profit."
+              : "You don't have access to this course. Purchase it to unlock."}
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <button
+              onClick={() => navigate("/courses")}
+              className="px-6 py-3 bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-xl transition-colors"
+            >
+              {isBonusCourse ? "Get All Pack or All 3 Courses" : "Browse Courses"}
+            </button>
+            <button
+              onClick={() => navigate("/lms/student/courses")}
+              className="px-6 py-3 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 font-medium rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+            >
+              My Courses
+            </button>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   if (!lesson) {
@@ -672,6 +706,7 @@ export default function StudentLesson() {
                 totalDuration={getTotalCourseDuration() || "0 mins"}
                 currentLessonId={lesson?.id ? String(lesson.id) : undefined}
                 currentLessonSlug={lessonSlug}
+                currentModuleSlug={moduleSlug}
                 onBack={() => navigate("/lms/student/courses")}
                 onClose={() => setSidebarVisible(false)}
                 onLessonSelect={async (item, moduleSlugParam) => {
@@ -704,6 +739,7 @@ export default function StudentLesson() {
                     totalDuration={getTotalCourseDuration() || "0 mins"}
                     currentLessonId={lesson?.id ? String(lesson.id) : undefined}
                     currentLessonSlug={lessonSlug}
+                    currentModuleSlug={moduleSlug}
                     onBack={() => navigate("/lms/student/courses")}
                     onClose={() => setSidebarVisible(false)}
                     className="!w-full !min-w-0"

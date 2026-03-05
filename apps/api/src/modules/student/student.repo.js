@@ -30,6 +30,18 @@ async function getSchedule({ tenantId, userId }) {
       packRes.rows.forEach((r) => enrolledCourseIds.add(r.course_id));
     }
 
+    // AI Automations: same bonus rule as listEnrolledCourses (All Pack or all three main courses only)
+    const aaRow = await query(
+      `SELECT id FROM courses WHERE tenant_id = $1 AND (slug = $2 OR slug = $3) LIMIT 1`,
+      [tenantId, AI_AUTOMATIONS_SLUG, "ai_automations"]
+    ).catch(() => ({ rows: [] }));
+    const aaCourseId = aaRow.rows[0]?.id;
+    if (aaCourseId) {
+      const hasAa = await hasAiAutomationsAccess({ tenantId, userId, aiAutomationsCourseId: aaCourseId });
+      if (hasAa) enrolledCourseIds.add(aaCourseId);
+      else enrolledCourseIds.delete(aaCourseId);
+    }
+
     if (enrolledCourseIds.size === 0) return [];
 
     const courseIds = Array.from(enrolledCourseIds);
@@ -173,6 +185,18 @@ async function getCurrentCourse({ tenantId, userId }) {
         [Array.from(enrolledPackIds)]
       ).catch(() => ({ rows: [] }));
       packRes.rows.forEach((r) => enrolledCourseIds.add(r.course_id));
+    }
+
+    // AI Automations: same bonus rule as listEnrolledCourses (All Pack or all three main courses only)
+    const aaRow = await query(
+      `SELECT id FROM courses WHERE tenant_id = $1 AND (slug = $2 OR slug = $3) LIMIT 1`,
+      [tenantId, AI_AUTOMATIONS_SLUG, "ai_automations"]
+    ).catch(() => ({ rows: [] }));
+    const aaCourseId = aaRow.rows[0]?.id;
+    if (aaCourseId) {
+      const hasAa = await hasAiAutomationsAccess({ tenantId, userId, aiAutomationsCourseId: aaCourseId });
+      if (hasAa) enrolledCourseIds.add(aaCourseId);
+      else enrolledCourseIds.delete(aaCourseId);
     }
 
     if (enrolledCourseIds.size === 0) return null;

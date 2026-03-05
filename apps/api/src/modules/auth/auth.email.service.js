@@ -39,6 +39,12 @@ const htmlTemplate = (otpCode, appName, { heading, description } = {}) => `
 </body>
 </html>`;
 
+function textTemplate(otpCode, appName, { heading, description } = {}) {
+  const h = heading || "Your login code";
+  const d = description || "Use the code below to sign in. It expires in 10 minutes.";
+  return `${appName}\n\n${h}\n\n${d}\n\nYour code: ${otpCode}\n\nIf you didn't request this code, you can safely ignore this email.`;
+}
+
 async function sendOtpEmail({ to, otpCode, appName = "ExpoGraph", subject, heading, description }) {
   const effectiveSubject = subject || `Your ${appName} login code`;
 
@@ -51,12 +57,14 @@ async function sendOtpEmail({ to, otpCode, appName = "ExpoGraph", subject, headi
 
   if (resend) {
     try {
-      const { data, error } = await resend.emails.send({
+      const opts = {
         from: resendFrom,
         to,
         subject: effectiveSubject,
         html: htmlTemplate(otpCode, appName, { heading, description }),
-      });
+        text: textTemplate(otpCode, appName, { heading, description }),
+      };
+      const { data, error } = await resend.emails.send(opts);
       if (error) {
         console.error("[Resend] OTP email failed:", JSON.stringify(error, null, 2));
         // In development: fallback to console so you can test the flow

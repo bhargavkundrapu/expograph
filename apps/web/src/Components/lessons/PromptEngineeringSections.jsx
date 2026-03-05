@@ -3,7 +3,7 @@ import {
   FiTarget, FiBriefcase, FiAlertTriangle, FiXCircle,
   FiAlertOctagon, FiCheckCircle, FiCheck, FiZap,
   FiEdit3, FiAward, FiList, FiBookOpen, FiHelpCircle, FiStar,
-  FiCopy, FiChevronDown, FiChevronUp, FiExternalLink,
+  FiCopy, FiChevronDown, FiChevronUp, FiExternalLink, FiBook,
 } from "react-icons/fi";
 import StartLessonBlocks from "./StartLessonBlocks";
 
@@ -521,6 +521,121 @@ function SectionStart({ data }) {
   );
 }
 
+// ——— Dictionary lesson sections (different template: nav, intro, per-lesson prompt + keywords) ———
+
+function SectionDictNav({ data }) {
+  const links = data?.links || [];
+  if (links.length === 0) return null;
+  return (
+    <SectionWrapper id="dict-nav">
+      <div className="rounded-2xl border border-indigo-200 bg-gradient-to-br from-indigo-50 to-white p-5 shadow-sm">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center">
+            <FiBook className="w-5 h-5 text-indigo-600" />
+          </div>
+          <div>
+            <h3 className="text-lg font-bold text-slate-900">Jump to a lesson</h3>
+            <p className="text-sm text-slate-600">Use these links to go straight to the prompt and keywords for each lesson.</p>
+          </div>
+        </div>
+        <nav className="flex flex-wrap gap-2">
+          {links.map((link, i) => (
+            <a
+              key={i}
+              href={`#dict-${link.anchorId}`}
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-white border border-indigo-100 text-sm font-medium text-indigo-700 hover:bg-indigo-50 hover:border-indigo-200 transition-colors shadow-sm"
+            >
+              <FiBookOpen className="w-3.5 h-3.5 opacity-70" />
+              {link.title}
+            </a>
+          ))}
+        </nav>
+      </div>
+    </SectionWrapper>
+  );
+}
+
+function SectionDictIntro({ data }) {
+  const headline = data?.headline || "Module Dictionary";
+  const description = data?.description || "For every lesson in this module you get a default prompt (with placeholders) and 20+ keywords to adapt it to your own scenario.";
+  return (
+    <SectionWrapper id="dict-intro">
+      <div className="rounded-2xl border border-slate-200 bg-slate-50/80 p-6">
+        <h3 className="text-xl font-bold text-slate-900 mb-2">{headline}</h3>
+        <p className="text-slate-700 leading-relaxed">{description}</p>
+        <p className="mt-3 text-sm text-slate-600">
+          Replace the <code className="px-1.5 py-0.5 rounded bg-slate-200 font-mono text-xs">[placeholders]</code> in each prompt and swap keywords from the list below to create different scenarios — with love, for you.
+        </p>
+      </div>
+    </SectionWrapper>
+  );
+}
+
+function DictPromptBlock({ content }) {
+  const [copied, setCopied] = useState(false);
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(content);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {}
+  };
+  const parts = content ? content.split(/(\[[^\]]+\])/g) : [];
+  return (
+    <div className="relative rounded-xl border-2 border-amber-200 bg-amber-50/60 p-4">
+      <button
+        onClick={handleCopy}
+        className="absolute top-3 right-3 flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-white border border-amber-200 text-amber-800 hover:bg-amber-100 transition-all"
+      >
+        <FiCopy className="w-3 h-3" />
+        {copied ? "Copied!" : "Copy"}
+      </button>
+      <pre className="font-mono text-sm leading-relaxed whitespace-pre-wrap pr-16 text-slate-800">
+        {parts.map((part, i) =>
+          /^\[.+\]$/.test(part) ? (
+            <span key={i} className="bg-amber-200/80 text-amber-900 px-1 rounded font-semibold">{part}</span>
+          ) : (
+            <span key={i}>{part}</span>
+          )
+        )}
+      </pre>
+    </div>
+  );
+}
+
+function SectionDictEntry({ data }) {
+  const anchorId = data?.anchorId || data?.lessonSlug || "entry";
+  const lessonTitle = data?.lessonTitle || "Lesson";
+  const defaultPrompt = data?.defaultPrompt || "";
+  const keywords = Array.isArray(data?.keywords) ? data.keywords : [];
+  return (
+    <SectionWrapper id={`dict-${anchorId}`}>
+      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <h4 className="text-lg font-bold text-slate-900 mb-1">{lessonTitle}</h4>
+        <p className="text-xs text-slate-500 mb-4">Default prompt — replace the placeholders for your scenario.</p>
+        {defaultPrompt && (
+          <div className="mb-6">
+            <DictPromptBlock content={defaultPrompt} />
+          </div>
+        )}
+        <h5 className="text-sm font-bold text-slate-700 uppercase tracking-wider mb-3">Keywords to swap (20+ for different scenarios)</h5>
+        <ul className="space-y-2.5">
+          {keywords.map((kw, i) => (
+            <li key={i} className="flex gap-3">
+              <span className="flex-shrink-0 font-mono text-xs font-semibold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">
+                {typeof kw === "string" ? kw : kw.word}
+              </span>
+              <span className="text-sm text-slate-700 leading-relaxed">
+                {typeof kw === "object" && kw.explanation ? kw.explanation : kw}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </SectionWrapper>
+  );
+}
+
 const SECTION_RENDERERS = {
   "SEC-START": SectionStart,
   "SEC-YOU_ONLY": SectionStart,
@@ -539,6 +654,9 @@ const SECTION_RENDERERS = {
   "SEC-13_MINI_QUIZ": SectionMiniQuiz,
   "SEC-14_ONE_LINE_TAKEAWAY": SectionTakeaway,
   "SEC-15_BEST_AI": SectionBestAI,
+  "SEC-DICT-NAV": SectionDictNav,
+  "SEC-DICT-INTRO": SectionDictIntro,
+  "SEC-DICT-ENTRY": SectionDictEntry,
 };
 
 export default function PromptEngineeringSections({ sections }) {
