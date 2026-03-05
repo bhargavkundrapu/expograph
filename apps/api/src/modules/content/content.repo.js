@@ -234,7 +234,8 @@ async function getPublishedCourseTreeBySlug({ tenantId, courseSlug }) {
   const course = (await query(
     `SELECT id, title, slug, description, level, price_in_paise
      FROM courses
-     WHERE tenant_id=$1 AND slug=$2 AND status='published'`,
+     WHERE tenant_id=$1 AND status='published'
+     AND (slug = $2 OR REPLACE(slug, '_', '-') = $2)`,
     [tenantId, courseSlug]
   )).rows[0] ?? null;
 
@@ -316,8 +317,8 @@ async function getPublishedLessonBySlugs({ tenantId, courseSlug, moduleSlug, les
      FROM courses c
      JOIN course_modules m ON m.course_id = c.id AND m.tenant_id = c.tenant_id
      JOIN lessons l ON l.module_id = m.id AND l.tenant_id = m.tenant_id
-     WHERE c.tenant_id = $1
-       AND c.slug = $2 AND c.status='published'
+     WHERE c.tenant_id = $1 AND c.status='published'
+       AND (c.slug = $2 OR REPLACE(c.slug, '_', '-') = $2)
        AND m.slug = $3 AND m.status='published'
        AND l.slug = $4 AND l.status='published'
      LIMIT 1`,

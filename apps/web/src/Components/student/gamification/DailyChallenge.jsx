@@ -32,14 +32,46 @@ export default function DailyChallenge() {
 
       <div className="p-4">
         {dailyChallengeAnswered && revealed ? (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-2">
-            <div className={`text-3xl mb-2`}>{dailyChallengeCorrect ? "🎉" : "🤔"}</div>
-            <p className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-slate-800"}`}>
-              {dailyChallengeCorrect ? "Correct! Nice work!" : "Not quite — try tomorrow!"}
-            </p>
-            {dailyChallengeCorrect && (
-              <p className="text-xs text-green-500 font-semibold">+{xpRewards.dailyChallenge} XP earned</p>
-            )}
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
+            <div className="text-center py-1">
+              <div className="text-3xl mb-2">{dailyChallengeCorrect ? "🎉" : "🤔"}</div>
+              <p className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-slate-800"}`}>
+                {dailyChallengeCorrect ? "Correct! Nice work!" : "Not quite — try tomorrow!"}
+              </p>
+              {dailyChallengeCorrect && (
+                <p className="text-xs text-green-500 font-semibold">+{xpRewards.dailyChallenge} XP earned</p>
+              )}
+            </div>
+            <div className="pt-2 border-t border-slate-200 dark:border-slate-600">
+              <p className={`text-xs font-semibold mb-2 ${isDark ? "text-slate-400" : "text-slate-500"}`}>Correct answer:</p>
+              <p className={`text-sm font-medium ${isDark ? "text-green-400" : "text-green-700"}`}>
+                {String.fromCharCode(65 + dailyChallenge.answer)}. {dailyChallenge.options[dailyChallenge.answer]}
+              </p>
+            </div>
+            <div className="space-y-2">
+              <p className={`text-[10px] font-medium ${isDark ? "text-slate-400" : "text-slate-500"}`}>All options:</p>
+              {dailyChallenge.options.map((opt, i) => {
+                const isSelected = selected === i;
+                const isCorrect = i === dailyChallenge.answer;
+                return (
+                  <div
+                    key={i}
+                    className={`w-full text-left px-3 py-2 rounded-lg text-xs sm:text-sm font-medium border ${
+                      isCorrect
+                        ? "bg-green-50 border-green-300 text-green-700 dark:bg-green-500/10 dark:border-green-500/40 dark:text-green-400"
+                        : isSelected && !isCorrect
+                          ? "bg-red-50 border-red-300 text-red-700 dark:bg-red-500/10 dark:border-red-500/40 dark:text-red-400"
+                          : isDark ? "bg-slate-700/30 border-slate-600 text-slate-400" : "bg-slate-50 border-slate-200 text-slate-600"
+                    }`}
+                  >
+                    <span className="mr-2 opacity-70">{String.fromCharCode(65 + i)}.</span>
+                    {opt}
+                    {isCorrect && <span className="ml-1.5 text-green-600 dark:text-green-400">✓</span>}
+                  </div>
+                );
+              })}
+            </div>
+            <p className={`text-[10px] ${isDark ? "text-slate-500" : "text-slate-400"}`}>Topic: {dailyChallenge.topic}</p>
           </motion.div>
         ) : (
           <>

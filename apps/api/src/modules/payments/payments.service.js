@@ -9,6 +9,7 @@ const approvalsRepo = require("../approvals/approvals.repo");
 const approvalsService = require("../approvals/approvals.service");
 const { findRoleIdForTenant, upsertMembership } = require("../users/users.repo");
 const { query } = require("../../db/query");
+const { getConfig: getBonusCourseConfig } = require("../bonusCourseSettings/bonusCourseSettings.repo");
 
 const CreateOrderSchema = z.object({
   item_type: z.enum(["course", "pack"]),
@@ -42,12 +43,27 @@ function verifyWebhookSignature(body, signature) {
   return crypto.timingSafeEqual(Buffer.from(signature, "utf8"), Buffer.from(expected, "utf8"));
 }
 
+function normalizeSlug(slug) {
+  if (!slug) return "";
+  return String(slug).toLowerCase().replace(/_/g, "-").trim();
+}
+
+async function isBonusCourseByConfig(tenantId, courseSlug) {
+  const config = await getBonusCourseConfig({ tenantId });
+  const bonusSlug = normalizeSlug(config.bonusCourseSlug);
+  const s = normalizeSlug(courseSlug);
+  return !!bonusSlug && s === bonusSlug;
+}
+
 async function getPriceBreakdown({ tenant, item_type, item_id }) {
   const tenantId = tenant.id;
   let baseAmount;
   if (item_type === "course") {
     const course = await paymentsRepo.getCoursePrice({ tenantId, courseId: item_id });
     if (!course) throw new HttpError(404, "Course not found or not published");
+    if (isBonusCourseSlug(course.slug)) {
+      throw new HttpError(400, "AI Automations is a bonus course and cannot be purchased separately. Get the All Pack or all three main courses to unlock it.");
+    }
     baseAmount = Number(course.price_in_paise);
   } else if (item_type === "pack") {
     const pack = await paymentsRepo.getPackPrice({ tenantId, packId: item_id });
@@ -85,6 +101,9 @@ async function createOrder({ tenant, body }) {
   if (item_type === "course") {
     const course = await paymentsRepo.getCoursePrice({ tenantId, courseId: item_id });
     if (!course) throw new HttpError(404, "Course not found or not published");
+    if (await isBonusCourseByConfig(tenantId, course.slug)) {
+      throw new HttpError(400, "This course is set as a bonus course and cannot be purchased separately. Unlock it by meeting the bonus unlock rule (e.g. All Pack or required courses).");
+    }
     amount = Number(course.price_in_paise);
   } else if (item_type === "pack") {
     const pack = await paymentsRepo.getPackPrice({ tenantId, packId: item_id });

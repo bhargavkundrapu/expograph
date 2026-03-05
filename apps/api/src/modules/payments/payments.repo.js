@@ -3,7 +3,7 @@ const { query } = require("../../db/query");
 
 async function getCoursePrice({ tenantId, courseId }) {
   const { rows } = await query(
-    `SELECT id, title, price_in_paise FROM courses
+    `SELECT id, title, slug, price_in_paise FROM courses
      WHERE tenant_id = $1 AND id = $2 AND status = 'published' LIMIT 1`,
     [tenantId, courseId]
   );

@@ -19,6 +19,7 @@ const { router: certPublic } = require("../modules/certificates/certificates.rou
 const { router: certLms } = require("../modules/certificates/certificates.routes.lms");
 
 const { router: featureFlagsAdmin } = require("../modules/featureFlags/featureFlags.routes.admin");
+const { router: bonusCourseSettingsRouter } = require("../modules/bonusCourseSettings/bonusCourseSettings.routes");
 const { router: featureFlagsPublic } = require("../modules/featureFlags/featureFlags.routes.public");
 
 const { router: referralsRoutes } = require("../modules/referrals/referrals.routes");
@@ -156,6 +157,8 @@ app.use(
 
   // Versioned API
   app.use("/api/v1/auth", authRouter);
+  // Bonus course settings: mount under /api/v1/admin/settings so route is /api/v1/admin/settings/bonus-course
+  app.use("/api/v1/admin/settings", bonusCourseSettingsRouter);
   // Mount usersAdminRouter (colleges, students, mentors, etc.) BEFORE adminContentRouter
   // so GET/POST/DELETE /api/v1/admin/colleges are matched and not 404'd by content router
   app.use("/api/v1/admin", usersAdminRouter);

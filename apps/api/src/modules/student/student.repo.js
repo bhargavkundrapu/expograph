@@ -1,14 +1,29 @@
 // apps/api/src/modules/student/student.repo.js
 const { query } = require("../../db/query");
+const bonusCourseSettingsRepo = require("../bonusCourseSettings/bonusCourseSettings.repo");
 
-// AI Automations is a bonus course: access only via All Pack or when user has all three main courses
-const AI_AUTOMATIONS_SLUG = "ai-automations";
-const REQUIRED_SLUGS_FOR_AI_AUTOMATIONS = ["vibe-coding", "prompt-engineering", "prompt-to-profit"];
+const MAIN_COURSE_SLUGS = ["vibe-coding", "prompt-engineering", "prompt-to-profit"];
+
+async function getBonusCourseConfig({ tenantId }) {
+  return bonusCourseSettingsRepo.getConfig({ tenantId });
+}
+
+async function getBonusCourseId({ tenantId }) {
+  const config = await getBonusCourseConfig({ tenantId });
+  const slug = (config.bonusCourseSlug || "ai-automations").replace(/_/g, "-");
+  const { rows } = await query(
+    `SELECT id FROM courses WHERE tenant_id = $1 AND (slug = $2 OR REPLACE(slug, '_', '-') = $2) LIMIT 1`,
+    [tenantId, slug]
+  ).catch(() => ({ rows: [] }));
+  return rows[0]?.id ?? null;
+}
 
 // Dashboard & Home - Returns lessons and practice tasks from ENROLLED courses only
 async function getSchedule({ tenantId, userId }) {
   try {
-    // Enrolled course IDs (direct + via pack)
+    const bonusCourseId = await getBonusCourseId({ tenantId });
+    const bonusConfig = await getBonusCourseConfig({ tenantId });
+
     const enrollResult = await query(
       `SELECT item_type, item_id FROM enrollments
        WHERE user_id = $1 AND tenant_id = $2 AND active = true`,
@@ -18,7 +33,7 @@ async function getSchedule({ tenantId, userId }) {
     const enrolledCourseIds = new Set();
     const enrolledPackIds = new Set();
     enrollResult.rows.forEach((r) => {
-      if (r.item_type === "course") enrolledCourseIds.add(r.item_id);
+      if (r.item_type === "course" && r.item_id !== bonusCourseId) enrolledCourseIds.add(r.item_id);
       if (r.item_type === "pack") enrolledPackIds.add(r.item_id);
     });
 
@@ -27,19 +42,14 @@ async function getSchedule({ tenantId, userId }) {
         `SELECT course_id FROM course_pack_courses WHERE pack_id = ANY($1::uuid[])`,
         [Array.from(enrolledPackIds)]
       ).catch(() => ({ rows: [] }));
-      packRes.rows.forEach((r) => enrolledCourseIds.add(r.course_id));
+      packRes.rows.forEach((r) => {
+        if (r.course_id !== bonusCourseId) enrolledCourseIds.add(r.course_id);
+      });
     }
 
-    // AI Automations: same bonus rule as listEnrolledCourses (All Pack or all three main courses only)
-    const aaRow = await query(
-      `SELECT id FROM courses WHERE tenant_id = $1 AND (slug = $2 OR slug = $3) LIMIT 1`,
-      [tenantId, AI_AUTOMATIONS_SLUG, "ai_automations"]
-    ).catch(() => ({ rows: [] }));
-    const aaCourseId = aaRow.rows[0]?.id;
-    if (aaCourseId) {
-      const hasAa = await hasAiAutomationsAccess({ tenantId, userId, aiAutomationsCourseId: aaCourseId });
-      if (hasAa) enrolledCourseIds.add(aaCourseId);
-      else enrolledCourseIds.delete(aaCourseId);
+    if (bonusCourseId) {
+      const hasBonus = await hasBonusCourseAccess({ tenantId, userId, bonusCourseId, config: bonusConfig });
+      if (hasBonus) enrolledCourseIds.add(bonusCourseId);
     }
 
     if (enrolledCourseIds.size === 0) return [];
@@ -165,7 +175,9 @@ async function getSchedule({ tenantId, userId }) {
 
 async function getCurrentCourse({ tenantId, userId }) {
   try {
-    // Get enrolled course IDs
+    const bonusCourseId = await getBonusCourseId({ tenantId });
+    const bonusConfig = await getBonusCourseConfig({ tenantId });
+
     const enrollResult = await query(
       `SELECT item_type, item_id FROM enrollments
        WHERE user_id = $1 AND tenant_id = $2 AND active = true`,
@@ -175,7 +187,7 @@ async function getCurrentCourse({ tenantId, userId }) {
     const enrolledCourseIds = new Set();
     const enrolledPackIds = new Set();
     enrollResult.rows.forEach((r) => {
-      if (r.item_type === "course") enrolledCourseIds.add(r.item_id);
+      if (r.item_type === "course" && r.item_id !== bonusCourseId) enrolledCourseIds.add(r.item_id);
       if (r.item_type === "pack") enrolledPackIds.add(r.item_id);
     });
 
@@ -184,19 +196,14 @@ async function getCurrentCourse({ tenantId, userId }) {
         `SELECT course_id FROM course_pack_courses WHERE pack_id = ANY($1::uuid[])`,
         [Array.from(enrolledPackIds)]
       ).catch(() => ({ rows: [] }));
-      packRes.rows.forEach((r) => enrolledCourseIds.add(r.course_id));
+      packRes.rows.forEach((r) => {
+        if (r.course_id !== bonusCourseId) enrolledCourseIds.add(r.course_id);
+      });
     }
 
-    // AI Automations: same bonus rule as listEnrolledCourses (All Pack or all three main courses only)
-    const aaRow = await query(
-      `SELECT id FROM courses WHERE tenant_id = $1 AND (slug = $2 OR slug = $3) LIMIT 1`,
-      [tenantId, AI_AUTOMATIONS_SLUG, "ai_automations"]
-    ).catch(() => ({ rows: [] }));
-    const aaCourseId = aaRow.rows[0]?.id;
-    if (aaCourseId) {
-      const hasAa = await hasAiAutomationsAccess({ tenantId, userId, aiAutomationsCourseId: aaCourseId });
-      if (hasAa) enrolledCourseIds.add(aaCourseId);
-      else enrolledCourseIds.delete(aaCourseId);
+    if (bonusCourseId) {
+      const hasBonus = await hasBonusCourseAccess({ tenantId, userId, bonusCourseId, config: bonusConfig });
+      if (hasBonus) enrolledCourseIds.add(bonusCourseId);
     }
 
     if (enrolledCourseIds.size === 0) return null;
@@ -341,41 +348,46 @@ async function getEvents({ tenantId }) {
   });
 }
 
+async function getEnrolledCourseIds({ tenantId, userId }) {
+  const bonusCourseId = await getBonusCourseId({ tenantId });
+  const bonusConfig = await getBonusCourseConfig({ tenantId });
+
+  const enrollResult = await query(
+    `SELECT item_type, item_id FROM enrollments
+     WHERE user_id = $1 AND tenant_id = $2 AND active = true`,
+    [userId, tenantId]
+  ).catch(() => ({ rows: [] }));
+
+  const enrolledCourseIds = new Set();
+  const enrolledPackIds = new Set();
+  enrollResult.rows.forEach((r) => {
+    if (r.item_type === "course" && r.item_id !== bonusCourseId) enrolledCourseIds.add(r.item_id);
+    if (r.item_type === "pack") enrolledPackIds.add(r.item_id);
+  });
+
+  if (enrolledPackIds.size > 0) {
+    const packRes = await query(
+      `SELECT course_id FROM course_pack_courses
+       WHERE pack_id = ANY($1::uuid[])`,
+      [Array.from(enrolledPackIds)]
+    ).catch(() => ({ rows: [] }));
+    packRes.rows.forEach((r) => {
+      if (r.course_id !== bonusCourseId) enrolledCourseIds.add(r.course_id);
+    });
+  }
+
+  if (bonusCourseId) {
+    const hasBonus = await hasBonusCourseAccess({ tenantId, userId, bonusCourseId, config: bonusConfig });
+    if (hasBonus) enrolledCourseIds.add(bonusCourseId);
+  }
+
+  return enrolledCourseIds;
+}
+
 // Courses: returns ALL published courses with enrolled flag (via direct enrollment or pack)
 async function listEnrolledCourses({ tenantId, userId }) {
   try {
-    const enrollResult = await query(
-      `SELECT item_type, item_id FROM enrollments
-       WHERE user_id = $1 AND tenant_id = $2 AND active = true`,
-      [userId, tenantId]
-    ).catch(() => ({ rows: [] }));
-
-    const enrolledCourseIds = new Set();
-    const enrolledPackIds = new Set();
-    enrollResult.rows.forEach((r) => {
-      if (r.item_type === "course") enrolledCourseIds.add(r.item_id);
-      if (r.item_type === "pack") enrolledPackIds.add(r.item_id);
-    });
-
-    if (enrolledPackIds.size > 0) {
-      const packRes = await query(
-        `SELECT course_id FROM course_pack_courses
-         WHERE pack_id = ANY($1::uuid[])`,
-        [Array.from(enrolledPackIds)]
-      ).catch(() => ({ rows: [] }));
-      packRes.rows.forEach((r) => enrolledCourseIds.add(r.course_id));
-    }
-
-    // AI Automations: add to enrolled only if user has All Pack or all three main courses
-    const aaRow = await query(
-      `SELECT id FROM courses WHERE tenant_id = $1 AND (slug = $2 OR slug = $3) LIMIT 1`,
-      [tenantId, AI_AUTOMATIONS_SLUG, "ai_automations"]
-    ).catch(() => ({ rows: [] }));
-    const aaCourseId = aaRow.rows[0]?.id;
-    if (aaCourseId) {
-      const hasAa = await hasAiAutomationsAccess({ tenantId, userId, aiAutomationsCourseId: aaCourseId });
-      if (hasAa) enrolledCourseIds.add(aaCourseId);
-    }
+    const enrolledCourseIds = await getEnrolledCourseIds({ tenantId, userId });
 
     const result = await query(
       `SELECT c.id, c.title, c.slug, c.description, c.level, c.price_in_paise,
@@ -451,7 +463,7 @@ async function hasEnrollmentForCourse({ tenantId, userId, courseId }) {
 async function hasAllPackOrAllThreeCourses({ tenantId, userId }) {
   const requiredCourseRows = await query(
     `SELECT id, REPLACE(slug, '_', '-') as norm_slug FROM courses WHERE tenant_id = $1 AND (slug = ANY($2::text[]) OR REPLACE(slug, '_', '-') = ANY($2::text[]))`,
-    [tenantId, REQUIRED_SLUGS_FOR_AI_AUTOMATIONS]
+    [tenantId, MAIN_COURSE_SLUGS]
   ).catch(() => ({ rows: [] }));
 
   const idBySlug = new Map();
@@ -459,7 +471,7 @@ async function hasAllPackOrAllThreeCourses({ tenantId, userId }) {
     const s = (r.norm_slug || "").replace(/_/g, "-");
     if (s && !idBySlug.has(s)) idBySlug.set(s, r.id);
   });
-  const requiredIds = REQUIRED_SLUGS_FOR_AI_AUTOMATIONS.map((s) => idBySlug.get(s)).filter(Boolean);
+  const requiredIds = MAIN_COURSE_SLUGS.map((s) => idBySlug.get(s)).filter(Boolean);
   if (requiredIds.length !== 3) return false;
 
   const hasAllThree = (await Promise.all(
@@ -483,59 +495,109 @@ async function hasAllPackOrAllThreeCourses({ tenantId, userId }) {
   return false;
 }
 
-// AI Automations: access only if (1) user has a pack that includes AA AND all three main courses, OR (2) has all three main courses.
-// Direct enrollment in AI Automations alone does NOT grant access.
-async function hasAiAutomationsAccess({ tenantId, userId, aiAutomationsCourseId }) {
-  const enrollResult = await query(
-    `SELECT item_type, item_id FROM enrollments
-     WHERE user_id = $1 AND tenant_id = $2 AND active = true`,
-    [userId, tenantId]
+/** Resolve course ids by slugs (normalize hyphen/underscore). */
+async function getCourseIdsBySlugs({ tenantId, slugs }) {
+  if (!slugs || slugs.length === 0) return [];
+  const { rows } = await query(
+    `SELECT id, REPLACE(slug, '_', '-') as norm_slug FROM courses
+     WHERE tenant_id = $1 AND (slug = ANY($2::text[]) OR REPLACE(slug, '_', '-') = ANY($2::text[]))`,
+    [tenantId, slugs]
   ).catch(() => ({ rows: [] }));
-
-  const packIds = enrollResult.rows.filter((r) => r.item_type === "pack").map((r) => r.item_id);
-
-  // Get required main course ids (vibe-coding, prompt-engineering, prompt-to-profit). Match slug or slug with underscore.
-  const requiredCourseRows = await query(
-    `SELECT id, REPLACE(slug, '_', '-') as norm_slug FROM courses WHERE tenant_id = $1 AND (slug = ANY($2::text[]) OR REPLACE(slug, '_', '-') = ANY($2::text[]))`,
-    [tenantId, REQUIRED_SLUGS_FOR_AI_AUTOMATIONS]
-  ).catch(() => ({ rows: [] }));
-
   const idBySlug = new Map();
-  requiredCourseRows.rows.forEach((r) => {
+  rows.forEach((r) => {
     const s = (r.norm_slug || "").replace(/_/g, "-");
-    if (s && !idBySlug.has(s)) idBySlug.set(s, r.id);
+    if (s) idBySlug.set(s, r.id);
   });
-  const requiredIds = REQUIRED_SLUGS_FOR_AI_AUTOMATIONS.map((s) => idBySlug.get(s)).filter(Boolean);
+  return slugs.map((s) => idBySlug.get((s || "").replace(/_/g, "-"))).filter(Boolean);
+}
 
-  const hasAllThree = requiredIds.length === 3 && (await Promise.all(
-    requiredIds.map((cid) => hasEnrollmentForCourse({ tenantId, userId, courseId: cid }))
-  )).every(Boolean);
+/** Bonus course access from SuperAdmin-configured rule (all_pack_only, all_three_main, all_pack_or_all_three, any_two_main, any_one_main, custom). */
+async function hasBonusCourseAccess({ tenantId, userId, bonusCourseId, config }) {
+  const rule = config?.rule || "all_pack_or_all_three";
+  const requiredSlugs = config?.requiredCourseSlugs || [];
+  const mainIds = await getCourseIdsBySlugs({ tenantId, slugs: MAIN_COURSE_SLUGS });
 
-  if (hasAllThree) return true;
-
-  // Pack must contain BOTH AA and all three main courses (full All Pack)
-  if (packIds.length > 0 && requiredIds.length === 3) {
-    for (const packId of packIds) {
+  const hasPackContainingBonus = async () => {
+    const enrollResult = await query(
+      `SELECT item_id FROM enrollments WHERE user_id = $1 AND tenant_id = $2 AND active = true AND item_type = 'pack'`,
+      [userId, tenantId]
+    ).catch(() => ({ rows: [] }));
+    for (const row of enrollResult.rows) {
       const packCourseIds = await query(
         `SELECT course_id FROM course_pack_courses WHERE pack_id = $1`,
-        [packId]
+        [row.item_id]
+      ).catch(() => ({ rows: [] }));
+      if (packCourseIds.rows.some((r) => r.course_id === bonusCourseId)) return true;
+    }
+    return false;
+  };
+
+  const countMainEnrolled = async () => {
+    let n = 0;
+    for (const cid of mainIds) {
+      if (await hasEnrollmentForCourse({ tenantId, userId, courseId: cid })) n++;
+    }
+    return n;
+  };
+
+  const hasAllThreeMain = mainIds.length === 3 && (await Promise.all(
+    mainIds.map((cid) => hasEnrollmentForCourse({ tenantId, userId, courseId: cid }))
+  )).every(Boolean);
+
+  const packHasBonusAndAllThree = async () => {
+    const enrollResult = await query(
+      `SELECT item_id FROM enrollments WHERE user_id = $1 AND tenant_id = $2 AND active = true AND item_type = 'pack'`,
+      [userId, tenantId]
+    ).catch(() => ({ rows: [] }));
+    for (const row of enrollResult.rows) {
+      const packCourseIds = await query(
+        `SELECT course_id FROM course_pack_courses WHERE pack_id = $1`,
+        [row.item_id]
       ).catch(() => ({ rows: [] }));
       const inPack = new Set(packCourseIds.rows.map((r) => r.course_id));
-      const packHasAa = inPack.has(aiAutomationsCourseId);
-      const packHasAllThree = requiredIds.every((cid) => inPack.has(cid));
-      if (packHasAa && packHasAllThree) return true;
+      if (inPack.has(bonusCourseId) && mainIds.every((cid) => inPack.has(cid))) return true;
     }
-  }
+    return false;
+  };
 
-  return false;
+  switch (rule) {
+    case "all_pack_only":
+      return hasPackContainingBonus();
+    case "all_three_main":
+      return hasAllThreeMain;
+    case "all_pack_or_all_three":
+      return hasAllThreeMain || (await packHasBonusAndAllThree());
+    case "any_two_main":
+      return (await countMainEnrolled()) >= 2;
+    case "any_one_main":
+      return (await countMainEnrolled()) >= 1;
+    case "custom": {
+      const customIds = await getCourseIdsBySlugs({ tenantId, slugs: requiredSlugs });
+      if (customIds.length === 0) return false;
+      const allOwned = (await Promise.all(
+        customIds.map((cid) => hasEnrollmentForCourse({ tenantId, userId, courseId: cid }))
+      )).every(Boolean);
+      return allOwned;
+    }
+    default:
+      return hasAllThreeMain || (await packHasBonusAndAllThree());
+  }
 }
 
 async function hasCourseAccess({ tenantId, userId, courseId }) {
-  const slug = await getCourseSlugById({ tenantId, courseId });
-  if (slug && slug.toLowerCase().includes("ai-automation")) {
-    return hasAiAutomationsAccess({ tenantId, userId, aiAutomationsCourseId: courseId });
+  const bonusCourseId = await getBonusCourseId({ tenantId });
+  if (bonusCourseId && courseId === bonusCourseId) {
+    const config = await getBonusCourseConfig({ tenantId });
+    return hasBonusCourseAccess({ tenantId, userId, bonusCourseId, config });
   }
-
+  const slug = await getCourseSlugById({ tenantId, courseId });
+  if (slug && bonusCourseId) {
+    const config = await getBonusCourseConfig({ tenantId });
+    const bonusSlug = (config.bonusCourseSlug || "ai-automations").replace(/_/g, "-");
+    if (slug.toLowerCase().includes(bonusSlug.toLowerCase())) {
+      return hasBonusCourseAccess({ tenantId, userId, bonusCourseId, config });
+    }
+  }
   return hasEnrollmentForCourse({ tenantId, userId, courseId });
 }
 
@@ -901,7 +963,7 @@ async function searchContent({ tenantId, userId, q }) {
   ).catch(() => ({ rows: [] }));
 
   const modulesResult = await query(
-    `SELECT cm.id, cm.title, cm.slug, c.slug as course_slug, c.title as course_title
+    `SELECT cm.id, cm.title, cm.slug, c.id as course_id, c.slug as course_slug, c.title as course_title
      FROM course_modules cm
      JOIN courses c ON c.id = cm.course_id
      WHERE c.tenant_id = $1 AND c.status = 'published' AND cm.status = 'published'
@@ -913,7 +975,7 @@ async function searchContent({ tenantId, userId, q }) {
 
   const lessonsResult = await query(
     `SELECT l.id, l.title, l.slug, cm.slug as module_slug, cm.title as module_title,
-            c.slug as course_slug, c.title as course_title
+            c.id as course_id, c.slug as course_slug, c.title as course_title
      FROM lessons l
      JOIN course_modules cm ON cm.id = l.module_id
      JOIN courses c ON c.id = cm.course_id
@@ -924,8 +986,10 @@ async function searchContent({ tenantId, userId, q }) {
     [tenantId, term]
   ).catch(() => ({ rows: [] }));
 
+  const enrolledCourseIds = await getEnrolledCourseIds({ tenantId, userId });
+
   const results = [];
-  coursesResult.rows.forEach((r) => {
+  coursesResult.rows.filter((r) => enrolledCourseIds.has(r.id)).forEach((r) => {
     results.push({
       type: "course",
       id: r.id,
@@ -938,7 +1002,7 @@ async function searchContent({ tenantId, userId, q }) {
       lessonSlug: null,
     });
   });
-  modulesResult.rows.forEach((r) => {
+  modulesResult.rows.filter((r) => enrolledCourseIds.has(r.course_id)).forEach((r) => {
     results.push({
       type: "module",
       id: r.id,
@@ -951,7 +1015,7 @@ async function searchContent({ tenantId, userId, q }) {
       lessonSlug: null,
     });
   });
-  lessonsResult.rows.forEach((r) => {
+  lessonsResult.rows.filter((r) => enrolledCourseIds.has(r.course_id)).forEach((r) => {
     results.push({
       type: "lesson",
       id: r.id,

@@ -109,23 +109,29 @@ const getLesson = asyncHandler(async (req, res) => {
     throw new HttpError(404, "Lesson not found");
   }
 
-  // Get module lessons for sidebar - get all lessons in the module
-  const moduleResult = await query(
-    `SELECT m.id as module_id, c.id as course_id
-     FROM course_modules m
+  const courseId = lessonData.lesson.course_id || (await query(
+    `SELECT c.id as course_id FROM course_modules m
      JOIN courses c ON c.id = m.course_id
-     WHERE c.tenant_id = $1 AND c.slug = $2 AND m.slug = $3 AND m.status = 'published'
+     WHERE c.tenant_id = $1 AND (c.slug = $2 OR REPLACE(c.slug, '_', '-') = $2) AND m.slug = $3 AND m.status = 'published'
      LIMIT 1`,
     [tenantId, courseSlug, moduleSlug]
-  );
+  )).rows[0]?.course_id;
 
-  const courseId = moduleResult.rows[0]?.course_id;
-  if (courseId) {
-    const hasAccess = await repo.hasCourseAccess({ tenantId, userId, courseId });
-    if (!hasAccess) {
-      throw new HttpError(403, "You don't have access to this course. Purchase it to unlock.");
-    }
+  if (!courseId) {
+    throw new HttpError(403, "You don't have access to this course. Purchase it to unlock.");
   }
+  const hasAccess = await repo.hasCourseAccess({ tenantId, userId, courseId });
+  if (!hasAccess) {
+    throw new HttpError(403, "You don't have access to this course. Purchase it to unlock.");
+  }
+
+  const moduleResult = await query(
+    `SELECT m.id as module_id FROM course_modules m
+     JOIN courses c ON c.id = m.course_id
+     WHERE c.tenant_id = $1 AND c.id = $2 AND m.slug = $3 AND m.status = 'published'
+     LIMIT 1`,
+    [tenantId, courseId, moduleSlug]
+  );
   
   let moduleLessons = [];
   if (moduleResult.rows.length > 0) {
@@ -161,18 +167,19 @@ const completeLesson = asyncHandler(async (req, res) => {
     throw new HttpError(404, "Lesson not found");
   }
 
-  const courseModuleRes = await query(
+  const courseId = lessonData.lesson.course_id || (await query(
     `SELECT c.id as course_id FROM courses c
      JOIN course_modules m ON m.course_id = c.id
-     WHERE c.tenant_id = $1 AND c.slug = $2 AND m.slug = $3 LIMIT 1`,
+     WHERE c.tenant_id = $1 AND (c.slug = $2 OR REPLACE(c.slug, '_', '-') = $2) AND m.slug = $3 LIMIT 1`,
     [tenantId, courseSlug, moduleSlug]
-  );
-  const courseId = courseModuleRes.rows[0]?.course_id;
-  if (courseId) {
-    const hasAccess = await repo.hasCourseAccess({ tenantId, userId, courseId });
-    if (!hasAccess) {
-      throw new HttpError(403, "You don't have access to this course.");
-    }
+  )).rows[0]?.course_id;
+
+  if (!courseId) {
+    throw new HttpError(403, "You don't have access to this course.");
+  }
+  const hasAccess = await repo.hasCourseAccess({ tenantId, userId, courseId });
+  if (!hasAccess) {
+    throw new HttpError(403, "You don't have access to this course.");
   }
 
   // content.repo returns raw row with lesson_id (not id)

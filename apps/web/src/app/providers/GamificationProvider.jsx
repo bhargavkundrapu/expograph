@@ -49,21 +49,23 @@ const ACHIEVEMENT_DEFS = [
   { id: "note_taker", title: "Note Taker", desc: "Write 10 notes", icon: "📝", rarity: "common", check: (s) => s.notesCount >= 10 },
 ];
 
+// Daily Challenge questions aligned with ExpoGraph courses: Vibe Coding, Prompt Engineering, Prompt to Profit, AI Automations
 const DAILY_QUESTIONS = [
-  { id: "dq1", q: "What does API stand for?", options: ["Application Programming Interface", "Applied Program Integration", "Automatic Process Instruction", "Application Process Interface"], answer: 0, topic: "Web Development" },
-  { id: "dq2", q: "Which HTML tag is used for the largest heading?", options: ["<heading>", "<h6>", "<h1>", "<head>"], answer: 2, topic: "HTML" },
-  { id: "dq3", q: "What is the correct way to declare a variable in JavaScript?", options: ["variable x;", "let x;", "v x;", "declare x;"], answer: 1, topic: "JavaScript" },
-  { id: "dq4", q: "CSS stands for?", options: ["Creative Style Sheets", "Cascading Style Sheets", "Computer Style Sheets", "Colorful Style Sheets"], answer: 1, topic: "CSS" },
-  { id: "dq5", q: "Which symbol is used for single-line comments in JavaScript?", options: ["/* */", "#", "//", "--"], answer: 2, topic: "JavaScript" },
-  { id: "dq6", q: "What does JSON stand for?", options: ["JavaScript Object Notation", "Java Standard Object Notation", "JavaScript Online Notation", "Java Serialized Object Network"], answer: 0, topic: "Web Development" },
-  { id: "dq7", q: "Which of these is a JavaScript framework?", options: ["Django", "Flask", "React", "Laravel"], answer: 2, topic: "JavaScript" },
-  { id: "dq8", q: "What does 'npm' stand for?", options: ["Node Package Manager", "New Program Module", "Node Process Manager", "Network Package Manager"], answer: 0, topic: "Node.js" },
-  { id: "dq9", q: "Which HTTP method is used to update data?", options: ["GET", "POST", "PUT", "DELETE"], answer: 2, topic: "APIs" },
-  { id: "dq10", q: "What is the output of typeof null in JavaScript?", options: ["null", "undefined", "object", "boolean"], answer: 2, topic: "JavaScript" },
-  { id: "dq11", q: "Which CSS property controls text size?", options: ["text-style", "font-size", "text-size", "font-style"], answer: 1, topic: "CSS" },
-  { id: "dq12", q: "What does the 'this' keyword refer to in JavaScript?", options: ["The previous function", "The global object always", "The current object context", "The parent element"], answer: 2, topic: "JavaScript" },
-  { id: "dq13", q: "Which tag is used to link an external CSS file?", options: ["<style>", "<css>", "<link>", "<script>"], answer: 2, topic: "HTML" },
-  { id: "dq14", q: "What is a Promise in JavaScript?", options: ["A guarantee of performance", "An async operation placeholder", "A type of variable", "A CSS feature"], answer: 1, topic: "JavaScript" },
+  { id: "dq1", q: "In prompt engineering, what is 'few-shot' prompting?", options: ["Using very short prompts", "Giving the model 1–5 example inputs and outputs before the real task", "Asking the model to prompt the user", "A type of error message"], answer: 1, topic: "Prompt Engineering" },
+  { id: "dq2", q: "Which of these helps make AI outputs more consistent?", options: ["Using different models each time", "Being vague in your instructions", "Using clear instructions and examples", "Avoiding any context"], answer: 2, topic: "Prompt Engineering" },
+  { id: "dq3", q: "What is 'vibe coding' in our course context?", options: ["Coding without a keyboard", "Building apps using natural language and AI-assisted tools", "Only writing comments", "Debugging by intuition"], answer: 1, topic: "Vibe Coding" },
+  { id: "dq4", q: "Which practice is key in Prompt to Profit?", options: ["Ignoring user feedback", "Treating prompts as products: test, iterate, and improve", "Using the longest possible prompts", "Avoiding any automation"], answer: 1, topic: "Prompt to Profit" },
+  { id: "dq5", q: "What does a well-structured prompt usually include?", options: ["Only a question", "Role, task, context, and format when needed", "Random keywords", "No instructions"], answer: 1, topic: "Prompt Engineering" },
+  { id: "dq6", q: "In AI automation, what is an 'workflow'?", options: ["A single click", "A sequence of steps that run automatically", "A type of database", "A programming language"], answer: 1, topic: "AI Automations" },
+  { id: "dq7", q: "Why is 'role' often set at the start of a prompt?", options: ["To confuse the model", "To set the tone and expertise the model should use", "To reduce response length only", "It has no effect"], answer: 1, topic: "Prompt Engineering" },
+  { id: "dq8", q: "What can you build with no-code / low-code in Vibe Coding?", options: ["Only static pages", "Full apps, automations, and workflows with AI help", "Only spreadsheets", "Only emails"], answer: 1, topic: "Vibe Coding" },
+  { id: "dq9", q: "Which is a good habit when iterating on prompts?", options: ["Changing everything at once", "Changing one thing at a time and comparing results", "Never testing", "Copying prompts from others only"], answer: 1, topic: "Prompt to Profit" },
+  { id: "dq10", q: "What does 'automation' mean in AI Automations?", options: ["Doing everything manually", "Using AI and tools to run tasks without manual steps each time", "Writing more code", "Deleting data"], answer: 1, topic: "AI Automations" },
+  { id: "dq11", q: "What is 'context' in a prompt?", options: ["The font size of the text", "Background information that helps the model understand the task", "The model's name", "A programming language"], answer: 1, topic: "Prompt Engineering" },
+  { id: "dq12", q: "Which skill is central to Prompt to Profit?", options: ["Memorizing code", "Turning good prompts into repeatable value (products, services, workflows)", "Avoiding AI", "Only writing documentation"], answer: 1, topic: "Prompt to Profit" },
+  { id: "dq13", q: "In our courses, what is the Real Client Lab?", options: ["A theory-only module", "A place to work on real-world tasks and build portfolio pieces", "A game", "A chat room"], answer: 1, topic: "Real Client Lab" },
+  { id: "dq14", q: "Why is specifying 'format' in a prompt useful?", options: ["It makes the prompt longer", "It helps get outputs in the shape you need (list, JSON, steps, etc.)", "It slows down the model", "It has no effect"], answer: 1, topic: "Prompt Engineering" },
+  { id: "dq15", q: "What kind of tasks can AI automation handle?", options: ["Only math", "Repetitive tasks, data handling, and workflows you define", "Only creative writing", "Nothing useful"], answer: 1, topic: "AI Automations" },
 ];
 
 const MOTIVATIONAL_QUOTES = [

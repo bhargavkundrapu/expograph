@@ -15,6 +15,20 @@ async function assertLessonPublished({ tenantId, lessonId }) {
   return rows[0] ? true : false;
 }
 
+/** Get course_id for a lesson (for access check). Returns null if lesson not found. */
+async function getCourseIdByLessonId({ tenantId, lessonId }) {
+  const { rows } = await query(
+    `SELECT c.id AS course_id
+     FROM courses c
+     JOIN course_modules m ON m.course_id = c.id AND m.tenant_id = c.tenant_id
+     JOIN lessons l ON l.module_id = m.id AND l.tenant_id = m.tenant_id
+     WHERE l.tenant_id = $1 AND l.id = $2
+     LIMIT 1`,
+    [tenantId, lessonId]
+  );
+  return rows[0]?.course_id ?? null;
+}
+
 /**
  * Start lesson: create row if missing.
  * If exists, keep started_at (do NOT reset it).
@@ -221,4 +235,5 @@ module.exports = {
   getOverallProgressPercent,
   completedAllRequiredCourses,
   getLeaderboard,
+  getCourseIdByLessonId,
 };

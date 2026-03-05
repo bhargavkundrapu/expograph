@@ -1,12 +1,14 @@
 // apps/api/src/modules/progress/progress.service.js
 const repo = require("./progress.repo");
 const { HttpError } = require("../../utils/httpError");
+const studentRepo = require("../student/student.repo");
 
 /**
  * Premium rules:
  * 1) Lesson must exist in tenant AND published (student progress only).
- * 2) watchSecondsDelta must be 0..60 (prevent cheating/spam).
- * 3) lastPositionSeconds must be 0..(10 hours) safe cap.
+ * 2) User must have course access (enrollment or bonus rule for AI Automations).
+ * 3) watchSecondsDelta must be 0..60 (prevent cheating/spam).
+ * 4) lastPositionSeconds must be 0..(10 hours) safe cap.
  */
 function clampInt(n, min, max) {
   const x = Number(n);
@@ -20,13 +22,22 @@ async function ensureLessonAccessibleOrThrow({ tenantId, lessonId }) {
   if (!ok) throw new HttpError(404, "Lesson not found or not published");
 }
 
+async function ensureCourseAccessOrThrow({ tenantId, userId, lessonId }) {
+  const courseId = await repo.getCourseIdByLessonId({ tenantId, lessonId });
+  if (!courseId) throw new HttpError(403, "You don't have access to this course.");
+  const hasAccess = await studentRepo.hasCourseAccess({ tenantId, userId, courseId });
+  if (!hasAccess) throw new HttpError(403, "You don't have access to this course.");
+}
+
 async function startLesson({ tenantId, userId, lessonId }) {
   await ensureLessonAccessibleOrThrow({ tenantId, lessonId });
+  await ensureCourseAccessOrThrow({ tenantId, userId, lessonId });
   return repo.startLesson({ tenantId, userId, lessonId });
 }
 
 async function progressUpdate({ tenantId, userId, lessonId, watchSecondsDelta, lastPositionSeconds }) {
   await ensureLessonAccessibleOrThrow({ tenantId, lessonId });
+  await ensureCourseAccessOrThrow({ tenantId, userId, lessonId });
 
   // watchSecondsDelta: allow 0..60 (player should send small deltas)
   const delta = clampInt(watchSecondsDelta, 0, 60);
@@ -47,6 +58,7 @@ async function progressUpdate({ tenantId, userId, lessonId, watchSecondsDelta, l
 
 async function completeLesson({ tenantId, userId, lessonId }) {
   await ensureLessonAccessibleOrThrow({ tenantId, lessonId });
+  await ensureCourseAccessOrThrow({ tenantId, userId, lessonId });
   const row = await repo.completeLesson({ tenantId, userId, lessonId });
   // Recompute Client Lab eligibility when progress updates (>= 75% + all courses)
   try {

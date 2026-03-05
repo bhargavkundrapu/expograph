@@ -110,7 +110,7 @@ const featureDetails = {
       {
         title: "Your Journey in the Real Client Lab",
         steps: [
-          { num: "01", title: "Get the All Pack", desc: "Real Client Lab is included with the All Pack. Buy all three courses (Vibe Coding, Prompt to Profit, AI Automations) to unlock access." },
+          { num: "01", title: "Get the All Pack", desc: "Real Client Lab is included with the All Pack. Buy all three main courses (Vibe Coding, Prompt Engineering, Prompt to Profit) to unlock access. AI Automations unlocks as a bonus with the All Pack." },
           { num: "02", title: "Pick a Project", desc: "Browse available client projects. Each one has a clear scope, deadline, and list of tasks. Choose what excites you." },
           { num: "03", title: "Submit Your Work", desc: "Complete tasks, submit your PR/work link with notes, and wait for mentor review. Just like a real development workflow." },
           { num: "04", title: "Iterate & Ship", desc: "Get feedback, make changes, and resubmit until approved. This cycle is exactly how professional teams work." },
@@ -337,7 +337,7 @@ export default function FeatureDetailPage() {
               <div className="rounded-2xl border border-amber-500/30 bg-amber-500/10 p-5 text-center">
                 <p className="text-amber-200/90 font-medium mb-2">Locked for you?</p>
                 <p className="text-sm text-white/70 mb-4">
-                  Real Client Lab is available only with the All Pack. Buy all three courses (Vibe Coding, Prompt to Profit, AI Automations) to unlock.
+                  Real Client Lab is available only with the All Pack. Buy all three main courses (Vibe Coding, Prompt Engineering, Prompt to Profit) to unlock. AI Automations is a bonus course included with the All Pack.
                 </p>
                 <Link
                   to="/courses"
