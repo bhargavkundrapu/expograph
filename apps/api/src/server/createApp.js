@@ -59,6 +59,7 @@ const { requirePermission } = require("../middlewares/rbac/requirePermission");
 const { router: authRouter } = require("../modules/auth/auth.routes");
 const { router: paymentsRouter } = require("../modules/payments/payments.routes");
 const paymentsController = require("../modules/payments/payments.controller");
+const bonusCourseSettingsController = require("../modules/bonusCourseSettings/bonusCourseSettings.controller");
 
 function createApp() {
   const app = express();
@@ -157,8 +158,24 @@ app.use(
 
   // Versioned API
   app.use("/api/v1/auth", authRouter);
-  // Bonus course settings: mount under /api/v1/admin/settings so route is /api/v1/admin/settings/bonus-course
-  app.use("/api/v1/admin/settings", bonusCourseSettingsRouter);
+
+  // Bonus course settings — explicit routes so this endpoint always exists (GET/PUT /api/v1/admin/settings/bonus-course)
+  app.get(
+    "/api/v1/admin/settings/bonus-course",
+    requireAuth,
+    requirePermission("featureflags:manage"),
+    bonusCourseSettingsController.get
+  );
+  app.put(
+    "/api/v1/admin/settings/bonus-course",
+    requireAuth,
+    requirePermission("featureflags:manage"),
+    bonusCourseSettingsController.set
+  );
+  // Fallback if reverse proxy forwards without /api prefix
+  app.get("/v1/admin/settings/bonus-course", requireAuth, requirePermission("featureflags:manage"), bonusCourseSettingsController.get);
+  app.put("/v1/admin/settings/bonus-course", requireAuth, requirePermission("featureflags:manage"), bonusCourseSettingsController.set);
+
   // Mount usersAdminRouter (colleges, students, mentors, etc.) BEFORE adminContentRouter
   // so GET/POST/DELETE /api/v1/admin/colleges are matched and not 404'd by content router
   app.use("/api/v1/admin", usersAdminRouter);
@@ -190,6 +207,7 @@ app.use(
   app.use("/api/v1/admin", podcastsAdmin);
   app.use("/api/v1/admin", certAdmin);
   app.use("/api/v1/admin", featureFlagsAdmin);
+  app.use("/api/v1/admin/settings", bonusCourseSettingsRouter);
   app.use("/api/v1/admin/approvals", approvalsAdminRouter);
   app.use("/api/v1/admin/dashboard", dashboardRouter);
 
