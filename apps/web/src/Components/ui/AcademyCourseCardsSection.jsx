@@ -76,24 +76,13 @@ export function AcademyCourseCardsSection() {
                 </div>
                 <h3 className="text-lg font-bold text-white mb-2">{data.title}</h3>
                 <p className="text-sm text-white/55 line-clamp-2 flex-1">{data.tagline}</p>
-                <div className="mt-auto pt-4 flex flex-col gap-2">
+                <div className="mt-auto pt-4 flex justify-end">
                   <Link
                     to={exploreTo}
-                    className="inline-flex h-9 items-center justify-center gap-2 rounded-lg border border-white/20 px-3 text-sm text-white/90 hover:bg-white/10 transition-colors w-full sm:w-auto"
+                    className="inline-flex h-9 items-center justify-center gap-2 rounded-lg border border-white/20 px-3 text-sm text-white/90 hover:bg-white/10 transition-colors"
                   >
                     <ArrowRight className="w-4 h-4" />
                     Explore
-                  </Link>
-                  <Link
-                    to={exploreTo}
-                    className={cn(
-                      "inline-flex h-9 items-center justify-center gap-2 rounded-lg px-3 text-sm font-semibold transition-colors w-full sm:w-auto",
-                      isPack
-                        ? "bg-purple-600 hover:bg-purple-500 text-white"
-                        : "bg-white/10 text-white hover:bg-white/20 border border-white/20"
-                    )}
-                  >
-                    {isPack ? "Get Pack" : "Get Course"}
                   </Link>
                 </div>
               </div>

@@ -241,6 +241,7 @@ export function PricingWithChart() {
           </div>
           <div className="relative flex flex-col flex-1 p-4 lg:flex-row lg:gap-6">
             <div className="pb-4 lg:w-[28%]">
+              <h3 className="text-base font-bold text-white leading-tight mb-2">All Pack</h3>
               <span className="font-mono text-4xl font-semibold tracking-tight text-purple-400 block">
                 {formatPrice(allPack?.price_in_paise)}
               </span>
