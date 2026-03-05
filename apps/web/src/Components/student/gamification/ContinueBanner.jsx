@@ -3,6 +3,7 @@ import { useGamification } from "../../../app/providers/GamificationProvider";
 import { useTheme } from "../../../app/providers/ThemeProvider";
 import { FiPlay, FiArrowRight, FiClock } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
+import { getStudentLessonPath } from "../../../utils/studentCoursePaths";
 
 export default function ContinueBanner({ currentCourse, schedule }) {
   const { isDark } = useTheme();
@@ -17,7 +18,7 @@ export default function ContinueBanner({ currentCourse, schedule }) {
 
   const hasValidPath = lesson?.courseSlug && lesson?.moduleSlug && (lesson?.lessonSlug || lesson?.nextLessonSlug);
   const path = hasValidPath
-    ? `/lms/student/courses/${lesson.courseSlug}/modules/${lesson.moduleSlug}/lessons/${lesson.lessonSlug || lesson.nextLessonSlug}`
+    ? getStudentLessonPath(lesson.courseSlug, lesson.moduleSlug, lesson.lessonSlug || lesson.nextLessonSlug)
     : "/lms/student/courses";
 
   const progressPct = lesson?.progress || 0;

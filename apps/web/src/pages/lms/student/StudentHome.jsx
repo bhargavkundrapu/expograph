@@ -5,6 +5,7 @@ import { useTheme } from "../../../app/providers/ThemeProvider";
 import { useDashboardPrefs } from "../../../app/providers/DashboardPrefsProvider";
 import { useGamification } from "../../../app/providers/GamificationProvider";
 import { apiFetch } from "../../../services/api";
+import { getStudentLessonPath } from "../../../utils/studentCoursePaths";
 import { StudentHomeSkeleton } from "../../../Components/common/SkeletonLoaders";
 import WorkshopCarousel from "../../../Components/dashboard/WorkshopCarousel";
 import PageTransition from "../../../Components/common/PageTransition";
@@ -197,7 +198,8 @@ function ScheduleWidget({ isDark, schedule, currentCourse, navigate, animDelay: 
           className="flex-1 pt-0.5 sm:pt-1 min-w-0 cursor-pointer"
           onClick={() => {
             if (item.courseSlug && item.moduleSlug && item.lessonSlug) {
-              navigate(`/lms/student/courses/${item.courseSlug}/modules/${item.moduleSlug}/lessons/${item.lessonSlug}`);
+              const { getStudentLessonPath } = require("../../../utils/studentCoursePaths");
+              navigate(getStudentLessonPath(item.courseSlug, item.moduleSlug, item.lessonSlug));
             } else if (item.courseSlug) {
               navigate("/lms/student/courses");
             } else if (item.link) {
@@ -389,9 +391,9 @@ export default function StudentHome() {
               <DailyMotivation
                 userName={userName}
                 onGoToLesson={currentCourse?.courseSlug && currentCourse?.moduleSlug && currentCourse?.lessonSlug
-                  ? () => navigate(`/lms/student/courses/${currentCourse.courseSlug}/modules/${currentCourse.moduleSlug}/lessons/${currentCourse.lessonSlug}`)
+                  ? () => navigate(getStudentLessonPath(currentCourse.courseSlug, currentCourse.moduleSlug, currentCourse.lessonSlug))
                   : schedule?.[0]?.courseSlug
-                    ? () => navigate(`/lms/student/courses/${schedule[0].courseSlug}/modules/${schedule[0].moduleSlug}/lessons/${schedule[0].lessonSlug}`)
+                    ? () => navigate(getStudentLessonPath(schedule[0].courseSlug, schedule[0].moduleSlug, schedule[0].lessonSlug))
                     : () => navigate("/lms/student/courses")
                 }
               />

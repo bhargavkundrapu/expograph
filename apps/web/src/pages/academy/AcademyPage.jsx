@@ -218,9 +218,9 @@ export default function AcademyPage() {
               className="text-[1.7rem] sm:text-3xl md:text-3xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-bold leading-[1.15] mb-0 md:mb-3 animate-[fadeInLeft_0.6s_ease-out_both]"
               style={{ fontFamily: '"Google Sans Flex", "Google Sans", sans-serif', textShadow: "0 2px 12px rgba(0,0,0,0.7)" }}
             >
-              Don't Just Learn Code.
+              Stop learning to code.
               <br />
-              <span className="bg-gradient-to-r from-violet-400 to-fuchsia-400 text-transparent bg-clip-text md:from-white/80 md:to-white/80">Vibe Code It.</span>
+              <span className="bg-gradient-to-r from-violet-400 to-fuchsia-400 text-transparent bg-clip-text md:from-white/80 md:to-white/80">Start building with AI.</span>
             </h1>
             <p
               className="text-sm sm:text-[15px] md:text-lg text-white md:text-white/60 max-w-xs sm:max-w-sm md:max-w-lg mt-12 sm:mt-14 md:mt-0 mb-0 md:mb-6 leading-relaxed mx-auto md:mx-0 animate-[fadeInUp_0.5s_0.1s_ease-out_both]"

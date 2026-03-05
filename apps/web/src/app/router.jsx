@@ -310,9 +310,11 @@ export const router = createBrowserRouter([
           { path: "courses/:courseSlug/modules/:moduleSlug/lessons/:lessonSlug", element: <L><StudentLesson /></L> },
           { path: "courses/:courseSlug/modules/:moduleSlug/lessons/:lessonSlug/complete", element: <L><StudentLesson /></L> },
           
-          // Bonus Courses
+          // Bonus Courses (AI Automations lives here)
           { path: "bonus-courses", element: <L><StudentCourses /></L> },
           { path: "bonus-courses/list", element: <L><StudentCourses /></L> },
+          { path: "bonus-courses/:courseSlug", element: <L><StudentCourseLanding /></L> },
+          { path: "bonus-courses/:courseSlug/modules/:moduleSlug/lessons/:lessonSlug", element: <L><StudentLesson /></L> },
           
           // Bookmarks
           { path: "bookmarks", element: <L><StudentBookmarks /></L> },

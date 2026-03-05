@@ -9,6 +9,7 @@ import {
   FiFileText,
 } from "react-icons/fi";
 import { apiFetch } from "../../services/api";
+import { getStudentLessonPath } from "../../utils/studentCoursePaths";
 
 const TABS = [
   { key: "all", label: "All" },
@@ -171,9 +172,7 @@ export default function LessonSearchModal({
           moduleSlug: item.moduleSlug,
         });
       } else {
-        navigate(
-          `/lms/student/courses/${item.courseSlug}/modules/${item.moduleSlug}/lessons/${item.lessonSlug}`
-        );
+        navigate(getStudentLessonPath(item.courseSlug, item.moduleSlug, item.lessonSlug));
       }
     }
   };

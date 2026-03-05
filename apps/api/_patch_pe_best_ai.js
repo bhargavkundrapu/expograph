@@ -469,6 +469,9 @@ async function run() {
   await pool.end();
 }
 
-run().catch((err) => { console.error(err); process.exit(1); });
+// Only run when executed directly (node _patch_pe_best_ai.js). When required by _seed_pe.js we only export BEST_AI_MAP.
+if (require.main === module) {
+  run().catch((err) => { console.error(err); process.exit(1); });
+}
 
 module.exports = { BEST_AI_MAP };

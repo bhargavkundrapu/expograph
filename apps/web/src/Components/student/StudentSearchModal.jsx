@@ -10,6 +10,7 @@ import {
   FiFileText,
 } from "react-icons/fi";
 import { apiFetch } from "../../services/api";
+import { getStudentLessonPath } from "../../utils/studentCoursePaths";
 
 const TABS = [
   { key: "all", label: "All" },
@@ -98,9 +99,7 @@ export default function StudentSearchModal({ open, onClose, token }) {
       item.moduleSlug &&
       item.lessonSlug
     ) {
-      navigate(
-        `/lms/student/courses/${item.courseSlug}/modules/${item.moduleSlug}/lessons/${item.lessonSlug}`
-      );
+      navigate(getStudentLessonPath(item.courseSlug, item.moduleSlug, item.lessonSlug));
     } else if (item.type === "course" && item.courseSlug) {
       navigate(`/lms/student/courses?course=${item.courseSlug}`);
     } else if (item.type === "module" && item.courseSlug) {

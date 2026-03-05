@@ -79,7 +79,7 @@ export default function StudentLayout() {
     return location.pathname.startsWith(path);
   };
 
-  const isLessonPage = location.pathname.match(/\/lms\/student\/courses\/.+\/modules\/.+\/lessons\/.+/);
+  const isLessonPage = location.pathname.match(/\/lms\/student\/(courses|bonus-courses)\/.+\/modules\/.+\/lessons\/.+/);
   const isWhiteBgPage = location.pathname === "/lms/student/contact";
 
   const handleLogout = () => {

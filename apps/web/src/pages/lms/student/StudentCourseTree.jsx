@@ -12,6 +12,7 @@ import {
   FiChevronDown,
   FiArrowLeft,
 } from "react-icons/fi";
+import { getStudentLessonPath } from "../../../utils/studentCoursePaths";
 
 export default function StudentCourseTree() {
   const navigate = useNavigate();
@@ -216,7 +217,7 @@ export default function StudentCourseTree() {
                                   className="flex-1 min-w-0 cursor-pointer"
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    navigate(`/lms/student/courses/${courseSlug}/modules/${module.slug}/lessons/${lesson.slug}`);
+                                    navigate(getStudentLessonPath(courseSlug, module.slug, lesson.slug));
                                   }}
                                 >
                                   <h4 className="text-sm font-semibold text-slate-900 mb-1 hover:text-blue-600 transition-colors">

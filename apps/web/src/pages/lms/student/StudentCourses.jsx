@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { useNavigate, useLocation } from "react-router-dom";
+import { getStudentCourseLandingPath, getStudentLessonPath } from "../../../utils/studentCoursePaths";
 import { useAuth } from "../../../app/providers/AuthProvider";
 import { useTheme } from "../../../app/providers/ThemeProvider";
 import { useDashboardPrefs } from "../../../app/providers/DashboardPrefsProvider";
@@ -251,7 +252,7 @@ export default function StudentCourses() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
               <div
                 key={displayCourse.id}
-                onClick={() => isUnlocked ? navigate(`/lms/student/courses/${displayCourse.slug}`) : null}
+                onClick={() => isUnlocked ? navigate(getStudentCourseLandingPath(displayCourse.slug)) : null}
                 className={`rounded-xl border p-6 transition-all hover:shadow-lg ${
                   isUnlocked ? "cursor-pointer" : "cursor-default"
                 } ${isDark ? "bg-slate-800 border-slate-700" : "bg-white border-slate-200"} ${
@@ -279,7 +280,7 @@ export default function StudentCourses() {
                 </p>
                 <div className="flex flex-col gap-2">
                   <button
-                    onClick={(e) => { e.stopPropagation(); navigate("/lms/student/courses/ai-automations"); }}
+                    onClick={(e) => { e.stopPropagation(); navigate(getStudentCourseLandingPath("ai-automations")); }}
                     className={`w-full py-2.5 px-4 font-semibold rounded-xl text-sm flex items-center justify-center gap-2 ${
                       isDark ? "border border-slate-600 text-slate-300 hover:bg-slate-700" : "border border-slate-300 text-slate-700 hover:bg-slate-50"
                     }`}
@@ -290,7 +291,7 @@ export default function StudentCourses() {
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      isUnlocked ? navigate(`/lms/student/courses/${displayCourse.slug}`) : navigate("/courses");
+                      isUnlocked ? navigate(getStudentCourseLandingPath(displayCourse.slug)) : navigate("/courses");
                     }}
                     className="w-full py-2.5 px-4 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-xl"
                   >
@@ -415,7 +416,7 @@ export default function StudentCourses() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.05 }}
-                  onClick={() => locked ? navigate(`/lms/student/courses/${course.slug}`) : handleCourseClick(course)}
+                  onClick={() => locked ? navigate(getStudentCourseLandingPath(course.slug)) : handleCourseClick(course)}
                   className={`rounded-lg border shadow-sm transition-all overflow-hidden relative hover-lift ${
                     isDark
                       ? locked ? "bg-slate-800 border-slate-700 cursor-pointer" : "bg-slate-800 border-slate-700 cursor-pointer"
@@ -480,7 +481,7 @@ export default function StudentCourses() {
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            navigate(`/lms/student/courses/${course.slug}`);
+                            navigate(getStudentCourseLandingPath(course.slug));
                           }}
                           className={`w-full py-2.5 px-4 font-semibold rounded-xl text-sm transition-all flex items-center justify-center gap-2 border ${
                             isDark ? "border-slate-600 text-slate-300 hover:bg-slate-700" : "border-slate-300 text-slate-700 hover:bg-slate-50"
@@ -537,7 +538,7 @@ export default function StudentCourses() {
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            navigate(`/lms/student/courses/${course.slug}`);
+                            navigate(getStudentCourseLandingPath(course.slug));
                           }}
                           className="w-full mt-1 py-2.5 px-4 border border-indigo-500/30 text-indigo-400 hover:bg-indigo-500/10 font-semibold rounded-xl text-sm transition-all flex items-center justify-center gap-2 mb-2"
                         >
@@ -547,7 +548,7 @@ export default function StudentCourses() {
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            navigate(`/lms/student/courses/${course.slug}?continue=1`);
+                            navigate(`${getStudentCourseLandingPath(course.slug)}?continue=1`);
                           }}
                           className="w-full py-2.5 px-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold rounded-xl text-sm transition-all flex items-center justify-center gap-2 shadow-sm hover:shadow-md"
                         >
@@ -710,7 +711,7 @@ export default function StudentCourses() {
                                             onClick={(e) => {
                                               e.stopPropagation();
                                               handleCloseModal();
-                                              navigate(`/lms/student/courses/${selectedCourse.slug}/modules/${module.slug}/lessons/${lesson.slug}`);
+                                              navigate(getStudentLessonPath(selectedCourse.slug, module.slug, lesson.slug));
                                             }}
                                           >
                                             <h4 className="text-sm font-semibold text-slate-900 mb-1 hover:text-blue-600 transition-colors">

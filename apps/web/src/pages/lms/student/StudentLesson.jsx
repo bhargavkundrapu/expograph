@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { isBonusCourseSlug, getStudentLessonPath, getStudentCourseBasePath } from "../../../utils/studentCoursePaths";
 import { useAuth } from "../../../app/providers/AuthProvider";
 import { useTheme } from "../../../app/providers/ThemeProvider";
 import { apiFetch, ApiError } from "../../../services/api";
@@ -106,6 +107,21 @@ export default function StudentLesson() {
     return () => clearTimeout(t);
   }, []);
 
+  const location = useLocation();
+  const isBonusPath = location.pathname.includes("bonus-courses");
+  const basePath = isBonusPath ? "/lms/student/bonus-courses" : "/lms/student/courses";
+
+  // Redirect: bonus course (AI Automations) must live under bonus-courses path
+  const shouldRedirectToBonus = useMemo(() => {
+    const n = (courseSlug || "").toLowerCase().replace(/_/g, "-");
+    return (n === "ai-agents" || n === "ai_agents" || isBonusCourseSlug(courseSlug)) && !location.pathname.includes("bonus-courses");
+  }, [courseSlug, location.pathname]);
+  useEffect(() => {
+    if (!shouldRedirectToBonus) return;
+    const canonicalSlug = (courseSlug || "").toLowerCase().replace(/_/g, "-") === "ai-agents" ? "ai-automations" : (courseSlug || "ai-automations");
+    navigate(getStudentLessonPath(canonicalSlug, moduleSlug, lessonSlug), { replace: true });
+  }, [shouldRedirectToBonus, courseSlug, moduleSlug, lessonSlug, navigate]);
+
   // Reset success image index, learn step, and captions when lesson changes
   useEffect(() => {
     setSelectedSuccessImageIndex(0);
@@ -179,7 +195,9 @@ export default function StudentLesson() {
   // Initial load: fetch course and lesson data only once
   useEffect(() => {
     if (!token || !lessonSlug || !courseSlug || !moduleSlug) return;
-    
+    const n = (courseSlug || "").toLowerCase().replace(/_/g, "-");
+    if (n === "ai-agents") return; // redirect will run; avoid fetching with deprecated slug
+
     // Skip if this is a manual navigation (handled by onLessonSelect)
     if (isManualNavigationRef.current) {
       isManualNavigationRef.current = false;
@@ -420,7 +438,7 @@ export default function StudentLesson() {
     if (!nextLesson || nextLesson.locked) return;
     isManualNavigationRef.current = true;
     const targetModuleSlug = nextLesson.moduleSlug;
-    navigate(`/lms/student/courses/${courseSlug}/modules/${targetModuleSlug}/lessons/${nextLesson.slug}`, { replace: true });
+    navigate(getStudentLessonPath(courseSlug, targetModuleSlug, nextLesson.slug), { replace: true });
     await fetchLessonData(courseSlug, targetModuleSlug, nextLesson.slug, true);
   };
 
@@ -481,10 +499,7 @@ export default function StudentLesson() {
     if (item.locked) return;
     setSearchModalOpen(false);
     isManualNavigationRef.current = true;
-    navigate(
-      `/lms/student/courses/${courseSlug}/modules/${item.moduleSlug}/lessons/${item.slug}`,
-      { replace: true }
-    );
+    navigate(getStudentLessonPath(courseSlug, item.moduleSlug, item.slug), { replace: true });
     fetchLessonData(courseSlug, item.moduleSlug, item.slug, true);
   }, [courseSlug, navigate]);
 
@@ -493,20 +508,17 @@ export default function StudentLesson() {
     const firstLesson = allModules.find((m) => m.slug === mod.slug)?.lessons?.[0];
     if (firstLesson && !firstLesson.locked) {
       isManualNavigationRef.current = true;
-      navigate(
-        `/lms/student/courses/${courseSlug}/modules/${mod.slug}/lessons/${firstLesson.slug}`,
-        { replace: true }
-      );
+      navigate(getStudentLessonPath(courseSlug, mod.slug, firstLesson.slug), { replace: true });
       fetchLessonData(courseSlug, mod.slug, firstLesson.slug, true);
     }
   }, [courseSlug, navigate, allModules]);
 
   const courseType = useMemo(() => {
-    const slug = (courseSlug || "").toLowerCase();
+    const slug = (courseSlug || "").toLowerCase().replace(/_/g, "-");
     if (slug.includes("profit") || slug.includes("chatgpt-business")) return "chatgpt-business";
     if (slug.includes("prompt")) return "prompt-engineering";
     if (slug.includes("vibe") || slug.includes("coding")) return "vibe-coding";
-    if (slug.includes("automat") || slug.includes("agent")) return "ai-automations";
+    if (slug.includes("automat") || slug === "ai-automations") return "ai-automations";
     return null;
   }, [courseSlug]);
 
@@ -529,7 +541,7 @@ export default function StudentLesson() {
     if (!prevLesson) return;
     isManualNavigationRef.current = true;
     const targetModuleSlug = prevLesson.moduleSlug;
-    navigate(`/lms/student/courses/${courseSlug}/modules/${targetModuleSlug}/lessons/${prevLesson.slug}`, { replace: true });
+    navigate(getStudentLessonPath(courseSlug, targetModuleSlug, prevLesson.slug), { replace: true });
     await fetchLessonData(courseSlug, targetModuleSlug, prevLesson.slug, true);
   };
 
@@ -612,7 +624,7 @@ export default function StudentLesson() {
               {isBonusCourse ? "Get All Pack or All 3 Courses" : "Browse Courses"}
             </button>
             <button
-              onClick={() => navigate("/lms/student/courses")}
+              onClick={() => navigate(basePath)}
               className="px-6 py-3 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 font-medium rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
             >
               My Courses
@@ -630,7 +642,7 @@ export default function StudentLesson() {
           <div className="bg-white p-12 border border-slate-200 text-center">
             <h3 className="text-xl font-semibold text-slate-900 mb-2">Lesson not found</h3>
             <button
-              onClick={() => navigate("/lms/student/courses")}
+              onClick={() => navigate(basePath)}
               className="mt-4 px-6 py-3 bg-blue-500 text-white font-semibold hover:bg-blue-600 transition-colors"
             >
               Back to Course
@@ -641,7 +653,7 @@ export default function StudentLesson() {
     );
   }
 
-  const lessonPath = `/lms/student/courses/${courseSlug}/modules/${moduleSlug}/lessons/${lessonSlug}`;
+  const lessonPath = getStudentLessonPath(courseSlug, moduleSlug, lessonSlug);
   const lessonDisplayTitle = lesson?.title || lesson?.name || lessonSlug;
 
   return (
@@ -677,7 +689,7 @@ export default function StudentLesson() {
 
         {/* Mobile lesson top bar */}
         <div className="flex md:hidden items-center gap-2 px-3 py-2 bg-white border-b border-slate-200 safe-area-pt">
-          <button onTouchStart={preloadCourses} onClick={() => navigate("/lms/student/courses")} className="p-1.5 -ml-1 rounded-lg text-slate-600 hover:bg-slate-100 active:bg-slate-200 transition-colors flex-shrink-0">
+          <button onTouchStart={preloadCourses} onClick={() => navigate(basePath)} className="p-1.5 -ml-1 rounded-lg text-slate-600 hover:bg-slate-100 active:bg-slate-200 transition-colors flex-shrink-0">
             <FiChevronLeft className="w-5 h-5" />
           </button>
           <div className="flex-1 min-w-0">
@@ -707,14 +719,14 @@ export default function StudentLesson() {
                 currentLessonId={lesson?.id ? String(lesson.id) : undefined}
                 currentLessonSlug={lessonSlug}
                 currentModuleSlug={moduleSlug}
-                onBack={() => navigate("/lms/student/courses")}
+                onBack={() => navigate(basePath)}
                 onClose={() => setSidebarVisible(false)}
                 onLessonSelect={async (item, moduleSlugParam) => {
                   const full = allLessons.find((l) => String(l.id) === item.id);
                   if (full && !full.locked) {
                     isManualNavigationRef.current = true;
                     const targetModuleSlug = moduleSlugParam || full.moduleSlug;
-                    navigate(`/lms/student/courses/${courseSlug}/modules/${targetModuleSlug}/lessons/${full.slug}`, { replace: true });
+                    navigate(getStudentLessonPath(courseSlug, targetModuleSlug, full.slug), { replace: true });
                     await fetchLessonData(courseSlug, targetModuleSlug, full.slug, true);
                   }
                 }}
@@ -740,7 +752,7 @@ export default function StudentLesson() {
                     currentLessonId={lesson?.id ? String(lesson.id) : undefined}
                     currentLessonSlug={lessonSlug}
                     currentModuleSlug={moduleSlug}
-                    onBack={() => navigate("/lms/student/courses")}
+                    onBack={() => navigate(basePath)}
                     onClose={() => setSidebarVisible(false)}
                     className="!w-full !min-w-0"
                     onLessonSelect={async (item, moduleSlugParam) => {
@@ -748,7 +760,7 @@ export default function StudentLesson() {
                       if (full && !full.locked) {
                         isManualNavigationRef.current = true;
                         const targetModuleSlug = moduleSlugParam || full.moduleSlug;
-                        navigate(`/lms/student/courses/${courseSlug}/modules/${targetModuleSlug}/lessons/${full.slug}`, { replace: true });
+                        navigate(getStudentLessonPath(courseSlug, targetModuleSlug, full.slug), { replace: true });
                         setSidebarVisible(false);
                         await fetchLessonData(courseSlug, targetModuleSlug, full.slug, true);
                       }

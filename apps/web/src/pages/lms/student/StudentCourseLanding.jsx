@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams, useLocation } from "react-router-dom";
+import { isBonusCourseSlug as isBonusSlug, getStudentCourseBasePath, getStudentLessonPath } from "../../../utils/studentCoursePaths";
 import { useAuth } from "../../../app/providers/AuthProvider";
 import { useTheme } from "../../../app/providers/ThemeProvider";
 import { apiFetch } from "../../../services/api";
@@ -123,26 +124,42 @@ function getToolsForCourse(courseSlug, course, modules) {
 
 const BONUS_COURSE_SLUG = "ai-automations";
 
+// Canonical slug only — we use AI Automations, not "AI Agents"
+const DEPRECATED_SLUG_REDIRECT = { "ai-agents": "ai-automations", "ai_agents": "ai-automations" };
+
 function isBonusCourseSlug(slug) {
-  if (!slug) return false;
-  const s = String(slug).toLowerCase().replace(/_/g, "-");
-  return s === BONUS_COURSE_SLUG || s.includes("ai-automation");
+  return isBonusSlug(slug);
 }
 
 export default function StudentCourseLanding() {
   const { courseSlug } = useParams();
+  const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const { token, user } = useAuth();
   const { isDark } = useTheme();
   const navigate = useNavigate();
+  const isBonusPath = location.pathname.includes("bonus-courses");
+  const basePath = isBonusPath ? "/lms/student/bonus-courses" : "/lms/student/courses";
   const [loading, setLoading] = useState(true);
   const [course, setCourse] = useState(null);
   const [modules, setModules] = useState([]);
   const [showBuyModal, setShowBuyModal] = useState(false);
   const [isEnrolled, setIsEnrolled] = useState(false);
 
+  // Redirect: bonus course lives under bonus-courses; deprecated ai-agents → ai-automations
+  useEffect(() => {
+    const normalized = (courseSlug || "").toLowerCase().replace(/_/g, "-");
+    const toBonusSlug = DEPRECATED_SLUG_REDIRECT[normalized] || (isBonusCourseSlug(courseSlug) ? BONUS_COURSE_SLUG : null);
+    if (toBonusSlug && !location.pathname.includes("bonus-courses")) {
+      navigate(`/lms/student/bonus-courses/${toBonusSlug}${location.search ? location.search : ""}`, { replace: true });
+      return;
+    }
+  }, [courseSlug, navigate, location.pathname]);
+
   useEffect(() => {
     if (!token || !courseSlug) return;
+    const normalized = (courseSlug || "").toLowerCase().replace(/_/g, "-");
+    if (DEPRECATED_SLUG_REDIRECT[normalized] || DEPRECATED_SLUG_REDIRECT[courseSlug]) return;
     fetchCourseData();
   }, [token, courseSlug]);
 
@@ -155,7 +172,7 @@ export default function StudentCourseLanding() {
     const mod = modules.find(m => m.lessons?.some(l => l.id === continueLesson.id || l.slug === continueLesson.slug));
     if (mod?.slug) {
       setSearchParams({}, { replace: true });
-      navigate(`/lms/student/courses/${courseSlug}/modules/${mod.slug}/lessons/${continueLesson.slug}`, { replace: true });
+      navigate(getStudentLessonPath(courseSlug, mod.slug, continueLesson.slug), { replace: true });
     }
   }, [loading, isEnrolled, course, modules, courseSlug, searchParams, setSearchParams, navigate]);
 
@@ -165,10 +182,10 @@ export default function StudentCourseLanding() {
 
       const coursesListRes = await apiFetch("/api/v1/student/courses", { token }).catch(() => ({ data: [] }));
       const coursesList = coursesListRes?.data || [];
-      const slugAliases = { "ai-agents": "ai-automations", "vibe-coading": "vibe-coding" };
-      const apiSlug = slugAliases[courseSlug] || courseSlug;
+      const normSlug = (s) => (s || "").toLowerCase().replace(/_/g, "-");
+      const courseSlugNorm = normSlug(courseSlug);
       const courseFromList = coursesList.find(
-        c => c.slug === courseSlug || c.slug === apiSlug || courseSlug.startsWith(c.slug) || c.slug.startsWith(courseSlug)
+        (c) => normSlug(c.slug) === courseSlugNorm || c.slug === courseSlug || normSlug(c.slug).startsWith(courseSlugNorm) || courseSlugNorm.startsWith(normSlug(c.slug))
       );
       const enrolled = courseFromList?.enrolled === true;
       setIsEnrolled(enrolled);
@@ -177,7 +194,7 @@ export default function StudentCourseLanding() {
       let mods = [];
 
       if (enrolled) {
-        const slugForApi = courseFromList?.slug || apiSlug;
+        const slugForApi = courseFromList?.slug || courseSlug;
         const courseRes = await apiFetch(`/api/v1/student/courses/${slugForApi}`, { token }).catch(() => null);
         cData = courseRes?.data?.course || courseRes?.data || null;
         mods = cData?.modules || [];
@@ -227,7 +244,7 @@ export default function StudentCourseLanding() {
       return;
     }
     if (mod?.slug && lesson?.slug) {
-      navigate(`/lms/student/courses/${courseSlug}/modules/${mod.slug}/lessons/${lesson.slug}`);
+      navigate(getStudentLessonPath(courseSlug, mod.slug, lesson.slug));
     }
   };
 
@@ -524,7 +541,7 @@ export default function StudentCourseLanding() {
                 <LearningPath
                   modules={modules}
                   courseSlug={courseSlug}
-                  onNavigate={(cs, ms, ls) => navigate(`/lms/student/courses/${cs}/modules/${ms}/lessons/${ls}`)}
+                  onNavigate={(cs, ms, ls) => navigate(getStudentLessonPath(cs, ms, ls))}
                 />
               </div>
             </div>
