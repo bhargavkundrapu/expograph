@@ -42,11 +42,11 @@ export function AcademyCourseCardsSection() {
 
             const isBonus = data.isBonus;
             const isPack = data.isPack;
+            const exploreTo = `/courses/explore/${slug}`;
 
             return (
-              <Link
+              <div
                 key={slug}
-                to={`/courses/explore/${slug}`}
                 className={cn(
                   "group flex flex-col rounded-xl border border-white/10 bg-white/[0.03] p-6 sm:p-7 min-h-[190px]",
                   "hover:border-white/20 hover:bg-white/[0.06] transition-all duration-200"
@@ -76,11 +76,27 @@ export function AcademyCourseCardsSection() {
                 </div>
                 <h3 className="text-lg font-bold text-white mb-2">{data.title}</h3>
                 <p className="text-sm text-white/55 line-clamp-2 flex-1">{data.tagline}</p>
-                <div className="mt-4 flex items-center gap-2 text-sm text-white/50 group-hover:text-white/80">
-                  <span>Explore</span>
-                  <ArrowRight className="w-4 h-4" />
+                <div className="mt-auto pt-4 flex flex-col gap-2">
+                  <Link
+                    to={exploreTo}
+                    className="inline-flex h-9 items-center justify-center gap-2 rounded-lg border border-white/20 px-3 text-sm text-white/90 hover:bg-white/10 transition-colors w-full sm:w-auto"
+                  >
+                    <ArrowRight className="w-4 h-4" />
+                    Explore
+                  </Link>
+                  <Link
+                    to={exploreTo}
+                    className={cn(
+                      "inline-flex h-9 items-center justify-center gap-2 rounded-lg px-3 text-sm font-semibold transition-colors w-full sm:w-auto",
+                      isPack
+                        ? "bg-purple-600 hover:bg-purple-500 text-white"
+                        : "bg-white/10 text-white hover:bg-white/20 border border-white/20"
+                    )}
+                  >
+                    {isPack ? "Get Pack" : "Get Course"}
+                  </Link>
                 </div>
-              </Link>
+              </div>
             );
           })}
         </div>

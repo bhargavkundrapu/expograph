@@ -208,7 +208,7 @@ export function PricingWithChart() {
         <div
           key="all-pack"
           className={cn(
-            "relative w-full overflow-hidden rounded-xl border border-white/10 bg-white/[0.03] transition-all duration-200 hover:border-white/20 hover:bg-white/[0.06]",
+            "relative w-full overflow-hidden rounded-xl border border-white/10 bg-white/[0.03] transition-all duration-200 hover:border-white/20 hover:bg-white/[0.06] flex flex-col",
             "lg:col-span-5"
           )}
         >
@@ -230,22 +230,16 @@ export function PricingWithChart() {
               <SparklesIcon className="me-1 size-3" /> Most Recommended
             </Badge>
             <div className="ml-auto">
-              <Link to="/courses/explore/all-pack" className="inline-flex h-9 items-center justify-center gap-2 rounded-lg border border-white/20 px-3 text-sm text-white/90 hover:bg-white/10 transition-colors mr-2">
+              <Link
+                to="/courses/explore/all-pack"
+                className="inline-flex h-9 items-center justify-center gap-2 rounded-lg border border-white/20 px-3 text-sm text-white/90 hover:bg-white/10 transition-colors"
+              >
                 <BookOpen className="h-4 w-4" />
                 Explore
               </Link>
-              {allPack && (
-                <Button
-                  onClick={() => handleGetCourse({ type: "pack", id: allPack.id, title: allPack.title })}
-                  disabled={(allPack.price_in_paise ?? 0) < 100}
-                  className="h-9 bg-purple-600 hover:bg-purple-500 text-white font-semibold rounded-lg border-0"
-                >
-                  Get Pack
-                </Button>
-              )}
             </div>
           </div>
-          <div className="relative flex flex-col p-4 lg:flex-row lg:gap-6">
+          <div className="relative flex flex-col flex-1 p-4 lg:flex-row lg:gap-6">
             <div className="pb-4 lg:w-[28%]">
               <span className="font-mono text-4xl font-semibold tracking-tight text-purple-400 block">
                 {formatPrice(allPack?.price_in_paise)}
@@ -282,6 +276,17 @@ export function PricingWithChart() {
                 <span className="font-medium text-white/90">MCA-recognised certificates</span>
               </li>
             </ul>
+          </div>
+          <div className="relative flex justify-end p-4 pt-0">
+            {allPack && (
+              <Button
+                onClick={() => handleGetCourse({ type: "pack", id: allPack.id, title: allPack.title })}
+                disabled={(allPack.price_in_paise ?? 0) < 100}
+                className="h-10 bg-purple-600 hover:bg-purple-500 text-white font-semibold rounded-lg border-0"
+              >
+                Get Pack
+              </Button>
+            )}
           </div>
         </div>
 
