@@ -188,6 +188,29 @@ async function completedAllRequiredCourses({ tenantId, userId }) {
   return true;
 }
 
+/**
+ * Leaderboard: all students in tenant with completed lesson count.
+ * XP shown on frontend = completed_lessons * 50 (no XP in DB).
+ * Streak is not stored; frontend uses 0 for others and current user's from gamification.
+ */
+async function getLeaderboard({ tenantId }) {
+  const { rows } = await query(
+    `SELECT
+       u.id,
+       u.full_name,
+       COUNT(lp.lesson_id) FILTER (WHERE lp.completed_at IS NOT NULL)::int AS completed_lessons
+     FROM users u
+     JOIN memberships m ON m.user_id = u.id AND m.tenant_id = $1
+     JOIN roles r ON r.id = m.role_id AND r.name = 'Student'
+     LEFT JOIN lesson_progress lp ON lp.user_id = u.id AND lp.tenant_id = $1
+     WHERE u.is_active = true
+     GROUP BY u.id, u.full_name
+     ORDER BY completed_lessons DESC, u.full_name ASC`,
+    [tenantId]
+  );
+  return rows;
+}
+
 module.exports = {
   assertLessonPublished,
   startLesson,
@@ -197,4 +220,5 @@ module.exports = {
   courseProgressBySlug,
   getOverallProgressPercent,
   completedAllRequiredCourses,
+  getLeaderboard,
 };

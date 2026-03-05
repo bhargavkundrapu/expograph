@@ -44,4 +44,12 @@ router.get(
   requirePermission("progress:read"),
   ctrl.courseProgress
 );
+
+router.get(
+  "/leaderboard",
+  requireAuth,
+  requirePermission("progress:read"),
+  ctrl.leaderboard
+);
+
 module.exports = { router };

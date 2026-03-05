@@ -11,8 +11,6 @@ const DEFAULT_SIDEBAR_WIDGETS = [
   { id: "events", label: "Events", visible: true, order: 0 },
   { id: "dailyChallenge", label: "Daily Challenge", visible: true, order: 1 },
   { id: "progress", label: "Your Progress", visible: true, order: 2 },
-  { id: "achievements", label: "Achievements", visible: true, order: 3 },
-  { id: "leaderboard", label: "Leaderboard", visible: true, order: 4 },
 ];
 
 function getInitialPrefs() {

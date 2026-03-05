@@ -10,29 +10,29 @@ import React from "react";
 const milestones: MilestoneData[] = [
   {
     id: 1,
-    title: "Explore & Pick Your Course",
-    description: "Find the perfect course for your goals",
+    title: "Explore & pick your course",
+    description: "See what fits you — no commitment yet",
     date: "Step 1",
     icon: <Search className="size-4" />,
   },
   {
     id: 2,
-    title: "Enroll & Start Vibing",
-    description: "One click and you're in",
+    title: "Enroll & start learning",
+    description: "One click, instant access — you set the pace",
     date: "Step 2",
     icon: <Zap className="size-4" />,
   },
   {
     id: 3,
-    title: "Learn, Build & Ship",
-    description: "Smart prompts, structured lessons & Real Client Lab",
+    title: "Learn, build & ship",
+    description: "Structured lessons + real projects, with support",
     date: "Step 3",
     icon: <Code2 className="size-4" />,
   },
   {
     id: 4,
-    title: "Grow Your Career",
-    description: "Portfolio, resume & real-world proof",
+    title: "Show the world",
+    description: "Portfolio, resume & certificates — you're ready",
     icon: <Trophy className="size-4" />,
   },
 ];
@@ -40,6 +40,7 @@ const milestones: MilestoneData[] = [
 interface ContentBlock {
   title: string;
   body: React.ReactNode;
+  scenario?: string;
   highlights: string[];
   cta: string;
   accent: {
@@ -54,15 +55,15 @@ interface ContentBlock {
 
 const contentBlocks: ContentBlock[] = [
   {
-    title: "Explore & Pick Your Course",
+    title: "Explore & pick your course",
     body: (
       <>
-        Browse courses in <strong className="text-blue-300">web development</strong>,{" "}
-        <strong className="text-blue-300">vibe coding</strong>, and more. Each course shows what you'll learn, the tech stack, and how long it takes. Pick the one that matches your goals.
+        Browse <strong className="text-blue-300">Vibe Coding</strong>, <strong className="text-blue-300">Prompt Engineering</strong>, <strong className="text-blue-300">Prompt to Profit</strong>, and <strong className="text-blue-300">AI Automations</strong>. Each page shows what you'll learn, what you'll build, and the tools you'll use. Take your time — pick the one that fits where you are now.
       </>
     ),
-    highlights: ["Vibe Coding", "Web Dev", "Full Stack", "UI/UX"],
-    cta: "Browse Courses",
+    scenario: "Real-world: Like choosing a path that actually leads somewhere — you see the map before you start.",
+    highlights: ["Vibe Coding", "Prompt Engineering", "Prompt to Profit", "AI Automations"],
+    cta: "Browse courses",
     accent: {
       border: "border-blue-500/20",
       bg: "bg-blue-500/5",
@@ -73,15 +74,15 @@ const contentBlocks: ContentBlock[] = [
     },
   },
   {
-    title: "Enroll & Start Vibing",
+    title: "Enroll & start learning",
     body: (
       <>
-        Enroll instantly and get full access to <strong className="text-violet-300">all lessons</strong>,{" "}
-        <strong className="text-violet-300">smart prompts</strong>, setup guides, and resources. No waiting — start learning the moment you join.
+        One click and you're in. You get <strong className="text-violet-300">all lessons</strong>, <strong className="text-violet-300">smart prompts</strong>, and setup guides. No waiting, no complicated forms. You learn at your own pace — 10 minutes or 2 hours, it's up to you.
       </>
     ),
-    highlights: ["Instant Access", "Smart Prompts", "Setup Guides", "Resources"],
-    cta: "Get Started",
+    scenario: "Real-world: Like unlocking a library you can visit anytime. No pressure to finish by a date.",
+    highlights: ["Instant access", "Your pace", "Smart prompts", "Setup guides"],
+    cta: "Get started",
     accent: {
       border: "border-violet-500/20",
       bg: "bg-violet-500/5",
@@ -92,15 +93,15 @@ const contentBlocks: ContentBlock[] = [
     },
   },
   {
-    title: "Learn, Build & Ship",
+    title: "Learn, build & ship",
     body: (
       <>
-        Every lesson follows a clear structure: <strong className="text-purple-300">Goal → Video → Setup → Prompts → Success Check</strong>.
-        Copy code with one click, build hands-on projects, and work on <strong className="text-purple-300">real client projects</strong> in the Client Lab with mentor feedback.
+        Every lesson has a clear <strong className="text-purple-300">goal → video → setup → prompts → check</strong>. You copy code in one click, build real projects, and can join <strong className="text-purple-300">Real Client Lab</strong> to work on real briefs and get mentor feedback. Small steps, real output.
       </>
     ),
-    highlights: ["Structured Lessons", "One-Click Copy", "Real Client Lab", "Mentor Feedback"],
-    cta: "View Courses",
+    scenario: "Real-world: You're not just watching — you're building something you can show in an interview or to a client.",
+    highlights: ["Structured lessons", "One-click code", "Real Client Lab", "Mentor support"],
+    cta: "View courses",
     accent: {
       border: "border-purple-500/20",
       bg: "bg-purple-500/5",
@@ -111,15 +112,15 @@ const contentBlocks: ContentBlock[] = [
     },
   },
   {
-    title: "Grow Your Career",
+    title: "Show the world",
     body: (
       <>
-        Walk away with a <strong className="text-fuchsia-300">portfolio of real work</strong>, a{" "}
-        <strong className="text-fuchsia-300">professional resume</strong> built with our Resume Builder, and certificates that prove your skills. You're not just a learner — you're job-ready.
+        You finish with a <strong className="text-fuchsia-300">portfolio of real work</strong>, a <strong className="text-fuchsia-300">resume</strong> built with our Resume Builder, and <strong className="text-fuchsia-300">MCA-recognised certificates</strong>. You're not just 'someone who took a course' — you're someone with proof. Ready for the next step.
       </>
     ),
-    highlights: ["Portfolio Ready", "Resume Builder", "Certificates", "Job Ready"],
-    cta: "Start Your Journey",
+    scenario: "Real-world: When someone says 'show me what you've built', you have a link and a certificate — no awkward silence.",
+    highlights: ["Portfolio", "Resume Builder", "Certificates", "Proof you're ready"],
+    cta: "Start your journey",
     accent: {
       border: "border-fuchsia-500/20",
       bg: "bg-fuchsia-500/5",
@@ -143,7 +144,12 @@ function ContentCard({
       <div className={`absolute inset-0 bg-gradient-to-br ${block.accent.glow} opacity-60 pointer-events-none`} />
       <div className="relative">
         <h3 className="text-xl sm:text-2xl font-bold text-white mb-3">{block.title}</h3>
-        <p className="text-white/60 text-sm sm:text-base leading-relaxed mb-5">{block.body}</p>
+        <p className="text-white/60 text-sm sm:text-base leading-relaxed mb-4">{block.body}</p>
+        {block.scenario && (
+          <p className="text-white/50 text-xs sm:text-sm italic border-l-2 border-white/20 pl-3 mb-5">
+            {block.scenario}
+          </p>
+        )}
         <div className="flex flex-wrap gap-2 mb-6">
           {block.highlights.map((h) => (
             <span key={h} className={`inline-flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-full border ${block.accent.border} ${block.accent.bg} ${block.accent.text}`}>
@@ -177,6 +183,9 @@ export function AcademyMilestoneStepper() {
 
   return (
     <div className="w-full max-w-5xl mx-auto py-4 sm:py-8 px-2 sm:px-6">
+      <p className="text-center text-white/40 text-xs sm:text-sm mb-6">
+        Click any step to see what happens — no signup needed to explore.
+      </p>
       <div className="flex flex-col lg:flex-row gap-6 lg:gap-10">
         <div className="lg:w-80 shrink-0">
           <MilestoneStepper

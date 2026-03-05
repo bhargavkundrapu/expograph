@@ -1,6 +1,10 @@
 // apps/api/src/modules/student/student.repo.js
 const { query } = require("../../db/query");
 
+// AI Automations is a bonus course: access only via All Pack or when user has all three main courses
+const AI_AUTOMATIONS_SLUG = "ai-automations";
+const REQUIRED_SLUGS_FOR_AI_AUTOMATIONS = ["vibe-coding", "prompt-engineering", "prompt-to-profit"];
+
 // Dashboard & Home - Returns lessons and practice tasks from ENROLLED courses only
 async function getSchedule({ tenantId, userId }) {
   try {
@@ -338,6 +342,17 @@ async function listEnrolledCourses({ tenantId, userId }) {
       packRes.rows.forEach((r) => enrolledCourseIds.add(r.course_id));
     }
 
+    // AI Automations: add to enrolled only if user has All Pack or all three main courses
+    const aaRow = await query(
+      `SELECT id FROM courses WHERE tenant_id = $1 AND (slug = $2 OR slug = $3) LIMIT 1`,
+      [tenantId, AI_AUTOMATIONS_SLUG, "ai_automations"]
+    ).catch(() => ({ rows: [] }));
+    const aaCourseId = aaRow.rows[0]?.id;
+    if (aaCourseId) {
+      const hasAa = await hasAiAutomationsAccess({ tenantId, userId, aiAutomationsCourseId: aaCourseId });
+      if (hasAa) enrolledCourseIds.add(aaCourseId);
+    }
+
     const result = await query(
       `SELECT c.id, c.title, c.slug, c.description, c.level, c.price_in_paise,
               COUNT(DISTINCT cm.id) as modules_count,
@@ -377,7 +392,17 @@ async function listEnrolledCourses({ tenantId, userId }) {
   }
 }
 
-async function hasCourseAccess({ tenantId, userId, courseId }) {
+// Get course slug by id (for access rules)
+async function getCourseSlugById({ tenantId, courseId }) {
+  const { rows } = await query(
+    `SELECT slug FROM courses WHERE id = $1 AND tenant_id = $2 LIMIT 1`,
+    [courseId, tenantId]
+  ).catch(() => ({ rows: [] }));
+  return rows[0]?.slug ? rows[0].slug.replace(/_/g, "-") : null;
+}
+
+// Check enrollment for a course (direct or via any pack). No special-case for AI Automations.
+async function hasEnrollmentForCourse({ tenantId, userId, courseId }) {
   const enrollResult = await query(
     `SELECT item_type, item_id FROM enrollments
      WHERE user_id = $1 AND tenant_id = $2 AND active = true
@@ -396,6 +421,98 @@ async function hasCourseAccess({ tenantId, userId, courseId }) {
     }
   }
   return false;
+}
+
+/** True if user has All Pack (pack containing all three main courses) or has all three main courses. Used for Real Client Lab access. */
+async function hasAllPackOrAllThreeCourses({ tenantId, userId }) {
+  const requiredCourseRows = await query(
+    `SELECT id, REPLACE(slug, '_', '-') as norm_slug FROM courses WHERE tenant_id = $1 AND (slug = ANY($2::text[]) OR REPLACE(slug, '_', '-') = ANY($2::text[]))`,
+    [tenantId, REQUIRED_SLUGS_FOR_AI_AUTOMATIONS]
+  ).catch(() => ({ rows: [] }));
+
+  const idBySlug = new Map();
+  requiredCourseRows.rows.forEach((r) => {
+    const s = (r.norm_slug || "").replace(/_/g, "-");
+    if (s && !idBySlug.has(s)) idBySlug.set(s, r.id);
+  });
+  const requiredIds = REQUIRED_SLUGS_FOR_AI_AUTOMATIONS.map((s) => idBySlug.get(s)).filter(Boolean);
+  if (requiredIds.length !== 3) return false;
+
+  const hasAllThree = (await Promise.all(
+    requiredIds.map((cid) => hasEnrollmentForCourse({ tenantId, userId, courseId: cid }))
+  )).every(Boolean);
+  if (hasAllThree) return true;
+
+  const enrollResult = await query(
+    `SELECT item_id FROM enrollments WHERE user_id = $1 AND tenant_id = $2 AND active = true AND item_type = 'pack'`,
+    [userId, tenantId]
+  ).catch(() => ({ rows: [] }));
+
+  for (const row of enrollResult.rows) {
+    const packCourseIds = await query(
+      `SELECT course_id FROM course_pack_courses WHERE pack_id = $1`,
+      [row.item_id]
+    ).catch(() => ({ rows: [] }));
+    const inPack = new Set(packCourseIds.rows.map((r) => r.course_id));
+    if (requiredIds.every((cid) => inPack.has(cid))) return true;
+  }
+  return false;
+}
+
+// AI Automations: access only if (1) user has a pack that includes AA AND all three main courses, OR (2) has all three main courses.
+// Direct enrollment in AI Automations alone does NOT grant access.
+async function hasAiAutomationsAccess({ tenantId, userId, aiAutomationsCourseId }) {
+  const enrollResult = await query(
+    `SELECT item_type, item_id FROM enrollments
+     WHERE user_id = $1 AND tenant_id = $2 AND active = true`,
+    [userId, tenantId]
+  ).catch(() => ({ rows: [] }));
+
+  const packIds = enrollResult.rows.filter((r) => r.item_type === "pack").map((r) => r.item_id);
+
+  // Get required main course ids (vibe-coding, prompt-engineering, prompt-to-profit). Match slug or slug with underscore.
+  const requiredCourseRows = await query(
+    `SELECT id, REPLACE(slug, '_', '-') as norm_slug FROM courses WHERE tenant_id = $1 AND (slug = ANY($2::text[]) OR REPLACE(slug, '_', '-') = ANY($2::text[]))`,
+    [tenantId, REQUIRED_SLUGS_FOR_AI_AUTOMATIONS]
+  ).catch(() => ({ rows: [] }));
+
+  const idBySlug = new Map();
+  requiredCourseRows.rows.forEach((r) => {
+    const s = (r.norm_slug || "").replace(/_/g, "-");
+    if (s && !idBySlug.has(s)) idBySlug.set(s, r.id);
+  });
+  const requiredIds = REQUIRED_SLUGS_FOR_AI_AUTOMATIONS.map((s) => idBySlug.get(s)).filter(Boolean);
+
+  const hasAllThree = requiredIds.length === 3 && (await Promise.all(
+    requiredIds.map((cid) => hasEnrollmentForCourse({ tenantId, userId, courseId: cid }))
+  )).every(Boolean);
+
+  if (hasAllThree) return true;
+
+  // Pack must contain BOTH AA and all three main courses (full All Pack)
+  if (packIds.length > 0 && requiredIds.length === 3) {
+    for (const packId of packIds) {
+      const packCourseIds = await query(
+        `SELECT course_id FROM course_pack_courses WHERE pack_id = $1`,
+        [packId]
+      ).catch(() => ({ rows: [] }));
+      const inPack = new Set(packCourseIds.rows.map((r) => r.course_id));
+      const packHasAa = inPack.has(aiAutomationsCourseId);
+      const packHasAllThree = requiredIds.every((cid) => inPack.has(cid));
+      if (packHasAa && packHasAllThree) return true;
+    }
+  }
+
+  return false;
+}
+
+async function hasCourseAccess({ tenantId, userId, courseId }) {
+  const slug = await getCourseSlugById({ tenantId, courseId });
+  if (slug && slug.toLowerCase().includes("ai-automation")) {
+    return hasAiAutomationsAccess({ tenantId, userId, aiAutomationsCourseId: courseId });
+  }
+
+  return hasEnrollmentForCourse({ tenantId, userId, courseId });
 }
 
 async function enhanceCourseWithProgress({ tenantId, userId, course }) {
@@ -845,6 +962,7 @@ module.exports = {
   getEvents,
   listEnrolledCourses,
   hasCourseAccess,
+  hasAllPackOrAllThreeCourses,
   enhanceCourseWithProgress,
   enhanceLessonWithData,
   searchContent,

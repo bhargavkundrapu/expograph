@@ -4,6 +4,7 @@ import * as Sentry from "@sentry/react";
 
 import "./index.css";
 import App from "./App.jsx";
+import ErrorFallbackUI from "./Components/common/ErrorFallbackUI.jsx";
 
 class GlobalErrorBoundary extends Component {
   state = { hasError: false };
@@ -12,13 +13,11 @@ class GlobalErrorBoundary extends Component {
   render() {
     if (this.state.hasError) {
       return (
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "100vh", fontFamily: "system-ui, sans-serif", padding: "2rem", textAlign: "center" }}>
-          <h1 style={{ fontSize: "1.5rem", marginBottom: "0.5rem" }}>Something went wrong</h1>
-          <p style={{ color: "#666", marginBottom: "1rem" }}>An unexpected error occurred. Please try refreshing the page.</p>
-          <button onClick={() => window.location.reload()} style={{ padding: "0.5rem 1.5rem", borderRadius: "0.375rem", background: "#2563eb", color: "#fff", border: "none", cursor: "pointer", fontSize: "1rem" }}>
-            Refresh Page
-          </button>
-        </div>
+        <ErrorFallbackUI
+          title="Something went wrong"
+          message="We hit a small bump. Try again — it usually works."
+          onRetry={() => window.location.reload()}
+        />
       );
     }
     return this.props.children;
@@ -105,7 +104,13 @@ if (import.meta.env.PROD && SENTRY_DSN) {
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <GlobalErrorBoundary>
-      <Sentry.ErrorBoundary fallback={<div>Something went wrong.</div>}>
+      <Sentry.ErrorBoundary fallback={
+        <ErrorFallbackUI
+          title="Something went wrong"
+          message="We hit a small bump. Try again — it usually works."
+          onRetry={() => window.location.reload()}
+        />
+      }>
         <App />
       </Sentry.ErrorBoundary>
     </GlobalErrorBoundary>

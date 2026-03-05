@@ -4,7 +4,7 @@ const { HttpError } = require("../../utils/httpError");
 const { findTenantBySlug } = require("../../modules/tenants/tenants.repo");
 
 const tenantCache = new Map();
-let pendingLookup = null;
+const pendingBySlug = new Map();
 
 function getTenantSlugFromHost(hostname) {
   return env.DEFAULT_TENANT_SLUG;
@@ -16,6 +16,7 @@ async function resolveTenant(req, res, next) {
     const headerSlug = req.headers["x-tenant-slug"];
     let slug = getTenantSlugFromHost(req.hostname || "");
     if (isDev && headerSlug) slug = String(headerSlug).trim();
+    if (!slug) slug = env.DEFAULT_TENANT_SLUG;
 
     const cacheKey = `slug:${slug}`;
     if (tenantCache.has(cacheKey)) {
@@ -23,11 +24,15 @@ async function resolveTenant(req, res, next) {
       return next();
     }
 
-    // Coalesce concurrent lookups for the same slug into one DB call
-    if (!pendingLookup) {
-      pendingLookup = findTenantBySlug(slug).finally(() => { pendingLookup = null; });
+    // Per-slug coalescing: concurrent requests for the same slug share one lookup
+    let pending = pendingBySlug.get(cacheKey);
+    if (!pending) {
+      pending = findTenantBySlug(slug).finally(() => {
+        pendingBySlug.delete(cacheKey);
+      });
+      pendingBySlug.set(cacheKey, pending);
     }
-    const tenant = await pendingLookup;
+    const tenant = await pending;
     if (!tenant) throw new HttpError(400, `Unknown tenant: ${slug}`);
 
     tenantCache.set(cacheKey, tenant);

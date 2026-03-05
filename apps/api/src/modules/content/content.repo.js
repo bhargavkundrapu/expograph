@@ -43,6 +43,20 @@ async function listCoursesPublic({ tenantId }) {
   return rows;
 }
 
+/** Get published courses by slugs (matches slug or slug with underscores replaced by hyphens). */
+async function listCoursesPublicBySlugs({ tenantId, slugs }) {
+  if (!slugs || slugs.length === 0) return [];
+  const { rows } = await query(
+    `SELECT id, title, slug, description, level, price_in_paise
+     FROM courses
+     WHERE tenant_id = $1 AND status = 'published'
+     AND (slug = ANY($2::text[]) OR REPLACE(slug, '_', '-') = ANY($2::text[]))
+     ORDER BY sort_order ASC, created_at ASC`,
+    [tenantId, slugs]
+  );
+  return rows;
+}
+
 async function updateCourseStatus({ tenantId, courseId, status }) {
   const { rows } = await query(
     `UPDATE courses SET status = $1, updated_at = now()
@@ -947,6 +961,7 @@ module.exports = {
   createCourse,
   listCoursesAdmin,
   listCoursesPublic,
+  listCoursesPublicBySlugs,
   updateCourseStatus,
   createModule,
   createLesson,

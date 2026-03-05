@@ -1,6 +1,7 @@
 import { createBrowserRouter, Outlet, Navigate } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import RequireRole from "./RequireRole";
+import RouteErrorFallback from "./RouteErrorFallback";
 import SuperAdminLayout from "./layouts/SuperAdminLayout";
 import MentorLayout from "./layouts/MentorLayout";
 import StudentLayout from "./layouts/StudentLayout";
@@ -93,6 +94,7 @@ function PortalLayout() {
 export const router = createBrowserRouter([
   {
     element: <SimpleLayout />,
+    errorElement: <RouteErrorFallback />,
     children: [
       { path: "/", element: <HomeOrRedirect /> },
       { path: "/academy", element: <HomeOrRedirect /> },
@@ -112,6 +114,7 @@ export const router = createBrowserRouter([
   },
   {
     element: <SimpleLayout />,
+    errorElement: <RouteErrorFallback />,
     children: [
       {
         path: "/lms/superadmin",
@@ -155,7 +158,7 @@ export const router = createBrowserRouter([
           { path: "certificates/:id/details", element: <L><SuperAdminCertificates /></L> },
           { path: "certificates/:id/verify", element: <L><SuperAdminCertificates /></L> },
           
-          // Client Lab
+          // Real Client Lab
           { path: "client-lab", element: <Navigate to="client-lab/real-world" replace /> },
           { path: "client-lab/cards", element: <L><SuperAdminClientLab /></L> },
           { path: "client-lab/list", element: <L><SuperAdminClientLab /></L> },
@@ -254,7 +257,7 @@ export const router = createBrowserRouter([
           { path: "analytics/performance", element: <L><MentorAnalytics /></L> },
           { path: "analytics/engagement", element: <L><MentorAnalytics /></L> },
           
-          // Client Lab
+          // Real Client Lab
           { path: "client-lab", element: <L><MentorClientLab /></L> },
           { path: "client-lab/projects", element: <L><MentorClientLab /></L> },
           { path: "client-lab/projects/list", element: <L><MentorClientLab /></L> },
@@ -325,7 +328,7 @@ export const router = createBrowserRouter([
           { path: "profile/edit", element: <L><StudentProfile /></L> },
           { path: "profile/settings", element: <L><StudentProfile /></L> },
           
-          // Client Lab
+          // Real Client Lab
           { path: "client-lab", element: <L><StudentClientLab /></L> },
           { path: "client-lab/projects", element: <L><StudentClientLab /></L> },
           { path: "client-lab/projects/:projectId", element: <L><StudentClientLab /></L> },

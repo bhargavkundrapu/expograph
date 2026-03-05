@@ -75,6 +75,153 @@ function OtpInput({ length = 6, value, onChange, disabled }) {
 
 const OTHER_OPTION_VALUE = "Others (Working Professional / Not Listed)";
 
+function SearchableCollegeSelect({ value, onChange, colleges, placeholder = "Select college or others", inputClassName }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const [highlightedIndex, setHighlightedIndex] = useState(0);
+  const containerRef = useRef(null);
+  const listRef = useRef(null);
+  const inputRef = useRef(null);
+  const searchInputRef = useRef(null);
+
+  const optionNames = [
+    "",
+    ...colleges.map((c) => c.name),
+    OTHER_OPTION_VALUE,
+    ...(value && value !== OTHER_OPTION_VALUE && !colleges.some((c) => c.name === value) ? [value] : []),
+  ];
+  let filtered = query.trim()
+    ? optionNames.filter((n) => n.toLowerCase().includes(query.toLowerCase()))
+    : optionNames;
+  const q = query.trim();
+  if (q && !optionNames.some((n) => n.toLowerCase() === q.toLowerCase())) {
+    filtered = [...filtered, q];
+  }
+
+  useEffect(() => {
+    if (!isOpen) return;
+    setHighlightedIndex(0);
+    setTimeout(() => searchInputRef.current?.focus(), 0);
+  }, [isOpen, query]);
+
+  useEffect(() => {
+    const el = listRef.current;
+    if (!el || highlightedIndex < 0) return;
+    const item = el.children[highlightedIndex];
+    item?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  }, [highlightedIndex]);
+
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (containerRef.current && !containerRef.current.contains(e.target)) setIsOpen(false);
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const select = (opt) => {
+    onChange(opt);
+    setQuery("");
+    setIsOpen(false);
+    inputRef.current?.focus();
+  };
+
+  const handleTriggerKeyDown = (e) => {
+    if (e.key === "Enter" || e.key === " " || e.key === "ArrowDown") {
+      e.preventDefault();
+      setIsOpen(true);
+    }
+  };
+
+  const handleListKeyDown = (e) => {
+    if (e.key === "Escape") {
+      setIsOpen(false);
+      setQuery("");
+      inputRef.current?.focus();
+      return;
+    }
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setHighlightedIndex((i) => (i < filtered.length - 1 ? i + 1 : 0));
+      return;
+    }
+    if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setHighlightedIndex((i) => (i > 0 ? i - 1 : filtered.length - 1));
+      return;
+    }
+    if (e.key === "Enter") {
+      e.preventDefault();
+      const opt = filtered[highlightedIndex];
+      if (opt !== undefined) select(opt);
+      return;
+    }
+  };
+
+  return (
+    <div ref={containerRef} className="relative">
+      <input
+        ref={inputRef}
+        type="text"
+        role="combobox"
+        aria-expanded={isOpen}
+        aria-haspopup="listbox"
+        aria-controls="college-listbox"
+        id="college-combobox"
+        readOnly
+        value={value}
+        onFocus={() => setIsOpen(true)}
+        onClick={() => setIsOpen(true)}
+        onKeyDown={handleTriggerKeyDown}
+        placeholder={placeholder}
+        style={{ color: "#0f172a", backgroundColor: "#fff", cursor: "pointer" }}
+        className={inputClassName ?? "w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"}
+      />
+      {isOpen && (
+        <div className="absolute z-50 w-full mt-1 rounded-lg border border-slate-200 bg-white shadow-lg overflow-hidden">
+          <div className="p-2 border-b border-slate-100 bg-slate-50/80">
+            <input
+              ref={searchInputRef}
+              type="text"
+              placeholder="Search colleges..."
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onKeyDown={handleListKeyDown}
+              style={{ color: "#0f172a", backgroundColor: "#fff", caretColor: "#0f172a" }}
+              className="w-full px-3 py-2 text-sm border border-slate-200 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              aria-label="Search colleges"
+            />
+          </div>
+          <ul
+            id="college-listbox"
+            ref={listRef}
+            role="listbox"
+            className="max-h-48 overflow-auto py-1 text-sm"
+            onKeyDown={handleListKeyDown}
+          >
+            {filtered.length === 0 ? (
+              <li className="px-3 py-2 text-slate-500">No matches</li>
+            ) : (
+              filtered.map((opt, i) => (
+                <li
+                  key={opt === "" ? "__empty__" : opt}
+                  role="option"
+                  aria-selected={value === opt}
+                  className={`cursor-pointer px-3 py-2 truncate ${value === opt ? "bg-blue-50 text-blue-900" : ""} ${i === highlightedIndex ? "bg-slate-100" : ""}`}
+                  onMouseEnter={() => setHighlightedIndex(i)}
+                  onClick={() => select(opt)}
+                >
+                  {opt || placeholder}
+                </li>
+              ))
+            )}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill, isLoggedIn }) {
   const { tenant } = useAuth();
   const [form, setForm] = useState({ name: "", email: "", phone: "", college: "" });
@@ -541,21 +688,13 @@ export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill, 
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-1">College / Others</label>
-                  <select
+                  <SearchableCollegeSelect
                     value={form.college}
-                    onChange={(e) => setForm((f) => ({ ...f, college: e.target.value }))}
-                    style={{ color: "#0f172a", backgroundColor: "#ffffff", caretColor: "#0f172a" }}
-                    className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20fill%3D%22none%22%20viewBox%3D%220%200%2024%2024%22%20stroke%3D%22%236b7280%22%3E%3Cpath%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%222%22%20d%3D%22M19%209l-7%207-7-7%22%2F%3E%3C%2Fsvg%3E')] bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat pr-10"
-                  >
-                    <option value="">Select college or others</option>
-                    {colleges.map((c) => (
-                      <option key={c.id} value={c.name}>{c.name}</option>
-                    ))}
-                    <option value={OTHER_OPTION_VALUE}>{OTHER_OPTION_VALUE}</option>
-                    {form.college && !colleges.some((c) => c.name === form.college) && form.college !== OTHER_OPTION_VALUE && (
-                      <option value={form.college}>{form.college}</option>
-                    )}
-                  </select>
+                    onChange={(v) => setForm((f) => ({ ...f, college: v }))}
+                    colleges={colleges}
+                    placeholder="Select college or others"
+                    inputClassName="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                  />
                 </div>
 
                 {/* Price summary */}
@@ -663,21 +802,13 @@ export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill, 
                 )}
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-1">College / Others</label>
-                  <select
+                  <SearchableCollegeSelect
                     value={form.college}
-                    onChange={(e) => setForm((f) => ({ ...f, college: e.target.value }))}
-                    style={{ color: "#0f172a", backgroundColor: "#fff" }}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20fill%3D%22none%22%20viewBox%3D%220%200%2024%2024%22%20stroke%3D%22%236b7280%22%3E%3Cpath%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%222%22%20d%3D%22M19%209l-7%207-7-7%22%2F%3E%3C%2Fsvg%3E')] bg-[length:1rem] bg-[right_0.5rem_center] bg-no-repeat pr-8"
-                  >
-                    <option value="">Select college or others</option>
-                    {colleges.map((c) => (
-                      <option key={c.id} value={c.name}>{c.name}</option>
-                    ))}
-                    <option value={OTHER_OPTION_VALUE}>{OTHER_OPTION_VALUE}</option>
-                    {form.college && !colleges.some((c) => c.name === form.college) && form.college !== OTHER_OPTION_VALUE && (
-                      <option value={form.college}>{form.college}</option>
-                    )}
-                  </select>
+                    onChange={(v) => setForm((f) => ({ ...f, college: v }))}
+                    colleges={colleges}
+                    placeholder="Select college or others"
+                    inputClassName="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm"
+                  />
                 </div>
               </div>
 

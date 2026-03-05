@@ -99,16 +99,16 @@ const featureDetails = {
     },
     sections: [
       {
-        title: "How the Client Lab Works",
+        title: "How the Real Client Lab Works",
         items: [
           { icon: <Target className="h-5 w-5" />, title: "Real Client Projects", desc: "Companies submit actual project briefs — landing pages, dashboards, APIs, mobile designs. You pick up tasks just like in a real job." },
           { icon: <Users className="h-5 w-5" />, title: "Mentor-Reviewed Work", desc: "Every submission is reviewed by an experienced mentor. You get real feedback — what's great, what needs improvement, and how to fix it." },
           { icon: <Award className="h-5 w-5" />, title: "Portfolio-Ready Output", desc: "Every completed project becomes a portfolio piece. Show employers you've built real things for real people, not just tutorials." },
-          { icon: <TrendingUp className="h-5 w-5" />, title: "Unlock with All Pack", desc: "Real Client Lab is available only when you buy the All Pack (Vibe Coding + Prompt to Profit + AI Automations). Complete 75% progress and all courses to submit work." },
+          { icon: <TrendingUp className="h-5 w-5" />, title: "Unlock with All Pack", desc: "Real Client Lab unlocks when you have access to all required courses and complete each course at 100%. Get the All Pack to unlock." },
         ],
       },
       {
-        title: "Your Journey in the Client Lab",
+        title: "Your Journey in the Real Client Lab",
         steps: [
           { num: "01", title: "Get the All Pack", desc: "Real Client Lab is included with the All Pack. Buy all three courses (Vibe Coding, Prompt to Profit, AI Automations) to unlock access." },
           { num: "02", title: "Pick a Project", desc: "Browse available client projects. Each one has a clear scope, deadline, and list of tasks. Choose what excites you." },

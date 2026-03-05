@@ -156,6 +156,9 @@ app.use(
 
   // Versioned API
   app.use("/api/v1/auth", authRouter);
+  // Mount usersAdminRouter (colleges, students, mentors, etc.) BEFORE adminContentRouter
+  // so GET/POST/DELETE /api/v1/admin/colleges are matched and not 404'd by content router
+  app.use("/api/v1/admin", usersAdminRouter);
   app.use("/api/v1/admin", adminContentRouter);
   app.use("/api/v1", publicContentRouter);
   
@@ -184,7 +187,6 @@ app.use(
   app.use("/api/v1/admin", podcastsAdmin);
   app.use("/api/v1/admin", certAdmin);
   app.use("/api/v1/admin", featureFlagsAdmin);
-  app.use("/api/v1/admin", usersAdminRouter);
   app.use("/api/v1/admin/approvals", approvalsAdminRouter);
   app.use("/api/v1/admin/dashboard", dashboardRouter);
 
@@ -209,17 +211,30 @@ app.use(
 app.get("/api/v1/me", requireAuth, async (req, res, next) => {
   try {
     const userId = req.auth?.userId;
-    const tenantId = req.auth?.tenantId;
+    const tenantId = req.tenant?.id ?? req.auth?.tenantId;
 
     const permissions = await listPermissionsForUser({ tenantId, userId });
 
     let overallProgressPercent = 0;
     let eligibleClientLab = false;
+    let clientLabChecklist = null;
     if (req.auth?.role === "Student") {
       overallProgressPercent = await progressRepo.getOverallProgressPercent({ tenantId, userId });
       await clientLabEligibilityService.recomputeEligibility({ tenantId, userId });
       const eligibility = await clientLabEligibilityRepo.getEligibility({ userId });
       eligibleClientLab = !!eligibility.eligible_client_lab;
+      try {
+        clientLabChecklist = await clientLabEligibilityService.getClientLabChecklist({ tenantId, userId });
+      } catch (e) {
+        console.error("getClientLabChecklist failed:", e?.message);
+        clientLabChecklist = { courses: [], hasAccess: false, allPurchased: false, allCompleted: false, eligible: false };
+      }
+      if (!clientLabChecklist || typeof clientLabChecklist !== "object" || !Array.isArray(clientLabChecklist.courses)) {
+        clientLabChecklist = { courses: [], hasAccess: false, allPurchased: false, allCompleted: false, eligible: false };
+      }
+      if (clientLabChecklist.hasAccess === undefined) {
+        clientLabChecklist = { ...clientLabChecklist, hasAccess: !!clientLabChecklist.eligible };
+      }
     }
 
     res.json({
@@ -232,6 +247,7 @@ app.get("/api/v1/me", requireAuth, async (req, res, next) => {
         permissions,
         overall_progress_percent: overallProgressPercent,
         eligible_client_lab: eligibleClientLab,
+        client_lab_checklist: clientLabChecklist,
       },
     });
   } catch (e) {

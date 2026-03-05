@@ -22,6 +22,23 @@ import { AnimatePresence } from "framer-motion";
 import { BuyNowModal } from "../../../Components/payments/BuyNowModal";
 import { COURSE_EXPLORE_DATA } from "../../../data/courseExploreData";
 
+// Display order on student LMS courses route: Vibe Coding → Prompt Engineering → Prompt to Profit → others
+// Include "vibe coading" (common typo in DB/seeds) so it still sorts first
+const COURSE_DISPLAY_ORDER = ["vibe-coding", "vibe-coading", "prompt-engineering", "prompt-to-profit", "ai-automations"];
+const COURSE_TITLE_ORDER = ["vibe coding", "vibe coading", "prompt engineering", "prompt to profit", "ai automations"];
+
+function courseOrderIndex(course) {
+  const slug = (course?.slug || "").toLowerCase().replace(/_/g, "-").trim();
+  const title = (course?.title || "").toLowerCase().trim();
+  let idx = COURSE_DISPLAY_ORDER.indexOf(slug);
+  if (idx === -1 && title) {
+    idx = COURSE_TITLE_ORDER.findIndex((t) => title.includes(t) || t.includes(title));
+  }
+  // Normalize: "vibe coading" (typo) and "vibe coding" both sort first
+  if (idx === 1) idx = 0; // vibe-coading → same as vibe-coding
+  return idx === -1 ? 999 : idx;
+}
+
 export default function StudentCourses() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -73,7 +90,9 @@ export default function StudentCourses() {
       setLoading(true);
       setFetchError("");
       const res = await apiFetch("/api/v1/student/courses", { token }).catch(() => ({ data: [] }));
-      setCourses(res?.data || []);
+      const list = Array.isArray(res?.data) ? res.data : [];
+      list.sort((a, b) => courseOrderIndex(a) - courseOrderIndex(b));
+      setCourses(list);
     } catch (error) {
       console.error("Failed to fetch courses:", error);
       setFetchError(error?.message || "Failed to load courses. Please refresh the page.");
@@ -167,7 +186,8 @@ export default function StudentCourses() {
     .sort((a, b) => {
       const aPinned = isPinned(a.slug) ? 1 : 0;
       const bPinned = isPinned(b.slug) ? 1 : 0;
-      return bPinned - aPinned;
+      if (bPinned !== aPinned) return bPinned - aPinned;
+      return courseOrderIndex(a) - courseOrderIndex(b);
     });
 
   // Calculate overall progress (enrolled courses only)
@@ -255,11 +275,11 @@ export default function StudentCourses() {
                 <p className={`text-sm mb-4 ${isDark ? "text-slate-500" : "text-slate-500"}`}>
                   {isUnlocked
                     ? "You have access — click to open and continue learning."
-                    : "Buy the All Pack to unlock this course free. Not sold separately."}
+                    : "To unlock this bonus course, buy the All Pack or all three courses (Vibe Coding, Prompt Engineering, Prompt to Profit)."}
                 </p>
                 <div className="flex flex-col gap-2">
                   <button
-                    onClick={(e) => { e.stopPropagation(); navigate("/courses/explore/ai-automations"); }}
+                    onClick={(e) => { e.stopPropagation(); navigate("/lms/student/courses/ai-automations"); }}
                     className={`w-full py-2.5 px-4 font-semibold rounded-xl text-sm flex items-center justify-center gap-2 ${
                       isDark ? "border border-slate-600 text-slate-300 hover:bg-slate-700" : "border border-slate-300 text-slate-700 hover:bg-slate-50"
                     }`}
@@ -274,7 +294,7 @@ export default function StudentCourses() {
                     }}
                     className="w-full py-2.5 px-4 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-xl"
                   >
-                    {isUnlocked ? "Open Course" : "Get All Pack to Unlock"}
+                    {isUnlocked ? "Open Course" : "Get All Pack or All 3 Courses to Unlock"}
                   </button>
                 </div>
               </div>
@@ -453,22 +473,22 @@ export default function StudentCourses() {
                       <>
                         <p className={`text-sm mb-3 ${isDark ? "text-slate-500" : "text-slate-400"}`}>
                           {isBonusCourse(course)
-                            ? "Get the All Pack (Vibe Coding + Prompt Engineering + Prompt to Profit) to unlock this bonus course free."
+                            ? "To unlock this bonus course, buy the All Pack or all three courses (Vibe Coding, Prompt Engineering, Prompt to Profit)."
                             : "Unlock this course to access all lessons and content."}
                         </p>
                         <div className="flex flex-col gap-2">
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              navigate(`/courses/explore/${course.slug}`);
-                            }}
-                            className={`w-full py-2.5 px-4 font-semibold rounded-xl text-sm transition-all flex items-center justify-center gap-2 border ${
-                              isDark ? "border-slate-600 text-slate-300 hover:bg-slate-700" : "border-slate-300 text-slate-700 hover:bg-slate-50"
-                            }`}
-                          >
-                            <FiBookOpen className="w-4 h-4" />
-                            Explore Course
-                          </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/lms/student/courses/${course.slug}`);
+                          }}
+                          className={`w-full py-2.5 px-4 font-semibold rounded-xl text-sm transition-all flex items-center justify-center gap-2 border ${
+                            isDark ? "border-slate-600 text-slate-300 hover:bg-slate-700" : "border-slate-300 text-slate-700 hover:bg-slate-50"
+                          }`}
+                        >
+                          <FiBookOpen className="w-4 h-4" />
+                          Explore Course
+                        </button>
                           {isBonusCourse(course) ? (
                             <button
                               onClick={(e) => {
@@ -477,7 +497,7 @@ export default function StudentCourses() {
                               }}
                               className="w-full py-2.5 px-4 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-xl text-sm transition-colors"
                             >
-                              Get All Pack to Unlock
+                              Get All Pack or All 3 Courses to Unlock
                             </button>
                           ) : canBuy ? (
                             <button
@@ -517,7 +537,7 @@ export default function StudentCourses() {
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            navigate(`/courses/explore/${course.slug}`);
+                            navigate(`/lms/student/courses/${course.slug}`);
                           }}
                           className="w-full mt-1 py-2.5 px-4 border border-indigo-500/30 text-indigo-400 hover:bg-indigo-500/10 font-semibold rounded-xl text-sm transition-all flex items-center justify-center gap-2 mb-2"
                         >
@@ -527,7 +547,7 @@ export default function StudentCourses() {
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            navigate(`/lms/student/courses/${course.slug}`);
+                            navigate(`/lms/student/courses/${course.slug}?continue=1`);
                           }}
                           className="w-full py-2.5 px-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold rounded-xl text-sm transition-all flex items-center justify-center gap-2 shadow-sm hover:shadow-md"
                         >

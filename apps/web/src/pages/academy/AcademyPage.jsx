@@ -1,5 +1,5 @@
-import { useNavigate } from "react-router-dom";
-import { lazy, Suspense, useState, useCallback } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { lazy, Suspense, useState, useCallback, useEffect } from "react";
 import { useAuth } from "../../app/providers/AuthProvider";
 import { Header } from "../../Components/ui/header-2";
 import HeroSection from "../../Components/ui/hero-section-9";
@@ -13,9 +13,6 @@ const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
 
 const InteractiveRobotSpline = isMobile ? null : lazy(() =>
   import("../../Components/ui/interactive-3d-robot").then((m) => ({ default: m.InteractiveRobotSpline }))
-);
-const AcademyMilestoneStepper = lazy(() =>
-  import("../../Components/ui/academy-milestone-stepper").then((m) => ({ default: m.AcademyMilestoneStepper }))
 );
 const UiverseCard = isMobile ? null : lazy(() => import("../../Components/ui/uiverse-card"));
 const AcademyFeaturesGrid = isMobile ? null : lazy(() =>
@@ -160,6 +157,19 @@ function SimpleFAQ() {
 export default function AcademyPage() {
   const { token, role } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  useEffect(() => {
+    if (location.hash === "#courses") {
+      const el = document.getElementById("courses");
+      if (el) {
+        const t = setTimeout(() => {
+          el.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 100);
+        return () => clearTimeout(t);
+      }
+    }
+    window.scrollTo(0, 0);
+  }, [location.pathname, location.hash]);
 
   return (
     <div
@@ -290,7 +300,7 @@ export default function AcademyPage() {
               value: "Resources",
               label: "",
               icon: <LinkIcon className="h-5 w-5 text-muted-foreground" />,
-              onClick: () => document.getElementById("stepper")?.scrollIntoView({ behavior: "smooth" }),
+              onClick: () => document.getElementById("courses")?.scrollIntoView({ behavior: "smooth" }),
             },
           ]}
           images={[
@@ -303,6 +313,21 @@ export default function AcademyPage() {
 
       {/* Course Cards — Third section below Where Learning Meets */}
       <AcademyCourseCardsSection />
+
+      {/* Designed by top techies & IITians — trust, small impact */}
+      <section
+        className="py-6 sm:py-8 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24"
+        style={{ backgroundColor: "#000000" }}
+      >
+        <div className="max-w-3xl mx-auto text-center">
+          <p className="text-xs sm:text-sm font-medium tracking-widest uppercase text-amber-400/90 mb-2">
+            Built for the real world
+          </p>
+          <p className="text-base sm:text-lg text-white/90 leading-relaxed">
+            Our curriculum and courses are designed by <span className="text-amber-300 font-semibold">top techies and IITians</span> — so you learn what the industry actually uses, not just theory.
+          </p>
+        </div>
+      </section>
 
       {/* Officially Recognised — MCA */}
       <section
@@ -576,33 +601,6 @@ export default function AcademyPage() {
             Start Learning for ₹99
           </button>
           <span className="text-xs text-white/30">Join 2,000+ users already vibing with us</span>
-        </div>
-      </section>
-
-      {/* Milestone Stepper Section */}
-      <section
-        id="stepper"
-        className="py-14 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 academy-section-gpu"
-        style={{ backgroundColor: "#000000" }}
-      >
-        <div className="text-center mb-10 sm:mb-12 md:mb-14">
-          <p className="inline-block text-xs sm:text-sm font-medium tracking-widest uppercase text-blue-400 mb-3 px-3 py-1 rounded-full border border-blue-500/20 bg-blue-500/5">
-            Your Path
-          </p>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight">
-            Your journey to becoming{" "}
-            <span className="bg-gradient-to-r from-blue-400 via-indigo-400 to-violet-400 text-transparent bg-clip-text">
-              career-ready
-            </span>
-          </h2>
-          <p className="mt-3 sm:mt-4 text-sm sm:text-base md:text-lg text-white/60 max-w-2xl mx-auto">
-            A clear 4-step journey from exploring to shipping real work — start for just <span className="text-blue-400 font-semibold">₹99</span>
-          </p>
-        </div>
-        <div className="text-white/90">
-          <Suspense fallback={<SectionSkeleton height="h-80" />}>
-            <AcademyMilestoneStepper />
-          </Suspense>
         </div>
       </section>
 

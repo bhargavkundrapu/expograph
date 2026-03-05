@@ -54,10 +54,18 @@ const courseProgress = asyncHandler(async (req, res) => {
   return res.json({ ok: true, data: row });
 });
 
+const leaderboard = asyncHandler(async (req, res) => {
+  const tenantId = req.tenant?.id || req.auth?.tenantId;
+  if (!tenantId) throw new HttpError(401, "Unauthorized");
+  const data = await svc.getLeaderboard({ tenantId });
+  res.json({ ok: true, data });
+});
+
 module.exports = {
   start,
   progress,
   complete,
   summary,
   courseProgress,
+  leaderboard,
 };

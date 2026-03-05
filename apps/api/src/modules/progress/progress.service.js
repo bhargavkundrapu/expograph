@@ -66,10 +66,15 @@ async function courseProgress({ tenantId, userId, courseSlug }) {
   return repo.courseProgressBySlug({ tenantId, userId, courseSlug });
 }
 
+async function getLeaderboard({ tenantId }) {
+  return repo.getLeaderboard({ tenantId });
+}
+
 module.exports = {
   startLesson,
   progressUpdate,
   completeLesson,
   summary,
   courseProgress,
+  getLeaderboard,
 };

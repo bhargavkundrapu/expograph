@@ -52,7 +52,7 @@ export default function MentorLayout() {
     { path: "/lms/mentor/communications", label: "Messages", icon: FiMessageSquare },
     { path: "/lms/mentor/calendar", label: "Calendar", icon: FiCalendar },
     { path: "/lms/mentor/analytics", label: "Analytics", icon: FiBarChart2 },
-    { path: "/lms/mentor/client-lab", label: "Client Lab", icon: FiBriefcase },
+    { path: "/lms/mentor/client-lab", label: "Real Client Lab", icon: FiBriefcase },
     { path: "/lms/mentor/internships", label: "Internships", icon: FiLayers },
     { path: "/lms/mentor/resources", label: "Resources", icon: FiBookOpen },
   ];

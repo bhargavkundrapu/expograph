@@ -99,6 +99,15 @@ const getMyProjectWithTasks = asyncHandler(async (req, res) => {
   res.json({ ok: true, data });
 });
 
+const getEligibilityChecklist = asyncHandler(async (req, res) => {
+  const eligibilityService = require("./clientLabEligibility.service");
+  const tenantId = req.tenant?.id || req.auth?.tenantId;
+  const userId = req.auth?.userId;
+  if (!tenantId || !userId) throw new HttpError(401, "Unauthorized");
+  const data = await eligibilityService.getClientLabChecklist({ tenantId, userId });
+  res.json({ ok: true, data });
+});
+
 const getMyTask = asyncHandler(async (req, res) => {
   const data = await svc.getTaskByIdForStudent(req, req.params.id);
   res.json({ ok: true, data });
@@ -129,4 +138,5 @@ module.exports = {
   getMyProjectWithTasks,
   getMyTask,
   submitTask,
+  getEligibilityChecklist,
 };

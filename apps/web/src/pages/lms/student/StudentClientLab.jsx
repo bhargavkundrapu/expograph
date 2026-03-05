@@ -15,6 +15,85 @@ import {
   FiMessageSquare,
 } from "react-icons/fi";
 
+function LockedClientLabContent({ isDark, checklist, onRetry }) {
+  const hasAccess = checklist?.hasAccess === true;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className={`backdrop-blur rounded-2xl border-2 shadow-xl p-6 md:p-8 ${isDark ? "bg-slate-800/90 border-slate-700" : "bg-white/90 border-slate-200"}`}
+    >
+      <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-5 ${isDark ? "bg-slate-700" : "bg-slate-100"}`}>
+        <FiLock className="w-8 h-8 text-slate-500" />
+      </div>
+      <h1 className={`text-xl md:text-2xl font-bold mb-2 text-center ${isDark ? "text-white" : "text-slate-900"}`}>
+        Real Client Lab is locked
+      </h1>
+
+      {!checklist && <p className="text-center text-slate-500 text-sm mb-4">Loading…</p>}
+
+      {checklist && !hasAccess && (
+        <p className={`text-center mb-6 text-sm ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+          Get the All Pack or all three courses (Vibe Coding, Prompt Engineering, Prompt to Profit) to unlock Real Client Lab.
+        </p>
+      )}
+
+      {checklist && hasAccess && (
+        <>
+          <p className={`text-center mb-4 text-sm ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+            Complete every course to 100% to unlock Real Client Lab and access tasks.
+          </p>
+          <div className="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-600 mb-4">
+            <table className="w-full text-left text-sm">
+              <thead>
+                <tr className={`border-b ${isDark ? "border-slate-600 bg-slate-700/50" : "border-slate-200 bg-slate-50"}`}>
+                  <th className="px-4 py-3 font-medium">Course</th>
+                  <th className="px-4 py-3 font-medium w-28">Purchased</th>
+                  <th className="px-4 py-3 font-medium w-28">Completed</th>
+                </tr>
+              </thead>
+              <tbody>
+                {checklist.courses.map((c) => (
+                  <tr key={c.id} className={`border-b last:border-0 ${isDark ? "border-slate-600" : "border-slate-100"}`}>
+                    <td className="px-4 py-3 font-medium">{c.title}</td>
+                    <td className="px-4 py-3">
+                      {c.purchased ? (
+                        <FiCheckCircle className="w-5 h-5 text-emerald-500 inline" aria-label="Purchased" />
+                      ) : (
+                        <span className={isDark ? "text-slate-400" : "text-slate-500"}>Not purchased</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3">
+                      {c.completedPercent === 100 ? (
+                        <FiCheckCircle className="w-5 h-5 text-emerald-500 inline" aria-label="100%" />
+                      ) : (
+                        <span className={isDark ? "text-slate-400" : "text-slate-600"}>{c.completedPercent}%</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {checklist.eligible && (
+            <p className="text-center text-emerald-600 dark:text-emerald-400 font-medium text-sm mb-2">
+              All set — Real Client Lab is unlocked. Refreshing…
+            </p>
+          )}
+          {onRetry && (
+            <p className="text-center mt-3">
+              <button type="button" onClick={onRetry} className="text-sm underline text-slate-500 hover:text-slate-700">
+                Refresh progress
+              </button>
+            </p>
+          )}
+        </>
+      )}
+    </motion.div>
+  );
+}
+
 export default function StudentClientLab() {
   const navigate = useNavigate();
   const { projectId, taskId } = useParams();
@@ -101,6 +180,18 @@ export default function StudentClientLab() {
     fetchAssignedTasks();
   }, [token, me, fetchAssignedProjects, fetchAssignedTasks]);
 
+  const eligible = !!me?.eligible_client_lab;
+  const hasAssignments = projects.length > 0 || tasks.length > 0;
+  const showLockedView = !eligible && !hasAssignments;
+  // Checklist comes from /api/v1/me (client_lab_checklist); fallback so we never stick on "Loading your progress"
+  const rawChecklist = me?.client_lab_checklist;
+  const checklist =
+    rawChecklist && typeof rawChecklist === "object" && Array.isArray(rawChecklist.courses)
+      ? rawChecklist
+      : showLockedView
+        ? { courses: [], hasAccess: false, allPurchased: false, allCompleted: false, eligible: false }
+        : null;
+
   useEffect(() => {
     if (projectId) fetchProjectDetail(projectId);
     else setProjectDetail(null);
@@ -111,11 +202,15 @@ export default function StudentClientLab() {
     else setTaskDetail(null);
   }, [taskId, fetchTaskDetail]);
 
+  useEffect(() => {
+    if (checklist?.eligible) fetchMe();
+  }, [checklist?.eligible, fetchMe]);
+
   const handleSubmitTask = async () => {
     if (!taskId || !token) return;
     setSaving(true);
     try {
-      const res = await apiFetch(`/api/v1/client-lab/tasks/${taskId}/submit`, {
+      const res = await apiFetch(`/api/v1/client-lab/me/tasks/${taskId}/submit`, {
         method: "POST",
         token,
         body: { pr_link: submitForm.pr_link || undefined, notes: submitForm.notes || undefined },
@@ -132,47 +227,20 @@ export default function StudentClientLab() {
     }
   };
 
-  const progressPercent = me?.overall_progress_percent ?? 0;
-  const eligible = !!me?.eligible_client_lab;
-  const hasAssignments = projects.length > 0 || tasks.length > 0;
-
   if (loading) {
     return <GenericPageSkeleton />;
   }
 
-  // Not eligible and no assignments: full locked screen
-  if (!eligible && !hasAssignments) {
+  // Not eligible and no assignments: full locked screen with checklist (from /api/v1/me)
+  if (showLockedView) {
     return (
       <div className={`min-h-screen p-4 md:p-8 lg:rounded-tl-lg overflow-hidden transition-colors duration-200 ${isDark ? "bg-slate-900" : "bg-gradient-to-br from-slate-50 via-white to-slate-50"}`}>
-        <div className="max-w-xl mx-auto text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className={`backdrop-blur rounded-2xl border-2 shadow-xl p-8 ${isDark ? "bg-slate-800/90 border-slate-700" : "bg-white/90 border-slate-200"}`}
-          >
-            <div className={`w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 ${isDark ? "bg-slate-700" : "bg-slate-100"}`}>
-              <FiLock className="w-10 h-10 text-slate-500" />
-            </div>
-            <h1 className={`text-2xl font-bold mb-2 ${isDark ? "text-white" : "text-slate-900"}`}>Real Client Lab is locked for you</h1>
-            <p className="text-slate-600 mb-6">
-              Buy the All Pack (all three courses: Vibe Coding, Prompt to Profit, AI Automations) to unlock Real Client Lab. Complete 75% progress and finish all courses to submit work.
-            </p>
-            <div className="mb-4">
-              <div className="flex justify-between text-sm text-slate-600 mb-1">
-                <span>Your progress</span>
-                <span className="font-semibold">{progressPercent}%</span>
-              </div>
-              <div className="w-full bg-slate-200 rounded-full h-3">
-                <div
-                  className="bg-indigo-500 h-3 rounded-full transition-all"
-                  style={{ width: `${Math.min(progressPercent, 100)}%` }}
-                />
-              </div>
-            </div>
-            <p className="text-sm text-slate-500">
-              Want access? Get the All Pack to unlock Real Client Lab + AI Automations.
-            </p>
-          </motion.div>
+        <div className="max-w-xl mx-auto">
+          <LockedClientLabContent
+            isDark={isDark}
+            checklist={checklist}
+            onRetry={fetchMe}
+          />
         </div>
       </div>
     );
@@ -186,7 +254,7 @@ export default function StudentClientLab() {
         <div className="max-w-2xl mx-auto">
           {!eligible && (
             <div className={`mb-4 p-4 border rounded-2xl text-sm ${isDark ? "bg-amber-500/10 border-amber-500/30 text-amber-300" : "bg-amber-50 border-amber-200 text-amber-800"}`}>
-              Complete 75% overall progress and all required courses to submit work. You can view your assigned tasks below.
+              Complete all required courses (purchased and 100% each) to submit work. You can view your assigned tasks below.
             </div>
           )}
           <button
@@ -224,7 +292,7 @@ export default function StudentClientLab() {
             <div className="border-t border-slate-100 pt-4">
               <h3 className="font-medium text-slate-900 mb-2">Submit work</h3>
               {!eligible ? (
-                <p className="text-sm text-slate-500 py-2">Complete 75% progress and all courses to unlock submissions.</p>
+                <p className="text-sm text-slate-500 py-2">Complete all required courses (purchased and 100% each) to unlock submissions.</p>
               ) : (
                 <div className="space-y-3">
                   <input
@@ -266,14 +334,14 @@ export default function StudentClientLab() {
         <div className="max-w-2xl mx-auto">
           {!eligible && (
             <div className={`mb-4 p-4 border rounded-2xl text-sm ${isDark ? "bg-amber-500/10 border-amber-500/30 text-amber-300" : "bg-amber-50 border-amber-200 text-amber-800"}`}>
-              Complete 75% progress and all courses to submit work.
+              Complete all required courses (purchased and 100% each) to submit work.
             </div>
           )}
           <button
             onClick={() => navigate("/lms/student/client-lab")}
             className={`mb-6 flex items-center gap-2 rounded-lg px-2 py-1 ${isDark ? "text-slate-400 hover:text-white hover:bg-slate-800" : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"}`}
           >
-            <FiArrowLeft className="w-5 h-5" /> Back to Client Lab
+            <FiArrowLeft className="w-5 h-5" /> Back to Real Client Lab
           </button>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -319,7 +387,7 @@ export default function StudentClientLab() {
         {!eligible && hasAssignments && (
           <div className={`mb-6 p-4 border rounded-2xl text-sm flex items-start gap-2 ${isDark ? "bg-amber-500/10 border-amber-500/30 text-amber-300" : "bg-amber-50 border-amber-200 text-amber-800"}`}>
             <FiLock className="w-4 h-4 shrink-0 mt-0.5" />
-            <span>Complete 75% overall progress and all required courses to submit work. Your assigned items are shown below.</span>
+            <span>Complete all required courses (purchased and 100% each) to submit work. Your assigned items are shown below.</span>
           </div>
         )}
         <motion.div
@@ -327,7 +395,7 @@ export default function StudentClientLab() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">Client Lab</h1>
+          <h1 className="text-3xl font-bold text-slate-900 mb-2">Real Client Lab</h1>
           <p className="text-slate-600">Your assigned real-world projects and tasks</p>
         </motion.div>
 
@@ -340,7 +408,7 @@ export default function StudentClientLab() {
             <FiFolder className="w-16 h-16 text-slate-300 mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-slate-700 mb-2">No assignments yet</h3>
             <p className="text-slate-500 max-w-md mx-auto">
-              Projects and tasks are assigned by your admin from the Real-World Client Lab. Once you have assignments, they will appear here.
+              Projects and tasks are assigned by your admin from the Real Client Lab. Once you have assignments, they will appear here.
             </p>
           </motion.div>
         ) : (

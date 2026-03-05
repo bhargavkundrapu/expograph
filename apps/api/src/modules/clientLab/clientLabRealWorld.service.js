@@ -185,7 +185,7 @@ async function submitTask(req, taskId, prLink, notes) {
   const tenantId = req.tenant.id;
   const userId = req.auth.userId;
   const eligibility = await require("./clientLabEligibility.repo").getEligibility({ userId });
-  if (!eligibility.eligible_client_lab) throw new HttpError(403, "You are not eligible for Client Lab");
+  if (!eligibility.eligible_client_lab) throw new HttpError(403, "You are not eligible for Real Client Lab");
   const assignment = await repo.getAssignmentByTask({ tenantId, taskId });
   if (!assignment || assignment.student_id !== userId) throw new HttpError(403, "You are not assigned to this task");
   const task = await repo.getTaskById({ tenantId, taskId });

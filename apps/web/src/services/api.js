@@ -1,5 +1,5 @@
 import { getOrCreateDeviceId } from "./device";
-import { getToken, clearSession } from "./session";
+import { getToken, getTenant, clearSession } from "./session";
 
 const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
 
@@ -32,12 +32,24 @@ export async function apiFetch(path, options = {}) {
   const deviceId = getOrCreateDeviceId();
   const url = buildUrl(path);
 
+  let tenantSlug = headers["X-Tenant-Slug"] ?? headers["x-tenant-slug"];
+  if (tenantSlug == null && typeof localStorage !== "undefined") {
+    try {
+      const t = getTenant();
+      tenantSlug = (t && t.slug) ? t.slug : "expograph";
+    } catch {
+      tenantSlug = "expograph";
+    }
+  }
+  if (tenantSlug == null) tenantSlug = "expograph";
+
   try {
     const res = await fetch(url, {
       method,
       headers: {
         "Content-Type": "application/json",
         "x-device-id": deviceId,
+        "X-Tenant-Slug": tenantSlug,
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
         ...headers,
       },

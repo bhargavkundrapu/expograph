@@ -11,10 +11,8 @@ import DashboardCustomizer from "../../../Components/student/DashboardCustomizer
 import PageTransition from "../../../Components/common/PageTransition";
 import DailyMotivation from "../../../Components/student/gamification/DailyMotivation";
 import DailyChallenge from "../../../Components/student/gamification/DailyChallenge";
-import { AchievementGrid, AchievementToast } from "../../../Components/student/gamification/AchievementBadges";
-import Leaderboard from "../../../Components/student/gamification/Leaderboard";
+import { AchievementToast } from "../../../Components/student/gamification/AchievementBadges";
 import ContinueBanner from "../../../Components/student/gamification/ContinueBanner";
-import { BookmarksList } from "../../../Components/student/gamification/NotesBookmark";
 import { ConfettiBurst, MilestoneCelebration } from "../../../Components/student/gamification/Confetti";
 import {
   FiPlay,
@@ -289,7 +287,7 @@ export default function StudentHome() {
   const [showConfetti, setShowConfetti] = useState(false);
 
   const mainWidgetIds = widgets.filter(w => w.visible).map(w => w.id);
-  const sideWidgetIds = sidebarWidgets.filter(w => w.visible).map(w => w.id);
+  const sideWidgetIds = sidebarWidgets.filter(w => w.visible && w.id !== "achievements" && w.id !== "leaderboard").map(w => w.id);
 
   useEffect(() => {
     if (!token) return;
@@ -369,8 +367,6 @@ export default function StudentHome() {
       case "events": return <EventsWidget key="events" isDark={isDark} events={events} navigate={navigate} />;
       case "dailyChallenge": return <DailyChallenge key="dailyChallenge" />;
       case "progress": return <ProgressWidget key="progress" isDark={isDark} progress={progress} schedule={schedule} accentColor={accent.value} gamification={gamification} />;
-      case "achievements": return <AchievementGrid key="achievements" maxShow={8} />;
-      case "leaderboard": return <Leaderboard key="leaderboard" />;
       default: return null;
     }
   };
@@ -421,14 +417,11 @@ export default function StudentHome() {
           <div className="lg:hidden space-y-4">
             {sideWidgetIds.map(id => renderSideWidget(id))}
           </div>
-
-          <BookmarksList />
         </div>
 
         {/* Right Sidebar — desktop only */}
         <div className="hidden lg:block w-full lg:w-72 xl:w-80 2xl:w-96 flex-shrink-0 space-y-4 stagger-children">
           {sideWidgetIds.map(id => renderSideWidget(id))}
-          <BookmarksList />
         </div>
       </div>
 

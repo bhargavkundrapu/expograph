@@ -292,11 +292,11 @@ export default function SuperAdminClientLab() {
             animate={{ opacity: 1, y: 0 }}
             className="text-3xl md:text-4xl font-bold text-slate-900 mb-8"
           >
-            Client Lab Management
+            Real Client Lab Management
           </motion.h1>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Real-World Client Lab (SuperAdmin-only) */}
+            {/* Real Client Lab (SuperAdmin-only) */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -309,7 +309,7 @@ export default function SuperAdminClientLab() {
                   <FiBriefcase className="w-8 h-8" />
                 </div>
               </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-2">Real-World Client Lab</h3>
+              <h3 className="text-xl font-bold text-slate-900 mb-2">Real Client Lab</h3>
               <p className="text-slate-600 text-sm">Manage projects, assign tasks to eligible students, review submissions</p>
             </motion.div>
 

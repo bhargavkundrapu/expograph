@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useAuth } from "../../../app/providers/AuthProvider";
 import { useTheme } from "../../../app/providers/ThemeProvider";
 import { apiFetch } from "../../../services/api";
@@ -123,6 +123,7 @@ function getToolsForCourse(courseSlug, course, modules) {
 
 export default function StudentCourseLanding() {
   const { courseSlug } = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { token, user } = useAuth();
   const { isDark } = useTheme();
   const navigate = useNavigate();
@@ -137,13 +138,30 @@ export default function StudentCourseLanding() {
     fetchCourseData();
   }, [token, courseSlug]);
 
+  // Redirect to lesson page when ?continue=1 (e.g. from Courses list "Continue Learning" button)
+  useEffect(() => {
+    if (loading || !isEnrolled || !course || !modules.length) return;
+    if (searchParams.get("continue") !== "1") return;
+    const continueLesson = modules.flatMap(m => m.lessons || []).find(l => !l.completed) || modules[0]?.lessons?.[0];
+    if (!continueLesson?.slug) return;
+    const mod = modules.find(m => m.lessons?.some(l => l.id === continueLesson.id || l.slug === continueLesson.slug));
+    if (mod?.slug) {
+      setSearchParams({}, { replace: true });
+      navigate(`/lms/student/courses/${courseSlug}/modules/${mod.slug}/lessons/${continueLesson.slug}`, { replace: true });
+    }
+  }, [loading, isEnrolled, course, modules, courseSlug, searchParams, setSearchParams, navigate]);
+
   const fetchCourseData = async () => {
     try {
       setLoading(true);
 
       const coursesListRes = await apiFetch("/api/v1/student/courses", { token }).catch(() => ({ data: [] }));
       const coursesList = coursesListRes?.data || [];
-      const courseFromList = coursesList.find(c => c.slug === courseSlug);
+      const slugAliases = { "ai-agents": "ai-automations", "vibe-coading": "vibe-coding" };
+      const apiSlug = slugAliases[courseSlug] || courseSlug;
+      const courseFromList = coursesList.find(
+        c => c.slug === courseSlug || c.slug === apiSlug || courseSlug.startsWith(c.slug) || c.slug.startsWith(courseSlug)
+      );
       const enrolled = courseFromList?.enrolled === true;
       setIsEnrolled(enrolled);
 
@@ -151,12 +169,10 @@ export default function StudentCourseLanding() {
       let mods = [];
 
       if (enrolled) {
-        const [courseRes, modulesRes] = await Promise.all([
-          apiFetch(`/api/v1/student/courses/${courseSlug}`, { token }).catch(() => null),
-          apiFetch(`/api/v1/student/courses/${courseSlug}/modules`, { token }).catch(() => ({ data: [] })),
-        ]);
+        const slugForApi = courseFromList?.slug || apiSlug;
+        const courseRes = await apiFetch(`/api/v1/student/courses/${slugForApi}`, { token }).catch(() => null);
         cData = courseRes?.data?.course || courseRes?.data || null;
-        mods = cData?.modules || modulesRes?.data || [];
+        mods = cData?.modules || [];
       }
 
       if (!cData && courseFromList) {
