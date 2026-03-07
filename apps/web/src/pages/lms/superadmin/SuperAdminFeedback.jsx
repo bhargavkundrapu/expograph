@@ -186,7 +186,7 @@ export default function SuperAdminFeedback() {
                 <div className="text-slate-500 text-sm flex items-center gap-1 flex-shrink-0">
                   <FiCalendar className="w-3.5 h-3.5" />
                   {row.created_at
-                    ? new Date(row.created_at).toLocaleDateString(undefined, {
+                    ? new Date(row.created_at).toLocaleString(undefined, {
                         dateStyle: "medium",
                         timeStyle: "short",
                       })
