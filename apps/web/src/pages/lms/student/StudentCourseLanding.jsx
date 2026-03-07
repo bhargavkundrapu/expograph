@@ -211,6 +211,7 @@ export default function StudentCourseLanding() {
       setCourse(cData);
       setModules(mods);
     } catch (e) {
+      if (e?.name === "AbortError" || (e?.message && /abort|signal\s+is\s+aborted/i.test(String(e.message)))) return;
       console.error("Failed to fetch course data:", e);
     } finally {
       setLoading(false);

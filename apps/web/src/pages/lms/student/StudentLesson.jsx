@@ -49,6 +49,13 @@ import ShareProgressModal from "../../../Components/student/gamification/SharePr
 import KeyboardShortcutsModal from "../../../Components/student/KeyboardShortcutsModal";
 import { useKeyboardShortcuts } from "../../../hooks/useKeyboardShortcuts";
 
+function isAbortError(err) {
+  if (!err) return false;
+  if (err?.name === "AbortError") return true;
+  const msg = err?.message && String(err.message);
+  return msg && /abort|signal\s+is\s+aborted/i.test(msg);
+}
+
 const preloadProfile = () => import("./StudentProfile");
 const preloadHome = () => import("./StudentHome");
 const preloadCourses = () => import("./StudentCourses");
@@ -247,7 +254,7 @@ export default function StudentLesson() {
         courseDataLoadedRef.current = true;
       }
     } catch (error) {
-      if (error?.name === "AbortError" || (error?.message && /abort/i.test(String(error.message)))) return;
+      if (isAbortError(error)) return;
       if (error instanceof ApiError && error.status === 403) {
         setAccessDenied(true);
         setLoading(false);
@@ -300,7 +307,7 @@ export default function StudentLesson() {
         setVideoReady(false);
       }
     } catch (error) {
-      if (error?.name === "AbortError" || (error?.message && /abort/i.test(String(error.message)))) return;
+      if (isAbortError(error)) return;
       if (error instanceof ApiError && error.status === 403) {
         setAccessDenied(true);
       } else {
