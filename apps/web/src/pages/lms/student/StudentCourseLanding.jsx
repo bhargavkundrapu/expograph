@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useNavigate, useParams, useSearchParams, useLocation } from "react-router-dom";
-import { isBonusCourseSlug as isBonusSlug, getStudentCourseBasePath, getStudentLessonPath } from "../../../utils/studentCoursePaths";
+import { isAiAutomationsSlug, getStudentCourseBasePath, getStudentLessonPath } from "../../../utils/studentCoursePaths";
 import { useAuth } from "../../../app/providers/AuthProvider";
 import { useTheme } from "../../../app/providers/ThemeProvider";
 import { apiFetch } from "../../../services/api";
@@ -122,14 +122,8 @@ function getToolsForCourse(courseSlug, course, modules) {
   return ["Problem Solving", "Practical Application", "Industry Knowledge", "Portfolio Projects"];
 }
 
-const BONUS_COURSE_SLUG = "ai-automations";
-
-// Canonical slug only — we use AI Automations, not "AI Agents"
+const AI_AUTOMATIONS_SLUG = "ai-automations";
 const DEPRECATED_SLUG_REDIRECT = { "ai-agents": "ai-automations", "ai_agents": "ai-automations" };
-
-function isBonusCourseSlug(slug) {
-  return isBonusSlug(slug);
-}
 
 export default function StudentCourseLanding() {
   const { courseSlug } = useParams();
@@ -146,15 +140,20 @@ export default function StudentCourseLanding() {
   const [showBuyModal, setShowBuyModal] = useState(false);
   const [isEnrolled, setIsEnrolled] = useState(false);
 
-  // Redirect: bonus course lives under bonus-courses; deprecated ai-agents → ai-automations
+  // Redirect: old bonus-courses/ai-automations → courses/ai-automations; deprecated ai-agents → courses/ai-automations
   useEffect(() => {
     const normalized = (courseSlug || "").toLowerCase().replace(/_/g, "-");
-    const toBonusSlug = DEPRECATED_SLUG_REDIRECT[normalized] || (isBonusCourseSlug(courseSlug) ? BONUS_COURSE_SLUG : null);
-    if (toBonusSlug && !location.pathname.includes("bonus-courses")) {
-      navigate(`/lms/student/bonus-courses/${toBonusSlug}${location.search ? location.search : ""}`, { replace: true });
+    const isAiAutomations = normalized === "ai-automations" || normalized.includes("ai-automation");
+    if (location.pathname.includes("bonus-courses") && isAiAutomations) {
+      navigate(`/lms/student/courses/${AI_AUTOMATIONS_SLUG}${location.search ? location.search : ""}`, { replace: true });
       return;
     }
-  }, [courseSlug, navigate, location.pathname]);
+    const toSlug = DEPRECATED_SLUG_REDIRECT[normalized] || DEPRECATED_SLUG_REDIRECT[courseSlug];
+    if (toSlug) {
+      navigate(`/lms/student/courses/${toSlug}${location.search ? location.search : ""}`, { replace: true });
+      return;
+    }
+  }, [courseSlug, navigate, location.pathname, location.search]);
 
   useEffect(() => {
     if (!token || !courseSlug) return;
@@ -187,7 +186,8 @@ export default function StudentCourseLanding() {
       const courseFromList = coursesList.find(
         (c) => normSlug(c.slug) === courseSlugNorm || c.slug === courseSlug || normSlug(c.slug).startsWith(courseSlugNorm) || courseSlugNorm.startsWith(normSlug(c.slug))
       );
-      const enrolled = courseFromList?.enrolled === true;
+      // AI Automations is always accessible — treat as enrolled
+      const enrolled = courseFromList?.enrolled === true || isAiAutomationsSlug(courseSlug);
       setIsEnrolled(enrolled);
 
       let cData = null;

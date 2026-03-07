@@ -308,7 +308,7 @@ export const router = createBrowserRouter([
           { path: "courses/:courseSlug/modules/:moduleSlug/lessons/:lessonSlug", element: <L><StudentLesson /></L> },
           { path: "courses/:courseSlug/modules/:moduleSlug/lessons/:lessonSlug/complete", element: <L><StudentLesson /></L> },
           
-          // Bonus Courses (AI Automations lives here)
+          // Bonus Courses (empty for now)
           { path: "bonus-courses", element: <L><StudentCourses /></L> },
           { path: "bonus-courses/list", element: <L><StudentCourses /></L> },
           { path: "bonus-courses/:courseSlug", element: <L><StudentCourseLanding /></L> },

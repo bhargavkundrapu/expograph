@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-import { isBonusCourseSlug, getStudentLessonPath, getStudentCourseBasePath } from "../../../utils/studentCoursePaths";
+import { getStudentLessonPath, getStudentCourseBasePath } from "../../../utils/studentCoursePaths";
 import { useAuth } from "../../../app/providers/AuthProvider";
 import { useTheme } from "../../../app/providers/ThemeProvider";
 import { apiFetch, ApiError } from "../../../services/api";
@@ -111,16 +111,17 @@ export default function StudentLesson() {
   const isBonusPath = location.pathname.includes("bonus-courses");
   const basePath = isBonusPath ? "/lms/student/bonus-courses" : "/lms/student/courses";
 
-  // Redirect: bonus course (AI Automations) must live under bonus-courses path
-  const shouldRedirectToBonus = useMemo(() => {
+  // Redirect: old bonus-courses/ai-automations URLs → courses/ai-automations
+  const shouldRedirectToCourses = useMemo(() => {
+    if (!location.pathname.includes("bonus-courses")) return false;
     const n = (courseSlug || "").toLowerCase().replace(/_/g, "-");
-    return (n === "ai-agents" || n === "ai_agents" || isBonusCourseSlug(courseSlug)) && !location.pathname.includes("bonus-courses");
+    return n === "ai-automations" || n.includes("ai-automation") || n === "ai-agents" || n === "ai_agents";
   }, [courseSlug, location.pathname]);
   useEffect(() => {
-    if (!shouldRedirectToBonus) return;
-    const canonicalSlug = (courseSlug || "").toLowerCase().replace(/_/g, "-") === "ai-agents" ? "ai-automations" : (courseSlug || "ai-automations");
+    if (!shouldRedirectToCourses) return;
+    const canonicalSlug = (courseSlug || "").toLowerCase().replace(/_/g, "-") === "ai-agents" || (courseSlug || "").toLowerCase().replace(/_/g, "-") === "ai_agents" ? "ai-automations" : (courseSlug || "ai-automations");
     navigate(getStudentLessonPath(canonicalSlug, moduleSlug, lessonSlug), { replace: true });
-  }, [shouldRedirectToBonus, courseSlug, moduleSlug, lessonSlug, navigate]);
+  }, [shouldRedirectToCourses, courseSlug, moduleSlug, lessonSlug, navigate]);
 
   // Reset success image index, learn step, and captions when lesson changes
   useEffect(() => {
@@ -605,23 +606,23 @@ export default function StudentLesson() {
   }
 
   if (accessDenied) {
-    const isBonusCourse = (courseSlug || "").toLowerCase().replace(/_/g, "-").includes("ai-automation");
+    const isAiAutomations = (courseSlug || "").toLowerCase().replace(/_/g, "-").includes("ai-automation");
     return (
       <div className={`min-h-screen flex items-center justify-center p-6 ${isDark ? "bg-slate-900" : "bg-slate-100"}`}>
         <div className="max-w-md w-full rounded-2xl border border-amber-200 dark:border-amber-500/30 bg-amber-50 dark:bg-slate-800 p-8 text-center shadow-lg">
           <FiLock className="w-16 h-16 text-amber-500 mx-auto mb-4" />
           <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Access to this course is locked</h2>
           <p className="text-sm text-slate-600 dark:text-slate-400 mb-6">
-            {isBonusCourse
-              ? "AI Automations is free for everyone. If you’re seeing this lock screen, please refresh — or open it from Bonus Courses."
+            {isAiAutomations
+              ? "AI Automations is free for everyone. If you’re seeing this lock screen, please refresh."
               : "You don't have access to this course. Purchase it to unlock."}
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <button
-              onClick={() => (isBonusCourse ? navigate("/lms/student/bonus-courses") : navigate("/courses"))}
+              onClick={() => navigate("/courses")}
               className="px-6 py-3 bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-xl transition-colors"
             >
-              {isBonusCourse ? "Open Bonus Courses" : "Browse Courses"}
+              Browse Courses
             </button>
             <button
               onClick={() => navigate(basePath)}

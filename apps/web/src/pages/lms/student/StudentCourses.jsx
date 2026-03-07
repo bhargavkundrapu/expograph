@@ -220,19 +220,8 @@ export default function StudentCourses() {
     );
   }
 
-  // Bonus courses page — AI Automations (free for everyone)
+  // Bonus courses page — Coming Soon (AI Automations lives in main Courses only)
   if (isBonusCoursesPage) {
-    const bonusFromApi = courses.filter((c) => isBonusCourse(c));
-    const aiAutomationsCourse = bonusFromApi[0] || null;
-    const aiData = COURSE_EXPLORE_DATA["ai-automations"];
-    const displayCourse = aiAutomationsCourse || {
-      id: "ai-automations",
-      slug: "ai-automations",
-      title: aiData?.title || "AI Automations",
-      description: aiData?.description || "Automate workflows with Make.com, n8n & AI — the skill companies pay for.",
-      enrolled: true,
-    };
-
     return (
       <PageTransition>
         <div className={`min-h-screen p-4 md:p-8 transition-colors duration-200 ${isDark ? "bg-slate-900" : "bg-slate-50"}`}>
@@ -243,37 +232,25 @@ export default function StudentCourses() {
                 Bonus Courses
               </h1>
               <p className={`text-sm ${isDark ? "text-slate-400" : "text-slate-600"}`}>
-                Free courses for everyone — start learning anytime.
+                Free extra courses — coming soon.
               </p>
             </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-              <div
-                key={displayCourse.id}
-                onClick={() => navigate(getStudentCourseLandingPath(displayCourse.slug))}
-                className={`rounded-xl border p-6 transition-all hover:shadow-lg cursor-pointer ${isDark ? "bg-slate-800 border-slate-700 hover:border-slate-600" : "bg-white border-slate-200 hover:border-slate-300"}`}
-              >
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="text-xs font-bold text-amber-500 uppercase">Bonus</span>
-                  <span className="text-xs font-bold text-emerald-600 uppercase">Free</span>
-                </div>
-                <h3 className={`text-xl font-bold mt-2 mb-2 ${isDark ? "text-white" : "text-slate-900"}`}>
-                  {displayCourse.title}
-                </h3>
-                <p className={`text-sm mb-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>
-                  {displayCourse.description}
-                </p>
-                <p className={`text-sm mb-4 ${isDark ? "text-slate-500" : "text-slate-500"}`}>
-                  Open and start learning — no purchase required.
-                </p>
-                <button
-                  onClick={(e) => { e.stopPropagation(); navigate(getStudentCourseLandingPath(displayCourse.slug)); }}
-                  className="w-full py-2.5 px-4 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-xl flex items-center justify-center gap-2"
-                >
-                  <FiBookOpen className="w-4 h-4" />
-                  Open Course
-                </button>
+            <div className={`rounded-xl border p-12 text-center ${isDark ? "bg-slate-800 border-slate-700" : "bg-white border-slate-200"}`}>
+              <div className={`inline-flex items-center justify-center w-20 h-20 rounded-2xl mb-6 ${isDark ? "bg-amber-500/10 text-amber-400" : "bg-amber-100 text-amber-600"}`}>
+                <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
               </div>
+              <h3 className={`text-2xl font-bold mb-2 ${isDark ? "text-white" : "text-slate-900"}`}>Coming Soon</h3>
+              <p className={`text-sm max-w-md mx-auto ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+                We're preparing bonus courses for you. In the meantime, explore your main courses.
+              </p>
+              <button
+                onClick={() => navigate("/lms/student/courses")}
+                className="mt-8 px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-xl"
+              >
+                Go to My Courses
+              </button>
             </div>
           </div>
         </div>
@@ -381,7 +358,8 @@ export default function StudentCourses() {
               const isCompleted = progress === 100;
               const topicsCount = course.modules_count || course.topics_count || course.lessons_count || 0;
               const technologies = course.technologies || course.tags || [];
-              const locked = !course.enrolled;
+              // AI Automations (bonus) is always accessible — never show as locked
+              const locked = !course.enrolled && !isBonusCourse(course);
               const priceRupees = course.price_in_paise ? Math.round(course.price_in_paise / 100) : 0;
               const canBuy = priceRupees >= 1;
 
