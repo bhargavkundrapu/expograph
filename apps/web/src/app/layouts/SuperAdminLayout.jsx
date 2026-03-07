@@ -21,7 +21,6 @@ import {
   FiCheckSquare,
   FiHelpCircle,
   FiUser,
-  FiLock,
 } from "react-icons/fi";
 
 export default function SuperAdminLayout() {
@@ -70,7 +69,6 @@ export default function SuperAdminLayout() {
     { path: "/lms/superadmin/students", label: "Students", icon: FiUsers },
     { path: "/lms/superadmin/courses", label: "Courses", icon: FiBook },
     { path: "/lms/superadmin/course-packs", label: "Course Packs", icon: FiPackage },
-    { path: "/lms/superadmin/bonus-course", label: "Bonus Course Unlock", icon: FiLock },
     { path: "/lms/superadmin/mentors", label: "Mentors", icon: FiUserCheck },
     { path: "/lms/superadmin/workshops", label: "Events", icon: FiCalendar },
     { path: "/lms/superadmin/certificates", label: "Certificates", icon: FiAward },

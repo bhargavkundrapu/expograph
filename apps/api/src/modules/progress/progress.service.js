@@ -6,7 +6,7 @@ const studentRepo = require("../student/student.repo");
 /**
  * Premium rules:
  * 1) Lesson must exist in tenant AND published (student progress only).
- * 2) User must have course access (enrollment or bonus rule for AI Automations).
+ * 2) User must have course access (enrollment; AI Automations is free for all).
  * 3) watchSecondsDelta must be 0..60 (prevent cheating/spam).
  * 4) lastPositionSeconds must be 0..(10 hours) safe cap.
  */

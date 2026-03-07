@@ -232,14 +232,8 @@ export default function StudentCourseLanding() {
 
   const continueLesson = modules.flatMap(m => m.lessons || []).find(l => !l.completed) || modules[0]?.lessons?.[0];
 
-  const isBonusLocked = isLocked && isBonusCourseSlug(courseSlug);
-
   const goToLesson = (mod, lesson) => {
     if (isLocked) {
-      if (isBonusLocked) {
-        navigate("/courses");
-        return;
-      }
       setShowBuyModal(true);
       return;
     }
@@ -263,20 +257,20 @@ export default function StudentCourseLanding() {
 
           <div className="relative px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
             <button
-              onClick={() => navigate(isBonusLocked ? "/lms/student/bonus-courses" : "/lms/student/courses")}
+              onClick={() => navigate(isBonusPath ? "/lms/student/bonus-courses" : "/lms/student/courses")}
               className={`flex items-center gap-1.5 text-sm font-medium mb-6 transition-colors ${isDark ? "text-slate-400 hover:text-white" : "text-slate-500 hover:text-slate-900"}`}
             >
-              <FiArrowLeft className="w-4 h-4" /> {isBonusLocked ? "Back to Bonus Courses" : "Back to Courses"}
+              <FiArrowLeft className="w-4 h-4" /> {isBonusPath ? "Back to Bonus Courses" : "Back to Courses"}
             </button>
 
             <div className="max-w-5xl">
               <div className="flex flex-wrap items-center gap-2 mb-3">
                 <span className={`px-3 py-1 rounded-full text-[10px] uppercase tracking-wider font-bold ${isDark ? "bg-indigo-500/20 text-indigo-300" : "bg-indigo-100 text-indigo-700"}`}>
-                  {isBonusLocked ? "Bonus Course" : "Course"}
+                  {isBonusPath ? "Bonus Course" : "Course"}
                 </span>
                 {isLocked && (
                   <span className={`px-3 py-1 rounded-full text-[10px] font-bold flex items-center gap-1 ${isDark ? "bg-amber-500/20 text-amber-300" : "bg-amber-100 text-amber-700"}`}>
-                    <FiLock className="w-3 h-3" /> {isBonusLocked ? "Locked" : "Preview"}
+                    <FiLock className="w-3 h-3" /> Preview
                   </span>
                 )}
                 {!isLocked && progressPct > 0 && (
@@ -313,34 +307,13 @@ export default function StudentCourseLanding() {
               </div>
 
               {isLocked ? (
-                isBonusLocked ? (
-                  <div className="space-y-3">
-                    <p className={`text-sm max-w-xl ${isDark ? "text-slate-400" : "text-slate-600"}`}>
-                      This bonus course unlocks when you buy the <strong>All Pack</strong> or all three courses: Vibe Coding, Prompt Engineering, and Prompt to Profit. It is not sold separately.
-                    </p>
-                    <button
-                      onClick={() => navigate("/courses")}
-                      className="px-8 py-4 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-2xl transition-all text-base shadow-lg hover:shadow-xl flex items-center gap-2.5"
-                    >
-                      <FiLock className="w-5 h-5" />
-                      Get All Pack or All 3 Courses to Unlock
-                    </button>
-                    <button
-                      onClick={() => navigate("/lms/student/bonus-courses")}
-                      className="block text-sm font-medium text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
-                    >
-                      ← Back to Bonus Courses
-                    </button>
-                  </div>
-                ) : (
-                  <button
-                    onClick={() => setShowBuyModal(true)}
-                    className="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl transition-all text-base shadow-lg hover:shadow-xl flex items-center gap-2.5"
-                  >
-                    <FiLock className="w-5 h-5" />
-                    Enroll Now {priceRupees > 0 && `— ₹${priceRupees}`}
-                  </button>
-                )
+                <button
+                  onClick={() => setShowBuyModal(true)}
+                  className="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl transition-all text-base shadow-lg hover:shadow-xl flex items-center gap-2.5"
+                >
+                  <FiLock className="w-5 h-5" />
+                  Enroll Now {priceRupees > 0 && `— ₹${priceRupees}`}
+                </button>
               ) : (
                 <button
                   onClick={() => {
@@ -579,32 +552,17 @@ export default function StudentCourseLanding() {
             </h3>
             <p className={`text-sm mb-6 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
               {isLocked
-                ? (isBonusLocked ? "Unlock with the All Pack or all three main courses." : "Get full access to all lessons, projects, and earn your certificate.")
+                ? "Get full access to all lessons, projects, and earn your certificate."
                 : "Every lesson brings you closer to mastery. Start learning now."}
             </p>
             {isLocked ? (
-              isBonusLocked ? (
-                <div className="flex flex-col items-center gap-3">
-                  <button
-                    onClick={() => navigate("/courses")}
-                    className="px-8 py-3.5 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-2xl transition-all shadow-lg inline-flex items-center gap-2"
-                  >
-                    <FiLock className="w-5 h-5" />
-                    Get All Pack or All 3 Courses to Unlock
-                  </button>
-                  <button onClick={() => navigate("/lms/student/bonus-courses")} className="text-sm font-medium text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200">
-                    ← Back to Bonus Courses
-                  </button>
-                </div>
-              ) : (
-                <button
-                  onClick={() => setShowBuyModal(true)}
-                  className="px-8 py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl transition-all shadow-lg inline-flex items-center gap-2"
-                >
-                  <FiLock className="w-5 h-5" />
-                  Enroll Now {priceRupees > 0 && `— ₹${priceRupees}`}
-                </button>
-              )
+              <button
+                onClick={() => setShowBuyModal(true)}
+                className="px-8 py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl transition-all shadow-lg inline-flex items-center gap-2"
+              >
+                <FiLock className="w-5 h-5" />
+                Enroll Now {priceRupees > 0 && `— ₹${priceRupees}`}
+              </button>
             ) : (
               <button
                 onClick={() => {
@@ -624,9 +582,9 @@ export default function StudentCourseLanding() {
       </div>
 
       <BuyNowModal
-        open={showBuyModal && !isBonusLocked}
+        open={showBuyModal}
         onClose={() => setShowBuyModal(false)}
-        item={!isBonusLocked && course?.id ? { type: "course", id: course.id, title: courseTitle } : undefined}
+        item={course?.id ? { type: "course", id: course.id, title: courseTitle } : undefined}
         onSuccess={() => {
           setShowBuyModal(false);
           fetchCourseData();

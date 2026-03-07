@@ -32,7 +32,6 @@ const SuperAdminCertificates = lazy(() => import("../pages/lms/superadmin/SuperA
 const SuperAdminClientLab = lazy(() => import("../pages/lms/superadmin/SuperAdminClientLab"));
 const SuperAdminClientLabRealWorld = lazy(() => import("../pages/lms/superadmin/SuperAdminClientLabRealWorld"));
 const SuperAdminApprovals = lazy(() => import("../pages/lms/superadmin/SuperAdminApprovals"));
-const SuperAdminBonusCourse = lazy(() => import("../pages/lms/superadmin/SuperAdminBonusCourse"));
 const SuperAdminStudents = lazy(() => import("../pages/lms/superadmin/SuperAdminStudents"));
 const SuperAdminMentors = lazy(() => import("../pages/lms/superadmin/SuperAdminMentors"));
 const SuperAdminColleges = lazy(() => import("../pages/lms/superadmin/SuperAdminColleges"));
@@ -132,7 +131,6 @@ export const router = createBrowserRouter([
           { path: "courses", element: <L><SuperAdminCourses /></L> },
           { path: "courses/list", element: <L><SuperAdminCourses /></L> },
           { path: "course-packs", element: <L><SuperAdminCoursePacks /></L> },
-          { path: "bonus-course", element: <L><SuperAdminBonusCourse /></L> },
           { path: "courses/:courseId", element: <L><SuperAdminCourses /></L> },
           { path: "courses/:courseId/modules/:moduleId", element: <L><SuperAdminCourses /></L> },
           { path: "courses/:courseId/modules/:moduleId/lessons/create", element: <L><SuperAdminCreateLesson /></L> },

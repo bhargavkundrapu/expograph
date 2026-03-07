@@ -18,7 +18,6 @@ router.get("/events", ctrl.getEvents);
 
 // Courses
 router.get("/courses", ctrl.listCourses);
-router.get("/bonus-status", ctrl.getBonusStatus);
 router.get("/search", ctrl.search);
 router.get("/courses/:courseSlug", ctrl.getCourseTree);
 router.get("/courses/:courseSlug/modules/:moduleSlug/lessons/:lessonSlug", ctrl.getLesson);

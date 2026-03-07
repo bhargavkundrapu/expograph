@@ -3,6 +3,7 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../../app/providers/AuthProvider";
 import { homePathForRole } from "../../app/roles";
+import { Header } from "../../Components/ui/header-2";
 
 const RESEND_COOLDOWN_SEC = 60;
 
@@ -171,17 +172,19 @@ export default function LoginPage() {
   // ─── Render ───────────────────────────────────────────────────
   return (
     <div
-      className="min-h-screen relative overflow-hidden"
-      style={{ fontFamily: "var(--font-dm)", backgroundColor: "#000000" }}
+      className="min-h-screen relative w-full"
+      style={{ fontFamily: "var(--font-dm)", backgroundColor: "#000000", color: "var(--text-secondary)" }}
     >
-      {/* Ambient background gradients */}
-      <div className="fixed inset-0 -z-10">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-10%,rgba(124,58,237,0.18),transparent_50%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_80%_80%,rgba(168,85,247,0.1),transparent_60%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_40%_at_10%_60%,rgba(88,28,135,0.12),transparent_50%)]" />
-      </div>
+      <Header />
+      <div className="overflow-x-hidden">
+        {/* Ambient background gradients */}
+        <div className="fixed inset-0 -z-10">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-10%,rgba(124,58,237,0.18),transparent_50%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_80%_80%,rgba(168,85,247,0.1),transparent_60%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_40%_at_10%_60%,rgba(88,28,135,0.12),transparent_50%)]" />
+        </div>
 
-      <div className="min-h-screen flex flex-col lg:flex-row">
+        <div className="min-h-screen flex flex-col lg:flex-row pt-20 md:pt-24">
         {/* ═══════ LEFT PANEL — Social Proof (hidden on mobile, visible lg+) ═══════ */}
         <div className="hidden lg:flex lg:w-[45%] xl:w-[50%] flex-col justify-center px-10 xl:px-16 py-12">
           <motion.div
@@ -690,6 +693,7 @@ export default function LoginPage() {
               </div>
             </div>
           </motion.div>
+        </div>
         </div>
       </div>
     </div>

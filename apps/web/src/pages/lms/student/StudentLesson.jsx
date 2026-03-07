@@ -613,15 +613,15 @@ export default function StudentLesson() {
           <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Access to this course is locked</h2>
           <p className="text-sm text-slate-600 dark:text-slate-400 mb-6">
             {isBonusCourse
-              ? "AI Automations is a bonus course. Unlock it by buying the All Pack or all three courses: Vibe Coding, Prompt Engineering, and Prompt to Profit."
+              ? "AI Automations is free for everyone. If you’re seeing this lock screen, please refresh — or open it from Bonus Courses."
               : "You don't have access to this course. Purchase it to unlock."}
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <button
-              onClick={() => navigate("/courses")}
+              onClick={() => (isBonusCourse ? navigate("/lms/student/bonus-courses") : navigate("/courses"))}
               className="px-6 py-3 bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-xl transition-colors"
             >
-              {isBonusCourse ? "Get All Pack or All 3 Courses" : "Browse Courses"}
+              {isBonusCourse ? "Open Bonus Courses" : "Browse Courses"}
             </button>
             <button
               onClick={() => navigate(basePath)}

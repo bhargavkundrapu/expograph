@@ -15,6 +15,7 @@ export function Header() {
 	const location = useLocation();
 	const { token, role } = useAuth();
 	const isLoggedIn = !!(token && role);
+	const isLoginPage = location.pathname === '/login';
 	const portalPath = isLoggedIn ? homePathForRole(role) : '/login';
 	const portalLabel = isLoggedIn ? 'LMS Portal' : 'Login';
 
@@ -106,9 +107,11 @@ export function Header() {
 							</a>
 						)
 					))}
-					<Link to={portalPath}>
-						<Button>{portalLabel}</Button>
-					</Link>
+					{!isLoginPage && (
+						<Link to={portalPath}>
+							<Button>{portalLabel}</Button>
+						</Link>
+					)}
 				</div>
 				<Button size="icon" variant="outline" onClick={() => setOpen(!open)} className="md:hidden">
 					<MenuToggleIcon open={open} className="size-5" duration={300} />
@@ -167,11 +170,13 @@ export function Header() {
 							)
 						)}
 					</div>
-					<div className="flex flex-col gap-2">
-						<Link to={portalPath} onClick={() => setOpen(false)}>
-							<Button className="w-full">{portalLabel}</Button>
-						</Link>
-					</div>
+					{!isLoginPage && (
+						<div className="flex flex-col gap-2">
+							<Link to={portalPath} onClick={() => setOpen(false)}>
+								<Button className="w-full">{portalLabel}</Button>
+							</Link>
+						</div>
+					)}
 				</div>
 			</div>
 			</div>

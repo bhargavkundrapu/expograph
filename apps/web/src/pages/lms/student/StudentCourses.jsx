@@ -177,7 +177,6 @@ export default function StudentCourses() {
 
   const filteredCourses = courses
     .filter((course) => {
-      if (isBonusCourse(course)) return false; // AI Automations only in bonus courses, not in main list
       const matchesSearch =
         course.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         course.description?.toLowerCase().includes(searchQuery.toLowerCase());
@@ -221,18 +220,17 @@ export default function StudentCourses() {
     );
   }
 
-  // Bonus courses page — show AI Automations only (locked until All Pack purchased)
+  // Bonus courses page — AI Automations (free for everyone)
   if (isBonusCoursesPage) {
     const bonusFromApi = courses.filter((c) => isBonusCourse(c));
     const aiAutomationsCourse = bonusFromApi[0] || null;
     const aiData = COURSE_EXPLORE_DATA["ai-automations"];
-    const isUnlocked = aiAutomationsCourse?.enrolled ?? false;
     const displayCourse = aiAutomationsCourse || {
       id: "ai-automations",
       slug: "ai-automations",
       title: aiData?.title || "AI Automations",
       description: aiData?.description || "Automate workflows with Make.com, n8n & AI — the skill companies pay for.",
-      enrolled: false,
+      enrolled: true,
     };
 
     return (
@@ -245,27 +243,19 @@ export default function StudentCourses() {
                 Bonus Courses
               </h1>
               <p className={`text-sm ${isDark ? "text-slate-400" : "text-slate-600"}`}>
-                Unlock these courses free when you buy the All Pack (Vibe Coding + Prompt Engineering + Prompt to Profit).
+                Free courses for everyone — start learning anytime.
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
               <div
                 key={displayCourse.id}
-                onClick={() => isUnlocked ? navigate(getStudentCourseLandingPath(displayCourse.slug)) : null}
-                className={`rounded-xl border p-6 transition-all hover:shadow-lg ${
-                  isUnlocked ? "cursor-pointer" : "cursor-default"
-                } ${isDark ? "bg-slate-800 border-slate-700" : "bg-white border-slate-200"} ${
-                  !isUnlocked ? (isDark ? "opacity-90" : "opacity-95") : ""
-                }`}
+                onClick={() => navigate(getStudentCourseLandingPath(displayCourse.slug))}
+                className={`rounded-xl border p-6 transition-all hover:shadow-lg cursor-pointer ${isDark ? "bg-slate-800 border-slate-700 hover:border-slate-600" : "bg-white border-slate-200 hover:border-slate-300"}`}
               >
                 <div className="flex items-center gap-2 mb-3">
                   <span className="text-xs font-bold text-amber-500 uppercase">Bonus</span>
-                  {!isUnlocked && (
-                    <span className="text-xs font-bold text-slate-500 uppercase flex items-center gap-1">
-                      <FiLock className="w-3 h-3" /> Locked
-                    </span>
-                  )}
+                  <span className="text-xs font-bold text-emerald-600 uppercase">Free</span>
                 </div>
                 <h3 className={`text-xl font-bold mt-2 mb-2 ${isDark ? "text-white" : "text-slate-900"}`}>
                   {displayCourse.title}
@@ -274,30 +264,15 @@ export default function StudentCourses() {
                   {displayCourse.description}
                 </p>
                 <p className={`text-sm mb-4 ${isDark ? "text-slate-500" : "text-slate-500"}`}>
-                  {isUnlocked
-                    ? "You have access — click to open and continue learning."
-                    : "To unlock this bonus course, buy the All Pack or all three courses (Vibe Coding, Prompt Engineering, Prompt to Profit)."}
+                  Open and start learning — no purchase required.
                 </p>
-                <div className="flex flex-col gap-2">
-                  <button
-                    onClick={(e) => { e.stopPropagation(); navigate(getStudentCourseLandingPath("ai-automations")); }}
-                    className={`w-full py-2.5 px-4 font-semibold rounded-xl text-sm flex items-center justify-center gap-2 ${
-                      isDark ? "border border-slate-600 text-slate-300 hover:bg-slate-700" : "border border-slate-300 text-slate-700 hover:bg-slate-50"
-                    }`}
-                  >
-                    <FiBookOpen className="w-4 h-4" />
-                    Explore Course
-                  </button>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      isUnlocked ? navigate(getStudentCourseLandingPath(displayCourse.slug)) : navigate("/courses");
-                    }}
-                    className="w-full py-2.5 px-4 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-xl"
-                  >
-                    {isUnlocked ? "Open Course" : "Get All Pack or All 3 Courses to Unlock"}
-                  </button>
-                </div>
+                <button
+                  onClick={(e) => { e.stopPropagation(); navigate(getStudentCourseLandingPath(displayCourse.slug)); }}
+                  className="w-full py-2.5 px-4 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-xl flex items-center justify-center gap-2"
+                >
+                  <FiBookOpen className="w-4 h-4" />
+                  Open Course
+                </button>
               </div>
             </div>
           </div>

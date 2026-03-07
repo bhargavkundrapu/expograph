@@ -62,14 +62,6 @@ const listCourses = asyncHandler(async (req, res) => {
   res.json({ ok: true, data: courses });
 });
 
-// Bonus unlock diagnostic (for debugging: why AI Automations might not show unlocked)
-const getBonusStatus = asyncHandler(async (req, res) => {
-  const { tenantId, userId } = req.auth;
-  const data = await repo.getBonusUnlockDiagnostic({ tenantId, userId });
-  res.setHeader("Cache-Control", "no-store, max-age=0");
-  res.json({ ok: true, data });
-});
-
 const search = asyncHandler(async (req, res) => {
   const { tenantId, userId } = req.auth;
   const q = (req.query.q || req.query.search || "").trim();
@@ -373,7 +365,6 @@ module.exports = {
   getProgress,
   getEvents,
   listCourses,
-  getBonusStatus,
   search,
   getCourseTree,
   getLesson,

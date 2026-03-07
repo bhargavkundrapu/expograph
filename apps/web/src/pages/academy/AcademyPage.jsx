@@ -232,11 +232,11 @@ export default function AcademyPage() {
               className="flex justify-center md:justify-start gap-3 sm:gap-4 md:gap-4 flex-wrap pointer-events-auto mt-14 sm:mt-16 md:mt-0 animate-[fadeInUp_0.6s_0.15s_ease-out_both]"
             >
               <button
-                onClick={() => navigate("/courses")}
+                onClick={() => navigate("/login")}
                 className="px-5 py-2.5 sm:px-6 sm:py-3 md:px-6 md:py-3 text-white rounded-full text-sm sm:text-sm md:text-base font-semibold cursor-pointer transition-all duration-300 hover:brightness-110 hover:scale-105 hover:shadow-lg hover:shadow-violet-500/25"
                 style={{ fontFamily: "var(--font-dm)", background: "linear-gradient(135deg, #7c3aed, #6d28d9)" }}
               >
-                Start Vibing
+                Login
               </button>
               <button
                 onClick={() => document.getElementById("learn")?.scrollIntoView({ behavior: "smooth" })}

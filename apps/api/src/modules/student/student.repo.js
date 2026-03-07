@@ -1,26 +1,19 @@
 // apps/api/src/modules/student/student.repo.js
 const { query } = require("../../db/query");
-const bonusCourseSettingsRepo = require("../bonusCourseSettings/bonusCourseSettings.repo");
 
 const MAIN_COURSE_SLUGS = ["vibe-coding", "prompt-engineering", "prompt-to-profit"];
-// Alternate slugs per logical main course so "all 3 courses" unlock works (DB may use different slugs)
+// Alternate slugs per logical main course (used for Client Lab "all 3 courses" eligibility)
 const MAIN_COURSE_SLUG_OPTIONS = [
   ["vibe-coding", "vibe-coading", "vibe_coding"],
   ["prompt-engineering", "prompt_engineering"],
   ["prompt-to-profit", "prompt_to_profit", "chatgpt-business", "chatgpt_business"],
 ];
 
-async function getBonusCourseConfig({ tenantId }) {
-  return bonusCourseSettingsRepo.getConfig({ tenantId });
-}
-
 const BONUS_COURSE_SLUG_VARIANTS = ["ai-automations", "ai_automations", "ai-automation", "ai_automation"];
 
+/** Resolve AI Automations (bonus) course id. Bonus course is free for everyone — no lock/unlock. */
 async function getBonusCourseId({ tenantId }) {
-  const config = await getBonusCourseConfig({ tenantId });
-  const primarySlug = (config.bonusCourseSlug || "ai-automations").trim().replace(/_/g, "-");
-  const slugsToTry = [primarySlug, ...BONUS_COURSE_SLUG_VARIANTS.filter((s) => s !== primarySlug)];
-  for (const slug of slugsToTry) {
+  for (const slug of BONUS_COURSE_SLUG_VARIANTS) {
     if (!slug) continue;
     const { rows } = await query(
       `SELECT id FROM courses WHERE tenant_id = $1 AND status = 'published'
@@ -42,7 +35,6 @@ async function getBonusCourseId({ tenantId }) {
 async function getSchedule({ tenantId, userId }) {
   try {
     const bonusCourseId = await getBonusCourseId({ tenantId });
-    const bonusConfig = await getBonusCourseConfig({ tenantId });
 
     const enrollResult = await query(
       `SELECT item_type, item_id FROM enrollments
@@ -67,10 +59,8 @@ async function getSchedule({ tenantId, userId }) {
       });
     }
 
-    if (bonusCourseId) {
-      const hasBonus = await hasBonusCourseAccess({ tenantId, userId, bonusCourseId, config: bonusConfig });
-      if (hasBonus) enrolledCourseIds.add(bonusCourseId);
-    }
+    // Bonus course: free for everyone
+    if (bonusCourseId) enrolledCourseIds.add(bonusCourseId);
 
     if (enrolledCourseIds.size === 0) return [];
 
@@ -196,7 +186,6 @@ async function getSchedule({ tenantId, userId }) {
 async function getCurrentCourse({ tenantId, userId }) {
   try {
     const bonusCourseId = await getBonusCourseId({ tenantId });
-    const bonusConfig = await getBonusCourseConfig({ tenantId });
 
     const enrollResult = await query(
       `SELECT item_type, item_id FROM enrollments
@@ -221,10 +210,8 @@ async function getCurrentCourse({ tenantId, userId }) {
       });
     }
 
-    if (bonusCourseId) {
-      const hasBonus = await hasBonusCourseAccess({ tenantId, userId, bonusCourseId, config: bonusConfig });
-      if (hasBonus) enrolledCourseIds.add(bonusCourseId);
-    }
+    // Bonus course: free for everyone
+    if (bonusCourseId) enrolledCourseIds.add(bonusCourseId);
 
     if (enrolledCourseIds.size === 0) return null;
 
@@ -374,8 +361,6 @@ function normId(id) {
 
 async function getEnrolledCourseIds({ tenantId, userId }) {
   const bonusCourseId = await getBonusCourseId({ tenantId });
-  const bonusConfig = await getBonusCourseConfig({ tenantId });
-  const bonusIdNorm = normId(bonusCourseId);
 
   const enrollResult = await query(
     `SELECT item_type, item_id FROM enrollments
@@ -386,7 +371,7 @@ async function getEnrolledCourseIds({ tenantId, userId }) {
   const enrolledCourseIds = new Set();
   const enrolledPackIds = new Set();
   enrollResult.rows.forEach((r) => {
-    if (r.item_type === "course" && !sameId(r.item_id, bonusCourseId)) enrolledCourseIds.add(normId(r.item_id));
+    if (r.item_type === "course") enrolledCourseIds.add(normId(r.item_id));
     if (r.item_type === "pack") enrolledPackIds.add(r.item_id);
   });
 
@@ -396,15 +381,10 @@ async function getEnrolledCourseIds({ tenantId, userId }) {
        WHERE pack_id = ANY($1::uuid[])`,
       [Array.from(enrolledPackIds)]
     ).catch(() => ({ rows: [] }));
-    packRes.rows.forEach((r) => {
-      if (!sameId(r.course_id, bonusCourseId)) enrolledCourseIds.add(normId(r.course_id));
-    });
+    packRes.rows.forEach((r) => enrolledCourseIds.add(normId(r.course_id)));
   }
 
-  if (bonusCourseId) {
-    const hasBonus = await hasBonusCourseAccess({ tenantId, userId, bonusCourseId, config: bonusConfig });
-    if (hasBonus) enrolledCourseIds.add(bonusIdNorm);
-  }
+  if (bonusCourseId) enrolledCourseIds.add(normId(bonusCourseId));
 
   return enrolledCourseIds;
 }
@@ -617,112 +597,13 @@ async function getMainCourseIds({ tenantId }) {
   return groups.map((g) => g[0]).filter(Boolean);
 }
 
-/** Bonus course access from SuperAdmin-configured rule (all_pack_only, all_three_main, all_pack_or_all_three, any_two_main, any_one_main, custom). */
-async function hasBonusCourseAccess({ tenantId, userId, bonusCourseId, config }) {
-  const rule = config?.rule || "all_pack_or_all_three";
-  const requiredSlugs = config?.requiredCourseSlugs || [];
-  const mainGroups = await getMainCourseIdGroups({ tenantId });
-  const mainIds = mainGroups.flat();
-
-  const bonusIdStr = bonusCourseId ? String(bonusCourseId).toLowerCase() : null;
-  const hasPackContainingBonus = async () => {
-    if (!bonusIdStr) return false;
-    const enrollResult = await query(
-      `SELECT item_id FROM enrollments WHERE user_id = $1 AND tenant_id = $2 AND active = true AND item_type = 'pack'`,
-      [userId, tenantId]
-    ).catch(() => ({ rows: [] }));
-    for (const row of enrollResult.rows) {
-      const packCourseIds = await query(
-        `SELECT course_id FROM course_pack_courses WHERE pack_id = $1`,
-        [row.item_id]
-      ).catch(() => ({ rows: [] }));
-      if (packCourseIds.rows.some((r) => sameId(r.course_id, bonusCourseId))) return true;
-    }
-    return false;
-  };
-
-  /** For each of the 3 groups, user must be enrolled in at least one course in that group. */
-  const hasAllThreeMain =
-    mainGroups.length >= 3 &&
-    (await Promise.all(
-      mainGroups.slice(0, 3).map(async (group) => {
-        if (group.length === 0) return false;
-        for (const cid of group) {
-          if (await hasEnrollmentForCourse({ tenantId, userId, courseId: cid })) return true;
-        }
-        return false;
-      })
-    )).every(Boolean);
-
-  const countMainEnrolled = async () => {
-    let n = 0;
-    for (const group of mainGroups.slice(0, 3)) {
-      for (const cid of group) {
-        if (await hasEnrollmentForCourse({ tenantId, userId, courseId: cid })) {
-          n++;
-          break;
-        }
-      }
-    }
-    return n;
-  };
-
-  const packHasBonusAndAllThree = async () => {
-    if (!bonusIdStr) return false;
-    const enrollResult = await query(
-      `SELECT item_id FROM enrollments WHERE user_id = $1 AND tenant_id = $2 AND active = true AND item_type = 'pack'`,
-      [userId, tenantId]
-    ).catch(() => ({ rows: [] }));
-    for (const row of enrollResult.rows) {
-      const packCourseIds = await query(
-        `SELECT course_id FROM course_pack_courses WHERE pack_id = $1`,
-        [row.item_id]
-      ).catch(() => ({ rows: [] }));
-      const inPack = new Set(packCourseIds.rows.map((r) => String(r.course_id).toLowerCase()));
-      const packHasBonus = inPack.has(bonusIdStr);
-      const packHasAllThree = mainGroups.length >= 3 && mainGroups.slice(0, 3).every((group) => group.some((cid) => inPack.has(String(cid).toLowerCase())));
-      if (packHasBonus && packHasAllThree) return true;
-    }
-    return false;
-  };
-
-  switch (rule) {
-    case "all_pack_only":
-      return hasPackContainingBonus();
-    case "all_three_main":
-      return hasAllThreeMain;
-    case "all_pack_or_all_three":
-      return hasAllThreeMain || (await packHasBonusAndAllThree());
-    case "any_two_main":
-      return (await countMainEnrolled()) >= 2;
-    case "any_one_main":
-      return (await countMainEnrolled()) >= 1;
-    case "custom": {
-      const customIds = await getCourseIdsBySlugs({ tenantId, slugs: requiredSlugs });
-      if (customIds.length === 0) return false;
-      const allOwned = (await Promise.all(
-        customIds.map((cid) => hasEnrollmentForCourse({ tenantId, userId, courseId: cid }))
-      )).every(Boolean);
-      return allOwned;
-    }
-    default:
-      return hasAllThreeMain || (await packHasBonusAndAllThree());
-  }
-}
-
 async function hasCourseAccess({ tenantId, userId, courseId }) {
   const bonusCourseId = await getBonusCourseId({ tenantId });
-  if (bonusCourseId && sameId(courseId, bonusCourseId)) {
-    const config = await getBonusCourseConfig({ tenantId });
-    return hasBonusCourseAccess({ tenantId, userId, bonusCourseId, config });
-  }
+  if (bonusCourseId && sameId(courseId, bonusCourseId)) return true;
   const slug = await getCourseSlugById({ tenantId, courseId });
   if (slug && bonusCourseId) {
-    const config = await getBonusCourseConfig({ tenantId });
-    const bonusSlug = (config.bonusCourseSlug || "ai-automations").replace(/_/g, "-");
-    if (slug.toLowerCase().includes(bonusSlug.toLowerCase())) {
-      return hasBonusCourseAccess({ tenantId, userId, bonusCourseId, config });
-    }
+    const s = (slug || "").toLowerCase().replace(/_/g, "-");
+    if (s.includes("ai-automation")) return true;
   }
   return hasEnrollmentForCourse({ tenantId, userId, courseId });
 }
@@ -1169,30 +1050,12 @@ async function getModuleLessons({ tenantId, moduleId }) {
   return result.rows;
 }
 
-/** Diagnostic: returns bonus unlock state for debugging (why bonus may not show as unlocked). */
-async function getBonusUnlockDiagnostic({ tenantId, userId }) {
-  const config = await getBonusCourseConfig({ tenantId });
-  const bonusCourseId = await getBonusCourseId({ tenantId });
-  const mainGroups = await getMainCourseIdGroups({ tenantId });
-  const hasBonusAccess = bonusCourseId
-    ? await hasBonusCourseAccess({ tenantId, userId, bonusCourseId, config })
-    : false;
-  return {
-    bonusCourseId: bonusCourseId || null,
-    mainCourseIdGroups: mainGroups.map((g) => g.map((id) => String(id))),
-    mainCourseIds: mainGroups.map((g) => g[0]).filter(Boolean),
-    config: { rule: config.rule, bonusCourseSlug: config.bonusCourseSlug },
-    hasBonusAccess,
-  };
-}
-
 module.exports = {
   getSchedule,
   getCurrentCourse,
   getProgress,
   getEvents,
   listEnrolledCourses,
-  getBonusUnlockDiagnostic,
   hasCourseAccess,
   hasAllPackOrAllThreeCourses,
   enhanceCourseWithProgress,

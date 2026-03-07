@@ -158,7 +158,7 @@ export function PricingWithChart() {
           <div className="mb-4">
             <p className="text-[10px] font-semibold uppercase tracking-wider text-white/40 mb-2">You&apos;ll work with</p>
             <div className="flex flex-wrap gap-2">
-              {(COURSE_EXPLORE_DATA[orderSlug].tools || []).slice(0, 6).map((toolName, i) => {
+              {(COURSE_EXPLORE_DATA[orderSlug].tools || []).slice(0, orderSlug === "prompt-to-profit" ? 12 : 6).map((toolName, i) => {
                 const Icon = getToolIcon(toolName);
                 const iconColor = getToolIconColor(toolName);
                 return (
