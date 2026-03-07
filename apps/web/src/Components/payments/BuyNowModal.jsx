@@ -124,6 +124,7 @@ function SearchableCollegeSelect({ value, onChange, colleges, placeholder = "Sel
     onChange(opt);
     setQuery("");
     setIsOpen(false);
+    justSelectedRef.current = true;
     inputRef.current?.focus();
   };
 
@@ -138,6 +139,7 @@ function SearchableCollegeSelect({ value, onChange, colleges, placeholder = "Sel
     if (e.key === "Escape") {
       setIsOpen(false);
       setQuery("");
+      justSelectedRef.current = true;
       inputRef.current?.focus();
       return;
     }
