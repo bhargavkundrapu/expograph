@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Clock } from "lucide-react";
 import { COURSE_EXPLORE_DATA } from "../../data/courseExploreData";
 import { cn } from "../../lib/utils";
 
@@ -43,6 +43,7 @@ export function AcademyCourseCardsSection() {
             const isBonus = data.isBonus;
             const isPack = data.isPack;
             const exploreTo = `/courses/explore/${slug}`;
+            const hours = data.durationHours;
 
             return (
               <div
@@ -61,7 +62,13 @@ export function AcademyCourseCardsSection() {
                   >
                     <span className="text-xl">{CARD_ICONS[slug] || "📚"}</span>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex flex-wrap items-center gap-2 justify-end">
+                    {hours != null && (
+                      <span className="inline-flex items-center gap-1 text-[11px] font-medium text-white/70 bg-white/10 border border-white/10 rounded-md px-2 py-1">
+                        <Clock className="w-3 h-3 text-white/60" />
+                        {hours} hrs
+                      </span>
+                    )}
                     {isPack && (
                       <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-purple-500/25 text-purple-400 border border-purple-500/30">
                         Best Value

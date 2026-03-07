@@ -3,10 +3,21 @@
  * Used by Academy course cards + CourseExplorePage.
  * Each course has its own content; no mixing between courses.
  */
+
+/** Estimated completion time in hours (for display on cards). */
+export const COURSE_DURATION_HOURS = {
+  "vibe-coding": 12,
+  "prompt-engineering": 30,
+  "prompt-to-profit": 30,
+  "ai-automations": 30,
+};
+const TOTAL_PACK_HOURS = 12 + 30 + 30 + 30; // 102
+
 export const COURSE_EXPLORE_DATA = {
   "prompt-engineering": {
     slug: "prompt-engineering",
     title: "Prompt Engineering",
+    durationHours: 30,
     tagline: "Talk to AI the right way — get exactly what you need, every time.",
     description: "Simple lessons that teach you how to ask AI for better answers. No jargon. Just you, your words, and results that actually help — for study, work, and side projects.",
     gradient: "from-indigo-600 to-blue-600",
@@ -56,6 +67,7 @@ export const COURSE_EXPLORE_DATA = {
   "vibe-coding": {
     slug: "vibe-coding",
     title: "Vibe Coding",
+    durationHours: 12,
     tagline: "Build real apps by telling AI what you want — no coding degree needed.",
     description: "You describe your idea in simple words. AI writes the code. You check, tweak, and ship. We guide you step by step so you go from 'I can't code' to 'I built this' — with real projects you can show.",
     gradient: "from-violet-600 to-fuchsia-600",
@@ -106,6 +118,7 @@ export const COURSE_EXPLORE_DATA = {
   "prompt-to-profit": {
     slug: "prompt-to-profit",
     title: "Prompt to Profit",
+    durationHours: 30,
     tagline: "Use ChatGPT for business — copy, marketing, and clients, in simple steps.",
     description: "Turn ChatGPT into your writing and marketing partner. Learn to create emails, ads, funnels, and content that sound human and get results. Real-world prompts and strategies you can use the same day.",
     gradient: "from-orange-600 to-amber-600",
@@ -245,6 +258,7 @@ export const COURSE_EXPLORE_DATA = {
   "all-pack": {
     slug: "all-pack",
     title: "All Pack",
+    durationHours: TOTAL_PACK_HOURS,
     tagline: "All courses in one place — plus real projects and a resume that stands out.",
     description: "Get Vibe Coding, Prompt Engineering, Prompt to Profit, and AI Automations (bonus), plus Real Client Lab and Resume Builder. One price, everything you need to learn and show what you can do.",
     gradient: "from-purple-600 to-fuchsia-600",

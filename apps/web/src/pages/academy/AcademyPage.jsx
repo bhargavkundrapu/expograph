@@ -4,7 +4,7 @@ import { useAuth } from "../../app/providers/AuthProvider";
 import { Header } from "../../Components/ui/header-2";
 import HeroSection from "../../Components/ui/hero-section-9";
 import CallToAction1 from "../../Components/ui/call-to-action-1";
-import { FiUsers as Users, FiBriefcase as Briefcase, FiLink as LinkIcon, FiChevronDown } from "react-icons/fi";
+import { FiUsers as Users, FiBriefcase as Briefcase, FiChevronDown } from "react-icons/fi";
 import { AcademyFeaturesGridLite } from "../../Components/ui/academy-features-grid-lite";
 import { AcademyCourseCardsSection } from "../../Components/ui/AcademyCourseCardsSection";
 import { TubesBackground } from "../../Components/ui/neon-flow";
@@ -296,12 +296,6 @@ export default function AcademyPage() {
           stats={[
             { value: "2K", label: "Active users", icon: <Users className="h-5 w-5 text-muted-foreground" /> },
             { value: "100+", label: "Tutors", icon: <Briefcase className="h-5 w-5 text-muted-foreground" /> },
-            {
-              value: "Resources",
-              label: "",
-              icon: <LinkIcon className="h-5 w-5 text-muted-foreground" />,
-              onClick: () => document.getElementById("courses")?.scrollIntoView({ behavior: "smooth" }),
-            },
           ]}
           images={[
             "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=2071&auto=format&fit=crop",

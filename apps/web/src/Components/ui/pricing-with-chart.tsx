@@ -10,7 +10,7 @@ import { getToolIcon, getToolIconColor } from "../../lib/toolIcons";
 import { apiFetch } from "../../services/api";
 import { BuyNowModal } from "../payments/BuyNowModal";
 import { CoursesPageSkeleton } from "../common/SkeletonLoaders";
-import { COURSE_EXPLORE_DATA } from "../../data/courseExploreData";
+import { COURSE_EXPLORE_DATA, COURSE_DURATION_HOURS } from "../../data/courseExploreData";
 import { PriceCountdown, getOfferEndsAt24h } from "./price-countdown";
 
 function formatPrice(paise: number | null | undefined) {
@@ -144,6 +144,11 @@ export function PricingWithChart() {
           </span>
           {!isBonus && course?.price_in_paise != null && <span className="text-white/50 text-sm">one-time</span>}
         </div>
+        {COURSE_DURATION_HOURS[orderSlug] != null && (
+          <p className="text-xs text-white/55 mb-2">
+            <span className="text-white/70 font-medium">{COURSE_DURATION_HOURS[orderSlug]} hrs</span> to complete
+          </p>
+        )}
         <h3 className="text-base font-bold text-white leading-tight mb-2">{displayTitle}</h3>
         <p className="text-sm text-white/55 line-clamp-2 mb-4">{course?.description || "Self-paced learning"}</p>
         <ul className="text-white/60 space-y-2 text-sm mb-4 flex-1">
@@ -255,6 +260,9 @@ export function PricingWithChart() {
                 {formatPrice(allPack?.price_in_paise)}
               </span>
               <span className="text-white/50 text-sm">one-time</span>
+              {COURSE_EXPLORE_DATA["all-pack"]?.durationHours != null && (
+                <p className="text-xs text-purple-300/80 mt-1">{COURSE_EXPLORE_DATA["all-pack"].durationHours} hrs of learning</p>
+              )}
             </div>
             <ul className="text-white/70 grid gap-2 text-sm lg:w-[72%]">
               <li className="flex items-center gap-3">

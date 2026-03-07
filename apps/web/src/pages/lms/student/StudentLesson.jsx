@@ -44,6 +44,7 @@ import LessonSearchModal from "../../../Components/student/LessonSearchModal";
 import { useGamification } from "../../../app/providers/GamificationProvider";
 import { ConfettiBurst, XPFloat, LessonCompleteMessage } from "../../../Components/student/gamification/Confetti";
 import { BookmarkButton, LessonNotes } from "../../../Components/student/gamification/NotesBookmark";
+import LessonFeedbackCard from "../../../Components/student/LessonFeedbackCard";
 import ShareProgressModal from "../../../Components/student/gamification/ShareProgressModal";
 import KeyboardShortcutsModal from "../../../Components/student/KeyboardShortcutsModal";
 import { useKeyboardShortcuts } from "../../../hooks/useKeyboardShortcuts";
@@ -101,6 +102,7 @@ export default function StudentLesson() {
   const videoRef = useRef(null);
   const courseDataLoadedRef = useRef(false);
   const isManualNavigationRef = useRef(false);
+  const mainContentScrollRef = useRef(null);
 
   useEffect(() => {
     const t = setTimeout(() => { preloadProfile(); preloadHome(); preloadCourses(); }, 2000);
@@ -128,6 +130,13 @@ export default function StudentLesson() {
     setSelectedSuccessImageIndex(0);
     setSelectedLearnStepIndex(0);
     setCaptionsEnabled(true);
+  }, [lesson?.id]);
+
+  // Scroll main content to top when lesson changes (e.g. clicking a lesson in the sidebar)
+  useEffect(() => {
+    if (lesson?.id == null) return;
+    const el = mainContentScrollRef.current;
+    if (el) el.scrollTo({ top: 0, behavior: "auto" });
   }, [lesson?.id]);
 
   // Set default prompt tab when lesson loads
@@ -238,7 +247,7 @@ export default function StudentLesson() {
         courseDataLoadedRef.current = true;
       }
     } catch (error) {
-      if (error?.name === "AbortError") return;
+      if (error?.name === "AbortError" || (error?.message && /abort/i.test(String(error.message)))) return;
       if (error instanceof ApiError && error.status === 403) {
         setAccessDenied(true);
         setLoading(false);
@@ -291,7 +300,7 @@ export default function StudentLesson() {
         setVideoReady(false);
       }
     } catch (error) {
-      if (error?.name === "AbortError") return;
+      if (error?.name === "AbortError" || (error?.message && /abort/i.test(String(error.message)))) return;
       if (error instanceof ApiError && error.status === 403) {
         setAccessDenied(true);
       } else {
@@ -697,6 +706,9 @@ export default function StudentLesson() {
             <p className="text-xs text-slate-500 truncate">{moduleTitle || course?.title || "Course"}</p>
             <p className="text-sm font-semibold text-slate-900 truncate">{lesson?.title || "Lesson"}</p>
           </div>
+          <div className="flex-shrink-0">
+            <BookmarkButton lessonPath={lessonPath} lessonTitle={lessonDisplayTitle} />
+          </div>
           <button
             onClick={() => setSearchModalOpen(true)}
             className="p-2 rounded-lg text-slate-600 hover:bg-slate-100 active:bg-slate-200 transition-colors flex-shrink-0"
@@ -788,7 +800,7 @@ export default function StudentLesson() {
             )}
 
         {/* Main content - scrollable */}
-        <div className="flex-1 overflow-y-auto bg-white relative">
+        <div ref={mainContentScrollRef} className="flex-1 overflow-y-auto bg-white relative">
           {/* Fixed Navbar - Module Name > Lesson Name (hidden on mobile, shown on mobile top bar instead) */}
           {(moduleTitle || lesson?.title) && (
             <div className="hidden md:block sticky top-0 z-40 bg-white border-b border-slate-200 shadow-sm">
@@ -1418,6 +1430,16 @@ export default function StudentLesson() {
                 <div className="mt-4">
                   <LessonNotes lessonPath={lessonPath} />
                 </div>
+                {/* Lesson feedback — with love */}
+                {token && courseSlug && moduleSlug && lessonSlug && (
+                  <LessonFeedbackCard
+                    courseSlug={courseSlug}
+                    moduleSlug={moduleSlug}
+                    lessonSlug={lessonSlug}
+                    lessonTitle={lesson?.title}
+                    token={token}
+                  />
+                )}
               </div>
             </div>
             )}

@@ -1,6 +1,7 @@
 // apps/api/src/modules/student/student.routes.js
 const express = require("express");
 const ctrl = require("./student.controller");
+const feedbackCtrl = require("../feedback/feedback.controller.student");
 const { requireAuth } = require("../../middlewares/auth/requireAuth");
 const { requirePermission } = require("../../middlewares/rbac/requirePermission");
 
@@ -20,8 +21,11 @@ router.get("/events", ctrl.getEvents);
 router.get("/courses", ctrl.listCourses);
 router.get("/search", ctrl.search);
 router.get("/courses/:courseSlug", ctrl.getCourseTree);
-router.get("/courses/:courseSlug/modules/:moduleSlug/lessons/:lessonSlug", ctrl.getLesson);
+router.post("/courses/:courseSlug/feedback", requirePermission("student:write"), feedbackCtrl.submitCourseFeedback);
+// POST lesson routes (literal /complete and /feedback) before GET lesson so they match correctly
 router.post("/courses/:courseSlug/modules/:moduleSlug/lessons/:lessonSlug/complete", ctrl.completeLesson);
+router.post("/courses/:courseSlug/modules/:moduleSlug/lessons/:lessonSlug/feedback", requirePermission("student:write"), feedbackCtrl.submitLessonFeedback);
+router.get("/courses/:courseSlug/modules/:moduleSlug/lessons/:lessonSlug", ctrl.getLesson);
 
 // Discussions
 router.get("/discussions", ctrl.listDiscussions);

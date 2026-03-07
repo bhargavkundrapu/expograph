@@ -109,6 +109,7 @@ export async function apiFetch(path, options = {}) {
 
     return json;
   } catch (error) {
+    if (error?.name === "AbortError" || (error?.message && /abort/i.test(String(error.message)))) throw error;
     if (error instanceof TypeError && error.message.includes("fetch")) {
       throw new ApiError(
         `Cannot connect to API server. Make sure the API server is running on port 4000.`,

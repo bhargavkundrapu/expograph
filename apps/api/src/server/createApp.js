@@ -31,6 +31,7 @@ const { router: mentorClientLabRouter } = require("../modules/clientLab/clientLa
 
 const { router: usersAdminRouter } = require("../modules/users/users.routes.admin");
 const { router: approvalsAdminRouter } = require("../modules/approvals/approvals.routes.admin");
+const { router: feedbackAdminRouter } = require("../modules/feedback/feedback.routes.admin");
 const { router: dashboardRouter } = require("../modules/dashboard/dashboard.routes");
 const { router: collegesPublicRouter } = require("../modules/colleges/colleges.routes.public");
 
@@ -188,6 +189,7 @@ app.use(
   app.use("/api/v1/admin", certAdmin);
   app.use("/api/v1/admin", featureFlagsAdmin);
   app.use("/api/v1/admin/approvals", approvalsAdminRouter);
+  app.use("/api/v1/admin/feedback", feedbackAdminRouter);
   app.use("/api/v1/admin/dashboard", dashboardRouter);
 
   app.use("/api/v1/referrals", referralsRoutes);
@@ -264,8 +266,23 @@ app.get("/api/v1/me", requireAuth, async (req, res, next) => {
     requirePermission("content:write"),
     (req, res) => res.json({ ok: true, data: "admin pong" })
   );
-   app.use(notFound);
-  app.use(errorHandler);
+  // Helper: set CORS on response when Origin is allowed (for 404 and error responses)
+  function setCorsIfAllowed(req, res) {
+    const origin = req.get("Origin");
+    if (origin && allowlist.has(origin)) {
+      res.setHeader("Access-Control-Allow-Origin", origin);
+      res.setHeader("Access-Control-Allow-Credentials", "true");
+    }
+  }
+
+  app.use((req, res, next) => {
+    setCorsIfAllowed(req, res);
+    notFound(req, res);
+  });
+  app.use((err, req, res, next) => {
+    setCorsIfAllowed(req, res);
+    errorHandler(err, req, res, next);
+  });
   return app;
 }
 

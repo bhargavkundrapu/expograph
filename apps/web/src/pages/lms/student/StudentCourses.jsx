@@ -21,12 +21,25 @@ import {
 } from "react-icons/fi";
 import { AnimatePresence } from "framer-motion";
 import { BuyNowModal } from "../../../Components/payments/BuyNowModal";
-import { COURSE_EXPLORE_DATA } from "../../../data/courseExploreData";
+import { COURSE_EXPLORE_DATA, COURSE_DURATION_HOURS } from "../../../data/courseExploreData";
 
 // Display order on student LMS courses route: Vibe Coding → Prompt Engineering → Prompt to Profit → others
 // Include "vibe coading" (common typo in DB/seeds) so it still sorts first
 const COURSE_DISPLAY_ORDER = ["vibe-coding", "vibe-coading", "prompt-engineering", "prompt-to-profit", "ai-automations"];
 const COURSE_TITLE_ORDER = ["vibe coding", "vibe coading", "prompt engineering", "prompt to profit", "ai automations"];
+
+function getCourseDurationHours(course) {
+  if (!course) return null;
+  // Normalize: lower case, underscores and spaces to hyphens (so "vibe coding" / "vibe_coding" → "vibe-coding")
+  const slug = (course.slug || "").toLowerCase().replace(/_/g, "-").replace(/\s+/g, "-").trim();
+  const title = (course.title || "").toLowerCase();
+  if (COURSE_DURATION_HOURS[slug] != null) return COURSE_DURATION_HOURS[slug];
+  if (slug.includes("vibe") && (slug.includes("cod") || slug.includes("coading"))) return 12;
+  if (slug.includes("prompt-engineering") || title.includes("prompt engineering")) return 30;
+  if (slug.includes("prompt-to-profit") || title.includes("prompt to profit")) return 30;
+  if (slug.includes("ai-automation") || title.includes("ai automation")) return 30;
+  return null;
+}
 
 function courseOrderIndex(course) {
   const slug = (course?.slug || "").toLowerCase().replace(/_/g, "-").trim();
@@ -362,6 +375,7 @@ export default function StudentCourses() {
               const locked = !course.enrolled && !isBonusCourse(course);
               const priceRupees = course.price_in_paise ? Math.round(course.price_in_paise / 100) : 0;
               const canBuy = priceRupees >= 1;
+              const durationHours = getCourseDurationHours(course);
 
               return (
                 <motion.div
@@ -420,9 +434,15 @@ export default function StudentCourses() {
                         </button>
                       </div>
                     )}
-                    <h3 className={`text-lg font-bold mb-2 ${isDark ? "text-white" : "text-slate-900"}`}>
+                    <h3 className={`text-lg font-bold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>
                       {index + 1}. {course.title || "Untitled Course"}
                     </h3>
+                    {durationHours != null && (
+                      <p className={`flex items-center gap-1.5 text-xs mb-2 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                        <FiClock className="w-3.5 h-3.5 flex-shrink-0" />
+                        <span>{durationHours} hrs to complete</span>
+                      </p>
+                    )}
                     {locked ? (
                       <>
                         <p className={`text-sm mb-3 ${isDark ? "text-slate-500" : "text-slate-400"}`}>

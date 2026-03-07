@@ -25,6 +25,7 @@ import {
   FiTool,
 } from "react-icons/fi";
 import LearningPath from "../../../Components/student/gamification/LearningPath";
+import CourseFeedbackCard from "../../../Components/student/CourseFeedbackCard";
 
 const COURSE_HIGHLIGHTS = [
   { icon: "🛠️", title: "Real-World Projects", desc: "Build portfolio-worthy projects with hands-on guidance" },
@@ -517,6 +518,17 @@ export default function StudentCourseLanding() {
                   onNavigate={(cs, ms, ls) => navigate(getStudentLessonPath(cs, ms, ls))}
                 />
               </div>
+
+              {/* Course feedback — with love (enrolled only) */}
+              {token && courseSlug && (
+                <div className="mt-12 pt-8 border-t border-slate-200 dark:border-slate-700">
+                  <CourseFeedbackCard
+                    courseSlug={courseSlug}
+                    courseTitle={course?.title || course?.name}
+                    token={token}
+                  />
+                </div>
+              )}
             </div>
           </div>
         )}
