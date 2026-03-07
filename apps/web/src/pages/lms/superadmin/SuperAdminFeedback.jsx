@@ -14,6 +14,7 @@ import {
   FiHeart,
   FiCalendar,
 } from "react-icons/fi";
+import { formatDateTime } from "../../../utils/format";
 
 const RATING_LABELS = { 1: "Poor", 2: "Fair", 3: "Good", 4: "Very good", 5: "Excellent" };
 
@@ -185,12 +186,7 @@ export default function SuperAdminFeedback() {
                 </div>
                 <div className="text-slate-500 text-sm flex items-center gap-1 flex-shrink-0">
                   <FiCalendar className="w-3.5 h-3.5" />
-                  {row.created_at
-                    ? new Date(row.created_at).toLocaleString(undefined, {
-                        dateStyle: "medium",
-                        timeStyle: "short",
-                      })
-                    : "—"}
+                  {row.created_at ? formatDateTime(row.created_at) : "—"}
                 </div>
               </div>
               <div className="mt-3 flex flex-wrap gap-4 text-sm">

@@ -64,7 +64,8 @@ const submitLessonFeedback = asyncHandler(async (req, res) => {
   const courseId = lessonData.lesson.course_id || (await query(
     `SELECT c.id AS course_id FROM course_modules m
      JOIN courses c ON c.id = m.course_id
-     WHERE c.tenant_id = $1 AND (c.slug = $2 OR REPLACE(c.slug, '_', '-') = $2) AND m.slug = $3 AND m.status = 'published'
+     WHERE c.tenant_id = $1 AND (c.slug = $2 OR REPLACE(c.slug, '_', '-') = $2)
+       AND (m.slug = $3 OR REPLACE(m.slug, '_', '-') = $3) AND m.status = 'published'
      LIMIT 1`,
     [tenantId, courseSlug, moduleSlug]
   )).rows[0]?.course_id;

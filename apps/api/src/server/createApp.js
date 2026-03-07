@@ -46,6 +46,7 @@ const { router: progressRouter } = require("../modules/progress/progress.routes"
 const { router: adminContentRouter } = require("../modules/content/content.routes.admin");
 const { router: publicContentRouter } = require("../modules/content/content.routes.public");
 const { router: studentRouter } = require("../modules/student/student.routes");
+const feedbackControllerStudent = require("../modules/feedback/feedback.controller.student");
 const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
@@ -157,13 +158,28 @@ app.use(
   // Versioned API
   app.use("/api/v1/auth", authRouter);
 
+  // Explicit lesson feedback route so it always matches (avoids router mount/path issues on localhost)
+  app.post(
+    "/api/v1/student/courses/:courseSlug/modules/:moduleSlug/lessons/:lessonSlug/feedback",
+    requireAuth,
+    requirePermission("student:write"),
+    feedbackControllerStudent.submitLessonFeedback
+  );
+  // Explicit course feedback route for consistency
+  app.post(
+    "/api/v1/student/courses/:courseSlug/feedback",
+    requireAuth,
+    requirePermission("student:write"),
+    feedbackControllerStudent.submitCourseFeedback
+  );
+
   // Mount usersAdminRouter (colleges, students, mentors, etc.) BEFORE adminContentRouter
   // so GET/POST/DELETE /api/v1/admin/colleges are matched and not 404'd by content router
   app.use("/api/v1/admin", usersAdminRouter);
   app.use("/api/v1/admin", adminContentRouter);
-  app.use("/api/v1", publicContentRouter);
-  
 
+  // Mount /api/v1/student, /api/v1/lms, /api/v1/mentor etc. BEFORE generic /api/v1 (publicContentRouter)
+  // so POST .../lessons/:slug/feedback and other student routes match on localhost and production
   app.use("/api/v1/lms", progressRouter);
   app.use("/api/v1/lms", lmsSubmissionsRouter);
   app.use("/api/v1/lms", certLms);
@@ -182,6 +198,8 @@ app.use(
   app.use("/api/v1/public", collegesPublicRouter);
   app.use("/api/v1/public", certPublic);
   app.use("/api/v1/public", featureFlagsPublic);
+
+  app.use("/api/v1", publicContentRouter);
 
   app.use("/api/v1/admin", leadsAdmin);
   app.use("/api/v1/admin", workshopsAdmin);

@@ -306,6 +306,7 @@ async function getPublishedCourseTreeBySlug({ tenantId, courseSlug }) {
 
 }
 
+/** Match slugs with hyphen or underscore (e.g. user-schema-design or user_schema_design). */
 async function getPublishedLessonBySlugs({ tenantId, courseSlug, moduleSlug, lessonSlug }) {
   const { rows } = await query(
     `SELECT
@@ -319,8 +320,8 @@ async function getPublishedLessonBySlugs({ tenantId, courseSlug, moduleSlug, les
      JOIN lessons l ON l.module_id = m.id AND l.tenant_id = m.tenant_id
      WHERE c.tenant_id = $1 AND c.status='published'
        AND (c.slug = $2 OR REPLACE(c.slug, '_', '-') = $2)
-       AND m.slug = $3 AND m.status='published'
-       AND l.slug = $4 AND l.status='published'
+       AND (m.slug = $3 OR REPLACE(m.slug, '_', '-') = $3) AND m.status='published'
+       AND (l.slug = $4 OR REPLACE(l.slug, '_', '-') = $4) AND l.status='published'
      LIMIT 1`,
     [tenantId, courseSlug, moduleSlug, lessonSlug]
   );

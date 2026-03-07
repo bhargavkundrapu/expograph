@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { useAuth } from "../../../app/providers/AuthProvider";
 import { useTheme } from "../../../app/providers/ThemeProvider";
 import { useGamification, LEVELS } from "../../../app/providers/GamificationProvider";
 import { apiFetch } from "../../../services/api";
-import { FiUser, FiMail, FiPhone, FiEdit, FiSave, FiX, FiTrendingUp } from "react-icons/fi";
+import { FiUser, FiMail, FiPhone, FiEdit, FiSave, FiX, FiHash, FiCopy } from "react-icons/fi";
 import { AchievementGrid } from "../../../Components/student/gamification/AchievementBadges";
 import WeeklyStreak from "../../../Components/student/gamification/WeeklyStreak";
 
@@ -15,11 +15,14 @@ export default function StudentProfile() {
   const [isEditing, setIsEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [profileLoaded, setProfileLoaded] = useState(false);
+  const [copiedId, setCopiedId] = useState(false);
+  const lastStudentIdRef = useRef("");
   const [formData, setFormData] = useState({
     fullName: user?.fullName || user?.full_name || "",
     email: user?.email || "",
     phone: user?.phone || "",
     bio: user?.bio || "",
+    studentId: user?.studentId || user?.student_id || "",
   });
 
   useEffect(() => {
@@ -31,14 +34,25 @@ export default function StudentProfile() {
         const d = res?.data;
         if (d) {
           const phone = d.phone ?? d.customer_phone ?? "";
+          const rawId = d.studentId ?? d.student_id ?? "";
+          const studentId = rawId != null && rawId !== "" ? String(rawId).trim() : "";
+          if (studentId) lastStudentIdRef.current = studentId;
           setFormData((prev) => ({
             fullName: d.fullName || d.full_name || prev.fullName,
             email: d.email || prev.email,
             phone: phone || prev.phone,
             bio: prev.bio,
+            studentId: studentId || prev.studentId || "",
           }));
           if (updateUser) {
-            updateUser({ ...user, fullName: d.fullName || d.full_name, email: d.email, phone });
+            updateUser({
+              ...user,
+              fullName: d.fullName || d.full_name,
+              email: d.email,
+              phone,
+              studentId: d.studentId ?? d.student_id,
+              student_id: d.studentId ?? d.student_id,
+            });
           }
         }
       })
@@ -49,12 +63,13 @@ export default function StudentProfile() {
 
   useEffect(() => {
     if (profileLoaded) return;
-    setFormData({
+    setFormData((prev) => ({
       fullName: user?.fullName || user?.full_name || "",
       email: user?.email || "",
       phone: user?.phone || "",
       bio: user?.bio || "",
-    });
+      studentId: user?.studentId ?? user?.student_id ?? prev.studentId ?? "",
+    }));
   }, [user]);
 
   const handleSave = async () => {
@@ -74,6 +89,8 @@ export default function StudentProfile() {
             full_name: response.data.fullName || response.data.full_name,
             email: response.data.email,
             phone: response.data.phone,
+            studentId: response.data.studentId ?? response.data.student_id,
+            student_id: response.data.studentId ?? response.data.student_id,
           });
         }
         setIsEditing(false);
@@ -82,6 +99,7 @@ export default function StudentProfile() {
           email: response.data.email || "",
           phone: response.data.phone || "",
           bio: formData.bio,
+          studentId: response.data.studentId ?? response.data.student_id ?? formData.studentId,
         });
       }
     } catch (error) {
@@ -94,6 +112,16 @@ export default function StudentProfile() {
 
   const userName = formData.fullName || user?.fullName || user?.full_name || user?.name || "Student";
   const userInitial = userName.charAt(0).toUpperCase();
+  const displayUserId = (formData.studentId != null && formData.studentId !== "" ? String(formData.studentId).trim() : "") || lastStudentIdRef.current || "";
+
+  const copyUserId = () => {
+    const id = displayUserId || formData.studentId?.toString().trim();
+    if (!id) return;
+    navigator.clipboard.writeText(id).then(() => {
+      setCopiedId(true);
+      setTimeout(() => setCopiedId(false), 2000);
+    }).catch(() => {});
+  };
 
   return (
     <div className={`min-h-screen p-4 sm:p-6 lg:p-8 transition-colors duration-200 ${isDark ? "bg-slate-900" : "bg-gradient-to-br from-slate-50 via-white to-slate-50"}`}>
@@ -119,6 +147,25 @@ export default function StudentProfile() {
               <div>
                 <h1 className={`text-xl sm:text-2xl font-bold ${isDark ? "text-white" : "text-slate-900"}`}>{userName}</h1>
                 <p className={`text-sm ${isDark ? "text-slate-400" : "text-slate-500"}`}>{formData.email}</p>
+                {displayUserId ? (
+                  <button
+                    type="button"
+                    onClick={copyUserId}
+                    className={`text-xs mt-1 flex items-center gap-1.5 font-mono rounded-lg px-2 py-1 -ml-1 transition-colors ${isDark ? "text-slate-400 hover:bg-slate-700/50" : "text-slate-500 hover:bg-slate-100"}`}
+                    title="Copy User ID"
+                  >
+                    <FiHash className="w-3.5 h-3.5 flex-shrink-0" />
+                    <span>User ID:</span>
+                    <span className={`font-semibold ${isDark ? "text-indigo-300" : "text-indigo-600"}`}>{displayUserId}</span>
+                    {copiedId ? <span className="text-emerald-500 text-[10px]">Copied!</span> : <FiCopy className="w-3 h-3 opacity-60" />}
+                  </button>
+                ) : (
+                  <p className={`text-xs mt-1 flex items-center gap-1.5 font-mono ${isDark ? "text-slate-500" : "text-slate-400"}`}>
+                    <FiHash className="w-3.5 h-3.5" />
+                    <span>User ID:</span>
+                    <span>{profileLoaded ? "—" : "…"}</span>
+                  </p>
+                )}
                 <div className="flex items-center gap-3 mt-2">
                   <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${isDark ? "bg-indigo-500/20 text-indigo-300" : "bg-indigo-100 text-indigo-700"}`}>
                     Lv.{currentLevel.level} {currentLevel.title}
@@ -204,6 +251,29 @@ export default function StudentProfile() {
             <h2 className={`text-base font-bold mb-4 flex items-center gap-2 ${isDark ? "text-white" : "text-slate-800"}`}>
               <FiUser className="w-4 h-4 text-indigo-500" /> Personal Details
             </h2>
+            <div className={`mb-4 p-3 rounded-xl border ${formData.studentId ? "bg-gradient-to-r from-indigo-500/10 to-violet-500/10 border-indigo-500/20" : isDark ? "bg-slate-700/30 border-slate-600" : "bg-slate-50 border-slate-200"}`}>
+              <label className={`block text-xs font-semibold mb-1 flex items-center gap-1.5 ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+                <FiHash className="w-3.5 h-3.5 text-indigo-500" /> User ID (Student ID)
+              </label>
+              {displayUserId ? (
+                <button
+                  type="button"
+                  onClick={copyUserId}
+                  className={`w-full text-left font-mono text-lg font-bold tracking-wider rounded-lg py-1.5 px-2 -mx-1 transition-colors flex items-center justify-between gap-2 ${isDark ? "text-indigo-300 hover:bg-slate-700/50" : "text-indigo-700 hover:bg-indigo-50"}`}
+                  title="Click to copy"
+                >
+                  <span>{displayUserId}</span>
+                  {copiedId ? <span className="text-xs font-normal text-emerald-500">Copied!</span> : <FiCopy className="w-4 h-4 opacity-60 flex-shrink-0" />}
+                </button>
+              ) : (
+                <p className={`font-mono text-lg ${isDark ? "text-slate-500" : "text-slate-400"}`}>
+                  {profileLoaded ? "—" : "…"}
+                </p>
+              )}
+              <p className={`text-[10px] mt-0.5 ${isDark ? "text-slate-500" : "text-slate-400"}`}>
+                {displayUserId ? "Click the ID or the copy icon to copy" : "Run migration: cd apps/api && npm run migrate"}
+              </p>
+            </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {[
                 { label: "Full Name", key: "fullName", icon: FiUser, type: "text" },

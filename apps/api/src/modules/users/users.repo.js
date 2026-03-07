@@ -17,7 +17,7 @@ async function findUserByEmail(email) {
 async function findUserById(id) {
   if (!id) return null;
   const { rows } = await query(
-    `SELECT id, email, phone, full_name, is_active FROM users WHERE id = $1 LIMIT 1`,
+    `SELECT * FROM users WHERE id = $1 LIMIT 1`,
     [id]
   );
   return rows[0] ?? null;
@@ -301,7 +301,7 @@ async function updateStudentDetails({ userId, fullName, email, phone, passwordHa
     `UPDATE users
      SET ${updates.join(", ")}
      WHERE id = $${paramIndex}
-     RETURNING id, email, full_name, phone, is_active, created_at`,
+     RETURNING id, email, full_name, phone, is_active, created_at, student_id`,
     params
   );
   

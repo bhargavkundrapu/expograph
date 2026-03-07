@@ -289,8 +289,30 @@ const deleteBookmark = asyncHandler(async (req, res) => {
 // Profile
 const getProfile = asyncHandler(async (req, res) => {
   const { userId } = req.auth;
-  const user = await usersRepo.findUserById(userId);
+  let user = await usersRepo.findUserById(userId);
   if (!user) throw new HttpError(404, "User not found");
+
+  // Lazy backfill: assign student_id if missing (ensure sequence exists, then update and re-fetch)
+  if (!user.student_id || String(user.student_id).trim() === "") {
+    try {
+      await query(
+        `CREATE SEQUENCE IF NOT EXISTS student_id_seq START WITH 1000000 MINVALUE 1000000 MAXVALUE 9999999 NO CYCLE`
+      );
+      const { rows } = await query(
+        `UPDATE users SET student_id = LPAD(nextval('student_id_seq')::text, 7, '0') WHERE id = $1 RETURNING student_id`,
+        [userId]
+      );
+      if (rows[0]?.student_id) {
+        user = { ...user, student_id: rows[0].student_id };
+      } else {
+        user = await usersRepo.findUserById(userId) || user;
+      }
+    } catch (err) {
+      try {
+        user = await usersRepo.findUserById(userId) || user;
+      } catch (_) {}
+    }
+  }
 
   let phone = user.phone || "";
 
@@ -307,10 +329,20 @@ const getProfile = asyncHandler(async (req, res) => {
     } catch (_) {}
   }
 
+  let studentId = user.student_id != null ? String(user.student_id).trim() : null;
+  if (!studentId) {
+    try {
+      const { rows } = await query(`SELECT student_id FROM users WHERE id = $1 LIMIT 1`, [userId]);
+      if (rows[0]?.student_id) studentId = String(rows[0].student_id).trim();
+    } catch (_) {}
+  }
+
   res.json({
     ok: true,
     data: {
       id: user.id,
+      studentId: studentId || null,
+      student_id: studentId || null,
       email: user.email,
       fullName: user.full_name,
       full_name: user.full_name,
@@ -351,9 +383,11 @@ const updateProfile = asyncHandler(async (req, res) => {
     ok: true,
     data: {
       id: updated.id,
+      studentId: updated.student_id,
+      student_id: updated.student_id,
       email: updated.email,
-      fullName: updated.full_name, // Convert snake_case to camelCase
-      full_name: updated.full_name, // Keep both for compatibility
+      fullName: updated.full_name,
+      full_name: updated.full_name,
       phone: updated.phone || null,
     },
   });
