@@ -412,6 +412,152 @@ function SectionTakeaway({ data }) {
   );
 }
 
+// ——— Image Prompting module: example images below prompts (per-lesson config) ———
+const IMAGE_PROMPTING_MODULE_SLUG = "m5-image-prompting";
+const IMAGE_PROMPTING_GALLERY = {
+  "image-prompt-formula": {
+    beginner: ["https://res.cloudinary.com/da2wrgabu/image/upload/v1772967325/ChatGPT_Image_Mar_8_2026_03_55_40_PM_uq0z5h.png"],
+    pro: ["https://res.cloudinary.com/da2wrgabu/image/upload/v1772967325/ChatGPT_Image_Mar_8_2026_03_55_44_PM_dhgeie.png"],
+    levelUp: ["https://res.cloudinary.com/da2wrgabu/image/upload/v1772967324/ChatGPT_Image_Mar_8_2026_03_55_47_PM_snyrng.png"],
+  },
+  "composition-control": {
+    beginner: ["https://res.cloudinary.com/da2wrgabu/image/upload/v1772967325/ChatGPT_Image_Mar_8_2026_03_55_50_PM_lz5ax3.png"],
+    pro: ["https://res.cloudinary.com/da2wrgabu/image/upload/v1772967325/ChatGPT_Image_Mar_8_2026_03_55_55_PM_ngmgz5.png"],
+    levelUp: [
+      "https://res.cloudinary.com/da2wrgabu/image/upload/v1772967325/ChatGPT_Image_Mar_8_2026_03_56_06_PM_aiavjk.png",
+      "https://res.cloudinary.com/da2wrgabu/image/upload/v1772967322/ChatGPT_Image_Mar_8_2026_04_13_47_PM_ywmg5m.png",
+      "https://res.cloudinary.com/da2wrgabu/image/upload/v1772967322/ChatGPT_Image_Mar_8_2026_04_13_51_PM_pkj2ht.png",
+    ],
+  },
+  "style-lighting-control": {
+    beginner: ["https://res.cloudinary.com/da2wrgabu/image/upload/v1772967322/ChatGPT_Image_Mar_8_2026_04_13_55_PM_gwzddv.png"],
+    pro: ["https://res.cloudinary.com/da2wrgabu/image/upload/v1772967319/ChatGPT_Image_Mar_8_2026_04_13_57_PM_ec0wws.png"],
+    levelUp: [
+      "https://res.cloudinary.com/da2wrgabu/image/upload/v1772967319/ChatGPT_Image_Mar_8_2026_04_14_03_PM_ygiyrd.png",
+      "https://res.cloudinary.com/da2wrgabu/image/upload/v1772967322/ChatGPT_Image_Mar_8_2026_04_14_05_PM_jwhz6r.png",
+      "https://res.cloudinary.com/da2wrgabu/image/upload/v1772967319/ChatGPT_Image_Mar_8_2026_04_14_09_PM_da0maa.png",
+    ],
+  },
+  "consistency-characters": {
+    beginner: ["https://res.cloudinary.com/da2wrgabu/image/upload/v1772967320/ChatGPT_Image_Mar_8_2026_04_14_12_PM_sthded.png"],
+    pro: ["https://res.cloudinary.com/da2wrgabu/image/upload/v1772967320/ChatGPT_Image_Mar_8_2026_04_14_15_PM_mrkb19.png"],
+    levelUp: ["https://res.cloudinary.com/da2wrgabu/image/upload/v1772967319/ChatGPT_Image_Mar_8_2026_04_14_17_PM_o2zf6m.png"],
+  },
+};
+
+// Inline image block: sits directly below a prompt section, same layout/style as that section.
+function ImageBelowPrompt({ urls, variant }) {
+  const [index, setIndex] = useState(0);
+  const list = Array.isArray(urls) && urls.length > 0 ? urls : [];
+  const single = list.length <= 1;
+  const currentUrl = list[index] || list[0];
+
+  const styles = {
+    beginner: {
+      wrap: "bg-red-50 border-red-200",
+      pagination: "bg-red-100 text-red-700",
+      paginationActive: "bg-red-600 text-white",
+    },
+    pro: {
+      wrap: "bg-emerald-50 border-emerald-200",
+      pagination: "bg-emerald-100 text-emerald-700",
+      paginationActive: "bg-emerald-600 text-white",
+    },
+    levelUp: {
+      wrap: "bg-violet-50 border-violet-200",
+      pagination: "bg-violet-100 text-violet-700",
+      paginationActive: "bg-violet-600 text-white",
+    },
+  };
+  const s = styles[variant] || styles.beginner;
+
+  if (!currentUrl) return null;
+
+  return (
+    <div className={`rounded-lg border p-4 ${s.wrap}`}>
+      {!single && list.length > 1 && (
+        <div className="flex items-center gap-1.5 mb-2">
+          {list.map((_, i) => (
+            <button
+              key={i}
+              type="button"
+              onClick={() => setIndex(i)}
+              className={`w-7 h-7 rounded-full text-xs font-medium transition-colors ${i === index ? s.paginationActive : s.pagination} hover:opacity-90`}
+              aria-label={`Image ${i + 1} of ${list.length}`}
+            >
+              {i + 1}
+            </button>
+          ))}
+        </div>
+      )}
+      <img
+        src={currentUrl}
+        alt=""
+        className="w-full h-auto rounded-lg object-contain max-h-[380px] bg-white border border-slate-200/80"
+      />
+    </div>
+  );
+}
+
+// ——— Video Script module: reference videos below prompts (per-lesson config) ———
+const VIDEO_SCRIPT_MODULE_SLUG = "m6-video-scripts";
+const VIDEO_REFERENCE_DISCLAIMER =
+  "These reference clips were created with Adobe Firefly for demonstration. For your own projects, we recommend tools like Veo 3 or Sora 4 for higher-quality video. Use these as a learning reference—your results will vary based on the tool and prompts you use.";
+
+const VIDEO_SCRIPT_GALLERY = {
+  "hook-script-template": {
+    beginner: "https://res.cloudinary.com/da2wrgabu/video/upload/v1772973012/Firefly_Hi_everyone_welcome_to_my_channel_Today_we_re_going_to_talk_about_Python_programming._Pyth_cqhwca.mp4",
+    pro: "https://res.cloudinary.com/da2wrgabu/video/upload/v1772973011/Firefly_HOOK-_-NASA_uses_Python._Instagram_uses_Python._And_you_can_learn_it_in_one_weekend.-__PROBL_bqakvn.mp4",
+    levelUp: "https://res.cloudinary.com/da2wrgabu/video/upload/v1772973015/Firefly_Hook_Options-_1._--CURIOSITY_HOOK---_What_if_the_language_you_use_every_day_to_build_com_b22egg.mp4",
+  },
+  "script-to-storyboard": {
+    beginner: "https://res.cloudinary.com/da2wrgabu/video/upload/v1772973011/Firefly_Scene_1-_Show_Python_logo_Scene_2-_Show_code_editor_Scene_3-_Show_the_results__Vague_no_tim_oqbxug.mp4",
+    pro: "https://res.cloudinary.com/da2wrgabu/video/upload/v1772973007/Firefly_-_Shot_-_Duration_-_Script_-_Type_-_Visual_-_Transition_-_----------------------------------_gdxb2m.mp4",
+    levelUp: "https://res.cloudinary.com/da2wrgabu/video/upload/v1772973004/Firefly_Equipment_Phone_mic_screen_record__Time_20_min__Shots_1_0-00-0-03__Script-_-Python-_Eas_flmzba.mp4",
+  },
+  "shot-list-broll": {
+    beginner: "https://res.cloudinary.com/da2wrgabu/video/upload/v1772973007/Firefly_1._Show_someone_typing_code_2._Show_a_computer_screen_3._Show_books__Generic_boring_unspec_wc6vnn.mp4",
+    pro: "https://res.cloudinary.com/da2wrgabu/video/upload/v1772973007/Firefly_--Morning_Routine---_1._Close-up_of_alarm_clock_at_7-00_AM_hand_reaching_to_turn_it_off_2s_pytkpa.mp4",
+    levelUp: "https://res.cloudinary.com/da2wrgabu/video/upload/v1772973006/Firefly_-_Shot_ID_-_Category_-_Description_with_Specific_Visual_Details_-_Shot_Type_Camera_Movemen_wgsymf.mp4",
+  },
+  "captions-onscreen-text": {
+    beginner: "https://res.cloudinary.com/da2wrgabu/video/upload/v1772972998/Firefly_Just_a_transcript_of_the_spoken_words_--_no_formatting_no_emphasis_no_timing_no_visual_t_xeuxig.mp4",
+    pro: "https://res.cloudinary.com/da2wrgabu/video/upload/v1772973000/Firefly_--CLOSED_CAPTIONS---__0-00_NASA_uses_PYTHON.__0-02_INSTAGRAM_uses_Python.__0-03_And_you_c_penqlg.mp4",
+    levelUp: "https://res.cloudinary.com/da2wrgabu/video/upload/v1772973001/Firefly_Video_Script_with_Text_Overlay_Plan_--Scene_Description---_A_man_is_standing_against_an_virpta.mp4",
+  },
+  "30-45-60-sec-templates": {
+    beginner: "https://res.cloudinary.com/da2wrgabu/video/upload/v1772972998/Firefly_A_script_with_no_timing_no_structure_and_uncertain_length_--_could_be_20_seconds_or_3_min_wfw9tv.mp4",
+    pro: "https://res.cloudinary.com/da2wrgabu/video/upload/v1772972999/Firefly_HOOK_0-5s_-_-These_3_extensions_saved_me_10_hours_last_week.-__CONTEXT_5-15s_-_-Most_devel_f55aa5.mp4",
+    levelUp: "https://res.cloudinary.com/da2wrgabu/video/upload/v1772972997/Firefly_1._30-SECOND_TEMPLATE_Reels-Shorts_-__Hook_0-3s_-_SHOCKING_STATEMENT___One_Big_Point_3-2_jemvvz.mp4",
+  },
+};
+
+function VideoBelowPrompt({ url, variant }) {
+  if (!url) return null;
+  const styles = {
+    beginner: "bg-red-50 border-red-200",
+    pro: "bg-emerald-50 border-emerald-200",
+    levelUp: "bg-violet-50 border-violet-200",
+  };
+  const s = styles[variant] || styles.beginner;
+  return (
+    <div className={`rounded-lg border p-4 ${s}`}>
+      <p className="text-xs text-slate-600 leading-relaxed mb-3 px-1">
+        {VIDEO_REFERENCE_DISCLAIMER}
+      </p>
+      <video
+        src={url}
+        controls
+        className="w-full rounded-lg bg-black border border-slate-200/80 max-h-[400px]"
+        playsInline
+        preload="metadata"
+      >
+        Your browser does not support the video tag.
+      </video>
+    </div>
+  );
+}
+
 const AI_DOT = {
   ChatGPT: "bg-emerald-400", Claude: "bg-orange-400", Gemini: "bg-blue-400",
   Perplexity: "bg-indigo-400", Midjourney: "bg-fuchsia-400", "DALL-E 3": "bg-rose-400", Copilot: "bg-sky-400",
@@ -659,8 +805,18 @@ const SECTION_RENDERERS = {
   "SEC-DICT-ENTRY": SectionDictEntry,
 };
 
-export default function PromptEngineeringSections({ sections }) {
+export default function PromptEngineeringSections({ sections, lessonSlug, moduleSlug }) {
   if (!sections || !Array.isArray(sections)) return null;
+
+  const imageGalleryConfig =
+    moduleSlug === IMAGE_PROMPTING_MODULE_SLUG && lessonSlug && IMAGE_PROMPTING_GALLERY[lessonSlug]
+      ? IMAGE_PROMPTING_GALLERY[lessonSlug]
+      : null;
+
+  const videoGalleryConfig =
+    moduleSlug === VIDEO_SCRIPT_MODULE_SLUG && lessonSlug && VIDEO_SCRIPT_GALLERY[lessonSlug]
+      ? VIDEO_SCRIPT_GALLERY[lessonSlug]
+      : null;
 
   return (
     <div className="space-y-5">
@@ -669,7 +825,77 @@ export default function PromptEngineeringSections({ sections }) {
         const Renderer = SECTION_RENDERERS[sec.type];
         if (!Renderer) return null;
         const sectionData = sec.data ?? sec;
-        return <Renderer key={`${sec.type}-${i}`} data={sectionData} />;
+        const el = <Renderer key={`${sec.type}-${i}`} data={sectionData} />;
+
+        // Image prompting: show images below Beginner / Pro / Level Up prompt sections
+        if (imageGalleryConfig) {
+          if (sec.type === "SEC-03_BAD_PROMPT" && imageGalleryConfig.beginner?.length > 0) {
+            return (
+              <div key={`${sec.type}-${i}-with-img`}>
+                {el}
+                <div className="mt-2">
+                  <ImageBelowPrompt urls={imageGalleryConfig.beginner} variant="beginner" />
+                </div>
+              </div>
+            );
+          }
+          if (sec.type === "SEC-06_GOOD_PROMPT" && imageGalleryConfig.pro?.length > 0) {
+            return (
+              <div key={`${sec.type}-${i}-with-img`}>
+                {el}
+                <div className="mt-2">
+                  <ImageBelowPrompt urls={imageGalleryConfig.pro} variant="pro" />
+                </div>
+              </div>
+            );
+          }
+          if (sec.type === "SEC-08_UPGRADE_PROMPT" && imageGalleryConfig.levelUp?.length > 0) {
+            return (
+              <div key={`${sec.type}-${i}-with-img`}>
+                {el}
+                <div className="mt-2">
+                  <ImageBelowPrompt urls={imageGalleryConfig.levelUp} variant="levelUp" />
+                </div>
+              </div>
+            );
+          }
+        }
+
+        // Video script: show reference videos below Beginner / Pro / Level Up prompt sections
+        if (videoGalleryConfig) {
+          if (sec.type === "SEC-03_BAD_PROMPT" && videoGalleryConfig.beginner) {
+            return (
+              <div key={`${sec.type}-${i}-with-video`}>
+                {el}
+                <div className="mt-2">
+                  <VideoBelowPrompt url={videoGalleryConfig.beginner} variant="beginner" />
+                </div>
+              </div>
+            );
+          }
+          if (sec.type === "SEC-06_GOOD_PROMPT" && videoGalleryConfig.pro) {
+            return (
+              <div key={`${sec.type}-${i}-with-video`}>
+                {el}
+                <div className="mt-2">
+                  <VideoBelowPrompt url={videoGalleryConfig.pro} variant="pro" />
+                </div>
+              </div>
+            );
+          }
+          if (sec.type === "SEC-08_UPGRADE_PROMPT" && videoGalleryConfig.levelUp) {
+            return (
+              <div key={`${sec.type}-${i}-with-video`}>
+                {el}
+                <div className="mt-2">
+                  <VideoBelowPrompt url={videoGalleryConfig.levelUp} variant="levelUp" />
+                </div>
+              </div>
+            );
+          }
+        }
+
+        return el;
       })}
     </div>
   );

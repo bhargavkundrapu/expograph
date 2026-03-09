@@ -99,8 +99,18 @@ const sendEmailVerifyOtp = asyncHandler(async (req, res) => {
   }
 
   const { otpCode } = await createOtp(email);
-  // Use same payload as login OTP so deliverability matches (same subject/body = same inbox behavior)
-  await sendOtpEmail({ to: email, otpCode, appName: req.tenant?.name || "ExpoGraph" });
+  const appName = req.tenant?.name || "ExpoGraph";
+  // Inbox-optimized: verification-specific subject/body + receivingReason (trust signal) +
+  // reply_to and transactional headers are applied in auth.email.service.js.
+  await sendOtpEmail({
+    to: email,
+    otpCode,
+    appName,
+    subject: `Confirm your email – ${appName}`,
+    heading: "Your verification code",
+    description: "Use this code to confirm your email before completing your purchase. It expires in 10 minutes.",
+    receivingReason: `You're receiving this because you entered this email on ${appName} to confirm your email before completing your purchase.`,
+  });
 
   emailVerifyRateLimit.set(email, Date.now());
 

@@ -82,7 +82,7 @@ export default function AccountPendingPage() {
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tighter text-white">
                 ExpoGraph
               </h2>
-              <span className="text-xs text-white/40">© 2024 ExpoGraph Academy</span>
+              <span className="text-xs text-white/40">© 2025 ExpoGraph Academy</span>
             </div>
           </TubesBackground>
         </footer>

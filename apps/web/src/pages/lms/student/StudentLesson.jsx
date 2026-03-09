@@ -852,7 +852,11 @@ export default function StudentLesson() {
               if (hasPE) {
                 return (
                   <div className="px-4 md:px-8 pt-4 md:pt-6 pb-4 md:pb-8">
-                    <PromptEngineeringSections sections={steps} />
+                    <PromptEngineeringSections
+                      sections={steps}
+                      lessonSlug={lessonSlug}
+                      moduleSlug={moduleSlug}
+                    />
                   </div>
                 );
               }

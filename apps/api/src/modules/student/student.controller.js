@@ -6,6 +6,7 @@ const contentRepo = require("../content/content.repo");
 const progressRepo = require("../progress/progress.repo");
 const usersRepo = require("../users/users.repo");
 const { query } = require("../../db/query");
+const { ensureStudentIdSchema } = require("./ensureStudentIdSchema");
 const z = require("zod");
 
 // Schemas
@@ -292,25 +293,36 @@ const getProfile = asyncHandler(async (req, res) => {
   let user = await usersRepo.findUserById(userId);
   if (!user) throw new HttpError(404, "User not found");
 
-  // Lazy backfill: assign student_id if missing (ensure sequence exists, then update and re-fetch)
-  if (!user.student_id || String(user.student_id).trim() === "") {
+  // Lazy backfill: on localhost the column/sequence may not exist (migrations not run). Ensure schema then assign.
+  const hasStudentId = user.student_id != null && String(user.student_id).trim() !== "";
+  if (!hasStudentId) {
     try {
-      await query(
-        `CREATE SEQUENCE IF NOT EXISTS student_id_seq START WITH 1000000 MINVALUE 1000000 MAXVALUE 9999999 NO CYCLE`
-      );
-      const { rows } = await query(
+      const updated = await query(
         `UPDATE users SET student_id = LPAD(nextval('student_id_seq')::text, 7, '0') WHERE id = $1 RETURNING student_id`,
         [userId]
       );
-      if (rows[0]?.student_id) {
-        user = { ...user, student_id: rows[0].student_id };
+      if (updated?.rows?.[0]?.student_id) {
+        user = { ...user, student_id: updated.rows[0].student_id };
       } else {
         user = await usersRepo.findUserById(userId) || user;
       }
     } catch (err) {
-      try {
+      const needSchema = /student_id|student_id_seq|does not exist|relation/.test(String(err.message || ""));
+      if (needSchema) {
+        await ensureStudentIdSchema();
+        const refetched = await usersRepo.findUserById(userId);
+        if (refetched?.student_id) user = refetched;
+        else {
+          const { rows } = await query(
+            `UPDATE users SET student_id = LPAD(nextval('student_id_seq')::text, 7, '0') WHERE id = $1 RETURNING student_id`,
+            [userId]
+          ).catch(() => ({ rows: [] }));
+          if (rows?.[0]?.student_id) user = { ...user, student_id: rows[0].student_id };
+          else user = await usersRepo.findUserById(userId) || user;
+        }
+      } else {
         user = await usersRepo.findUserById(userId) || user;
-      } catch (_) {}
+      }
     }
   }
 
@@ -336,17 +348,25 @@ const getProfile = asyncHandler(async (req, res) => {
       if (rows[0]?.student_id) studentId = String(rows[0].student_id).trim();
     } catch (_) {}
   }
+  if (!studentId) {
+    await ensureStudentIdSchema();
+    try {
+      const { rows } = await query(`SELECT student_id FROM users WHERE id = $1 LIMIT 1`, [userId]);
+      if (rows[0]?.student_id) studentId = String(rows[0].student_id).trim();
+    } catch (_) {}
+  }
 
+  res.setHeader("Cache-Control", "no-store, max-age=0");
   res.json({
     ok: true,
     data: {
       id: user.id,
-      studentId: studentId || null,
-      student_id: studentId || null,
       email: user.email,
       fullName: user.full_name,
       full_name: user.full_name,
       phone,
+      studentId: studentId ?? null,
+      student_id: studentId ?? null,
     },
   });
 });

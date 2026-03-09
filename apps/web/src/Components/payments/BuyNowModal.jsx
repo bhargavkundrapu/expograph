@@ -316,13 +316,15 @@ export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill, 
       .catch(() => setColleges([]));
   }, [open, tenant?.slug]);
 
-  // Reset verification when email changes (only for guest users)
+  // Reset verification when email changes (only for guest users) — also clear cooldown so "Verify" works for the new email
   useEffect(() => {
     if (!isAuth && form.email.trim().toLowerCase() !== verifiedEmailRef.current) {
       setEmailVerified(false);
       setOtpSent(false);
       setOtpValue("");
       setOtpError("");
+      setCooldown(0);
+      clearInterval(cooldownRef.current);
     }
   }, [form.email, isAuth]);
 
@@ -541,7 +543,7 @@ export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill, 
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-          onClick={handleClose}
+          aria-hidden="true"
         />
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}

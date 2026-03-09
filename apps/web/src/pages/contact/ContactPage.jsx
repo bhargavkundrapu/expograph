@@ -301,7 +301,7 @@ export default function ContactPage() {
             </div>
             <div className="absolute bottom-8 left-0 right-0 flex flex-col items-center gap-2 text-white/50 pointer-events-none">
               <span className="text-xs uppercase tracking-widest">Move the cursor around to interact and Click to randomize.</span>
-              <span className="text-xs text-white/40">&copy; 2024 ExpoGraph Academy</span>
+              <span className="text-xs text-white/40">&copy; 2025 ExpoGraph Academy</span>
             </div>
           </div>
         </TubesBackground>

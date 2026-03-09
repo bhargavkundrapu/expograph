@@ -239,7 +239,7 @@ export default function AcademyPage() {
                 Login
               </button>
               <button
-                onClick={() => document.getElementById("learn")?.scrollIntoView({ behavior: "smooth" })}
+                onClick={() => document.getElementById("features")?.scrollIntoView({ behavior: "smooth" })}
                 className="px-5 py-2.5 sm:px-6 sm:py-3 md:px-6 md:py-3 bg-white/10 text-white border border-white/20 rounded-full text-sm sm:text-sm md:text-base font-semibold cursor-pointer transition-all duration-300 hover:bg-white/20 hover:scale-105 hover:border-white/40"
                 style={{ fontFamily: "var(--font-dm)" }}
               >
@@ -752,7 +752,7 @@ export default function AcademyPage() {
             </div>
             <div className="absolute bottom-8 left-0 right-0 flex flex-col items-center gap-2 text-white/50 pointer-events-none">
               <span className="text-xs uppercase tracking-widest">Move the cursor around to interact and Click to randomize.</span>
-              <span className="text-xs text-white/40">© 2024 ExpoGraph Academy</span>
+              <span className="text-xs text-white/40">© 2025 ExpoGraph Academy</span>
             </div>
           </div>
         </TubesBackground>
