@@ -73,62 +73,72 @@ export function Header() {
 			{/* Nav bar wrapper — only this gets background/blur; header stays fully transparent */}
 			<div
 				className={cn(
-					'academy-nav-bar pointer-events-auto mx-auto w-full max-w-7xl ease-out',
+					'academy-nav-bar pointer-events-auto relative z-[100] mx-auto w-full max-w-7xl ease-out',
 					{
 						'academy-nav-default': (!scrolled && !open) || open,
 						'academy-nav-scrolled md:max-w-4xl md:mt-1': scrolled && !open,
 					},
 				)}
 			>
-			<nav
-				className={cn(
-					'flex h-14 w-full items-center justify-between px-4 md:h-12 md:transition-all md:ease-out',
-					{
-						'md:px-2': scrolled,
-					},
-				)}
-			>
-				<Link to="/academy" className="text-lg font-semibold tracking-tight hover:opacity-90">
-					ΣxpoGraph
-				</Link>
-				<div className="hidden items-center gap-2 md:flex">
-					{links.map((link, i) => (
-						link.href.includes('#') ? (
-							<button key={i} className={buttonVariants({ variant: 'ghost' })} onClick={() => handleHashLink(link.href)}>
-								{link.label}
-							</button>
-						) : link.href.startsWith('/') ? (
-							<Link key={i} to={link.href} className={buttonVariants({ variant: 'ghost' })}>
-								{link.label}
-							</Link>
-						) : (
-							<a key={i} className={buttonVariants({ variant: 'ghost' })} href={link.href}>
-								{link.label}
-							</a>
-						)
-					))}
-					{!isLoginPage && (
-						<Link to={portalPath}>
-							<Button>{portalLabel}</Button>
-						</Link>
+				<nav
+					className={cn(
+						'flex h-14 w-full items-center justify-between px-4 md:h-12 md:transition-all md:ease-out',
+						{
+							'md:px-2': scrolled,
+						},
 					)}
-				</div>
-				<Button size="icon" variant="outline" onClick={() => setOpen(!open)} className="md:hidden">
-					<MenuToggleIcon open={open} className="size-5" duration={300} />
-				</Button>
-			</nav>
+				>
+					<Link to="/academy" className="text-lg font-semibold tracking-tight hover:opacity-90">
+						ΣxpoGraph
+					</Link>
+					<div className="hidden items-center gap-2 md:flex">
+						{links.map((link, i) => (
+							link.href.includes('#') ? (
+								<button key={i} type="button" className={buttonVariants({ variant: 'ghost' })} onClick={() => handleHashLink(link.href)}>
+									{link.label}
+								</button>
+							) : link.href.startsWith('/') ? (
+								<Link key={i} to={link.href} className={buttonVariants({ variant: 'ghost' })}>
+									{link.label}
+								</Link>
+							) : (
+								<a key={i} className={buttonVariants({ variant: 'ghost' })} href={link.href}>
+									{link.label}
+								</a>
+							)
+						))}
+						{!isLoginPage && (
+							<Link to={portalPath}>
+								<Button>{portalLabel}</Button>
+							</Link>
+						)}
+					</div>
+					<Button
+						type="button"
+						size="icon"
+						variant="outline"
+						onClick={() => setOpen(!open)}
+						className="md:hidden pointer-events-auto min-w-[44px] min-h-[44px] touch-manipulation"
+						aria-expanded={open}
+						aria-label={open ? 'Close menu' : 'Open menu'}
+					>
+						<MenuToggleIcon open={open} className="size-5" duration={300} />
+					</Button>
+				</nav>
+			</div>
 
+			{/* Mobile menu panel: outside nav-bar so position:fixed is relative to viewport (nav-bar has transform) */}
 			<div
 				className={cn(
 					'bg-black pointer-events-auto fixed top-[4.5rem] right-0 bottom-0 left-0 z-50 flex flex-col overflow-hidden border-y border-white/10 md:hidden',
-					open ? 'block' : 'hidden',
+					open ? 'flex' : 'hidden',
 				)}
 			>
 				<div
 					data-slot={open ? 'open' : 'closed'}
 					className={cn(
 						'data-[slot=open]:animate-in data-[slot=open]:zoom-in-95 data-[slot=closed]:animate-out data-[slot=closed]:zoom-out-95 ease-out',
-						'flex h-full w-full flex-col justify-between gap-y-2 p-4',
+						'flex h-full w-full flex-col justify-between gap-y-2 p-4 text-white',
 					)}
 				>
 					<div className="grid gap-y-2">
@@ -136,9 +146,10 @@ export function Header() {
 							link.href.includes('#') ? (
 								<button
 									key={link.label}
+									type="button"
 									className={buttonVariants({
 										variant: 'ghost',
-										className: 'justify-start',
+										className: 'justify-start text-white hover:text-white/90 hover:bg-white/10',
 									})}
 									onClick={() => handleHashLink(link.href)}
 								>
@@ -150,7 +161,7 @@ export function Header() {
 									to={link.href}
 									className={buttonVariants({
 										variant: 'ghost',
-										className: 'justify-start',
+										className: 'justify-start text-white hover:text-white/90 hover:bg-white/10',
 									})}
 									onClick={() => setOpen(false)}
 								>
@@ -161,7 +172,7 @@ export function Header() {
 									key={link.label}
 									className={buttonVariants({
 										variant: 'ghost',
-										className: 'justify-start',
+										className: 'justify-start text-white hover:text-white/90 hover:bg-white/10',
 									})}
 									href={link.href}
 								>
@@ -178,7 +189,6 @@ export function Header() {
 						</div>
 					)}
 				</div>
-			</div>
 			</div>
 		</header>
 	);
