@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import { lazy, Suspense, useState, useCallback, useEffect } from "react";
+import { lazy, Suspense, useState, useCallback, useEffect, memo } from "react";
 import { useAuth } from "../../app/providers/AuthProvider";
 import { Header } from "../../Components/ui/header-2";
 import HeroSection from "../../Components/ui/hero-section-9";
@@ -8,13 +8,14 @@ import { FiUsers as Users, FiBriefcase as Briefcase, FiChevronDown } from "react
 import { AcademyFeaturesGridLite } from "../../Components/ui/academy-features-grid-lite";
 import { AcademyCourseCardsSection } from "../../Components/ui/AcademyCourseCardsSection";
 import { TubesBackground } from "../../Components/ui/neon-flow";
+import { LazyMount } from "../../Components/LazyMount";
+import { GlowingEffect } from "../../Components/ui/glowing-effect";
 
 const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
 
 const InteractiveRobotSpline = isMobile ? null : lazy(() =>
   import("../../Components/ui/interactive-3d-robot").then((m) => ({ default: m.InteractiveRobotSpline }))
 );
-const UiverseCard = isMobile ? null : lazy(() => import("../../Components/ui/uiverse-card"));
 const AcademyFeaturesGrid = isMobile ? null : lazy(() =>
   import("../../Components/ui/academy-features-grid").then((m) => ({ default: m.AcademyFeaturesGrid }))
 );
@@ -71,7 +72,7 @@ const reviewsRow2 = [
   { name: "Pooja S.", role: "Prompt Engineering Student", text: "Prompt Engineering changed everything. I'm 3x faster, building AI-powered tools, and charging premium freelance rates now.", rating: 5, highlight: "Prompt Engineering" },
 ];
 
-function ReviewCard({ r }) {
+const ReviewCard = memo(function ReviewCard({ r }) {
   const colors = {
     "Vibe Coding": "text-fuchsia-400 bg-fuchsia-500/10 border-fuchsia-500/20",
     "AI Automations": "text-violet-400 bg-violet-500/10 border-violet-500/20",
@@ -113,7 +114,7 @@ function ReviewCard({ r }) {
       </div>
     </div>
   );
-}
+});
 
 const faqData = [
   { q: "What is ExpoGraph Academy?", a: "ExpoGraph Academy teaches Vibe Coding, Prompt Engineering & AI Automations through structured lessons, smart prompts, and hands-on projects. You don't just watch — you build." },
@@ -127,7 +128,7 @@ const faqData = [
   { q: "How is ExpoGraph different from other platforms?", a: "Unlike generic platforms, ExpoGraph focuses on 3 cutting-edge courses — Vibe Coding, Prompt Engineering & AI Automations — with real client projects, smart AI prompts, and a resume builder. Everything you need to actually get hired, not just learn theory." },
 ];
 
-function SimpleFAQ() {
+const SimpleFAQ = memo(function SimpleFAQ() {
   const [openIndex, setOpenIndex] = useState(null);
   const toggle = useCallback((i) => setOpenIndex((prev) => (prev === i ? null : i)), []);
 
@@ -152,7 +153,7 @@ function SimpleFAQ() {
       ))}
     </div>
   );
-}
+});
 
 export default function AcademyPage() {
   const { token, role } = useAuth();
@@ -173,7 +174,7 @@ export default function AcademyPage() {
 
   return (
     <div
-      className="min-h-screen relative w-full"
+      className="academy-page min-h-screen relative w-full"
       style={{
         fontFamily: "var(--font-dm)",
         backgroundColor: "black",
@@ -182,7 +183,7 @@ export default function AcademyPage() {
     >
       <Header />
 
-      <div className="overflow-x-hidden">
+      <div className="academy-scroll-content overflow-x-hidden">
         {/* Hero Section — Interactive 3D Robot (desktop) / Static bg (mobile) */}
       <section className="relative w-full min-h-[100dvh] sm:min-h-screen h-screen overflow-hidden bg-black" style={{ backgroundColor: "#000000", maxWidth: "100vw" }}>
         {isMobile ? (
@@ -191,12 +192,19 @@ export default function AcademyPage() {
             style={{ backgroundImage: "url('/robot-hero-mobile.png')" }}
           />
         ) : (
-          <Suspense fallback={<HeroSkeleton />}>
-            <InteractiveRobotSpline
-              scene="https://prod.spline.design/PyzDhpQ9E5f1E3MT/scene.splinecode"
-              className="absolute inset-0 z-0"
-            />
-          </Suspense>
+          <LazyMount
+            placeholderHeight="100vh"
+            rootMargin="300px"
+            placeholder={<HeroSkeleton />}
+            className="absolute inset-0 z-0"
+          >
+            <Suspense fallback={<HeroSkeleton />}>
+              <InteractiveRobotSpline
+                scene="https://prod.spline.design/PyzDhpQ9E5f1E3MT/scene.splinecode"
+                className="absolute inset-0 z-0 w-full h-full"
+              />
+            </Suspense>
+          </LazyMount>
         )}
         <div
           className="absolute bottom-4 right-4 sm:bottom-5 sm:right-5 z-20 flex items-center justify-center gap-2 min-w-[180px] min-h-[48px] px-6 py-3 bg-black backdrop-blur-sm border border-white/10 rounded-full text-white/70 text-sm font-medium pointer-events-none"
@@ -264,7 +272,7 @@ export default function AcademyPage() {
       </section>
 
       {/* Learn & Get Knowledge Section (HeroSection) */}
-      <section id="learn" style={{ backgroundColor: "#000000" }}>
+      <section id="learn" className="academy-section-gpu heavy-section" style={{ backgroundColor: "#000000" }}>
         <HeroSection
           className="!bg-black"
           title={
@@ -360,10 +368,10 @@ export default function AcademyPage() {
         <CallToAction1 />
       </section>
 
-      {/* What Features Are There With Us */}
+      {/* What Features Are There With Us — with glowing effect */}
       <section
         id="features"
-        className="py-14 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 academy-section-gpu"
+        className="py-14 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 academy-section-gpu heavy-section"
         style={{ backgroundColor: "#000000" }}
       >
         <div className="text-center mb-10 sm:mb-12 md:mb-14">
@@ -380,21 +388,24 @@ export default function AcademyPage() {
             Powerful tools and real-world experience, all in one place — starting at just <span className="text-emerald-400 font-semibold">₹99</span>
           </p>
         </div>
-        <div className="mx-auto max-w-6xl">
-          {isMobile ? (
-            <AcademyFeaturesGridLite />
-          ) : (
-            <Suspense fallback={<SectionSkeleton height="h-64" />}>
-              <AcademyFeaturesGrid />
-            </Suspense>
-          )}
+        <div className="relative rounded-2xl sm:rounded-3xl mx-auto max-w-6xl overflow-hidden">
+          <GlowingEffect glow disabled={false} />
+          <div className="relative z-10">
+            {isMobile ? (
+              <AcademyFeaturesGridLite />
+            ) : (
+              <Suspense fallback={<SectionSkeleton height="h-64" />}>
+                <AcademyFeaturesGrid />
+              </Suspense>
+            )}
+          </div>
         </div>
       </section>
 
       {/* Certification Section */}
       <section
         id="certification"
-        className="py-14 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 academy-section-gpu"
+        className="py-14 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 academy-section-gpu heavy-section"
         style={{ backgroundColor: "#000000" }}
       >
         <div className="text-center mb-10 sm:mb-12 md:mb-14">
@@ -499,7 +510,7 @@ export default function AcademyPage() {
 
       {/* Pricing Advantage Banner */}
       <section
-        className="py-10 sm:py-12 md:py-16 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 academy-section-gpu"
+        className="py-10 sm:py-12 md:py-16 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 academy-section-gpu heavy-section"
         style={{ backgroundColor: "#000000" }}
       >
         <div className="max-w-5xl mx-auto">
@@ -544,7 +555,7 @@ export default function AcademyPage() {
       {/* User Reviews — Social Proof */}
       <section
         id="reviews"
-        className="py-14 sm:py-16 md:py-20 lg:py-24 overflow-hidden academy-section-gpu"
+        className="py-14 sm:py-16 md:py-20 lg:py-24 overflow-hidden academy-section-gpu heavy-section"
         style={{ backgroundColor: "#000000" }}
       >
         <div className="px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24">
@@ -598,120 +609,108 @@ export default function AcademyPage() {
         </div>
       </section>
 
-      {/* Community / Connect Section */}
+      {/* Community / Connect Section — Join the vibe */}
       <section
         id="connect"
-        className="py-14 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 academy-section-gpu"
-        style={{ backgroundColor: "#000000" }}
+        className="connect-section-vibe py-16 sm:py-20 md:py-24 lg:py-28 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 academy-section-gpu heavy-section"
       >
-        <div className="text-center mb-10 sm:mb-12 md:mb-14">
-          <p className="inline-block text-xs sm:text-sm font-medium tracking-widest uppercase text-emerald-400 mb-3 px-3 py-1 rounded-full border border-emerald-500/20 bg-emerald-500/5">
+        <div className="max-w-3xl mx-auto text-center mb-10 sm:mb-12">
+          <p className="inline-block text-[11px] sm:text-xs font-medium tracking-[0.2em] uppercase text-emerald-400/90 mb-4 px-3 py-1 rounded-full border border-emerald-500/15 bg-emerald-500/5">
             Stay Connected
           </p>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight tracking-tight">
             Join the{" "}
             <span className="bg-gradient-to-r from-emerald-400 via-green-400 to-teal-400 text-transparent bg-clip-text">
               vibe
             </span>
           </h2>
-          <p className="mt-3 sm:mt-4 text-sm sm:text-base md:text-lg text-white/60 max-w-2xl mx-auto">
-            You're not just a user — you're part of a growing family of builders, creators, and future leaders
+          <p className="mt-4 sm:mt-5 text-sm sm:text-base md:text-lg text-white/55 max-w-xl mx-auto leading-relaxed">
+            You're part of a growing family of builders and creators. Follow for tips, wins and career growth — one tap to join.
           </p>
+          {/* Lightweight stats strip — no heavy grid */}
+          <div className="mt-6 sm:mt-8 flex flex-wrap items-center justify-center gap-x-3 sm:gap-x-4 gap-y-2 text-sm text-white/40">
+            <span className="text-emerald-400/80 font-semibold">2K+ builders</span>
+            <span className="text-white/30">·</span>
+            <span>From ₹99 per course</span>
+            <span className="text-white/30">·</span>
+            <span>Real client projects</span>
+            <span className="text-white/30">·</span>
+            <span>24/7 community</span>
+            <span className="text-white/30">·</span>
+            <span>3 courses + pack</span>
+            <span className="text-white/30">·</span>
+            <span>MCA certificates</span>
+            <span className="text-white/30">·</span>
+            <span>Resume builder</span>
+          </div>
         </div>
 
-        <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12 mb-10 sm:mb-12">
-            {!isMobile && (
-              <div className="shrink-0">
-                <Suspense fallback={<div className="w-64 h-80 rounded-2xl bg-white/[0.04] animate-pulse" />}>
-                  <UiverseCard />
-                </Suspense>
+        <div className="max-w-4xl mx-auto">
+          <p className="text-center text-xs sm:text-sm text-white/40 mb-6 sm:mb-8">
+            Where builders connect
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+            <a
+              href="https://www.instagram.com/expograph_tech/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="connect-social-card group relative rounded-2xl border border-white/[0.08] p-5 sm:p-6 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+              style={{ background: "linear-gradient(135deg, rgba(253,29,29,0.05) 0%, rgba(252,176,69,0.05) 30%, rgba(131,58,180,0.05) 100%)" }}
+            >
+              <div className="absolute inset-0 rounded-2xl border border-fuchsia-500/10 opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity duration-200 pointer-events-none" />
+              <div className="relative">
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-3 border border-white/[0.06]" style={{ background: "linear-gradient(135deg, rgba(253,29,29,0.12) 0%, rgba(252,176,69,0.12) 30%, rgba(131,58,180,0.12) 100%)" }}>
+                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="url(#ig-grad)"><defs><linearGradient id="ig-grad" x1="0" y1="1" x2="1" y2="0"><stop offset="0%" stopColor="#FCAF45" /><stop offset="50%" stopColor="#E1306C" /><stop offset="100%" stopColor="#833AB4" /></linearGradient></defs><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+                </div>
+                <h3 className="text-base sm:text-lg font-semibold text-white mb-1">Instagram</h3>
+                <p className="text-xs sm:text-sm text-white/50 leading-relaxed mb-3">Reels, tips & user wins.</p>
+                <span className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-medium text-white/70 group-hover:text-[#E1306C] group-hover:gap-2 transition-all duration-200">
+                  Follow
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+                </span>
               </div>
-            )}
+            </a>
 
-            <div className="flex-1 w-full">
-              <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-6 sm:mb-8">
-                {[
-                  { value: "2K+", label: "Active Users", color: "text-emerald-400" },
-                  { value: "₹99", label: "Courses From", color: "text-green-400" },
-                  { value: "Real", label: "Client Projects", color: "text-teal-400" },
-                  { value: "24/7", label: "Community Access", color: "text-cyan-400" },
-                ].map((s) => (
-                  <div key={s.label} className="text-center rounded-2xl border border-white/[0.06] bg-white/[0.02] py-4 sm:py-5 px-3">
-                    <div className={`text-xl sm:text-2xl md:text-3xl font-bold ${s.color}`}>{s.value}</div>
-                    <div className="text-[11px] sm:text-xs text-white/60 mt-1">{s.label}</div>
-                  </div>
-                ))}
+            <a
+              href="https://www.youtube.com/@Expograph-3"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="connect-social-card group relative rounded-2xl border border-white/[0.08] p-5 sm:p-6 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+              style={{ borderColor: "rgba(255,0,0,0.12)", background: "rgba(255,0,0,0.03)" }}
+            >
+              <div className="absolute inset-0 rounded-2xl border border-red-500/15 opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity duration-200 pointer-events-none" />
+              <div className="relative">
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-3 border border-white/[0.06]" style={{ background: "rgba(255,0,0,0.08)", borderColor: "rgba(255,0,0,0.15)" }}>
+                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="#FF0000"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                </div>
+                <h3 className="text-base sm:text-lg font-semibold text-white mb-1">YouTube</h3>
+                <p className="text-xs sm:text-sm text-white/50 leading-relaxed mb-3">Tutorials & career talks.</p>
+                <span className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-medium text-white/70 group-hover:text-red-400 group-hover:gap-2 transition-all duration-200">
+                  Subscribe
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+                </span>
               </div>
+            </a>
 
-              {/* Social cards — Instagram, YouTube, LinkedIn */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-                {/* Instagram */}
-                <a
-                  href="https://www.instagram.com/expograph_tech/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group relative rounded-2xl border border-fuchsia-500/20 p-5 sm:p-6 transition-all duration-300 hover:border-fuchsia-500/40 hover:scale-[1.03] hover:shadow-lg hover:shadow-fuchsia-500/10"
-                  style={{ background: "linear-gradient(135deg, rgba(253,29,29,0.06) 0%, rgba(252,176,69,0.06) 30%, rgba(131,58,180,0.06) 100%)" }}
-                >
-                  <div className="absolute inset-0 rounded-2xl opacity-60 pointer-events-none" style={{ background: "linear-gradient(135deg, rgba(253,29,29,0.08) 0%, rgba(252,176,69,0.08) 30%, rgba(131,58,180,0.08) 100%)" }} />
-                  <div className="relative">
-                    <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-3 border border-fuchsia-500/20" style={{ background: "linear-gradient(135deg, rgba(253,29,29,0.15) 0%, rgba(252,176,69,0.15) 30%, rgba(131,58,180,0.15) 100%)" }}>
-                      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="url(#ig-grad)"><defs><linearGradient id="ig-grad" x1="0" y1="1" x2="1" y2="0"><stop offset="0%" stopColor="#FCAF45" /><stop offset="50%" stopColor="#E1306C" /><stop offset="100%" stopColor="#833AB4" /></linearGradient></defs><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
-                    </div>
-                    <h3 className="text-base sm:text-lg font-semibold text-white mb-1">Instagram</h3>
-                    <p className="text-xs sm:text-sm text-white/60 leading-relaxed mb-3">Reels, tips & user wins on Vibe Coding.</p>
-                    <span className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-medium group-hover:gap-2.5 transition-all" style={{ color: "#E1306C" }}>
-                      Follow
-                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
-                    </span>
-                  </div>
-                </a>
-
-                {/* YouTube */}
-                <a
-                  href="https://www.youtube.com/@Expograph-3"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group relative rounded-2xl border p-5 sm:p-6 transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-red-500/10"
-                  style={{ borderColor: "rgba(255,0,0,0.15)", background: "rgba(255,0,0,0.04)" }}
-                >
-                  <div className="absolute inset-0 rounded-2xl opacity-60 pointer-events-none" style={{ background: "linear-gradient(135deg, rgba(255,0,0,0.08) 0%, transparent 60%)" }} />
-                  <div className="relative">
-                    <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-3" style={{ background: "rgba(255,0,0,0.1)", border: "1px solid rgba(255,0,0,0.2)" }}>
-                      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="#FF0000"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-                    </div>
-                    <h3 className="text-base sm:text-lg font-semibold text-white mb-1">YouTube</h3>
-                    <p className="text-xs sm:text-sm text-white/60 leading-relaxed mb-3">Tutorials, course previews & career talks.</p>
-                    <span className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-medium group-hover:gap-2.5 transition-all" style={{ color: "#FF0000" }}>
-                      Subscribe
-                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
-                    </span>
-                  </div>
-                </a>
-
-                {/* LinkedIn */}
-                <a
-                  href="https://www.linkedin.com/company/109629393/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group relative rounded-2xl border border-blue-500/20 bg-blue-500/5 p-5 sm:p-6 transition-all duration-300 hover:bg-blue-500/10 hover:border-blue-500/40 hover:scale-[1.03] hover:shadow-lg hover:shadow-blue-500/10"
-                >
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-600/10 via-transparent to-transparent rounded-2xl opacity-60 pointer-events-none" />
-                  <div className="relative">
-                    <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center mb-3">
-                      <svg className="w-5 h-5 text-blue-400" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-                    </div>
-                    <h3 className="text-base sm:text-lg font-semibold text-white mb-1">LinkedIn</h3>
-                    <p className="text-xs sm:text-sm text-white/60 leading-relaxed mb-3">Professional updates & career opportunities.</p>
-                    <span className="inline-flex items-center gap-1.5 text-xs sm:text-sm text-blue-400 font-medium group-hover:gap-2.5 transition-all">
-                      Connect
-                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
-                    </span>
-                  </div>
-                </a>
+            <a
+              href="https://www.linkedin.com/company/109629393/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="connect-social-card group relative rounded-2xl border border-white/[0.08] bg-white/[0.02] p-5 sm:p-6 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-black hover:border-blue-500/25 hover:bg-blue-500/5"
+            >
+              <div className="absolute inset-0 rounded-2xl border border-blue-500/10 opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity duration-200 pointer-events-none" />
+              <div className="relative">
+                <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/15 flex items-center justify-center mb-3">
+                  <svg className="w-5 h-5 text-blue-400" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                </div>
+                <h3 className="text-base sm:text-lg font-semibold text-white mb-1">LinkedIn</h3>
+                <p className="text-xs sm:text-sm text-white/50 leading-relaxed mb-3">Updates & opportunities.</p>
+                <span className="inline-flex items-center gap-1.5 text-xs sm:text-sm text-blue-400/90 font-medium group-hover:gap-2 transition-all duration-200">
+                  Connect
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+                </span>
               </div>
-            </div>
+            </a>
           </div>
         </div>
       </section>
@@ -719,7 +718,7 @@ export default function AcademyPage() {
       {/* FAQs Section */}
       <section
         id="faqs"
-        className="py-14 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 academy-section-gpu"
+        className="py-14 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 academy-section-gpu heavy-section"
         style={{ backgroundColor: "#000000" }}
       >
         <div className="text-center mb-10 sm:mb-12 md:mb-14">

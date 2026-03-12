@@ -299,15 +299,17 @@ export default function FeatureDetailPage() {
         {/* Hero */}
         <section className="relative pt-28 sm:pt-32 pb-16 sm:pb-20 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24">
           <div className={`absolute inset-0 bg-gradient-to-b ${detail.hero.gradient} opacity-[0.06]`} />
-          <div className="relative max-w-4xl mx-auto text-center">
-            <button
-              onClick={() => navigate("/academy#features")}
-              className="inline-flex items-center gap-1.5 text-sm text-white/50 hover:text-white/80 transition-colors mb-8"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Back to Features
-            </button>
-
+          <div className="relative max-w-4xl mx-auto">
+            <div className="flex justify-start mb-8">
+              <button
+                onClick={() => navigate("/academy#features")}
+                className="inline-flex items-center gap-1.5 text-sm text-white/50 hover:text-white/80 transition-colors"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Back to Features
+              </button>
+            </div>
+            <div className="text-center">
             <span className={`inline-block text-xs sm:text-sm font-semibold tracking-widest uppercase px-3 py-1 rounded-full border mb-5 ${colors.bg} ${colors.text} ${colors.border}`}>
               {detail.hero.badge}
             </span>
@@ -326,6 +328,7 @@ export default function FeatureDetailPage() {
                   <div className="text-xs sm:text-sm text-white/40 mt-1">{s.label}</div>
                 </div>
               ))}
+            </div>
             </div>
           </div>
         </section>

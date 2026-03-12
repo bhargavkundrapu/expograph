@@ -188,6 +188,9 @@ export function AuthProvider({ children }) {
     setStatus("authed");
 
     validateTokenSilently(data.token);
+    if (data?.role === "Student") {
+      import("../../pages/lms/student/StudentHome").catch(() => {});
+    }
 
     return data;
   }

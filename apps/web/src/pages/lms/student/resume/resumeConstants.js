@@ -8,24 +8,29 @@ export const LIMITS = {
   projectsMax: 6,
   projectBulletsMax: 5,
   certificationsMax: 8,
+  achievementsMax: 10,
 };
 
 export const TEMPLATES = [
-  { id: "modern", name: "Modern", style: "modern" },
-  { id: "classic", name: "Classic", style: "classic" },
+  { id: "clean", name: "ATS Friendly", style: "ats" },
 ];
 
 export const INITIAL_DATA = {
   fullName: "",
+  professionalTitle: "",
   email: "",
   phone: "",
+  location: "",
   linkedinUrl: "",
   githubUrl: "",
   portfolioUrl: "",
+  profilePhotoUrl: "",
   summary: "",
   skills: [],
   education: [],
   experience: [],
   projects: [],
   certifications: [],
+  achievements: [],
+  templateId: "clean",
 };

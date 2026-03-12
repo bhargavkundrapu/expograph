@@ -74,6 +74,7 @@ export default function SuperAdminLayout() {
     { path: "/lms/superadmin/mentors", label: "Mentors", icon: FiUserCheck },
     { path: "/lms/superadmin/workshops", label: "Events", icon: FiCalendar },
     { path: "/lms/superadmin/certificates", label: "Certificates", icon: FiAward },
+    { path: "/lms/superadmin/certifications", label: "Certificate requests", icon: FiAward },
     { path: "/lms/superadmin/client-lab/real-world", label: "Real Client Lab", icon: FiBriefcase },
   ];
 

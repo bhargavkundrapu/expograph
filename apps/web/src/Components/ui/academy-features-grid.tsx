@@ -1,7 +1,6 @@
 "use client";
 
 import { Copy, FileText, FlaskConical, LayoutDashboard, Layers, ArrowRight } from "lucide-react";
-import { GlowingEffect } from "@/Components/ui/glowing-effect";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
 import React from "react";
@@ -21,11 +20,10 @@ export const featureData = [
     ),
     bullets: ["Copy-ready code prompts", "Error-fix snippets", "Command reference boxes"],
     accent: {
-      border: "border-violet-500/20",
+      borderBottom: "border-b-2 border-b-violet-500/40",
       iconBg: "bg-violet-500/10 border-violet-500/30",
       iconColor: "text-violet-400",
       tagBg: "bg-violet-500/10 text-violet-400",
-      glow: "from-violet-600/10 via-transparent to-transparent",
     },
   },
   {
@@ -42,11 +40,10 @@ export const featureData = [
     ),
     bullets: ["4-step guided wizard", "Professional templates", "Instant PDF download"],
     accent: {
-      border: "border-blue-500/20",
+      borderBottom: "border-b-2 border-b-blue-500/40",
       iconBg: "bg-blue-500/10 border-blue-500/30",
       iconColor: "text-blue-400",
       tagBg: "bg-blue-500/10 text-blue-400",
-      glow: "from-blue-600/10 via-transparent to-transparent",
     },
   },
   {
@@ -63,11 +60,10 @@ export const featureData = [
     ),
     bullets: ["Live client projects", "Mentor-reviewed submissions", "Portfolio-ready work"],
     accent: {
-      border: "border-purple-500/20",
+      borderBottom: "border-b-2 border-b-purple-500/40",
       iconBg: "bg-purple-500/10 border-purple-500/30",
       iconColor: "text-purple-400",
       tagBg: "bg-purple-500/10 text-purple-400",
-      glow: "from-purple-600/10 via-transparent to-transparent",
     },
   },
   {
@@ -84,11 +80,10 @@ export const featureData = [
     ),
     bullets: ["Visual progress tracking", "Smart course navigation", "Personalized dashboard"],
     accent: {
-      border: "border-fuchsia-500/20",
+      borderBottom: "border-b-2 border-b-fuchsia-500/40",
       iconBg: "bg-fuchsia-500/10 border-fuchsia-500/30",
       iconColor: "text-fuchsia-400",
       tagBg: "bg-fuchsia-500/10 text-fuchsia-400",
-      glow: "from-fuchsia-600/10 via-transparent to-transparent",
     },
   },
   {
@@ -106,11 +101,10 @@ export const featureData = [
     ),
     bullets: ["Goal-driven learning", "Video + hands-on setup", "Success checkpoints"],
     accent: {
-      border: "border-indigo-500/20",
+      borderBottom: "border-b-2 border-b-indigo-500/40",
       iconBg: "bg-indigo-500/10 border-indigo-500/30",
       iconColor: "text-indigo-400",
       tagBg: "bg-indigo-500/10 text-indigo-400",
-      glow: "from-indigo-600/10 via-transparent to-transparent",
     },
   },
 ];
@@ -120,22 +114,20 @@ export function AcademyFeaturesGrid() {
     <ul className="grid grid-cols-1 auto-rows-auto gap-3 sm:gap-4 md:grid-cols-12 lg:gap-4">
       {featureData.map((item) => (
         <li key={item.title} className={cn("list-none", item.area)}>
-          <Link to={`/features/${item.slug}`} className="block h-full group">
-            <div className={cn("relative h-full rounded-[1.25rem] border-[0.75px] p-2 md:rounded-[1.5rem] md:p-3 transition-transform duration-300 group-hover:scale-[1.02]", item.accent.border)}>
-              <GlowingEffect
-                spread={40}
-                glow={true}
-                disabled={false}
-                proximity={64}
-                inactiveZone={0.01}
-                borderWidth={3}
-              />
-              <div className={cn(
-                "relative flex h-full flex-col gap-4 rounded-xl border-[0.75px] bg-black/60 p-5 sm:p-6 shadow-sm backdrop-blur-sm",
-                item.accent.border
-              )}>
-                <div className={cn("absolute inset-0 bg-gradient-to-br opacity-60 pointer-events-none", item.accent.glow)} />
-                <div className="relative flex flex-col gap-3">
+          <Link to={`/features/${item.slug}`} className="block h-full">
+            <div
+              className={cn(
+                "h-full rounded-[1.25rem] border border-white/10 p-2 md:rounded-[1.5rem] md:p-3",
+                item.accent.borderBottom
+              )}
+            >
+              <div
+                className={cn(
+                  "flex h-full flex-col gap-4 rounded-xl border border-white/10 bg-black/70 p-5 sm:p-6",
+                  "border-b-0"
+                )}
+              >
+                <div className="flex flex-col gap-3">
                   <div className="flex items-center justify-between">
                     <div className={cn("w-fit rounded-lg border-[0.75px] p-2.5", item.accent.iconBg, item.accent.iconColor)}>
                       {item.icon}
@@ -160,9 +152,9 @@ export function AcademyFeaturesGrid() {
                     ))}
                   </ul>
                 </div>
-                <div className="relative flex items-center gap-1.5 text-xs sm:text-sm text-white/40 group-hover:text-white/70 transition-colors">
+                <div className="flex items-center gap-1.5 text-xs sm:text-sm text-white/50">
                   <span>Explore</span>
-                  <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+                  <ArrowRight className="h-3.5 w-3.5" />
                 </div>
               </div>
             </div>

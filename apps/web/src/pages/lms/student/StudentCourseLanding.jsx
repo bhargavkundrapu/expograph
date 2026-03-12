@@ -179,30 +179,40 @@ export default function StudentCourseLanding() {
   const fetchCourseData = async () => {
     try {
       setLoading(true);
-
-      const coursesListRes = await apiFetch("/api/v1/student/courses", { token }).catch(() => ({ data: [] }));
-      const coursesList = coursesListRes?.data || [];
       const normSlug = (s) => (s || "").toLowerCase().replace(/_/g, "-");
       const courseSlugNorm = normSlug(courseSlug);
+      // Fetch list and course detail in parallel so page loads faster
+      const [listRes, detailRes] = await Promise.all([
+        apiFetch("/api/v1/student/courses", { token }).catch(() => ({ data: [] })),
+        apiFetch(`/api/v1/student/courses/${courseSlug}`, { token }).catch(() => null),
+      ]);
+      const coursesList = listRes?.data ?? [];
       const courseFromList = coursesList.find(
         (c) => normSlug(c.slug) === courseSlugNorm || c.slug === courseSlug || normSlug(c.slug).startsWith(courseSlugNorm) || courseSlugNorm.startsWith(normSlug(c.slug))
       );
-      // AI Automations is always accessible — treat as enrolled
       const enrolled = courseFromList?.enrolled === true || isAiAutomationsSlug(courseSlug);
       setIsEnrolled(enrolled);
 
       let cData = null;
       let mods = [];
-
-      if (enrolled) {
-        const slugForApi = courseFromList?.slug || courseSlug;
-        const courseRes = await apiFetch(`/api/v1/student/courses/${slugForApi}`, { token }).catch(() => null);
-        cData = courseRes?.data?.course || courseRes?.data || null;
-        mods = cData?.modules || [];
+      const detailData = detailRes?.data?.course ?? detailRes?.data ?? null;
+      if (enrolled && detailData) {
+        cData = detailData;
+        mods = cData?.modules ?? [];
       }
-
       if (!cData && courseFromList) {
         cData = { ...courseFromList };
+      }
+      if (!cData && enrolled) {
+        const slugForApi = courseFromList?.slug || courseSlug;
+        if (slugForApi !== courseSlug) {
+          const fallbackRes = await apiFetch(`/api/v1/student/courses/${slugForApi}`, { token }).catch(() => null);
+          const fallback = fallbackRes?.data?.course ?? fallbackRes?.data ?? null;
+          if (fallback) {
+            cData = fallback;
+            mods = cData?.modules ?? [];
+          }
+        }
       }
       if (!cData) {
         cData = { title: courseSlug.replace(/-/g, " ").replace(/\b\w/g, l => l.toUpperCase()), slug: courseSlug };

@@ -109,6 +109,15 @@ export default function StudentLayout() {
     return () => clearTimeout(timer);
   }, []);
 
+  // Preload student home and courses chunks so navigation feels instant
+  useEffect(() => {
+    const t = setTimeout(() => {
+      preloadMap["/lms/student"]?.();
+      preloadMap["/lms/student/courses"]?.();
+    }, 100);
+    return () => clearTimeout(t);
+  }, []);
+
   if (isLessonPage) {
     return <Outlet />;
   }

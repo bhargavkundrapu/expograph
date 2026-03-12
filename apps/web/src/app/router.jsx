@@ -36,6 +36,7 @@ const SuperAdminFeedback = lazy(() => import("../pages/lms/superadmin/SuperAdmin
 const SuperAdminStudents = lazy(() => import("../pages/lms/superadmin/SuperAdminStudents"));
 const SuperAdminMentors = lazy(() => import("../pages/lms/superadmin/SuperAdminMentors"));
 const SuperAdminColleges = lazy(() => import("../pages/lms/superadmin/SuperAdminColleges"));
+const SuperAdminCertificationRequests = lazy(() => import("../pages/lms/superadmin/SuperAdminCertificationRequests"));
 
 const StudentHome = lazy(() => import("../pages/lms/student/StudentHome"));
 const StudentCourses = lazy(() => import("../pages/lms/student/StudentCourses"));
@@ -151,6 +152,7 @@ export const router = createBrowserRouter([
           
           // Certificates
           { path: "certificates", element: <L><SuperAdminCertificates /></L> },
+          { path: "certifications", element: <L><SuperAdminCertificationRequests /></L> },
           { path: "certificates/cards", element: <L><SuperAdminCertificates /></L> },
           { path: "certificates/list", element: <L><SuperAdminCertificates /></L> },
           { path: "certificates/create", element: <L><SuperAdminCertificates /></L> },

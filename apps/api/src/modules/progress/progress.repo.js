@@ -154,6 +154,38 @@ async function courseProgressBySlug({ tenantId, userId, courseSlug }) {
 }
 
 /**
+ * Course progress by course id (for certification eligibility).
+ * Same logic as courseProgressBySlug but keyed by course_id.
+ */
+async function courseProgressByCourseId({ tenantId, userId, courseId }) {
+  const totalRow = (await query(
+    `SELECT COUNT(*)::int AS total
+     FROM lessons l
+     JOIN course_modules m ON m.id = l.module_id AND m.tenant_id = l.tenant_id
+     JOIN courses c ON c.id = m.course_id AND c.tenant_id = m.tenant_id
+     WHERE c.tenant_id = $1 AND c.id = $2
+       AND c.status = 'published' AND m.status = 'published' AND l.status = 'published'`,
+    [tenantId, courseId]
+  )).rows[0];
+  const total = totalRow?.total ?? 0;
+  if (total === 0) return { total: 0, completed: 0, percent: 0, completedLessonIds: [] };
+
+  const { rows } = await query(
+    `SELECT lp.lesson_id
+     FROM lesson_progress lp
+     JOIN lessons l ON l.id = lp.lesson_id AND l.tenant_id = lp.tenant_id AND l.status = 'published'
+     JOIN course_modules m ON m.id = l.module_id AND m.tenant_id = l.tenant_id AND m.status = 'published'
+     JOIN courses c ON c.id = m.course_id AND c.tenant_id = m.tenant_id AND c.status = 'published'
+     WHERE lp.tenant_id = $1 AND lp.user_id = $2 AND c.id = $3 AND lp.completed_at IS NOT NULL`,
+    [tenantId, userId, courseId]
+  );
+  const completedLessonIds = rows.map((r) => r.lesson_id);
+  const completed = completedLessonIds.length;
+  const percent = Math.round((completed / total) * 100);
+  return { total, completed, percent, completedLessonIds };
+}
+
+/**
  * Overall progress: completed published lessons / total published lessons (all courses).
  * Used for Client Lab eligibility (>= 75%).
  */
@@ -232,6 +264,7 @@ module.exports = {
   completeLesson,
   getSummary,
   courseProgressBySlug,
+  courseProgressByCourseId,
   getOverallProgressPercent,
   completedAllRequiredCourses,
   getLeaderboard,

@@ -1056,6 +1056,8 @@ module.exports = {
   getProgress,
   getEvents,
   listEnrolledCourses,
+  getEnrolledCourseIds,
+  hasEnrollmentForCourse,
   hasCourseAccess,
   hasAllPackOrAllThreeCourses,
   enhanceCourseWithProgress,

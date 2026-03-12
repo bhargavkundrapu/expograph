@@ -12,9 +12,10 @@
  * />
  */
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { useThreePauseOnHiddenOrOffscreen } from '../../hooks/useThreePauseOnHiddenOrOffscreen';
 
 interface ThreeSceneProps {
   camera?: {
@@ -55,6 +56,14 @@ function disposeScene(scene: THREE.Scene) {
   });
 }
 
+/** Safe DPR cap for medium viewports to reduce GPU load (stable, no FPS-based oscillation). */
+function getPixelRatio(): number {
+  if (typeof window === 'undefined') return 1;
+  const dpr = window.devicePixelRatio || 1;
+  const isMedium = typeof window.matchMedia !== 'undefined' && window.matchMedia('(min-width: 768px) and (max-width: 1280px)').matches;
+  return isMedium ? Math.min(dpr, 1.5) : Math.min(dpr, 2);
+}
+
 export function ThreeScene({
   camera = { position: [0, 0, 5], fov: 75 },
   controls = true,
@@ -63,6 +72,9 @@ export function ThreeScene({
   style,
 }: ThreeSceneProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const [sceneContext, setSceneContext] = useState<{ renderer: THREE.WebGLRenderer; tick: (time: number) => void } | null>(null);
+
+  useThreePauseOnHiddenOrOffscreen(containerRef, sceneContext);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -80,7 +92,7 @@ export function ThreeScene({
     cam.position.set(...(camera.position ?? [0, 0, 5]));
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setPixelRatio(getPixelRatio());
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     container.appendChild(renderer.domElement);
 
@@ -116,18 +128,17 @@ export function ThreeScene({
     const ro = new ResizeObserver(resize);
     ro.observe(container);
 
-    let raf = 0;
-    const loop = () => {
-      raf = window.requestAnimationFrame(loop);
+    const tick = () => {
       orbit?.update();
       onFrame?.(ctx);
       renderer.render(scene, cam);
     };
-    loop();
+    setSceneContext({ renderer, tick });
 
     return () => {
-      window.cancelAnimationFrame(raf);
+      setSceneContext(null);
       ro.disconnect();
+      renderer.setAnimationLoop(null);
       try {
         dispose?.();
       } catch {

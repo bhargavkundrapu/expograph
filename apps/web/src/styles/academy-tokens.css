@@ -93,6 +93,9 @@
 
 #reviews {
   contain: layout style paint;
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 }
 
 #reviews .animate-\[scrollLeft_60s_linear_infinite\],

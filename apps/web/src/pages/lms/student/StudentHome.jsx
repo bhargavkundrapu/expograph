@@ -294,17 +294,28 @@ export default function StudentHome() {
   }, [token]);
 
   const fetchDashboardData = async () => {
+    setLoading(true);
+    const [scheduleSettled, courseSettled, progressSettled, eventsSettled] = await Promise.allSettled([
+      apiFetch("/api/v1/student/schedule", { token }),
+      apiFetch("/api/v1/student/current-course", { token }),
+      apiFetch("/api/v1/student/progress", { token }),
+      apiFetch("/api/v1/student/events", { token }),
+    ]);
+    const scheduleRes = scheduleSettled.status === "fulfilled" ? scheduleSettled.value : null;
+    const courseRes = courseSettled.status === "fulfilled" ? courseSettled.value : null;
+    const progressRes = progressSettled.status === "fulfilled" ? progressSettled.value : null;
+    const eventsRes = eventsSettled.status === "fulfilled" ? eventsSettled.value : null;
+    if (scheduleSettled.status === "rejected") console.error("Dashboard schedule failed:", scheduleSettled.reason);
+    if (courseSettled.status === "rejected") console.error("Dashboard current-course failed:", courseSettled.reason);
+    if (progressSettled.status === "rejected") console.error("Dashboard progress failed:", progressSettled.reason);
+    if (eventsSettled.status === "rejected") console.error("Dashboard events failed:", eventsSettled.reason);
     try {
-      setLoading(true);
-      const [scheduleRes, courseRes, progressRes, eventsRes] = await Promise.all([
-        apiFetch("/api/v1/student/schedule", { token }).catch(() => ({ data: [] })),
-        apiFetch("/api/v1/student/current-course", { token }).catch(() => ({ data: null })),
-        apiFetch("/api/v1/student/progress", { token }).catch(() => ({ data: { completed: 0, streak: 0, consistency: 0 } })),
-        apiFetch("/api/v1/student/events", { token }).catch(() => ({ data: [] })),
-      ]);
-      const scheduleData = scheduleRes?.data || [];
-      if (scheduleData.length === 0 && courseRes?.data) {
-        const course = courseRes.data;
+      const scheduleData = scheduleRes?.data ?? [];
+      const courseData = courseRes?.data ?? null;
+      const progressData = progressRes?.data ?? { completed: 0, streak: 0, consistency: 0 };
+      const eventsData = eventsRes?.data ?? [];
+      if (scheduleData.length === 0 && courseData) {
+        const course = courseData;
         setSchedule([{
           id: `schedule-1`,
           title: course.moduleName || "Continue Learning",
@@ -320,11 +331,9 @@ export default function StudentHome() {
       } else {
         setSchedule(scheduleData);
       }
-      const courseData = courseRes?.data || null;
-      const progressData = progressRes?.data || { completed: 0, streak: 0, consistency: 0 };
       setCurrentCourse(courseData);
       setProgress(progressData);
-      setEvents(eventsRes?.data || []);
+      setEvents(eventsData);
       if (courseData) setLastContinue(courseData);
       const pct = progressData.completed ?? 0;
       for (const m of [25, 50, 75, 100]) {
@@ -336,7 +345,7 @@ export default function StudentHome() {
         }
       }
     } catch (error) {
-      console.error("Failed to fetch dashboard data:", error);
+      console.error("Failed to process dashboard data:", error);
     } finally {
       setLoading(false);
     }

@@ -65,12 +65,12 @@ async function approveById({ approvalId, approvedByUserId }) {
       throw new HttpError(500, "Failed to enroll user", { originalError: e.message });
     }
 
-    // Step 4: Mark approval as approved (inside transaction so it rolls back on failure)
+    // Step 4: Mark approval as approved and store created user_id
     await client.query(
       `UPDATE approvals
-       SET status = 'approved', approved_by = $2, approved_at = now(), updated_at = now()
+       SET status = 'approved', approved_by = $2, approved_at = now(), updated_at = now(), user_id = $3
        WHERE id = $1 AND status = 'pending'`,
-      [approvalId, approvedByUserId]
+      [approvalId, approvedByUserId, userId]
     );
 
     return userId;

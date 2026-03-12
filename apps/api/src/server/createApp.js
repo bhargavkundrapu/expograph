@@ -17,6 +17,8 @@ const { router: podcastsAdmin } = require("../modules/podcasts/podcasts.routes.a
 const { router: certAdmin } = require("../modules/certificates/certificates.routes.admin");
 const { router: certPublic } = require("../modules/certificates/certificates.routes.public");
 const { router: certLms } = require("../modules/certificates/certificates.routes.lms");
+const { router: certificationsRouter } = require("../modules/certifications/certifications.routes");
+const { router: certificationsAdminRouter } = require("../modules/certifications/certifications.routes.admin");
 
 const { router: featureFlagsAdmin } = require("../modules/featureFlags/featureFlags.routes.admin");
 const { router: featureFlagsPublic } = require("../modules/featureFlags/featureFlags.routes.public");
@@ -125,10 +127,12 @@ app.use(cors(corsOptions));
 app.options(/.*/, cors(corsOptions));
 
 
-  // Request timeout — kill any request that takes longer than 30s
+  // Request timeout — 60s for /api/v1/me (heavy aggregate), 30s for others
+  const ME_PATH = "/api/v1/me";
   app.use((req, res, next) => {
-    req.setTimeout(30_000);
-    res.setTimeout(30_000, () => {
+    const ms = req.method === "GET" && req.path === ME_PATH ? 60_000 : 30_000;
+    req.setTimeout(ms);
+    res.setTimeout(ms, () => {
       if (!res.headersSent) {
         res.status(503).json({ ok: false, error: "Request timeout" });
       }
@@ -180,6 +184,7 @@ app.use(
 
   // Mount /api/v1/student, /api/v1/lms, /api/v1/mentor etc. BEFORE generic /api/v1 (publicContentRouter)
   // so POST .../lessons/:slug/feedback and other student routes match on localhost and production
+  app.use("/api/v1/certifications", certificationsRouter);
   app.use("/api/v1/lms", progressRouter);
   app.use("/api/v1/lms", lmsSubmissionsRouter);
   app.use("/api/v1/lms", certLms);
@@ -205,6 +210,7 @@ app.use(
   app.use("/api/v1/admin", workshopsAdmin);
   app.use("/api/v1/admin", podcastsAdmin);
   app.use("/api/v1/admin", certAdmin);
+  app.use("/api/v1/admin/certifications", certificationsAdminRouter);
   app.use("/api/v1/admin", featureFlagsAdmin);
   app.use("/api/v1/admin/approvals", approvalsAdminRouter);
   app.use("/api/v1/admin/feedback", feedbackAdminRouter);
@@ -233,30 +239,57 @@ app.get("/api/v1/me", requireAuth, async (req, res, next) => {
     const userId = req.auth?.userId;
     const tenantId = req.tenant?.id ?? req.auth?.tenantId;
 
-    const permissions = await listPermissionsForUser({ tenantId, userId });
-
     let overallProgressPercent = 0;
     let eligibleClientLab = false;
     let clientLabChecklist = null;
+
+    const permissionsPromise = listPermissionsForUser({ tenantId, userId });
+
     if (req.auth?.role === "Student") {
-      overallProgressPercent = await progressRepo.getOverallProgressPercent({ tenantId, userId });
-      await clientLabEligibilityService.recomputeEligibility({ tenantId, userId });
-      const eligibility = await clientLabEligibilityRepo.getEligibility({ userId });
-      eligibleClientLab = !!eligibility.eligible_client_lab;
-      try {
-        clientLabChecklist = await clientLabEligibilityService.getClientLabChecklist({ tenantId, userId });
-      } catch (e) {
-        console.error("getClientLabChecklist failed:", e?.message);
-        clientLabChecklist = { courses: [], hasAccess: false, allPurchased: false, allCompleted: false, eligible: false };
-      }
+      const checklistPromise = (async () => {
+        try {
+          return await clientLabEligibilityService.getClientLabChecklist({ tenantId, userId });
+        } catch (e) {
+          console.error("getClientLabChecklist failed:", e?.message);
+          return { courses: [], hasAccess: false, allPurchased: false, allCompleted: false, eligible: false };
+        }
+      })();
+      const [permissions, progressPercent, eligibilityResult, rawChecklist] = await Promise.all([
+        permissionsPromise,
+        progressRepo.getOverallProgressPercent({ tenantId, userId }),
+        (async () => {
+          await clientLabEligibilityService.recomputeEligibility({ tenantId, userId });
+          return clientLabEligibilityRepo.getEligibility({ userId });
+        })(),
+        checklistPromise,
+      ]);
+      overallProgressPercent = progressPercent ?? 0;
+      eligibleClientLab = !!eligibilityResult?.eligible_client_lab;
+      clientLabChecklist = rawChecklist;
       if (!clientLabChecklist || typeof clientLabChecklist !== "object" || !Array.isArray(clientLabChecklist.courses)) {
         clientLabChecklist = { courses: [], hasAccess: false, allPurchased: false, allCompleted: false, eligible: false };
       }
       if (clientLabChecklist.hasAccess === undefined) {
         clientLabChecklist = { ...clientLabChecklist, hasAccess: !!clientLabChecklist.eligible };
       }
+      if (res.headersSent) return;
+      return res.json({
+        ok: true,
+        data: {
+          userId,
+          tenantId,
+          membershipId: req.auth?.membershipId,
+          role: req.auth?.role,
+          permissions,
+          overall_progress_percent: overallProgressPercent,
+          eligible_client_lab: eligibleClientLab,
+          client_lab_checklist: clientLabChecklist,
+        },
+      });
     }
 
+    const permissions = await permissionsPromise;
+    if (res.headersSent) return;
     res.json({
       ok: true,
       data: {
@@ -286,6 +319,7 @@ app.get("/api/v1/me", requireAuth, async (req, res, next) => {
   );
   // Helper: set CORS on response when Origin is allowed (for 404 and error responses)
   function setCorsIfAllowed(req, res) {
+    if (res.headersSent) return;
     const origin = req.get("Origin");
     if (origin && allowlist.has(origin)) {
       res.setHeader("Access-Control-Allow-Origin", origin);

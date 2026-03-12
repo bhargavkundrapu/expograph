@@ -21,6 +21,7 @@ import {
   FiCalendar,
   FiChevronsLeft,
   FiChevronsRight,
+  FiKey,
 } from "react-icons/fi";
 
 const STATUS_BADGE = {
@@ -40,14 +41,14 @@ export default function SuperAdminApprovals() {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [showFilters, setShowFilters] = useState(false);
-  const [filters, setFilters] = useState({ name: "", email: "", phone: "", college: "", dateFrom: "", dateTo: "" });
+  const [filters, setFilters] = useState({ name: "", email: "", phone: "", college: "", userId: "", dateFrom: "", dateTo: "" });
 
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
   const activeFilterCount = Object.values(filters).filter((v) => v.trim()).length + (searchQuery.trim() ? 1 : 0);
   const clearFilters = () => {
-    setFilters({ name: "", email: "", phone: "", college: "", dateFrom: "", dateTo: "" });
+    setFilters({ name: "", email: "", phone: "", college: "", userId: "", dateFrom: "", dateTo: "" });
     setSearchQuery("");
     setCurrentPage(1);
   };
@@ -80,7 +81,8 @@ export default function SuperAdminApprovals() {
           a.customer_name?.toLowerCase().includes(q) ||
           a.customer_email?.toLowerCase().includes(q) ||
           a.customer_phone?.includes(q) ||
-          a.customer_college?.toLowerCase().includes(q)
+          a.customer_college?.toLowerCase().includes(q) ||
+          (a.user_id && String(a.user_id).toLowerCase().includes(q))
       );
     }
     const fn = filters.name.trim().toLowerCase();
@@ -91,6 +93,8 @@ export default function SuperAdminApprovals() {
     if (fp) result = result.filter((a) => a.customer_phone?.includes(fp));
     const fc = filters.college.trim().toLowerCase();
     if (fc) result = result.filter((a) => a.customer_college?.toLowerCase().includes(fc));
+    const fuid = filters.userId.trim().toLowerCase();
+    if (fuid) result = result.filter((a) => a.user_id && String(a.user_id).toLowerCase().includes(fuid));
     if (filters.dateFrom) {
       const from = new Date(filters.dateFrom); from.setHours(0, 0, 0, 0);
       result = result.filter((a) => new Date(a.created_at) >= from);
@@ -168,7 +172,7 @@ export default function SuperAdminApprovals() {
               <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
               <input
                 type="text"
-                placeholder="Quick search by name, email, phone, college..."
+                placeholder="Quick search by name, email, phone, college, user ID..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
@@ -211,6 +215,14 @@ export default function SuperAdminApprovals() {
                     )}
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div>
+                      <label className="block text-xs font-medium text-slate-600 mb-1.5">User ID</label>
+                      <div className="relative">
+                        <FiKey className={ICON_CLS} />
+                        <input type="text" placeholder="Filter by user ID" value={filters.userId}
+                          onChange={(e) => setFilters((f) => ({ ...f, userId: e.target.value }))} className={INPUT_CLS + " font-mono text-xs"} />
+                      </div>
+                    </div>
                     <div>
                       <label className="block text-xs font-medium text-slate-600 mb-1.5">Name</label>
                       <div className="relative">
@@ -321,7 +333,10 @@ export default function SuperAdminApprovals() {
                         <span className="text-slate-400">{a.customer_college}</span>
                       )}
                     </div>
-                    <p className="text-slate-400 text-xs">
+                    <p className="text-slate-400 text-xs flex flex-wrap items-center gap-x-4 gap-y-1">
+                      {a.user_id && (
+                        <span className="font-mono text-slate-500">User ID: {String(a.user_id).slice(0, 8)}…</span>
+                      )}
                       {new Date(a.created_at).toLocaleString()}
                     </p>
                   </div>

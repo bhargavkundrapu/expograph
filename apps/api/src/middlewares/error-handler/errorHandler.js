@@ -1,5 +1,6 @@
 // apps/api/src/middlewares/errorHandler.js
 function notFound(req, res) {
+  if (res.headersSent) return;
   res.status(404).json({
     ok: false,
     error: "Route not found",
@@ -9,6 +10,7 @@ function notFound(req, res) {
 
 // IMPORTANT: 4 params must be there, else Express won't treat as error middleware
 function errorHandler(err, req, res, next) {
+  if (res.headersSent) return next(err);
   const status = err.statusCode || err.status || 500;
   let message = err.message || "Internal Server Error";
   let details = err.details || undefined;
@@ -42,6 +44,17 @@ function errorHandler(err, req, res, next) {
   } else if (err.message && (err.message.includes("is not defined") || (err.message.includes("relation") && err.message.includes("does not exist")))) {
     message = "Database schema may be outdated. Run: cd apps/api && npm run migrate";
     details = { originalError: err.message };
+  } else if (err.code === "23505" || (err.message && err.message.includes("unique constraint"))) {
+    const msg = err.message || "";
+    if (err.constraint === "users_phone_key" || msg.includes("users_phone_key")) {
+      status = 409;
+      message = "Phone number already in use";
+    } else if (err.constraint === "users_email_key" || msg.includes("users_email_key")) {
+      status = 409;
+      message = "Email already in use";
+    } else {
+      message = "A record with this value already exists";
+    }
   }
 
   // Server-side log (Render logs lo visible)
@@ -52,12 +65,14 @@ function errorHandler(err, req, res, next) {
     stack: process.env.NODE_ENV === "development" ? err.stack : undefined,
   });
 
-  res.status(status).json({
-    ok: false,
-    error: message,
-    details: details,
-    requestId: req.id,
-  });
+  if (!res.headersSent) {
+    res.status(status).json({
+      ok: false,
+      error: message,
+      details: details,
+      requestId: req.id,
+    });
+  }
 }
 
 module.exports = { notFound, errorHandler };

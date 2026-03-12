@@ -176,6 +176,19 @@ export default function ResumeForm({ data, onChange, errors = {} }) {
     update("certifications", (d.certifications || []).filter((_, j) => j !== i));
   };
 
+  const addAchievement = () => {
+    if ((d.achievements || []).length >= LIMITS.achievementsMax) return;
+    update("achievements", [...(d.achievements || []), ""]);
+  };
+  const setAchievement = (i, v) => {
+    const arr = [...(d.achievements || [])];
+    arr[i] = v.slice(0, 300);
+    update("achievements", arr);
+  };
+  const removeAchievement = (i) => {
+    update("achievements", (d.achievements || []).filter((_, j) => j !== i));
+  };
+
   return (
     <div className="space-y-8">
       <section>
@@ -193,6 +206,16 @@ export default function ResumeForm({ data, onChange, errors = {} }) {
               placeholder="Your full name"
             />
             {errors.fullName && <p className="text-red-600 text-sm mt-1">{errors.fullName}</p>}
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1">Professional title</label>
+            <input
+              type="text"
+              value={d.professionalTitle || ""}
+              onChange={(e) => update("professionalTitle", e.target.value.slice(0, 120))}
+              className="w-full border border-slate-300 rounded-xl px-3 py-2"
+              placeholder="e.g. Marketing Manager"
+            />
           </div>
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">Email *</label>
@@ -213,6 +236,16 @@ export default function ResumeForm({ data, onChange, errors = {} }) {
               onChange={(e) => update("phone", e.target.value.slice(0, 80))}
               className="w-full border border-slate-300 rounded-xl px-3 py-2"
               placeholder="+1 234 567 8900"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1">Location</label>
+            <input
+              type="text"
+              value={d.location || ""}
+              onChange={(e) => update("location", e.target.value.slice(0, 120))}
+              className="w-full border border-slate-300 rounded-xl px-3 py-2"
+              placeholder="City, Country"
             />
           </div>
           <div className="sm:col-span-2 space-y-2">
@@ -239,6 +272,13 @@ export default function ResumeForm({ data, onChange, errors = {} }) {
               onChange={(e) => update("portfolioUrl", e.target.value.slice(0, 500))}
               className="w-full border border-slate-300 rounded-xl px-3 py-2"
               placeholder="Portfolio URL"
+            />
+            <input
+              type="url"
+              value={d.profilePhotoUrl || ""}
+              onChange={(e) => update("profilePhotoUrl", e.target.value.slice(0, 500))}
+              className="w-full border border-slate-300 rounded-xl px-3 py-2"
+              placeholder="Profile photo URL (optional, used in Modern template)"
             />
           </div>
         </div>
@@ -550,6 +590,38 @@ export default function ResumeForm({ data, onChange, errors = {} }) {
           className="inline-flex items-center gap-2 px-3 py-2 text-indigo-600 hover:bg-indigo-50 rounded-xl text-sm"
         >
           <FiPlus className="w-4 h-4" /> Add certification
+        </button>
+      </section>
+
+      <section>
+        <h3 className="text-lg font-semibold text-slate-800 mb-3 flex items-center gap-2">
+          <FiAward className="w-5 h-5" /> Achievements (max {LIMITS.achievementsMax})
+        </h3>
+        {(d.achievements || []).map((a, i) => (
+          <div key={i} className="flex gap-2 mb-2">
+            <input
+              type="text"
+              value={typeof a === "string" ? a : ""}
+              onChange={(e) => setAchievement(i, e.target.value)}
+              className="flex-1 border border-slate-300 rounded-xl px-3 py-2"
+              placeholder="Achievement or award"
+            />
+            <button
+              type="button"
+              onClick={() => removeAchievement(i)}
+              className="p-2 text-red-600 hover:bg-red-50 rounded-xl"
+            >
+              <FiTrash2 className="w-4 h-4" />
+            </button>
+          </div>
+        ))}
+        <button
+          type="button"
+          onClick={addAchievement}
+          disabled={(d.achievements || []).length >= LIMITS.achievementsMax}
+          className="inline-flex items-center gap-2 px-3 py-2 text-indigo-600 hover:bg-indigo-50 rounded-xl text-sm"
+        >
+          <FiPlus className="w-4 h-4" /> Add achievement
         </button>
       </section>
     </div>

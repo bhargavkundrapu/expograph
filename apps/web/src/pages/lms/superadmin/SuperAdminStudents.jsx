@@ -74,6 +74,7 @@ export default function SuperAdminStudents() {
     email: "",
     phone: "",
     college: "",
+    userId: "",
     dateFrom: "",
     dateTo: "",
   });
@@ -84,7 +85,7 @@ export default function SuperAdminStudents() {
   const activeFilterCount = Object.values(filters).filter((v) => v.trim()).length + (searchQuery.trim() ? 1 : 0);
 
   const clearFilters = () => {
-    setFilters({ name: "", email: "", phone: "", college: "", dateFrom: "", dateTo: "" });
+    setFilters({ name: "", email: "", phone: "", college: "", userId: "", dateFrom: "", dateTo: "" });
     setSearchQuery("");
     setCurrentPage(1);
   };
@@ -159,7 +160,8 @@ export default function SuperAdminStudents() {
           s.full_name?.toLowerCase().includes(q) ||
           s.email?.toLowerCase().includes(q) ||
           s.phone?.includes(q) ||
-          s.college?.toLowerCase().includes(q)
+          s.college?.toLowerCase().includes(q) ||
+          (s.id && String(s.id).toLowerCase().includes(q))
       );
     }
 
@@ -175,6 +177,9 @@ export default function SuperAdminStudents() {
 
     const fc = filters.college.trim().toLowerCase();
     if (fc) result = result.filter((s) => s.college?.toLowerCase().includes(fc));
+
+    const fuid = filters.userId.trim().toLowerCase();
+    if (fuid) result = result.filter((s) => s.id && String(s.id).toLowerCase().includes(fuid));
 
     if (filters.dateFrom) {
       const from = new Date(filters.dateFrom);
@@ -572,7 +577,7 @@ export default function SuperAdminStudents() {
                 <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                 <input
                   type="text"
-                  placeholder="Quick search by name, email, phone, college..."
+                  placeholder="Quick search by name, email, phone, college, user ID..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
@@ -620,6 +625,20 @@ export default function SuperAdminStudents() {
                       )}
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {/* User ID */}
+                      <div>
+                        <label className="block text-xs font-medium text-slate-600 mb-1.5">User ID</label>
+                        <div className="relative">
+                          <FiKey className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                          <input
+                            type="text"
+                            placeholder="Filter by user ID"
+                            value={filters.userId}
+                            onChange={(e) => setFilters((f) => ({ ...f, userId: e.target.value }))}
+                            className="w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 transition-all font-mono text-xs"
+                          />
+                        </div>
+                      </div>
                       {/* Name */}
                       <div>
                         <label className="block text-xs font-medium text-slate-600 mb-1.5">Name</label>
@@ -787,8 +806,9 @@ export default function SuperAdminStudents() {
                               <span className="text-slate-400 truncate">{student.college}</span>
                             )}
                           </div>
-                          <p className="text-slate-400 text-xs">
-                            Joined {new Date(student.created_at).toLocaleDateString()}
+                          <p className="text-slate-400 text-xs flex items-center gap-2 flex-wrap">
+                            <span>ID: <code className="font-mono text-slate-500">{String(student.id).slice(0, 8)}…</code></span>
+                            <span>Joined {new Date(student.created_at).toLocaleDateString()}</span>
                           </p>
                         </div>
                       </div>
@@ -1164,8 +1184,18 @@ export default function SuperAdminStudents() {
                 <h3 className="text-lg font-semibold text-slate-900 mb-4">Student Information</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="bg-slate-50 rounded-lg p-4">
-                    <div className="text-xs font-semibold text-slate-500 mb-1">Student ID</div>
-                    <div className="text-sm font-medium text-slate-900">{student.id}</div>
+                    <div className="text-xs font-semibold text-slate-500 mb-1">User ID</div>
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-sm font-medium text-slate-900 font-mono truncate">{student.id}</span>
+                      <button
+                        type="button"
+                        onClick={() => copyToClipboard(student.id)}
+                        className="p-1.5 rounded-md hover:bg-slate-200 transition-colors shrink-0"
+                        title="Copy user ID"
+                      >
+                        <FiCopy className="w-4 h-4 text-slate-500" />
+                      </button>
+                    </div>
                   </div>
                   <div className="bg-slate-50 rounded-lg p-4">
                     <div className="text-xs font-semibold text-slate-500 mb-1">Full Name</div>
