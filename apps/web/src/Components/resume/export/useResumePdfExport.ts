@@ -230,7 +230,7 @@ export function useResumePdfExport() {
       return;
     }
     const styleStr =
-      "body{margin:0;background:#fff;color:#000;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.45;} " +
+      "body{margin:0;background:#fff;color:#000;font-family:Arial,Helvetica,sans-serif;font-size:9px;line-height:1.35;} " +
       ".resume-print-wrap{max-width:720px;margin:0 auto;padding:32px 36px;box-sizing:border-box;}";
     win.document.write(
       `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Resume</title><style>${styleStr}</style></head><body class="resume-print-wrap">${element.innerHTML}</body></html>`

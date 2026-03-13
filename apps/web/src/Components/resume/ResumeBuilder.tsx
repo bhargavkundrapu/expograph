@@ -80,7 +80,7 @@ export default function ResumeBuilder({
                 maxWidth: 720,
                 padding: "32px 36px",
                 fontFamily: "Arial, Helvetica, sans-serif",
-                fontSize: 10,
+                fontSize: 8,
                 lineHeight: 1.35,
               }}
             >

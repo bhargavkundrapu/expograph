@@ -21,26 +21,26 @@ const font = "'Times New Roman', Times, Georgia, serif";
 const s = {
   root: {
     fontFamily: font,
-    fontSize: 11,
-    lineHeight: 1.4,
+    fontSize: 8,
+    lineHeight: 1.35,
     color: "#000000",
     backgroundColor: "#ffffff",
   } as React.CSSProperties,
   name: {
     fontFamily: font,
-    fontSize: 20,
+    fontSize: 14,
     fontWeight: 700,
     color: "#000000",
     textAlign: "center" as const,
-    marginBottom: 4,
+    marginBottom: 3,
     marginTop: 0,
   } as React.CSSProperties,
   contactWrap: {
     textAlign: "center" as const,
-    fontSize: 10,
+    fontSize: 8,
     color: "#000000",
-    marginBottom: 14,
-    paddingBottom: 10,
+    marginBottom: 10,
+    paddingBottom: 6,
     borderBottom: "1px solid #000000",
   } as React.CSSProperties,
   contactLine: {
@@ -60,15 +60,15 @@ const s = {
   } as React.CSSProperties,
   sectionTitle: {
     fontFamily: font,
-    fontSize: 11,
+    fontSize: 8,
     fontWeight: 700,
     textTransform: "uppercase" as const,
     color: "#000000",
-    marginTop: 14,
+    marginTop: 10,
     marginBottom: 0,
     marginLeft: 0,
     marginRight: 0,
-    paddingBottom: 6,
+    paddingBottom: 4,
     borderBottom: "1px solid #000000",
   } as React.CSSProperties,
   sectionFirst: { marginTop: 0 } as React.CSSProperties,
@@ -82,7 +82,7 @@ const s = {
   bold: { fontWeight: 700, color: "#000000" } as React.CSSProperties,
   italic: { fontStyle: "italic" as const, color: "#000000" } as React.CSSProperties,
   regular: { fontWeight: 400, color: "#000000" } as React.CSSProperties,
-  date: { fontSize: 10, whiteSpace: "nowrap" as const, flexShrink: 0 } as React.CSSProperties,
+  date: { fontSize: 8, whiteSpace: "nowrap" as const, flexShrink: 0 } as React.CSSProperties,
   bullets: {
     marginLeft: 18,
     paddingLeft: 4,
@@ -177,7 +177,7 @@ export default function TemplateClean({ data, forExport = false }: { data: Resum
                   </div>
                   {[edu.degree, edu.field].filter(Boolean).length > 0 && (
                     <div style={s.row}>
-                      <span style={{ ...s.regular, fontSize: 10 }}>{[edu.degree, edu.field].filter(Boolean).join(" in ")}</span>
+                      <span style={{ ...s.regular, fontSize: 8 }}>{[edu.degree, edu.field].filter(Boolean).join(" in ")}</span>
                       {edu.gpa != null && edu.gpa !== "" && (
                         <span style={s.date}>CGPA: {strip(edu.gpa)}</span>
                       )}
@@ -205,7 +205,7 @@ export default function TemplateClean({ data, forExport = false }: { data: Resum
                   </div>
                   {(exp.company || d.location) && (
                     <div style={s.row}>
-                      <span style={{ fontSize: 10 }}>{strip(exp.company || "")}</span>
+                      <span style={{ fontSize: 8 }}>{strip(exp.company || "")}</span>
                       {d.location && (
                         <span style={s.date}>{strip(String(d.location))}</span>
                       )}

@@ -37,33 +37,33 @@ const exportColorOverrides = `
 const exportLayoutStyles = `
   .resume-export-shell,
   .resume-export-shell * {
-    font-size: 9px !important;
-    line-height: 1.35 !important;
+    font-size: 7px !important;
+    line-height: 1.3 !important;
     text-align: left !important;
     letter-spacing: normal !important;
     box-sizing: border-box !important;
   }
   .resume-export-shell {
-    font-size: 10px !important;
+    font-size: 8px !important;
   }
   .resume-export-shell .template-clean,
   .resume-export-shell .template-sidebar {
-    font-size: 10px !important;
+    font-size: 8px !important;
     margin: 0 !important;
     padding: 0 !important;
     max-width: 100% !important;
   }
   .resume-export-shell h1 {
-    font-size: 15px !important;
+    font-size: 11px !important;
     font-weight: 700 !important;
     margin: 0 0 2px 0 !important;
     padding: 0 !important;
     line-height: 1.2 !important;
   }
   .resume-export-shell h2 {
-    font-size: 8px !important;
+    font-size: 6px !important;
     font-weight: 600 !important;
-    margin: 5px 0 2px 0 !important;
+    margin: 4px 0 2px 0 !important;
     padding: 0 0 1px 0 !important;
     line-height: 1.2 !important;
     letter-spacing: 0.05em !important;
@@ -71,10 +71,10 @@ const exportLayoutStyles = `
   .resume-export-shell p,
   .resume-export-shell li,
   .resume-export-shell span {
-    font-size: 9px !important;
+    font-size: 7px !important;
     margin: 0 0 1px 0 !important;
     padding: 0 !important;
-    line-height: 1.35 !important;
+    line-height: 1.3 !important;
   }
   .resume-export-shell ul {
     margin: 0 0 3px 0 !important;
@@ -133,8 +133,8 @@ export default function ResumeExportShell({ children }: { children: React.ReactN
         fontFamily: "Georgia, 'Times New Roman', serif",
         backgroundColor: "#ffffff",
         color: "#0f172a",
-        fontSize: 10,
-        lineHeight: 1.35,
+        fontSize: 8,
+        lineHeight: 1.3,
       }}
     >
       <style>{pageBreakStyles}</style>

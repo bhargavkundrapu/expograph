@@ -21,31 +21,31 @@ const font = "Arial, Helvetica, sans-serif";
 const styles: Record<string, React.CSSProperties> = {
   root: {
     fontFamily: font,
-    fontSize: 10,
+    fontSize: 8,
     lineHeight: 1.35,
     color: "#000000",
     backgroundColor: "#ffffff",
   },
   name: {
     fontFamily: font,
-    fontSize: 20,
+    fontSize: 14,
     fontWeight: 700,
     color: "#000000",
     textAlign: "center",
     marginTop: 0,
-    marginBottom: 6,
+    marginBottom: 4,
     marginLeft: 0,
     marginRight: 0,
   },
   contactWrap: {
     textAlign: "center",
-    fontSize: 10,
+    fontSize: 8,
     color: "#000000",
     marginTop: 0,
-    marginBottom: 12,
+    marginBottom: 8,
     marginLeft: 0,
     marginRight: 0,
-    paddingBottom: 8,
+    paddingBottom: 5,
     borderBottom: "1px solid #000000",
   },
   contactLine: {
@@ -65,15 +65,15 @@ const styles: Record<string, React.CSSProperties> = {
   },
   sectionTitle: {
     fontFamily: font,
-    fontSize: 11,
+    fontSize: 8,
     fontWeight: 700,
     textTransform: "uppercase",
     color: "#000000",
-    marginTop: 12,
+    marginTop: 8,
     marginBottom: 0,
     marginLeft: 0,
     marginRight: 0,
-    paddingBottom: 4,
+    paddingBottom: 2,
     borderBottom: "1px solid #000000",
   },
   sectionFirst: { marginTop: 0 },
@@ -85,8 +85,8 @@ const styles: Record<string, React.CSSProperties> = {
     marginBottom: 2,
   },
   bold: { fontWeight: 700, color: "#000000" },
-  regular: { fontWeight: 400, color: "#000000", fontSize: 10 },
-  date: { fontSize: 10, whiteSpace: "nowrap", flexShrink: 0 },
+  regular: { fontWeight: 400, color: "#000000", fontSize: 8 },
+  date: { fontSize: 8, whiteSpace: "nowrap", flexShrink: 0 },
   bullets: {
     marginLeft: 16,
     paddingLeft: 4,
@@ -152,7 +152,7 @@ export default function ResumeTemplate({ data }: { data: ResumeData }) {
       {d.summary && (
         <section>
           <h2 style={sectionStyle()}>SUMMARY</h2>
-          <p style={{ marginTop: 6, marginBottom: 0, marginLeft: 0, marginRight: 0, whiteSpace: "pre-wrap", textAlign: "justify", fontSize: 10 }}>
+          <p style={{ marginTop: 6, marginBottom: 0, marginLeft: 0, marginRight: 0, whiteSpace: "pre-wrap", textAlign: "justify", fontSize: 8 }}>
             {strip(d.summary)}
           </p>
         </section>
@@ -163,7 +163,7 @@ export default function ResumeTemplate({ data }: { data: ResumeData }) {
           <h2 style={sectionStyle()}>TECHNICAL SKILLS</h2>
           <ul style={{ listStyle: "none", padding: 0, marginTop: 6, marginBottom: 0, marginLeft: 0, marginRight: 0 }}>
             {skills.map((skill, i) => (
-              <li key={i} style={{ marginBottom: 2, fontSize: 10 }}>
+              <li key={i} style={{ marginBottom: 2, fontSize: 8 }}>
                 {strip(skill)}
               </li>
             ))}
@@ -186,7 +186,7 @@ export default function ResumeTemplate({ data }: { data: ResumeData }) {
                   </div>
                   {[edu.degree, edu.field].filter(Boolean).length > 0 && (
                     <div style={styles.row}>
-                      <span style={{ ...styles.regular, fontSize: 10 }}>
+                      <span style={{ ...styles.regular, fontSize: 8 }}>
                         {[edu.degree, edu.field].filter(Boolean).join(" in ")}
                       </span>
                       {edu.gpa != null && edu.gpa !== "" && (
