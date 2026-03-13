@@ -70,9 +70,13 @@ export default function LatexClassic({ data }: { data: ResumeData }) {
         )}
       </header>
 
+      {/* Section title: explicit pixel spacing so PDF export keeps gap between title, rule, and content */}
       {hasSummary && (
         <section className={`resume-export-section ${SECTION_SPACING}`}>
-          <h2 className="text-[10px] font-semibold uppercase tracking-wide text-black border-b border-black/30 pb-0.5 mb-1 w-full">
+          <h2
+            className="latex-classic-section-title text-[10px] font-semibold uppercase tracking-wide text-black border-b border-slate-800 w-full block"
+            style={{ paddingBottom: 5, marginBottom: 10 }}
+          >
             Summary
           </h2>
           <p className="whitespace-pre-wrap text-justify leading-snug">{strip(d.summary!)}</p>
@@ -81,7 +85,10 @@ export default function LatexClassic({ data }: { data: ResumeData }) {
 
       {hasSkills && (
         <section className={`resume-export-section ${SECTION_SPACING}`}>
-          <h2 className="text-[10px] font-semibold uppercase tracking-wide text-black border-b border-black/30 pb-0.5 mb-1 w-full">
+          <h2
+            className="latex-classic-section-title text-[10px] font-semibold uppercase tracking-wide text-black border-b border-slate-800 w-full block"
+            style={{ paddingBottom: 5, marginBottom: 10 }}
+          >
             Technical Skills
           </h2>
           <p className="leading-snug">{skills.map((x) => strip(x)).join(", ")}</p>
@@ -90,7 +97,10 @@ export default function LatexClassic({ data }: { data: ResumeData }) {
 
       {hasEducation && (
         <section className={`resume-export-section ${SECTION_SPACING}`}>
-          <h2 className="text-[10px] font-semibold uppercase tracking-wide text-black border-b border-black/30 pb-0.5 mb-1 w-full">
+          <h2
+            className="latex-classic-section-title text-[10px] font-semibold uppercase tracking-wide text-black border-b border-slate-800 w-full block"
+            style={{ paddingBottom: 5, marginBottom: 10 }}
+          >
             Education
           </h2>
           <ul className="list-none p-0 m-0 space-y-1.5">
@@ -123,7 +133,10 @@ export default function LatexClassic({ data }: { data: ResumeData }) {
 
       {hasExperience && (
         <section className={`resume-export-section ${SECTION_SPACING}`}>
-          <h2 className="text-[10px] font-semibold uppercase tracking-wide text-black border-b border-black/30 pb-0.5 mb-1 w-full">
+          <h2
+            className="latex-classic-section-title text-[10px] font-semibold uppercase tracking-wide text-black border-b border-slate-800 w-full block"
+            style={{ paddingBottom: 5, marginBottom: 10 }}
+          >
             Work Experience
           </h2>
           <ul className="list-none p-0 m-0 space-y-1.5">
@@ -156,7 +169,10 @@ export default function LatexClassic({ data }: { data: ResumeData }) {
 
       {hasProjects && (
         <section className={`resume-export-section ${SECTION_SPACING}`}>
-          <h2 className="text-[10px] font-semibold uppercase tracking-wide text-black border-b border-black/30 pb-0.5 mb-1 w-full">
+          <h2
+            className="latex-classic-section-title text-[10px] font-semibold uppercase tracking-wide text-black border-b border-slate-800 w-full block"
+            style={{ paddingBottom: 5, marginBottom: 10 }}
+          >
             Projects
           </h2>
           <ul className="list-none p-0 m-0 space-y-1.5">
@@ -202,7 +218,10 @@ export default function LatexClassic({ data }: { data: ResumeData }) {
 
       {hasCertifications && (
         <section className={`resume-export-section ${SECTION_SPACING}`}>
-          <h2 className="text-[10px] font-semibold uppercase tracking-wide text-black border-b border-black/30 pb-0.5 mb-1 w-full">
+          <h2
+            className="latex-classic-section-title text-[10px] font-semibold uppercase tracking-wide text-black border-b border-slate-800 w-full block"
+            style={{ paddingBottom: 5, marginBottom: 10 }}
+          >
             Certifications
           </h2>
           <ul className="list-none p-0 m-0 space-y-0.5">

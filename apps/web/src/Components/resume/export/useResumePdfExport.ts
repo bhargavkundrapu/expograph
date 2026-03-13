@@ -9,10 +9,12 @@ const A4_PT = { w: 595.28, h: 841.89 };
 const PX_TO_PT = 72 / 96;
 /** Page margin on each side (pt). */
 const PAGE_MARGIN_PT = 5;
+/** Higher scale preserves small gaps (section title spacing) in the PDF. */
+const CAPTURE_SCALE = 3;
 
 const CAPTURE_CLASS = "resume-pdf-capture";
 
-/** Force black-on-white for PDF so download matches the preview. */
+/** Force black-on-white for PDF so download matches the preview. Keep section rules clearly visible. */
 const captureColorOverrides = `
   .${CAPTURE_CLASS} { background-color: #ffffff !important; color: #000000 !important; }
   .${CAPTURE_CLASS} * {
@@ -26,6 +28,13 @@ const captureColorOverrides = `
   .${CAPTURE_CLASS} *:not(.${CAPTURE_CLASS}) { background-color: transparent !important; }
   .${CAPTURE_CLASS} h1, .${CAPTURE_CLASS} h2 { color: #000000 !important; }
   .${CAPTURE_CLASS} a { color: #000000 !important; text-decoration: underline !important; }
+  .${CAPTURE_CLASS} .latex-classic-section-title {
+    border-bottom: 1px solid #000000 !important;
+    display: block !important;
+    width: 100% !important;
+    padding-bottom: 5px !important;
+    margin-bottom: 10px !important;
+  }
 `;
 
 function applyCaptureStyles(el: HTMLElement): () => void {
@@ -102,7 +111,7 @@ export function useResumePdfExport() {
         const { jsPDF } = await import("jspdf");
 
         const canvas = await html2canvas(element, {
-          scale: 2,
+          scale: CAPTURE_SCALE,
           useCORS: true,
           logging: false,
           backgroundColor: "#ffffff",
@@ -120,8 +129,8 @@ export function useResumePdfExport() {
 
         const cw = canvas.width;
         const ch = canvas.height;
-        const wPt = (cw / 2) * PX_TO_PT;
-        const hPt = (ch / 2) * PX_TO_PT;
+        const wPt = (cw / CAPTURE_SCALE) * PX_TO_PT;
+        const hPt = (ch / CAPTURE_SCALE) * PX_TO_PT;
         const pageContentW = A4_PT.w - 2 * PAGE_MARGIN_PT;
         const pageContentH = A4_PT.h - 2 * PAGE_MARGIN_PT;
         // Fixed scale by width only: content always same width and starts at fixed top
@@ -136,9 +145,9 @@ export function useResumePdfExport() {
         const elH = elRect.height;
 
         if (imgH <= pageContentH) {
-          // Single page: draw full content at fixed position
-          const imgData = canvas.toDataURL("image/jpeg", 0.95);
-          pdf.addImage(imgData, "JPEG", x, y, imgW, imgH);
+          // Single page: draw full content at fixed position (PNG keeps headings/lines sharp like preview)
+          const imgData = canvas.toDataURL("image/png");
+          pdf.addImage(imgData, "PNG", x, y, imgW, imgH);
           links.forEach(({ url, left, top, width, height }) => {
             const px = (left / elW) * imgW + x;
             const py = (top / elH) * imgH + y;
@@ -167,8 +176,8 @@ export function useResumePdfExport() {
               ctx.fillRect(0, 0, stripCanvas.width, stripCanvas.height);
               ctx.drawImage(canvas, 0, srcYPx, cw, srcHeightPx, 0, 0, cw, srcHeightPx);
             }
-            const stripData = stripCanvas.toDataURL("image/jpeg", 0.95);
-            pdf.addImage(stripData, "JPEG", x, y, imgW, srcHeightPt);
+            const stripData = stripCanvas.toDataURL("image/png");
+            pdf.addImage(stripData, "PNG", x, y, imgW, srcHeightPt);
           }
 
           // Link mapping across pages
