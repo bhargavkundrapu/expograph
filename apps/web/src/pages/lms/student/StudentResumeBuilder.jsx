@@ -46,7 +46,7 @@ export default function StudentResumeBuilder() {
     saveDraft();
   }, [data, saveDraft]);
 
-  const templateId = data.templateId || "clean";
+  const templateId = data.templateId || "latex-classic";
   const handleTemplateIdChange = (id) => {
     setData((prev) => ({ ...prev, templateId: id }));
   };

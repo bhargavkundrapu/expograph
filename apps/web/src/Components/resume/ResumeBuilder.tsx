@@ -1,8 +1,9 @@
 import React, { useRef, useCallback } from "react";
 import ResumeForm from "../../pages/lms/student/resume/ResumeForm";
 import { INITIAL_DATA } from "../../pages/lms/student/resume/resumeConstants";
-import ResumeTemplate from "./templates/ResumeTemplate";
+import LatexClassic from "./templates/LatexClassic";
 import { useResumePdfExport } from "./export/useResumePdfExport";
+import { LETTER_WIDTH_PX, LETTER_PADDING_PX } from "./export/ResumeExportShell";
 import type { ResumeData } from "./types";
 import { FiDownload } from "react-icons/fi";
 
@@ -19,10 +20,10 @@ function normalizeData(raw: Record<string, unknown>): ResumeData {
     profilePhotoUrl: raw?.profilePhotoUrl != null ? String(raw.profilePhotoUrl) : undefined,
     summary: raw?.summary != null ? String(raw.summary) : undefined,
     skills: Array.isArray(raw?.skills) ? raw.skills : [],
-    education: Array.isArray(raw?.education) ? raw.education as ResumeData["education"] : [],
-    experience: Array.isArray(raw?.experience) ? raw.experience as ResumeData["experience"] : [],
-    projects: Array.isArray(raw?.projects) ? raw.projects as ResumeData["projects"] : [],
-    certifications: Array.isArray(raw?.certifications) ? raw.certifications as ResumeData["certifications"] : [],
+    education: Array.isArray(raw?.education) ? (raw.education as ResumeData["education"]) : [],
+    experience: Array.isArray(raw?.experience) ? (raw.experience as ResumeData["experience"]) : [],
+    projects: Array.isArray(raw?.projects) ? (raw.projects as ResumeData["projects"]) : [],
+    certifications: Array.isArray(raw?.certifications) ? (raw.certifications as ResumeData["certifications"]) : [],
     achievements: Array.isArray(raw?.achievements) ? (raw.achievements as string[]) : [],
   };
 }
@@ -47,9 +48,9 @@ export default function ResumeBuilder({
   const data = isControlled ? controlledData! : internalData;
   const setData = isControlled ? controlledOnChange! : setInternalData;
 
-  const [formErrors, setFormErrors] = React.useState<Record<string, string>>({});
+  const [formErrors] = React.useState<Record<string, string>>({});
   const templateRef = useRef<HTMLDivElement>(null);
-  const { generate, isGenerating, error, clearError, printForSelectablePdf } = useResumePdfExport();
+  const { generate, isGenerating, error, clearError } = useResumePdfExport();
   const resumeData = normalizeData(data);
 
   const handleDownload = useCallback(async () => {
@@ -77,14 +78,16 @@ export default function ResumeBuilder({
               ref={templateRef}
               className="resume-document mx-auto bg-white text-black shadow-sm"
               style={{
-                maxWidth: 720,
-                padding: "32px 36px",
+                width: LETTER_WIDTH_PX,
+                maxWidth: LETTER_WIDTH_PX,
+                padding: LETTER_PADDING_PX,
+                boxSizing: "border-box",
                 fontFamily: "Arial, Helvetica, sans-serif",
-                fontSize: 8,
+                fontSize: 11,
                 lineHeight: 1.35,
               }}
             >
-              <ResumeTemplate data={resumeData} />
+              <LatexClassic data={resumeData} />
             </div>
           </div>
 
@@ -96,14 +99,7 @@ export default function ResumeBuilder({
               className="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               <FiDownload className="w-5 h-5" />
-              {isGenerating ? "Generating PDF..." : "Download PDF"}
-            </button>
-            <button
-              type="button"
-              onClick={() => printForSelectablePdf(templateRef.current)}
-              className="inline-flex items-center gap-2 px-6 py-3 border border-slate-300 bg-white text-slate-700 font-semibold rounded-xl hover:bg-slate-50 transition-colors"
-            >
-              Print (selectable text)
+              {isGenerating ? "Generating..." : "Download PDF"}
             </button>
             {error && (
               <p className="w-full mt-2 text-red-600 text-sm" role="alert">

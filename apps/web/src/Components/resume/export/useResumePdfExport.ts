@@ -104,7 +104,6 @@ export function useResumePdfExport() {
         const canvas = await html2canvas(element, {
           scale: 2,
           useCORS: true,
-          letterRendering: true,
           logging: false,
           backgroundColor: "#ffffff",
           onclone(clonedDoc, clonedEl) {

@@ -12,7 +12,7 @@ export const LIMITS = {
 };
 
 export const TEMPLATES = [
-  { id: "clean", name: "ATS Friendly", style: "ats" },
+  { id: "latex-classic", name: "Latex Classic", style: "ats" },
 ];
 
 export const INITIAL_DATA = {
@@ -32,5 +32,5 @@ export const INITIAL_DATA = {
   projects: [],
   certifications: [],
   achievements: [],
-  templateId: "clean",
+  templateId: "latex-classic",
 };

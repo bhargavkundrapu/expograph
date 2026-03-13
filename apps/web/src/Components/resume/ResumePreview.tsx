@@ -1,9 +1,7 @@
 import React from "react";
-import TemplateClean from "./templates/TemplateClean";
+import LatexClassic from "./templates/LatexClassic";
 import type { ResumeData } from "./types";
-
-/** A4 at 96dpi — same size as PDF capture so preview and download match exactly. */
-const A4_PX = { w: 794, h: 1123 };
+import { LETTER_WIDTH_PX } from "./export/ResumeExportShell";
 
 export interface ResumePreviewProps {
   data: ResumeData;
@@ -11,8 +9,7 @@ export interface ResumePreviewProps {
 }
 
 /**
- * Simple preview: white A4 paper with the same font and padding as the template.
- * What you see here is exactly what you get in the downloaded PDF.
+ * Letter-sized preview. Same width as PDF export so what you see matches download.
  */
 export default function ResumePreview({ data, paperRef }: ResumePreviewProps) {
   return (
@@ -21,23 +18,19 @@ export default function ResumePreview({ data, paperRef }: ResumePreviewProps) {
       <div className="min-w-0 overflow-auto rounded-lg border border-slate-200 bg-slate-100 p-3 max-h-[70vh] flex justify-center">
         <div
           ref={paperRef}
-          className="resume-preview-paper flex-shrink-0 shadow-md"
+          className="resume-preview-paper flex-shrink-0 shadow-md bg-white text-black"
           style={{
-            width: A4_PX.w,
-            minWidth: A4_PX.w,
-            height: A4_PX.h,
-            minHeight: A4_PX.h,
+            width: LETTER_WIDTH_PX,
+            minWidth: LETTER_WIDTH_PX,
             boxSizing: "border-box",
             overflow: "hidden",
-            padding: "20px 24px",
-            backgroundColor: "#ffffff",
-            color: "#000000",
-            fontFamily: "'Times New Roman', Times, Georgia, serif",
+            padding: 22,
+            fontFamily: "Arial, Helvetica, sans-serif",
             fontSize: 11,
-            lineHeight: 1.4,
+            lineHeight: 1.35,
           }}
         >
-          <TemplateClean data={data} forExport={false} />
+          <LatexClassic data={data} />
         </div>
       </div>
     </div>
