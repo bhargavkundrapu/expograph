@@ -15,7 +15,7 @@ import {
 const featureDetails = {
   "smart-prompts": {
     hero: {
-      badge: "Learn 2x Faster",
+      badge: "Learn 10x Faster",
       title: "Smart Prompt Library",
       subtitle: "Stop wasting hours searching for the right commands. Every prompt, error-fix, and code snippet you need — organized, structured, and ready to copy in one click.",
       gradient: "from-violet-600 to-purple-600",

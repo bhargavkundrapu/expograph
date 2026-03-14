@@ -10,7 +10,7 @@ const featureDataLite = [
     slug: "smart-prompts",
     icon: <Copy className="h-4 w-4" />,
     title: "Smart Prompt Library",
-    tag: "Learn 2x Faster",
+    tag: "Learn 10x Faster",
     description: "One-click copy prompts, structured snippets & error-handling command boxes.",
     accent: {
       borderBottom: "border-b-2 border-b-violet-500/40",

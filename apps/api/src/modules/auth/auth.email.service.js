@@ -1,78 +1,58 @@
 // apps/api/src/modules/auth/auth.email.service.js
-// Uses Resend for OTP emails. Set RESEND_API_KEY and RESEND_FROM (verified domain) in .env
 //
-// Deliverability: Login OTP (existing user) often lands in inbox; purchase verify-email OTP
-// (first-touch, cold recipient) can land in spam. We use: (1) distinct subject/body for
-// verification vs login, (2) reply_to + Precedence/Auto-Submitted headers, (3) a short
-// "why you're receiving this" line for verification to build trust and reduce spam reports.
+// Shared OTP email sender for login and verification. Same FROM and plain transactional
+// content for both so verification deliverability matches login (inbox placement).
+//
+// Why OTP-first improves inbox placement: Providers treat link/button-heavy "confirm your
+// email" messages as promotional. Plain, code-first transactional emails (same style as
+// login OTP) signal one-time use and reduce spam scoring. Same FROM + text/html + minimal
+// HTML keeps reputation consistent.
 const { Resend } = require("resend");
+const { buildOtpEmail } = require("./otpEmailTemplates");
 
 const resendApiKey = process.env.RESEND_API_KEY?.trim();
 const resendFrom = process.env.RESEND_FROM?.trim() || "ExpoGraph <onboarding@resend.dev>";
 const resendReplyTo = process.env.RESEND_REPLY_TO?.trim() || null;
 const resend = resendApiKey ? new Resend(resendApiKey) : null;
 
-// Headers that help providers treat this as transactional (not bulk/promotional). Improves inbox placement.
+const DISABLE_VERIFY_FALLBACK_LINK = process.env.DISABLE_VERIFY_FALLBACK_LINK === "true";
+const PUBLIC_WEB_URL = (process.env.PUBLIC_WEB_URL || "http://localhost:5173").trim().replace(/\/$/, "");
+
 const TRANSACTIONAL_HEADERS = {
-  "Precedence": "auto",
+  Precedence: "auto",
   "Auto-Submitted": "auto-generated",
   "X-Auto-Response-Suppress": "OOF, AutoReply",
 };
 
-const htmlTemplate = (otpCode, appName, { heading, description, receivingReason } = {}) => {
-  const reasonBlock = receivingReason
-    ? `<p style="margin:0 0 20px;color:#64748b;font-size:14px;line-height:1.5;">${receivingReason}</p>`
-    : "";
-  return `
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${heading || "Your Login Code"}</title>
-</head>
-<body style="margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,sans-serif;background:#f8fafc;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="max-width:480px;margin:0 auto;padding:40px 20px;">
-    <tr>
-      <td style="background:black;border-radius:16px 16px 0 0;padding:32px;text-align:center;">
-        <span style="font-size:24px;font-weight:700;color:#fff;">${appName}</span>
-      </td>
-    </tr>
-    <tr>
-      <td style="background:#fff;border-radius:0 0 16px 16px;padding:40px 32px;box-shadow:0 4px 6px -1px rgba(0,0,0,.1),0 2px 4px -2px rgba(0,0,0,.1);">
-        ${reasonBlock}
-        <h1 style="margin:0 0 8px;font-size:22px;color:#0f172a;">${heading || "Your login code"}</h1>
-        <p style="margin:0 0 24px;color:#64748b;font-size:15px;line-height:1.6;">
-          ${description || "Use the code below to sign in. It expires in 10 minutes."}
-        </p>
-        <div style="background:#f1f5f9;border-radius:12px;padding:20px;text-align:center;letter-spacing:8px;font-size:28px;font-weight:700;color:#0f172a;border:2px dashed #cbd5e1;">
-          ${otpCode}
-        </div>
-        <p style="margin:24px 0 0;color:#94a3b8;font-size:13px;">
-          If you didn't request this code, you can safely ignore this email.
-        </p>
-      </td>
-    </tr>
-  </table>
-</body>
-</html>`;
-};
-
-function textTemplate(otpCode, appName, { heading, description, receivingReason } = {}) {
-  const h = heading || "Your login code";
-  const d = description || "Use the code below to sign in. It expires in 10 minutes.";
-  const reasonLine = receivingReason ? `${receivingReason}\n\n` : "";
-  return `${appName}\n\n${reasonLine}${h}\n\n${d}\n\nYour code: ${otpCode}\n\nIf you didn't request this code, you can safely ignore this email.`;
+function getFallbackVerifyLink() {
+  if (DISABLE_VERIFY_FALLBACK_LINK) return null;
+  const base = process.env.RESEND_VERIFY_LINK_BASE?.trim();
+  if (base) return `${base.replace(/\/$/, "")}/verify`;
+  const match = resendFrom.match(/@([^\s>]+)/);
+  const domain = match ? match[1].toLowerCase() : null;
+  if (!domain || domain === "resend.dev") return null;
+  return `https://${domain}/verify`;
 }
 
-async function sendOtpEmail({ to, otpCode, appName = "ExpoGraph", subject, heading, description, receivingReason, replyTo }) {
-  const effectiveSubject = subject || `Your ${appName} login code`;
-  const templateOpts = { heading, description, receivingReason };
+/**
+ * Send OTP email (login or verification). Same FROM and template style for both.
+ * @param {{ to: string, name?: string, otp: string, purpose: 'verify'|'login', appName?: string }} opts
+ */
+async function sendOtpEmail({ to, name, otp, purpose, appName = "ExpoGraph" }) {
+  const fallbackLink = purpose === "verify" ? getFallbackVerifyLink() : null;
+  const { subject, html, text } = buildOtpEmail(otp, purpose, appName, fallbackLink);
+
+  if (process.env.NODE_ENV === "development") {
+    console.log("[OTP email] from:", resendFrom, "reply_to:", resendReplyTo || "(none)");
+    if (purpose === "verify" && fallbackLink) {
+      console.log("[OTP email] fallback link domain:", new URL(fallbackLink).origin);
+    }
+  }
 
   const logOtpToConsole = () => {
     console.log("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-    console.log(`📧 OTP for ${to}: ${otpCode}`);
-    console.log(`   (${effectiveSubject}. Valid for 10 minutes.)`);
+    console.log(`📧 OTP for ${to}: ${otp} (${purpose})`);
+    console.log(`   ${subject}. Valid for 5 minutes.`);
     console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
   };
 
@@ -81,18 +61,17 @@ async function sendOtpEmail({ to, otpCode, appName = "ExpoGraph", subject, headi
       const opts = {
         from: resendFrom,
         to,
-        subject: effectiveSubject,
-        html: htmlTemplate(otpCode, appName, templateOpts),
-        text: textTemplate(otpCode, appName, templateOpts),
+        subject,
+        html,
+        text,
         headers: TRANSACTIONAL_HEADERS,
       };
-      if (replyTo || resendReplyTo) opts.reply_to = replyTo || resendReplyTo;
+      if (resendReplyTo) opts.reply_to = resendReplyTo;
       const { data, error } = await resend.emails.send(opts);
       if (error) {
         console.error("[Resend] OTP email failed:", JSON.stringify(error, null, 2));
-        // In development: fallback to console so you can test the flow
         if (process.env.NODE_ENV === "development") {
-          console.warn("[Resend] Falling back to console OTP (Resend failed). Fix: use a verified domain or send to your Resend sign-up email when using onboarding@resend.dev");
+          console.warn("[Resend] Falling back to console OTP.");
           logOtpToConsole();
           return;
         }
@@ -101,7 +80,6 @@ async function sendOtpEmail({ to, otpCode, appName = "ExpoGraph", subject, headi
     } catch (err) {
       console.error("[Resend] OTP email error:", err?.message || err);
       if (process.env.NODE_ENV === "development") {
-        console.warn("[Resend] Falling back to console OTP.");
         logOtpToConsole();
         return;
       }

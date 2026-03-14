@@ -11,7 +11,7 @@ export const featureData = [
     area: "md:[grid-area:1/1/2/7] xl:[grid-area:1/1/2/5]",
     icon: <Copy className="h-4 w-4" />,
     title: "Smart Prompt Library",
-    tag: "Learn 2x Faster",
+    tag: "Learn 10x Faster",
     description: (
       <>
         <strong className="text-violet-400">One-click copy</strong> prompts, structured snippets &{" "}

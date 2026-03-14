@@ -47,6 +47,7 @@ const StudentCertificates = lazy(() => import("../pages/lms/student/StudentCerti
 const StudentInternships = lazy(() => import("../pages/lms/student/StudentInternships"));
 const StudentClientLab = lazy(() => import("../pages/lms/student/StudentClientLab"));
 const StudentWorkshops = lazy(() => import("../pages/lms/student/StudentWorkshops"));
+const StudentEvents = lazy(() => import("../pages/lms/student/StudentEvents"));
 const StudentReferrals = lazy(() => import("../pages/lms/student/StudentReferrals"));
 const StudentQuestionBank = lazy(() => import("../pages/lms/student/StudentQuestionBank"));
 const StudentResumeBuilder = lazy(() => import("../pages/lms/student/StudentResumeBuilder"));
@@ -359,6 +360,10 @@ export const router = createBrowserRouter([
           { path: "internships/:id/details", element: <L><StudentInternships /></L> },
           { path: "internships/:id/apply", element: <L><StudentInternships /></L> },
           
+          // Events (workshops, challenges, live sessions)
+          { path: "events", element: <L><StudentEvents /></L> },
+          { path: "events/:id", element: <L><StudentEvents /></L> },
+
           // Workshops
           { path: "workshops", element: <L><StudentWorkshops /></L> },
           { path: "workshops/list", element: <L><StudentWorkshops /></L> },

@@ -389,6 +389,15 @@ async function getEnrolledCourseIds({ tenantId, userId }) {
   return enrolledCourseIds;
 }
 
+/** True if user has any active pack enrollment (for home carousel / pack marketing). */
+async function hasPackEnrollment({ tenantId, userId }) {
+  const { rows } = await query(
+    `SELECT 1 FROM enrollments WHERE user_id = $1 AND tenant_id = $2 AND active = true AND item_type = 'pack' LIMIT 1`,
+    [userId, tenantId]
+  ).catch(() => ({ rows: [] }));
+  return rows.length > 0;
+}
+
 // Courses: returns ALL published courses with enrolled flag (via direct enrollment or pack)
 async function listEnrolledCourses({ tenantId, userId }) {
   try {
@@ -1057,6 +1066,7 @@ module.exports = {
   getEvents,
   listEnrolledCourses,
   getEnrolledCourseIds,
+  hasPackEnrollment,
   hasEnrollmentForCourse,
   hasCourseAccess,
   hasAllPackOrAllThreeCourses,

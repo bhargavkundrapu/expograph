@@ -4,6 +4,7 @@ const { listPermissionsForUser } = require("../modules/rbac/rbac.repo");
 const progressRepo = require("../modules/progress/progress.repo");
 const clientLabEligibilityRepo = require("../modules/clientLab/clientLabEligibility.repo");
 const clientLabEligibilityService = require("../modules/clientLab/clientLabEligibility.service");
+const studentRepo = require("../modules/student/student.repo");
 
 // apps/api/src/server/createApp.js
 const { router: leadsPublic } = require("../modules/leads/leads.routes.public");
@@ -272,6 +273,7 @@ app.get("/api/v1/me", requireAuth, async (req, res, next) => {
       if (clientLabChecklist.hasAccess === undefined) {
         clientLabChecklist = { ...clientLabChecklist, hasAccess: !!clientLabChecklist.eligible };
       }
+      const packPurchased = await studentRepo.hasPackEnrollment({ tenantId, userId }).catch(() => false);
       if (res.headersSent) return;
       return res.json({
         ok: true,
@@ -284,6 +286,7 @@ app.get("/api/v1/me", requireAuth, async (req, res, next) => {
           overall_progress_percent: overallProgressPercent,
           eligible_client_lab: eligibleClientLab,
           client_lab_checklist: clientLabChecklist,
+          pack_purchased: !!packPurchased,
         },
       });
     }

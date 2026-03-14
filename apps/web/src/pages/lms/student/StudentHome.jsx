@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../app/providers/AuthProvider";
 import { useTheme } from "../../../app/providers/ThemeProvider";
@@ -8,6 +8,7 @@ import { apiFetch } from "../../../services/api";
 import { getStudentLessonPath } from "../../../utils/studentCoursePaths";
 import { StudentHomeSkeleton } from "../../../Components/common/SkeletonLoaders";
 import WorkshopCarousel from "../../../Components/dashboard/WorkshopCarousel";
+import { getHomeCarouselSlides } from "../../../Components/lms/home/homeCarouselSlides";
 import PageTransition from "../../../Components/common/PageTransition";
 import DailyMotivation from "../../../Components/student/gamification/DailyMotivation";
 import DailyChallenge from "../../../Components/student/gamification/DailyChallenge";
@@ -37,7 +38,7 @@ function EventsWidget({ isDark, events, navigate }) {
       <div className="flex items-center justify-between mb-3 sm:mb-4">
         <h3 className={`text-lg sm:text-xl font-bold ${isDark ? "text-white" : "text-slate-900"}`}>Events</h3>
         <button
-          onClick={() => navigate("/lms/student/workshops")}
+          onClick={() => navigate("/lms/student/events")}
           className="flex items-center gap-1 text-purple-600 hover:text-purple-700 font-medium text-sm"
         >
           View
@@ -52,7 +53,7 @@ function EventsWidget({ isDark, events, navigate }) {
           {events.slice(0, 3).map((ev) => (
             <button
               key={ev.id}
-              onClick={() => navigate(`/lms/student/workshops/${ev.id}/details`)}
+              onClick={() => navigate(`/lms/student/events/${ev.id}`)}
               className={`w-full text-left flex items-center justify-between gap-2 p-2 rounded-lg transition-colors group ${isDark ? "hover:bg-slate-700/50" : "hover:bg-slate-50"}`}
             >
               <div className="min-w-0 flex-1">
@@ -280,6 +281,7 @@ export default function StudentHome() {
   const [currentCourse, setCurrentCourse] = useState(null);
   const [progress, setProgress] = useState({ completed: 0, streak: 0, consistency: 0 });
   const [events, setEvents] = useState([]);
+  const [packPurchased, setPackPurchased] = useState(false);
   const gamification = useGamification();
   const { setLastContinue, milestoneCelebrated, celebrateMilestone } = gamification;
   const [milestonePopup, setMilestonePopup] = useState(null);
@@ -295,20 +297,23 @@ export default function StudentHome() {
 
   const fetchDashboardData = async () => {
     setLoading(true);
-    const [scheduleSettled, courseSettled, progressSettled, eventsSettled] = await Promise.allSettled([
+    const [scheduleSettled, courseSettled, progressSettled, eventsSettled, meSettled] = await Promise.allSettled([
       apiFetch("/api/v1/student/schedule", { token }),
       apiFetch("/api/v1/student/current-course", { token }),
       apiFetch("/api/v1/student/progress", { token }),
       apiFetch("/api/v1/student/events", { token }),
+      apiFetch("/api/v1/me", { token }),
     ]);
     const scheduleRes = scheduleSettled.status === "fulfilled" ? scheduleSettled.value : null;
     const courseRes = courseSettled.status === "fulfilled" ? courseSettled.value : null;
     const progressRes = progressSettled.status === "fulfilled" ? progressSettled.value : null;
     const eventsRes = eventsSettled.status === "fulfilled" ? eventsSettled.value : null;
+    const meRes = meSettled.status === "fulfilled" ? meSettled.value : null;
     if (scheduleSettled.status === "rejected") console.error("Dashboard schedule failed:", scheduleSettled.reason);
     if (courseSettled.status === "rejected") console.error("Dashboard current-course failed:", courseSettled.reason);
     if (progressSettled.status === "rejected") console.error("Dashboard progress failed:", progressSettled.reason);
     if (eventsSettled.status === "rejected") console.error("Dashboard events failed:", eventsSettled.reason);
+    if (meSettled.status === "rejected") console.error("Dashboard /me failed:", meSettled.reason);
     try {
       const scheduleData = scheduleRes?.data ?? [];
       const courseData = courseRes?.data ?? null;
@@ -334,6 +339,8 @@ export default function StudentHome() {
       setCurrentCourse(courseData);
       setProgress(progressData);
       setEvents(eventsData);
+      const meData = meRes?.data;
+      setPackPurchased(meData?.pack_purchased === true);
       if (courseData) setLastContinue(courseData);
       const pct = progressData.completed ?? 0;
       for (const m of [25, 50, 75, 100]) {
@@ -351,11 +358,24 @@ export default function StudentHome() {
     }
   };
 
-  const workshopItems = [
-    { logo: "make", title: "AI WORKFLOWS & AUTOMATION WORKSHOP USING MAKE.COM", description: "Build AI projects that boost your portfolio!", isLive: true, action: { label: "Join Now", onClick: () => navigate("/lms/student/workshops") } },
-    { logo: "make", title: "ADVANCED REACT PATTERNS WORKSHOP", description: "Master React best practices and advanced techniques.", isLive: false, action: { label: "Join Now", onClick: () => navigate("/lms/student/workshops") } },
-    { logo: "make", title: "FULL-STACK DEVELOPMENT BOOTCAMP", description: "Build complete web applications from scratch.", isLive: false, action: { label: "Join Now", onClick: () => navigate("/lms/student/workshops") } },
-  ];
+  const carouselItems = useMemo(() => {
+    const userState = { packPurchased, courseProgress: progress?.byCourse ? Object.fromEntries(Object.entries(progress.byCourse).map(([k, v]) => [k, v?.completed ?? 0])) : undefined };
+    const slides = getHomeCarouselSlides(userState);
+    return slides.map((slide) => ({
+      id: slide.id,
+      title: slide.title,
+      description: slide.subtitle,
+      action: {
+        label: slide.ctaLabel,
+        onClick: () => {
+          if (typeof window !== "undefined" && window.console?.log) {
+            window.console.log("carousel_slide_click", { slideId: slide.id });
+          }
+          navigate(slide.route);
+        },
+      },
+    }));
+  }, [packPurchased, progress?.byCourse, navigate]);
 
   if (loading) return <StudentHomeSkeleton />;
 
@@ -392,7 +412,7 @@ export default function StudentHome() {
         {/* Main Content Area */}
         <div className="flex-1 min-w-0 space-y-4 lg:space-y-5">
           {/* Carousel above greeting */}
-          <WorkshopCarousel items={workshopItems} />
+          <WorkshopCarousel items={carouselItems} />
 
           {/* Header */}
           <div className="flex items-start justify-between gap-3">

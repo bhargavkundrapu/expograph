@@ -133,10 +133,24 @@ export default function StudentProfile() {
           animate={{ opacity: 1, y: 0 }}
           className={`rounded-2xl overflow-hidden border shadow-lg ${isDark ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"}`}
         >
-          {/* Banner */}
-          <div className="h-24 sm:h-32 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 relative">
+          {/* Banner — visible, premium color; matches indigo/violet theme */}
+          <div
+            className="h-24 sm:h-32 relative"
+            style={
+              isDark
+                ? { background: "linear-gradient(135deg, #334155 0%, #1e293b 100%)" }
+                : { background: "linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 50%, #ddd6fe 100%)" }
+            }
+          >
             <div className="absolute bottom-0 left-6 sm:left-8 translate-y-1/2">
-              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white text-3xl sm:text-4xl font-bold shadow-xl border-4 border-white dark:border-slate-800">
+              <div
+                className={`w-20 h-20 sm:w-24 sm:h-24 rounded-2xl flex items-center justify-center text-white text-3xl sm:text-4xl font-bold shadow-lg border-4 ${isDark ? "border-slate-800" : "border-white"}`}
+                style={
+                  isDark
+                    ? { background: "linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)" }
+                    : { background: "linear-gradient(135deg, #6366f1 0%, #7c3aed 100%)" }
+                }
+              >
                 {userInitial}
               </div>
             </div>

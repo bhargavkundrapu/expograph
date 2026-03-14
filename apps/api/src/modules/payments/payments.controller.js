@@ -2,7 +2,7 @@
 const { asyncHandler } = require("../../utils/asyncHandler");
 const { z } = require("zod");
 const { HttpError } = require("../../utils/httpError");
-const { createOtp, verifyOtp } = require("../auth/auth.otp.repo");
+const { createVerificationOtp, verifyVerificationOtp } = require("../auth/verificationOtp.repo");
 const { sendOtpEmail } = require("../auth/auth.email.service");
 const paymentsService = require("./payments.service");
 
@@ -77,11 +77,16 @@ const webhook = asyncHandler(async (req, res) => {
 
 const emailVerifyRateLimit = new Map();
 const RATE_LIMIT_MS = 60_000;
+const recentlyVerified = new Map();
+const RECENTLY_VERIFIED_MS = 15 * 60 * 1000;
 
 setInterval(() => {
   const now = Date.now();
   for (const [key, ts] of emailVerifyRateLimit) {
     if (now - ts > RATE_LIMIT_MS * 2) emailVerifyRateLimit.delete(key);
+  }
+  for (const [key, ts] of recentlyVerified) {
+    if (now - ts > RECENTLY_VERIFIED_MS) recentlyVerified.delete(key);
   }
 }, 5 * 60 * 1000);
 
@@ -92,28 +97,21 @@ const sendEmailVerifyOtp = asyncHandler(async (req, res) => {
 
   const email = parsed.data.email.trim().toLowerCase();
 
+  if (recentlyVerified.has(email)) {
+    return res.status(200).json({ ok: true, alreadyVerified: true, message: "Email already verified." });
+  }
+
   const lastSent = emailVerifyRateLimit.get(email);
   if (lastSent && Date.now() - lastSent < RATE_LIMIT_MS) {
     const wait = Math.ceil((RATE_LIMIT_MS - (Date.now() - lastSent)) / 1000);
-    throw new HttpError(429, `Please wait ${wait}s before requesting another code.`);
+    throw new HttpError(429, `Please wait ${wait} seconds before requesting another code.`);
   }
 
-  const { otpCode } = await createOtp(email);
+  const { otpCode } = await createVerificationOtp(email);
   const appName = req.tenant?.name || "ExpoGraph";
-  // Inbox-optimized: verification-specific subject/body + receivingReason (trust signal) +
-  // reply_to and transactional headers are applied in auth.email.service.js.
-  await sendOtpEmail({
-    to: email,
-    otpCode,
-    appName,
-    subject: `Confirm your email – ${appName}`,
-    heading: "Your verification code",
-    description: "Use this code to confirm your email before completing your purchase. It expires in 10 minutes.",
-    receivingReason: `You're receiving this because you entered this email on ${appName} to confirm your email before completing your purchase.`,
-  });
+  await sendOtpEmail({ to: email, otp: otpCode, purpose: "verify", appName });
 
   emailVerifyRateLimit.set(email, Date.now());
-
   res.status(200).json({ ok: true, message: "Verification code sent" });
 });
 
@@ -128,10 +126,16 @@ const confirmEmailVerifyOtp = asyncHandler(async (req, res) => {
   const email = parsed.data.email.trim().toLowerCase();
   const otp = parsed.data.otp.trim();
 
-  const result = await verifyOtp(email, otp);
-  if (result.locked) throw new HttpError(429, "Too many failed attempts. Please request a new code.");
-  if (!result.valid) throw new HttpError(400, "Wrong OTP. Please try again or request a new code.");
+  const result = await verifyVerificationOtp(email, otp);
+  if (result.locked) {
+    throw new HttpError(429, "Too many failed attempts. Please request a new code.");
+  }
+  if (!result.valid) {
+    const hint = result.attemptsLeft != null ? ` ${result.attemptsLeft} attempts left.` : "";
+    throw new HttpError(400, `Invalid or expired code. Please try again or request a new code.${hint}`);
+  }
 
+  recentlyVerified.set(email, Date.now());
   res.status(200).json({ ok: true, verified: true });
 });
 

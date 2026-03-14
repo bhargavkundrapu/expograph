@@ -55,7 +55,7 @@ async function requestOtp({ tenant, body }) {
   }
 
   const { otpCode } = await createOtp(email);
-  await sendOtpEmail({ to: email, otpCode, appName: tenant?.name || "ExpoGraph" });
+  await sendOtpEmail({ to: email, otp: otpCode, purpose: "login", appName: tenant?.name || "ExpoGraph" });
 
   return { ok: true, message: "OTP sent to your email" };
 }

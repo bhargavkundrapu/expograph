@@ -2,7 +2,7 @@
 const crypto = require("crypto");
 const { query } = require("../../db/query");
 
-const OTP_EXPIRY_MINUTES = 10;
+const OTP_EXPIRY_MINUTES = 5;
 
 function generateOtpCode() {
   return String(crypto.randomInt(100000, 999999));
