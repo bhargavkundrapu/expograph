@@ -86,7 +86,7 @@ function ProgressWidget({ isDark, progress, schedule, accentColor, gamification 
   const weeklyPct = Math.min(100, Math.round((weeklyXP / weeklyXPGoal) * 100));
 
   return (
-    <div className={`rounded-lg shadow-sm p-4 sm:p-6 hover-lift transition-colors ${isDark ? "bg-slate-800 border border-slate-700" : "bg-white"}`}>
+    <div data-tour="progress-widget" className={`rounded-lg shadow-sm p-4 sm:p-6 hover-lift transition-colors ${isDark ? "bg-slate-800 border border-slate-700" : "bg-white"}`}>
       <div className="flex items-center justify-between mb-3 sm:mb-4">
         <div className="flex items-center gap-2">
           <h3 className={`text-lg sm:text-xl font-bold ${isDark ? "text-white" : "text-slate-900"}`}>Your Progress</h3>
@@ -411,8 +411,10 @@ export default function StudentHome() {
       <div className="flex flex-col lg:flex-row gap-4 lg:gap-6 px-4 sm:px-6 lg:px-6 xl:px-8 py-4 sm:py-6 lg:py-8">
         {/* Main Content Area */}
         <div className="flex-1 min-w-0 space-y-4 lg:space-y-5">
-          {/* Carousel above greeting */}
-          <WorkshopCarousel items={carouselItems} />
+          {/* Carousel above greeting — may show pack upgrade CTA */}
+          <div data-tour="pack-upgrade-card">
+            <WorkshopCarousel items={carouselItems} />
+          </div>
 
           {/* Header */}
           <div className="flex items-start justify-between gap-3">

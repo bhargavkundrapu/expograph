@@ -125,7 +125,7 @@ export default function StudentProfile() {
 
   return (
     <div className={`min-h-screen p-4 sm:p-6 lg:p-8 transition-colors duration-200 ${isDark ? "bg-slate-900" : "bg-gradient-to-br from-slate-50 via-white to-slate-50"}`}>
-      <div className="max-w-5xl mx-auto space-y-6">
+      <div className="max-w-5xl mx-auto space-y-6" data-tour="profile-update">
 
         {/* Profile Header Card */}
         <motion.div

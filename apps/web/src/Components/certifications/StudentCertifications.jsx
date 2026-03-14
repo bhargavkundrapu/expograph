@@ -93,6 +93,7 @@ function CourseCard({ item, isDark, token, onRequestSuccess, requestInFlight, se
       layout
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
+      data-tour="cert-request-flow"
       className={`rounded-2xl border-2 p-5 sm:p-6 ${
         isDark ? "bg-slate-800 border-slate-700" : "bg-white border-slate-200"
       }`}
@@ -103,7 +104,7 @@ function CourseCard({ item, isDark, token, onRequestSuccess, requestInFlight, se
             {item.title}
           </h3>
           <div className="flex items-center gap-2 mt-2 flex-wrap">
-            {getStatusBadge(item, isDark)}
+            <span data-tour="cert-status-badges">{getStatusBadge(item, isDark)}</span>
           </div>
         </div>
         <div className="flex-shrink-0 w-full sm:w-48">
@@ -156,6 +157,7 @@ function CourseCard({ item, isDark, token, onRequestSuccess, requestInFlight, se
         {isApproved && (
           <button
             type="button"
+            data-tour="cert-download"
             onClick={() => {}}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-emerald-600 hover:bg-emerald-700 text-white"
           >
@@ -228,7 +230,7 @@ export default function StudentCertifications() {
             Certifications
           </h1>
           <p className={`text-sm sm:text-base ${isDark ? "text-slate-400" : "text-slate-600"}`}>
-            Complete courses to unlock certificates. Request when you hit 100% — admin approves, then you can download.
+            <span data-tour="cert-complete-to-unlock">Complete courses to unlock certificates. Request when you hit 100% — admin approves, then you can download.</span>
           </p>
         </motion.div>
 

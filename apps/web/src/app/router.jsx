@@ -55,6 +55,7 @@ const StudentBookmarks = lazy(() => import("../pages/lms/student/StudentBookmark
 const StudentCourseLanding = lazy(() => import("../pages/lms/student/StudentCourseLanding"));
 const StudentContact = lazy(() => import("../pages/lms/student/StudentContact"));
 const StudentProfile = lazy(() => import("../pages/lms/student/StudentProfile"));
+const StudentToursHelp = lazy(() => import("../pages/lms/student/StudentToursHelp"));
 
 const MentorHome = lazy(() => import("../pages/lms/mentor/MentorHome"));
 const MentorSubmissions = lazy(() => import("../pages/lms/mentor/MentorSubmissions"));
@@ -373,6 +374,9 @@ export const router = createBrowserRouter([
           
           // Contact / Support
           { path: "contact", element: <L><StudentContact /></L> },
+
+          // Help / Tours
+          { path: "help/tours", element: <L><StudentToursHelp /></L> },
 
           // Referrals
           { path: "referrals", element: <L><StudentReferrals /></L> },

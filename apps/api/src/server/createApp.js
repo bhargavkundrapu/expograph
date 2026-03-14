@@ -46,6 +46,7 @@ const mediaRoutes = require("../modules/media/media.routes");
 const { router: lmsSubmissionsRouter } = require("../modules/submissions/submissions.routes.lms");
 const { router: mentorSubmissionsRouter } = require("../modules/submissions/submissions.routes.mentor");
 const { router: progressRouter } = require("../modules/progress/progress.routes");
+const { router: onboardingRouter } = require("../modules/onboarding/onboarding.routes");
 const { router: adminContentRouter } = require("../modules/content/content.routes.admin");
 const { router: publicContentRouter } = require("../modules/content/content.routes.public");
 const { router: studentRouter } = require("../modules/student/student.routes");
@@ -187,6 +188,7 @@ app.use(
   // so POST .../lessons/:slug/feedback and other student routes match on localhost and production
   app.use("/api/v1/certifications", certificationsRouter);
   app.use("/api/v1/lms", progressRouter);
+  app.use("/api/v1/onboarding", onboardingRouter);
   app.use("/api/v1/lms", lmsSubmissionsRouter);
   app.use("/api/v1/lms", certLms);
   app.use("/api/v1/student", studentRouter);

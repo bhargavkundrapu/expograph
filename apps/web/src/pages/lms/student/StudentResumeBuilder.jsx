@@ -57,7 +57,7 @@ export default function StudentResumeBuilder() {
         isDark ? "bg-slate-900" : "bg-gradient-to-br from-slate-50 via-white to-slate-50"
       }`}
     >
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-6xl mx-auto" data-tour="resume-form-sections">
         <h1
           className={`text-2xl font-bold mb-2 flex items-center gap-2 ${
             isDark ? "text-white" : "text-slate-900"

@@ -7,6 +7,7 @@ import StudentSearchModal from "../../Components/student/StudentSearchModal";
 import KeyboardShortcutsModal from "../../Components/student/KeyboardShortcutsModal";
 import { useKeyboardShortcuts } from "../../hooks/useKeyboardShortcuts";
 import IdleReengagement from "../../Components/student/gamification/IdleReengagement";
+import RouteTourManager from "../../Components/onboarding/RouteTourManager";
 
 const preloadProfile = () => import("../../pages/lms/student/StudentProfile");
 const preloadMap = {
@@ -119,7 +120,12 @@ export default function StudentLayout() {
   }, []);
 
   if (isLessonPage) {
-    return <Outlet />;
+    return (
+      <>
+        <RouteTourManager />
+        <Outlet />
+      </>
+    );
   }
 
   const userName = user?.fullName || user?.full_name || user?.name || "Student";
@@ -129,6 +135,7 @@ export default function StudentLayout() {
 
   return (
     <div className={`min-h-screen transition-colors duration-200 ${isDark ? "bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950" : "bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900"}`}>
+      <RouteTourManager />
       {/* ── Mobile Top Bar ── */}
       <header className="sticky top-0 z-50 md:hidden bg-slate-900/95 backdrop-blur-md">
         <div className="flex items-center gap-3 px-4 py-3">
@@ -216,11 +223,20 @@ export default function StudentLayout() {
                       <FiChevronRight className="w-4 h-4 ml-auto text-slate-500" />
                     </button>
                     <button
+                      data-tour="support-help-btn"
                       onClick={() => { setProfileOpen(false); navigate("/lms/student/contact"); }}
                       className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-700/50 transition-colors text-sm"
                     >
                       <FiHelpCircle className="w-4 h-4" />
                       <span>Support</span>
+                      <FiChevronRight className="w-4 h-4 ml-auto text-slate-500" />
+                    </button>
+                    <button
+                      onClick={() => { setProfileOpen(false); navigate("/lms/student/help/tours"); }}
+                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-700/50 transition-colors text-sm"
+                    >
+                      <FiHelpCircle className="w-4 h-4" />
+                      <span>Guided Tours</span>
                       <FiChevronRight className="w-4 h-4 ml-auto text-slate-500" />
                     </button>
                     <div className="my-1" />
@@ -301,6 +317,7 @@ export default function StudentLayout() {
                     key={item.path}
                     to={item.path}
                     onMouseEnter={() => preloadMap[item.path]?.()}
+                    data-tour={item.path === "/lms/student/courses" ? "nav-courses" : item.path === "/lms/student/certificates" ? "certifications-shortcut" : item.path === "/lms/student/resume-builder" ? "resume-builder-shortcut" : item.path === "/lms/student/client-lab" ? "client-lab-shortcut" : item.path === "/lms/student/contact" ? "support-help-btn" : undefined}
                     className={`group relative flex items-center gap-3 px-3 py-2.5 rounded-md transition-all duration-200 ${active ? "text-white border-l-2" : "text-slate-300 hover:text-white hover:bg-slate-700/30"}`}
                     style={active ? { borderLeftColor: accent.value, background: `linear-gradient(to right, ${accent.value}20, ${accent.value}08)` } : undefined}
                     title={sidebarCollapsed ? item.label : ""}
@@ -408,11 +425,13 @@ export default function StudentLayout() {
           {mobileBottomItems.map((item) => {
             const Icon = item.icon;
             const active = isActive(item.path);
+            const tourId = item.path === "/lms/student/courses" ? "nav-courses" : item.path === "/lms/student/resume-builder" ? "resume-builder-shortcut" : undefined;
             return (
               <Link
                 key={item.path}
                 to={item.path}
                 onTouchStart={() => preloadMap[item.path]?.()}
+                data-tour={tourId}
                 className={`flex flex-col items-center justify-center gap-0.5 py-1.5 px-2.5 rounded-xl min-w-0 transition-all duration-200 btn-press ${active ? "" : "text-slate-500 active:text-slate-300"}`}
                 style={active ? { color: accent.value } : undefined}
               >

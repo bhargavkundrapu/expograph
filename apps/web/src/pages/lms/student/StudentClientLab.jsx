@@ -34,17 +34,17 @@ function LockedClientLabContent({ isDark, checklist, onRetry }) {
       {!checklist && <p className="text-center text-slate-500 text-sm mb-4">Loading…</p>}
 
       {checklist && !hasAccess && (
-        <p className={`text-center mb-6 text-sm ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+        <p data-tour="clientlab-eligibility" className={`text-center mb-6 text-sm ${isDark ? "text-slate-400" : "text-slate-600"}`}>
           Get the All Pack or all three courses (Vibe Coding, Prompt Engineering, Prompt to Profit) to unlock Real Client Lab.
         </p>
       )}
 
       {checklist && hasAccess && (
         <>
-          <p className={`text-center mb-4 text-sm ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+          <p data-tour="clientlab-eligibility" className={`text-center mb-4 text-sm ${isDark ? "text-slate-400" : "text-slate-600"}`}>
             Complete every course to 100% to unlock Real Client Lab and access tasks.
           </p>
-          <div className="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-600 mb-4">
+          <div data-tour="clientlab-slots-priority" className="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-600 mb-4">
             <table className="w-full text-left text-sm">
               <thead>
                 <tr className={`border-b ${isDark ? "border-slate-600 bg-slate-700/50" : "border-slate-200 bg-slate-50"}`}>

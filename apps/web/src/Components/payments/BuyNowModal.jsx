@@ -7,11 +7,19 @@ function formatRupees(paise) {
   return `₹${(paise / 100).toFixed(2)}`;
 }
 
+const RAZORPAY_SCRIPT_URL = "https://checkout.razorpay.com/v1/checkout.js";
+
 const loadRazorpay = () => {
   return new Promise((resolve, reject) => {
     if (window.Razorpay) return resolve(window.Razorpay);
+    const existing = document.querySelector(`script[src="${RAZORPAY_SCRIPT_URL}"]`);
+    if (existing) {
+      const check = () => (window.Razorpay ? resolve(window.Razorpay) : setTimeout(check, 50));
+      check();
+      return;
+    }
     const script = document.createElement("script");
-    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.src = RAZORPAY_SCRIPT_URL;
     script.async = true;
     script.onload = () => resolve(window.Razorpay);
     script.onerror = () => reject(new Error("Failed to load payment gateway. Please check your connection and try again."));
@@ -272,6 +280,12 @@ export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill, 
 
   const isAuth = !!(isLoggedIn && prefill?.email);
 
+  // Preload Razorpay script when modal opens so Pay click feels instant
+  useEffect(() => {
+    if (!open) return;
+    loadRazorpay().catch(() => {});
+  }, [open]);
+
   // When the modal opens, decide the flow
   useEffect(() => {
     if (!open) return;
@@ -429,25 +443,27 @@ export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill, 
     setLoading(true);
 
     try {
-      const res = await apiFetch("/api/v1/payments/razorpay/create-order", {
-        method: "POST",
-        body: {
-          item_type: item.type,
-          item_id: item.id,
-          name: form.name.trim(),
-          email: form.email.trim().toLowerCase(),
-          phone: form.phone.trim(),
-          college: form.college.trim() || undefined,
-          origin: typeof window !== "undefined" ? window.location.origin : undefined,
-        },
-      });
+      // Run create-order and load Razorpay in parallel so checkout opens faster
+      const [res, Razorpay] = await Promise.all([
+        apiFetch("/api/v1/payments/razorpay/create-order", {
+          method: "POST",
+          body: {
+            item_type: item.type,
+            item_id: item.id,
+            name: form.name.trim(),
+            email: form.email.trim().toLowerCase(),
+            phone: form.phone.trim(),
+            college: form.college.trim() || undefined,
+            origin: typeof window !== "undefined" ? window.location.origin : undefined,
+          },
+        }),
+        loadRazorpay(),
+      ]);
 
       const data = res?.data || res;
       if (!data?.razorpay_order_id || !data?.key_id) {
         throw new Error("Invalid response from server");
       }
-
-      const Razorpay = await loadRazorpay();
       const rzp = new Razorpay({
         key: data.key_id,
         amount: data.amount,

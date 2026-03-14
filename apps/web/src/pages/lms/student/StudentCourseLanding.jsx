@@ -295,11 +295,11 @@ export default function StudentCourseLanding() {
               <h1 className={`text-3xl sm:text-4xl lg:text-5xl font-black mb-4 leading-tight ${isDark ? "text-white" : "text-slate-900"}`}>
                 {courseTitle}
               </h1>
-              <p className={`text-sm sm:text-base lg:text-lg max-w-2xl mb-6 leading-relaxed ${isDark ? "text-slate-300" : "text-slate-600"}`}>
+              <p data-tour="course-overview" className={`text-sm sm:text-base lg:text-lg max-w-2xl mb-6 leading-relaxed ${isDark ? "text-slate-300" : "text-slate-600"}`}>
                 {course?.description || "Master the concepts and build real-world skills with hands-on projects and expert guidance from ExpoGraph."}
               </p>
 
-              <div className="flex flex-wrap items-center gap-4 sm:gap-6 mb-6">
+              <div data-tour="lesson-count-progress" className="flex flex-wrap items-center gap-4 sm:gap-6 mb-6">
                 {totalLessons > 0 && (
                   <div className={`flex items-center gap-1.5 text-sm font-medium ${isDark ? "text-slate-300" : "text-slate-700"}`}>
                     <FiBookOpen className="w-4 h-4 text-indigo-500" /> {totalLessons} Lessons
@@ -328,6 +328,7 @@ export default function StudentCourseLanding() {
                 </button>
               ) : (
                 <button
+                  data-tour="course-start-continue"
                   onClick={() => {
                     if (continueLesson) {
                       const mod = modules.find(m => m.lessons?.some(l => l.id === continueLesson.id || l.slug === continueLesson.slug));
@@ -362,7 +363,7 @@ export default function StudentCourseLanding() {
         )}
 
         {/* Tools & Technologies You'll Learn */}
-        <div className={`px-4 sm:px-6 lg:px-8 py-10 sm:py-12 ${isDark ? "bg-slate-800/30" : "bg-white"}`}>
+        <div data-tour="course-requirements-benefits" className={`px-4 sm:px-6 lg:px-8 py-10 sm:py-12 ${isDark ? "bg-slate-800/30" : "bg-white"}`}>
           <div className="max-w-5xl mx-auto">
             <h2 className={`text-xl sm:text-2xl font-bold mb-2 flex items-center gap-2 ${isDark ? "text-white" : "text-slate-900"}`}>
               <FiTool className="w-5 h-5 text-indigo-500" /> What You'll Learn & Master
@@ -457,7 +458,7 @@ export default function StudentCourseLanding() {
 
         {/* Module Roadmap — only for enrolled users */}
         {!isLocked && modules.length > 0 && (
-          <div className={`px-4 sm:px-6 lg:px-8 py-10 sm:py-12 ${isDark ? "" : "bg-slate-50"}`}>
+          <div data-tour="modules-list" className={`px-4 sm:px-6 lg:px-8 py-10 sm:py-12 ${isDark ? "" : "bg-slate-50"}`}>
             <div className="max-w-5xl mx-auto">
               <h2 className={`text-xl sm:text-2xl font-bold mb-2 flex items-center gap-2 ${isDark ? "text-white" : "text-slate-900"}`}>
                 <FiTarget className="w-5 h-5 text-purple-500" /> Course Roadmap
