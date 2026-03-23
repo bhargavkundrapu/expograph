@@ -81,7 +81,7 @@ export default function StudentProfile() {
       const response = await apiFetch("/api/v1/student/profile", {
         token,
         method: "PATCH",
-        body: { fullName: formData.fullName, email: formData.email, phone: formData.phone || undefined },
+        body: { fullName: formData.fullName },
       });
       if (response?.data) {
         if (updateUser) {
@@ -292,9 +292,9 @@ export default function StudentProfile() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {[
-                { label: "Full Name", key: "fullName", icon: FiUser, type: "text" },
-                { label: "Email", key: "email", icon: FiMail, type: "email" },
-                { label: "Phone", key: "phone", icon: FiPhone, type: "tel" },
+                { label: "Full Name", key: "fullName", icon: FiUser, type: "text", editable: true },
+                { label: "Email", key: "email", icon: FiMail, type: "email", editable: false },
+                { label: "Phone", key: "phone", icon: FiPhone, type: "tel", editable: false },
               ].map(field => {
                 const Icon = field.icon;
                 return (
@@ -302,7 +302,7 @@ export default function StudentProfile() {
                     <label className={`block text-xs font-semibold mb-1.5 flex items-center gap-1.5 ${isDark ? "text-slate-400" : "text-slate-600"}`}>
                       <Icon className="w-3.5 h-3.5" /> {field.label}
                     </label>
-                    {isEditing ? (
+                    {isEditing && field.editable ? (
                       <input
                         type={field.type}
                         value={formData[field.key]}
@@ -310,9 +310,14 @@ export default function StudentProfile() {
                         className={`w-full px-3.5 py-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 ${isDark ? "bg-slate-700/50 border-slate-600 text-white" : "bg-slate-50 border-slate-200"}`}
                       />
                     ) : (
-                      <p className={`px-3.5 py-2.5 rounded-xl text-sm ${isDark ? "bg-slate-700/30 text-slate-200" : "bg-slate-50 text-slate-800"}`}>
-                        {formData[field.key] || "Not set"}
-                      </p>
+                      <div className={`px-3.5 py-2.5 rounded-xl text-sm flex items-center justify-between gap-2 ${isDark ? "bg-slate-700/30 text-slate-200" : "bg-slate-50 text-slate-800"}`}>
+                        <span>{formData[field.key] || "Not set"}</span>
+                        {isEditing && !field.editable ? (
+                          <span className={`text-[10px] font-semibold uppercase tracking-wider ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                            Locked
+                          </span>
+                        ) : null}
+                      </div>
                     )}
                   </div>
                 );
