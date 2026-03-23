@@ -53,7 +53,7 @@ export default function StudentResumeBuilder() {
 
   return (
     <div
-      className={`min-h-screen p-4 md:p-6 lg:rounded-tl-lg overflow-auto transition-colors duration-200 ${
+      className={`min-h-screen rounded-t-3xl md:rounded-none p-4 md:p-6 lg:rounded-tl-lg overflow-auto transition-colors duration-200 ${
         isDark ? "bg-slate-900" : "bg-gradient-to-br from-slate-50 via-white to-slate-50"
       }`}
     >

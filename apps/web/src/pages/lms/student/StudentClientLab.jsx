@@ -250,7 +250,7 @@ export default function StudentClientLab() {
   // Not eligible and no assignments: full locked screen with checklist (from /api/v1/me)
   if (showLockedView) {
     return (
-      <div className={`min-h-screen p-4 md:p-8 lg:rounded-tl-lg overflow-hidden transition-colors duration-200 ${isDark ? "bg-slate-900" : "bg-gradient-to-br from-slate-50 via-white to-slate-50"}`}>
+      <div className={`min-h-screen rounded-t-3xl md:rounded-none p-4 md:p-8 lg:rounded-tl-lg overflow-hidden transition-colors duration-200 ${isDark ? "bg-slate-900" : "bg-gradient-to-br from-slate-50 via-white to-slate-50"}`}>
         <div className="max-w-xl mx-auto">
           <LockedClientLabContent
             isDark={isDark}
@@ -266,7 +266,7 @@ export default function StudentClientLab() {
   if (taskId && taskDetail) {
     const latest = taskDetail.latest_submission;
     return (
-      <div className={`min-h-screen p-4 md:p-8 lg:rounded-tl-lg overflow-hidden transition-colors duration-200 ${isDark ? "bg-slate-900" : "bg-gradient-to-br from-slate-50 via-white to-slate-50"}`}>
+      <div className={`min-h-screen rounded-t-3xl md:rounded-none p-4 md:p-8 lg:rounded-tl-lg overflow-hidden transition-colors duration-200 ${isDark ? "bg-slate-900" : "bg-gradient-to-br from-slate-50 via-white to-slate-50"}`}>
         <div className="max-w-2xl mx-auto">
           {!eligible && (
             <div className={`mb-4 p-4 border rounded-2xl text-sm ${isDark ? "bg-amber-500/10 border-amber-500/30 text-amber-300" : "bg-amber-50 border-amber-200 text-amber-800"}`}>
@@ -346,7 +346,7 @@ export default function StudentClientLab() {
   if (projectId && projectDetail) {
     const projectTasks = projectDetail.tasks || [];
     return (
-      <div className={`min-h-screen p-4 md:p-8 lg:rounded-tl-lg overflow-hidden transition-colors duration-200 ${isDark ? "bg-slate-900" : "bg-gradient-to-br from-slate-50 via-white to-slate-50"}`}>
+      <div className={`min-h-screen rounded-t-3xl md:rounded-none p-4 md:p-8 lg:rounded-tl-lg overflow-hidden transition-colors duration-200 ${isDark ? "bg-slate-900" : "bg-gradient-to-br from-slate-50 via-white to-slate-50"}`}>
         <div className="max-w-2xl mx-auto">
           {!eligible && (
             <div className={`mb-4 p-4 border rounded-2xl text-sm ${isDark ? "bg-amber-500/10 border-amber-500/30 text-amber-300" : "bg-amber-50 border-amber-200 text-amber-800"}`}>
@@ -398,7 +398,7 @@ export default function StudentClientLab() {
 
   // Default: list assigned projects and tasks (LMS portal style)
   return (
-    <div className={`min-h-screen p-4 md:p-8 lg:rounded-tl-lg overflow-hidden transition-colors duration-200 ${isDark ? "bg-slate-900" : "bg-gradient-to-br from-slate-50 via-white to-slate-50"}`}>
+    <div className={`min-h-screen rounded-t-3xl md:rounded-none p-4 md:p-8 lg:rounded-tl-lg overflow-hidden transition-colors duration-200 ${isDark ? "bg-slate-900" : "bg-gradient-to-br from-slate-50 via-white to-slate-50"}`}>
       <div className="max-w-4xl mx-auto">
         {!eligible && hasAssignments && (
           <div className={`mb-6 p-4 border rounded-2xl text-sm flex items-start gap-2 ${isDark ? "bg-amber-500/10 border-amber-500/30 text-amber-300" : "bg-amber-50 border-amber-200 text-amber-800"}`}>

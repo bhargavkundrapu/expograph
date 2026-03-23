@@ -215,7 +215,7 @@ export default function StudentCertifications() {
   }
 
   return (
-    <div className={`min-h-screen p-4 sm:p-6 lg:p-8 transition-colors ${isDark ? "bg-slate-900" : "bg-gradient-to-br from-slate-50 via-white to-slate-50"}`}>
+    <div className={`min-h-screen rounded-t-3xl overflow-hidden md:rounded-none p-4 sm:p-6 lg:p-8 transition-colors ${isDark ? "bg-slate-900" : "bg-gradient-to-br from-slate-50 via-white to-slate-50"}`}>
       <Toast
         message={toast.message}
         type={toast.type}

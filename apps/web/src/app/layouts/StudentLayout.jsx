@@ -100,7 +100,6 @@ export default function StudentLayout() {
   };
 
   const isLessonPage = location.pathname.match(/\/lms\/student\/(courses|bonus-courses)\/.+\/modules\/.+\/lessons\/.+/);
-  const isWhiteBgPage = location.pathname === "/lms/student/contact";
 
   const handleLogout = () => {
     setProfileOpen(false);
@@ -235,11 +234,11 @@ export default function StudentLayout() {
                       <FiChevronRight className="w-4 h-4 ml-auto text-slate-500" />
                     </button>
                     <button
-                      onClick={() => { setProfileOpen(false); navigate("/lms/student/resume-builder"); }}
+                      onClick={() => { setProfileOpen(false); navigate("/lms/student/bonus-courses"); }}
                       className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-700/50 transition-colors text-sm"
                     >
                       <FiFileText className="w-4 h-4" />
-                      <span>Resume Builder</span>
+                      <span>Bonus Courses</span>
                       <FiChevronRight className="w-4 h-4 ml-auto text-slate-500" />
                     </button>
                     <button
@@ -419,10 +418,10 @@ export default function StudentLayout() {
         <StudentSearchModal open={searchModalOpen} onClose={() => setSearchModalOpen(false)} token={token} />
 
         {/* ── Main Content ── */}
-        <div className={`flex-1 flex flex-col overflow-hidden lg:rounded-tl-lg shadow-xl relative z-10 transition-colors duration-200 ${isWhiteBgPage ? (isDark ? "bg-slate-900" : "bg-white") : isDark ? "bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950" : "bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900"}`}>
+        <div className={`flex-1 flex flex-col overflow-hidden lg:rounded-tl-lg shadow-xl relative z-10 transition-colors duration-200 ${isDark ? "bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950" : "bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900"}`}>
           <main className={`flex-1 overflow-y-auto overflow-x-hidden pb-20 md:pb-0 lg:rounded-tl-lg min-h-0 ${isDark ? "student-dark-content" : ""}`}>
             <IdleReengagement />
-            <div className={`min-h-full lg:rounded-tl-lg overflow-hidden ${isWhiteBgPage ? (isDark ? "bg-slate-900" : "bg-white") : "bg-transparent"}`}>
+            <div className="min-h-full lg:rounded-tl-lg overflow-hidden bg-transparent">
               <Outlet />
             </div>
           </main>

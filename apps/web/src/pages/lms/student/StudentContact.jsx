@@ -36,7 +36,7 @@ export default function StudentContact() {
 
   if (submitted) {
     return (
-      <div className={`transition-colors duration-200 ${isDark ? "bg-slate-900" : "bg-white"}`} style={{ minHeight: "calc(100vh - 60px)" }}>
+      <div className={`min-h-screen rounded-t-3xl overflow-hidden md:rounded-none transition-colors duration-200 ${isDark ? "bg-slate-900" : "bg-white"}`}>
         <div className="flex items-center justify-center min-h-[60vh] px-4">
           <div className={`w-full max-w-md text-center rounded-2xl p-8 ${isDark ? "bg-emerald-500/10 border border-emerald-500/30" : "bg-emerald-50 border border-emerald-200"}`}>
             <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100">
@@ -57,7 +57,7 @@ export default function StudentContact() {
   }
 
   return (
-    <div className={`transition-colors duration-200 ${isDark ? "bg-slate-900" : "bg-white"}`} style={{ minHeight: "calc(100vh - 60px)" }}>
+    <div className={`min-h-screen rounded-t-3xl overflow-hidden md:rounded-none transition-colors duration-200 ${isDark ? "bg-slate-900" : "bg-white"}`}>
       <div className="w-full max-w-3xl mx-auto px-4 py-6 sm:py-10">
         {/* Header */}
         <div className="mb-6 sm:mb-8">

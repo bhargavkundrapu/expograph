@@ -3,7 +3,7 @@
 // Student Home Page Skeletons - matches StudentHome section colors (slate-50, white, #0b0f27 carousel)
 export function StudentHomeSkeleton() {
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen rounded-t-3xl overflow-hidden md:rounded-none bg-slate-50">
       <div className="flex flex-col lg:flex-row gap-6 px-4 sm:px-6 lg:px-6 xl:px-8 py-4 sm:py-6 lg:py-8">
         {/* Left Column - Main Content */}
         <div className="flex-1 min-w-0 space-y-6 lg:space-y-8">
@@ -76,7 +76,7 @@ export function StudentHomeSkeleton() {
 // Student Courses Page Skeleton
 export function StudentCoursesSkeleton() {
   return (
-    <div className="min-h-screen bg-slate-50 p-8">
+    <div className="min-h-screen rounded-t-3xl overflow-hidden md:rounded-none bg-slate-50 p-8">
       <div className="max-w-7xl mx-auto animate-pulse">
         {/* Header Skeleton */}
         <div className="mb-8">
@@ -116,7 +116,7 @@ export function StudentCoursesSkeleton() {
 // Student Bookmarks Page Skeleton
 export function StudentBookmarksSkeleton() {
   return (
-    <div className="min-h-screen p-4 sm:p-6 lg:p-8 bg-slate-50 animate-pulse">
+    <div className="min-h-screen rounded-t-3xl overflow-hidden md:rounded-none p-4 sm:p-6 lg:p-8 bg-slate-50 animate-pulse">
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Header */}
         <div className="space-y-3">
@@ -170,7 +170,7 @@ export function StudentBookmarksSkeleton() {
 // Student Certifications Page Skeleton
 export function StudentCertificatesSkeleton() {
   return (
-    <div className="min-h-screen p-4 sm:p-6 lg:p-8 bg-slate-50 animate-pulse">
+    <div className="min-h-screen rounded-t-3xl overflow-hidden md:rounded-none p-4 sm:p-6 lg:p-8 bg-slate-50 animate-pulse">
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Header */}
         <div className="space-y-3">
@@ -221,7 +221,7 @@ export function StudentCertificatesSkeleton() {
 // Student Course Tree Skeleton
 export function StudentCourseTreeSkeleton() {
   return (
-    <div className="min-h-screen bg-slate-50 p-8">
+    <div className="min-h-screen rounded-t-3xl overflow-hidden md:rounded-none bg-slate-50 p-8">
       <div className="max-w-7xl mx-auto animate-pulse">
         {/* Header Skeleton */}
         <div className="mb-8">
@@ -1280,7 +1280,7 @@ export function CoursesPageSkeleton() {
 // Generic Page Skeleton (for pages without specific skeletons)
 export function GenericPageSkeleton() {
   return (
-    <div className="min-h-screen bg-slate-50 p-8 animate-pulse">
+    <div className="min-h-screen rounded-t-3xl overflow-hidden md:rounded-none bg-slate-50 p-8 animate-pulse">
       <div className="max-w-7xl mx-auto">
         {/* Header Skeleton */}
         <div className="mb-8">

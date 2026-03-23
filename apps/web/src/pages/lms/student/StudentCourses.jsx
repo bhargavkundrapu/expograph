@@ -325,7 +325,7 @@ export default function StudentCourses() {
   if (isBonusCoursesPage) {
     return (
       <PageTransition>
-        <div className={`min-h-screen p-4 md:p-8 transition-colors duration-200 ${isDark ? "bg-slate-900" : "bg-slate-50"}`}>
+        <div className={`min-h-screen rounded-t-3xl overflow-hidden md:rounded-none p-4 md:p-8 transition-colors duration-200 ${isDark ? "bg-slate-900" : "bg-slate-50"}`}>
           <div className="max-w-7xl mx-auto">
             <div className="mb-8">
               <p className={`text-xs uppercase tracking-wider mb-1 ${isDark ? "text-slate-400" : "text-slate-500"}`}>BONUS CONTENT</p>
@@ -413,7 +413,7 @@ export default function StudentCourses() {
 
   return (
     <PageTransition>
-    <div className={`min-h-screen p-4 md:p-8 transition-colors duration-200 ${isDark ? "bg-slate-900" : "bg-slate-50"}`}>
+    <div className={`min-h-screen rounded-t-3xl overflow-hidden md:rounded-none p-4 md:p-8 transition-colors duration-200 ${isDark ? "bg-slate-900" : "bg-slate-50"}`}>
       <div className="max-w-7xl mx-auto">
         <div className="min-h-[200px]">
         {/* Header Section */}

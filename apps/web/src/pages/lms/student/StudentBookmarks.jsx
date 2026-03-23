@@ -16,7 +16,7 @@ export default function StudentBookmarks() {
   }));
 
   return (
-    <div className={`min-h-screen p-4 sm:p-6 lg:p-8 transition-colors ${isDark ? "bg-slate-900" : "bg-gradient-to-br from-slate-50 via-white to-slate-50"}`}>
+    <div className={`min-h-screen rounded-t-3xl overflow-hidden md:rounded-none p-4 sm:p-6 lg:p-8 transition-colors ${isDark ? "bg-slate-900" : "bg-gradient-to-br from-slate-50 via-white to-slate-50"}`}>
       <div className="max-w-4xl mx-auto">
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
           <h1 className={`text-2xl sm:text-3xl font-bold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>

@@ -199,10 +199,19 @@ export function GamificationProvider({ children }) {
 
     (async () => {
       try {
-        const res = await apiFetch("/api/v1/student/streak", { token });
+        // Use /student/progress as the primary streak source to avoid 404 noise
+        // in environments where /student/streak is not deployed yet.
+        const progressRes = await apiFetch("/api/v1/student/progress", { token }).catch(() => null);
         if (cancelled) return;
+        const streakFromProgress = parseInt(progressRes?.data?.streak, 10);
+        const data = {
+          currentStreak: Number.isFinite(streakFromProgress) ? streakFromProgress : 0,
+          bestStreak: Number.isFinite(streakFromProgress) ? streakFromProgress : 0,
+          activeDays: [],
+          weeklyStreakDays: [],
+          lastActiveDate: null,
+        };
 
-        const data = res?.data || {};
         const serverCurrent = parseInt(data.currentStreak, 10);
         const serverBest = parseInt(data.bestStreak, 10);
         const activeDays = Array.isArray(data.activeDays) ? data.activeDays : null;
@@ -218,7 +227,7 @@ export function GamificationProvider({ children }) {
           lastActiveDate: data.lastActiveDate ?? prev.lastActiveDate,
         }));
       } catch {
-        // If the endpoint fails (offline/dev), keep local gamification state.
+        // If endpoint fails (offline/dev), keep current gamification state.
       }
     })();
 
