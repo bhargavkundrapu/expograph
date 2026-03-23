@@ -468,6 +468,7 @@ module.exports = {
   getSchedule,
   getCurrentCourse,
   getProgress,
+  getStreak,
   getEvents,
   listCourses,
   search,
