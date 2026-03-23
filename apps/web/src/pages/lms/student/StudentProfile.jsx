@@ -21,7 +21,6 @@ export default function StudentProfile() {
     fullName: user?.fullName || user?.full_name || "",
     email: user?.email || "",
     phone: user?.phone || "",
-    bio: user?.bio || "",
     studentId: user?.studentId || user?.student_id || "",
   });
 
@@ -41,7 +40,6 @@ export default function StudentProfile() {
             fullName: d.fullName || d.full_name || prev.fullName,
             email: d.email || prev.email,
             phone: phone || prev.phone,
-            bio: prev.bio,
             studentId: studentId || prev.studentId || "",
           }));
           if (updateUser) {
@@ -67,7 +65,6 @@ export default function StudentProfile() {
       fullName: user?.fullName || user?.full_name || "",
       email: user?.email || "",
       phone: user?.phone || "",
-      bio: user?.bio || "",
       studentId: user?.studentId ?? user?.student_id ?? prev.studentId ?? "",
     }));
   }, [user]);
@@ -98,7 +95,6 @@ export default function StudentProfile() {
           fullName: response.data.fullName || response.data.full_name || "",
           email: response.data.email || "",
           phone: response.data.phone || "",
-          bio: formData.bio,
           studentId: response.data.studentId ?? response.data.student_id ?? formData.studentId,
         });
       }
@@ -315,22 +311,6 @@ export default function StudentProfile() {
                   </div>
                 );
               })}
-            </div>
-            <div className="mt-4">
-              <label className={`block text-xs font-semibold mb-1.5 ${isDark ? "text-slate-400" : "text-slate-600"}`}>Bio</label>
-              {isEditing ? (
-                <textarea
-                  value={formData.bio}
-                  onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
-                  rows={3}
-                  className={`w-full px-3.5 py-2.5 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 resize-none ${isDark ? "bg-slate-700/50 border-slate-600 text-white placeholder-slate-500" : "bg-slate-50 border-slate-200"}`}
-                  placeholder="Tell us about yourself..."
-                />
-              ) : (
-                <p className={`px-3.5 py-2.5 rounded-xl text-sm min-h-[60px] ${isDark ? "bg-slate-700/30 text-slate-200" : "bg-slate-50 text-slate-800"}`}>
-                  {formData.bio || "No bio added yet"}
-                </p>
-              )}
             </div>
           </motion.div>
 

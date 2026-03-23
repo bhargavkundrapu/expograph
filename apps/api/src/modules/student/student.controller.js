@@ -378,6 +378,17 @@ const updateProfile = asyncHandler(async (req, res) => {
   if (!parsed.success) {
     throw new HttpError(400, "Invalid input", parsed.error.flatten());
   }
+
+  // Ensure local DB (dev) has the student_id column/sequence.
+  // getProfile already bootstraps this, but updateProfile uses `RETURNING student_id`
+  // inside usersRepo.updateStudentDetails, which otherwise can throw 500.
+  const studentIdOk = await ensureStudentIdSchema();
+  if (!studentIdOk) {
+    throw new HttpError(
+      500,
+      "Student profile update is not available yet. Please run migrations to initialize student_id in the users table."
+    );
+  }
   
   // Check email uniqueness if updating email
   if (parsed.data.email) {

@@ -87,8 +87,11 @@ export default function StudentLayout() {
   const mobileBottomItems = [
     { path: "/lms/student", label: "Home", icon: FiHome },
     { path: "/lms/student/courses", label: "Courses", icon: FiBookOpen },
-    { path: "/lms/student/bonus-courses", label: "Bonus", icon: FiFileText },
+    // Below-medium responsive swap:
+    // - Show Real Client Lab where "Resume" used to be
+    // - Show Resume Builder where Real Client Lab position was
     { path: "/lms/student/resume-builder", label: "Resume", icon: FiAward },
+    { path: "/lms/student/client-lab", label: "Client Lab", icon: FiBriefcase },
   ];
 
   const isActive = (path) => {
@@ -232,11 +235,11 @@ export default function StudentLayout() {
                       <FiChevronRight className="w-4 h-4 ml-auto text-slate-500" />
                     </button>
                     <button
-                      onClick={() => { setProfileOpen(false); navigate("/lms/student/client-lab"); }}
+                      onClick={() => { setProfileOpen(false); navigate("/lms/student/resume-builder"); }}
                       className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-700/50 transition-colors text-sm"
                     >
-                      <FiBriefcase className="w-4 h-4" />
-                      <span>Real Client Lab</span>
+                      <FiFileText className="w-4 h-4" />
+                      <span>Resume Builder</span>
                       <FiChevronRight className="w-4 h-4 ml-auto text-slate-500" />
                     </button>
                     <button

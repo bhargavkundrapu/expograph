@@ -4,7 +4,7 @@ import { useTheme } from "../../../app/providers/ThemeProvider";
 
 export default function WeeklyStreak() {
   const { isDark } = useTheme();
-  const { weeklyStreakDays, currentStreak, bestStreak, streakFreezes } = useGamification();
+  const { weeklyStreakDays, currentStreak, bestStreak } = useGamification();
 
   return (
     <div className={`rounded-xl p-4 border ${isDark ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"}`}>
@@ -13,11 +13,6 @@ export default function WeeklyStreak() {
           🔥 Learning Streak
         </h3>
         <div className="flex items-center gap-2">
-          {streakFreezes > 0 && (
-            <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium ${isDark ? "bg-cyan-500/15 text-cyan-400" : "bg-cyan-50 text-cyan-600"}`}>
-              ❄️ {streakFreezes} freeze
-            </span>
-          )}
           <span className={`text-xs font-semibold ${isDark ? "text-orange-400" : "text-orange-600"}`}>
             {currentStreak} days
           </span>
