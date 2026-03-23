@@ -14,6 +14,7 @@ export default function StudentProfile() {
   const { totalXP, currentLevel, nextLevel, levelProgress, currentStreak, bestStreak, lessonsCompleted, coursesCompleted, weeklyXP, weeklyXPGoal } = useGamification();
   const [isEditing, setIsEditing] = useState(false);
   const [saving, setSaving] = useState(false);
+  const savingRef = useRef(false);
   const [profileLoaded, setProfileLoaded] = useState(false);
   const [copiedId, setCopiedId] = useState(false);
   const lastStudentIdRef = useRef("");
@@ -71,6 +72,10 @@ export default function StudentProfile() {
 
   const handleSave = async () => {
     if (!token) return;
+    // Touch devices can fire multiple taps before `saving` state disables the button.
+    // Prevent concurrent PATCH requests.
+    if (savingRef.current) return;
+    savingRef.current = true;
     try {
       setSaving(true);
       const response = await apiFetch("/api/v1/student/profile", {
@@ -103,6 +108,7 @@ export default function StudentProfile() {
       alert(error?.message || "Failed to update profile. Please try again.");
     } finally {
       setSaving(false);
+      savingRef.current = false;
     }
   };
 
