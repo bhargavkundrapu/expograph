@@ -1,4 +1,6 @@
 import { createContext, useContext, useState, useCallback, useEffect, useMemo } from "react";
+import { useAuth } from "./AuthProvider";
+import { apiFetch } from "../../services/api";
 
 const STORAGE_KEY = "expograph-gamification";
 const GamificationContext = createContext(null);
@@ -87,6 +89,44 @@ function today() {
   return new Date().toISOString().slice(0, 10);
 }
 
+function toDayNumber(isoDateStr) {
+  // isoDateStr is expected to be YYYY-MM-DD
+  return Math.floor(new Date(`${isoDateStr}T00:00:00Z`).getTime() / 86400000);
+}
+
+function computeStreaksFromActiveDays(activeDays, todayStr) {
+  const unique = Array.from(new Set((activeDays || []).filter(Boolean)));
+  const dayNumbers = unique.map(toDayNumber).filter((n) => Number.isFinite(n)).sort((a, b) => a - b);
+  const activeSet = new Set(unique);
+
+  // Best streak (longest consecutive run)
+  let bestStreak = 0;
+  let run = 0;
+  let prevN = null;
+  for (const n of dayNumbers) {
+    if (prevN === null || n === prevN + 1) {
+      run = prevN === null ? 1 : run + 1;
+    } else {
+      bestStreak = Math.max(bestStreak, run);
+      run = 1;
+    }
+    prevN = n;
+  }
+  bestStreak = Math.max(bestStreak, run);
+
+  // Current streak (consecutive active days ending today)
+  let currentStreak = 0;
+  if (activeSet.has(todayStr)) {
+    let n = toDayNumber(todayStr);
+    while (activeSet.has(new Date(n * 86400000).toISOString().slice(0, 10))) {
+      currentStreak++;
+      n--;
+    }
+  }
+
+  return { currentStreak, bestStreak };
+}
+
 function getDefaults() {
   return {
     totalXP: 0,
@@ -132,12 +172,61 @@ function loadState() {
 
 export function GamificationProvider({ children }) {
   const [state, setState] = useState(loadState);
+  const { token, role, permissionsLoading } = useAuth();
 
   useEffect(() => {
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch {}
   }, [state]);
 
+  // Sync streak/best streak from backend so profile shows real values (no localStorage mock).
   useEffect(() => {
+    if (!token) return;
+    if (permissionsLoading) return;
+    if (role && role !== "Student") return;
+
+    let cancelled = false;
+
+    // Avoid showing localStorage-derived (fake) streak values while we fetch server truth.
+    setState((prev) => ({
+      ...prev,
+      currentStreak: 0,
+      bestStreak: 0,
+      activeDays: [],
+      lastActiveDate: null,
+    }));
+
+    (async () => {
+      try {
+        const res = await apiFetch("/api/v1/student/streak", { token });
+        if (cancelled) return;
+
+        const data = res?.data || {};
+        const serverCurrent = parseInt(data.currentStreak, 10);
+        const serverBest = parseInt(data.bestStreak, 10);
+        const activeDays = Array.isArray(data.activeDays) ? data.activeDays : null;
+
+        setState((prev) => ({
+          ...prev,
+          currentStreak: Number.isFinite(serverCurrent) ? serverCurrent : prev.currentStreak,
+          bestStreak: Number.isFinite(serverBest) ? serverBest : prev.bestStreak,
+          activeDays: activeDays ?? prev.activeDays,
+          lastActiveDate: data.lastActiveDate ?? prev.lastActiveDate,
+        }));
+      } catch {
+        // If the endpoint fails (offline/dev), keep local gamification state.
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [token, role, permissionsLoading]);
+
+  useEffect(() => {
+    // When authenticated, streak values come from the server (and are updated locally
+    // on lesson completion). This prevents "fake" streak increments from localStorage.
+    if (token) return;
+
     const now = new Date();
     const hour = now.getHours();
     const day = now.getDay();
@@ -185,7 +274,7 @@ export function GamificationProvider({ children }) {
       if (Object.keys(updates).length === 0) return prev;
       return { ...prev, ...updates };
     });
-  }, []);
+  }, [token]);
 
   const addXP = useCallback((amount, reason) => {
     setState(prev => {
@@ -200,7 +289,22 @@ export function GamificationProvider({ children }) {
   const recordLessonComplete = useCallback(() => {
     setState(prev => {
       const count = (prev.lessonsCompleted || 0) + 1;
-      return { ...prev, lessonsCompleted: count };
+
+      // Keep streak live for the current session by treating lesson completion as "activity" for today.
+      const t = today();
+      const nextActiveDays = Array.from(new Set([...(prev.activeDays || []), t]))
+        .sort()
+        .slice(-180);
+      const { currentStreak, bestStreak } = computeStreaksFromActiveDays(nextActiveDays, t);
+
+      return {
+        ...prev,
+        lessonsCompleted: count,
+        activeDays: nextActiveDays,
+        lastActiveDate: t,
+        currentStreak,
+        bestStreak,
+      };
     });
     addXP(XP_REWARDS.lessonComplete, "Lesson completed");
   }, [addXP]);

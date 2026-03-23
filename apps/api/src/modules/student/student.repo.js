@@ -324,6 +324,112 @@ async function getProgress({ tenantId, userId }) {
   }
 }
 
+// Streak stats based on consecutive active days (lesson_progress updated_at dates)
+// Returns values suitable for profile cards + weekly streak calendar.
+async function getStreak({ tenantId, userId }) {
+  // Keep a relatively small window for performance, but large enough
+  // to compute "best streak" without being too myopic.
+  const lookbackDaysForBest = 365;
+  const lookbackDaysForActive = 180;
+
+  try {
+    const result = await query(
+      `SELECT DISTINCT DATE(updated_at) as d
+       FROM lesson_progress
+       WHERE user_id = $1
+         AND tenant_id = $2
+         AND updated_at >= CURRENT_DATE - INTERVAL '${lookbackDaysForBest} days'
+       ORDER BY d ASC`,
+      [userId, tenantId]
+    );
+
+    const activeDates = (result.rows || [])
+      .map((r) => r?.d)
+      .filter(Boolean)
+      .map((d) => {
+        // Normalize to YYYY-MM-DD (UTC) to avoid timezone off-by-one.
+        const dt = new Date(d);
+        return isNaN(dt.getTime()) ? null : dt.toISOString().slice(0, 10);
+      })
+      .filter(Boolean);
+
+    const activeSet = new Set(activeDates);
+    const sortedDayNumbers = activeDates
+      .map((s) => Math.floor(new Date(`${s}T00:00:00Z`).getTime() / 86400000))
+      .filter((n) => Number.isFinite(n))
+      .sort((a, b) => a - b);
+
+    const today = new Date();
+    const todayStr = today.toISOString().slice(0, 10);
+    const todayN = Math.floor(today.getTime() / 86400000);
+
+    // Best streak = longest consecutive run
+    let bestStreak = 0;
+    let run = 0;
+    let prevN = null;
+    for (const n of sortedDayNumbers) {
+      if (prevN === null || n === prevN + 1) {
+        run = prevN === null ? 1 : run + 1;
+      } else {
+        bestStreak = Math.max(bestStreak, run);
+        run = 1;
+      }
+      prevN = n;
+    }
+    bestStreak = Math.max(bestStreak, run);
+
+    // Current streak = consecutive active days ending today
+    let currentStreak = 0;
+    if (activeSet.has(todayStr)) {
+      let n = todayN;
+      while (activeSet.has(new Date(n * 86400000).toISOString().slice(0, 10))) {
+        currentStreak++;
+        n--;
+      }
+    }
+
+    const lastActiveDayStr = sortedDayNumbers.length
+      ? new Date(sortedDayNumbers[sortedDayNumbers.length - 1] * 86400000).toISOString().slice(0, 10)
+      : null;
+
+    // Weekly calendar for UI (last 7 days incl today)
+    const weeklyStreakDays = [];
+    for (let i = 6; i >= 0; i--) {
+      const n = todayN - i;
+      const str = new Date(n * 86400000).toISOString().slice(0, 10);
+      const d = new Date(`${str}T00:00:00`);
+      weeklyStreakDays.push({
+        date: str,
+        active: activeSet.has(str),
+        label: d.toLocaleDateString("en", { weekday: "short" }).charAt(0),
+      });
+    }
+
+    // Active days for the last 180 days (used by WeeklyStreak component)
+    const activeDays = activeDates.filter((s) => {
+      const n = Math.floor(new Date(`${s}T00:00:00Z`).getTime() / 86400000);
+      return n >= todayN - (lookbackDaysForActive - 1);
+    });
+
+    return {
+      currentStreak,
+      bestStreak,
+      lastActiveDate: lastActiveDayStr,
+      weeklyStreakDays,
+      activeDays,
+    };
+  } catch (error) {
+    console.error("Error in getStreak:", error);
+    return {
+      currentStreak: 0,
+      bestStreak: 0,
+      lastActiveDate: null,
+      weeklyStreakDays: [],
+      activeDays: [],
+    };
+  }
+}
+
 async function getEvents({ tenantId }) {
   // Get live (ongoing) + upcoming events/workshops
   const result = await query(
@@ -1063,6 +1169,7 @@ module.exports = {
   getSchedule,
   getCurrentCourse,
   getProgress,
+  getStreak,
   getEvents,
   listEnrolledCourses,
   getEnrolledCourseIds,

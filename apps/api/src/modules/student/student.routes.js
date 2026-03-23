@@ -15,6 +15,7 @@ router.use(requirePermission("student:read"));
 router.get("/schedule", ctrl.getSchedule);
 router.get("/current-course", ctrl.getCurrentCourse);
 router.get("/progress", ctrl.getProgress);
+router.get("/streak", ctrl.getStreak);
 router.get("/events", ctrl.getEvents);
 
 // Courses

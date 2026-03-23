@@ -30,6 +30,26 @@ const UpdateProfileSchema = z.object({
   phone: z.string().optional(),
 });
 
+function isTransientDbError(err) {
+  const msg = String(err?.message || "").toLowerCase();
+  const code = String(err?.code || "").toLowerCase();
+  return (
+    msg.includes("connection terminated unexpectedly") ||
+    msg.includes("connection terminated") ||
+    msg.includes("ecconnreset") ||
+    msg.includes("econnreset") ||
+    msg.includes("timeout") ||
+    code === "57p01" || // admin shutdown
+    code === "08006" || // connection failure
+    code === "08000" || // connection exception
+    code === "53300" // too many connections
+  );
+}
+
+function wait(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 // Dashboard & Home
 const getSchedule = asyncHandler(async (req, res) => {
   const { tenantId, userId } = req.auth;
@@ -47,6 +67,13 @@ const getProgress = asyncHandler(async (req, res) => {
   const { tenantId, userId } = req.auth;
   const progress = await repo.getProgress({ tenantId, userId });
   res.json({ ok: true, data: progress });
+});
+
+// Streak (current + best + weekly calendar) for profile cards
+const getStreak = asyncHandler(async (req, res) => {
+  const { tenantId, userId } = req.auth;
+  const streak = await repo.getStreak({ tenantId, userId });
+  res.json({ ok: true, data: streak });
 });
 
 const getEvents = asyncHandler(async (req, res) => {
@@ -382,28 +409,41 @@ const updateProfile = asyncHandler(async (req, res) => {
   // Ensure local DB (dev) has the student_id column/sequence.
   // getProfile already bootstraps this, but updateProfile uses `RETURNING student_id`
   // inside usersRepo.updateStudentDetails, which otherwise can throw 500.
-  const studentIdOk = await ensureStudentIdSchema();
-  if (!studentIdOk) {
-    throw new HttpError(
-      500,
-      "Student profile update is not available yet. Please run migrations to initialize student_id in the users table."
-    );
-  }
-  
-  // Check email uniqueness if updating email
-  if (parsed.data.email) {
-    const existing = await usersRepo.findUserByEmail(parsed.data.email);
-    if (existing && existing.id !== userId) {
-      throw new HttpError(409, "Email already in use");
+  let updated = null;
+  const maxAttempts = 2;
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      const studentIdOk = await ensureStudentIdSchema();
+      if (!studentIdOk) {
+        throw new HttpError(
+          500,
+          "Student profile update is not available yet. Please run migrations to initialize student_id in the users table."
+        );
+      }
+
+      // Check email uniqueness if updating email
+      if (parsed.data.email) {
+        const existing = await usersRepo.findUserByEmail(parsed.data.email);
+        if (existing && existing.id !== userId) {
+          throw new HttpError(409, "Email already in use");
+        }
+      }
+
+      updated = await usersRepo.updateStudentDetails({
+        userId,
+        fullName: parsed.data.fullName,
+        email: parsed.data.email,
+        phone: parsed.data.phone,
+      });
+      break;
+    } catch (err) {
+      const transient = isTransientDbError(err);
+      const isLast = attempt === maxAttempts;
+      if (!transient || isLast) throw err;
+      // Small backoff then retry once for transient DB/network hiccups.
+      await wait(120);
     }
   }
-  
-  const updated = await usersRepo.updateStudentDetails({
-    userId,
-    fullName: parsed.data.fullName,
-    email: parsed.data.email,
-    phone: parsed.data.phone,
-  });
   
   if (!updated) {
     throw new HttpError(404, "User not found");
