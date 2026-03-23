@@ -135,6 +135,7 @@ function getDefaults() {
     weekStartDate: today(),
     currentStreak: 0,
     bestStreak: 0,
+    serverWeeklyStreakDays: [],
     streakFreezes: 1,
     lastActiveDate: null,
     activeDays: [],
@@ -191,6 +192,7 @@ export function GamificationProvider({ children }) {
       ...prev,
       currentStreak: 0,
       bestStreak: 0,
+      serverWeeklyStreakDays: [],
       activeDays: [],
       lastActiveDate: null,
     }));
@@ -209,6 +211,9 @@ export function GamificationProvider({ children }) {
           ...prev,
           currentStreak: Number.isFinite(serverCurrent) ? serverCurrent : prev.currentStreak,
           bestStreak: Number.isFinite(serverBest) ? serverBest : prev.bestStreak,
+          serverWeeklyStreakDays: Array.isArray(data.weeklyStreakDays)
+            ? data.weeklyStreakDays
+            : prev.serverWeeklyStreakDays,
           activeDays: activeDays ?? prev.activeDays,
           lastActiveDate: data.lastActiveDate ?? prev.lastActiveDate,
         }));
@@ -457,6 +462,10 @@ export function GamificationProvider({ children }) {
   }, []);
 
   const weeklyStreakDays = useMemo(() => {
+    if (Array.isArray(state.serverWeeklyStreakDays) && state.serverWeeklyStreakDays.length === 7) {
+      return state.serverWeeklyStreakDays;
+    }
+
     const days = [];
     const now = new Date();
     for (let i = 6; i >= 0; i--) {
@@ -466,7 +475,7 @@ export function GamificationProvider({ children }) {
       days.push({ date: str, active: (state.activeDays || []).includes(str), label: d.toLocaleDateString("en", { weekday: "short" }).charAt(0) });
     }
     return days;
-  }, [state.activeDays]);
+  }, [state.serverWeeklyStreakDays, state.activeDays]);
 
   const value = {
     ...state,

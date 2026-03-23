@@ -406,6 +406,14 @@ const updateProfile = asyncHandler(async (req, res) => {
     throw new HttpError(400, "Invalid input", parsed.error.flatten());
   }
 
+  const normalizedFullName =
+    parsed.data.fullName === undefined ? undefined : String(parsed.data.fullName).trim();
+  const normalizedEmail =
+    parsed.data.email === undefined ? undefined : String(parsed.data.email).trim().toLowerCase();
+  const normalizedPhoneRaw =
+    parsed.data.phone === undefined ? undefined : String(parsed.data.phone).trim();
+  const normalizedPhone = normalizedPhoneRaw === "" ? null : normalizedPhoneRaw;
+
   // Ensure local DB (dev) has the student_id column/sequence.
   // getProfile already bootstraps this, but updateProfile uses `RETURNING student_id`
   // inside usersRepo.updateStudentDetails, which otherwise can throw 500.
@@ -422,21 +430,41 @@ const updateProfile = asyncHandler(async (req, res) => {
       }
 
       // Check email uniqueness if updating email
-      if (parsed.data.email) {
-        const existing = await usersRepo.findUserByEmail(parsed.data.email);
+      if (normalizedEmail) {
+        const existing = await usersRepo.findUserByEmail(normalizedEmail);
         if (existing && existing.id !== userId) {
           throw new HttpError(409, "Email already in use");
         }
       }
 
+      // Check phone uniqueness if updating phone to non-empty value.
+      if (normalizedPhone !== undefined && normalizedPhone !== null) {
+        const { rows } = await query(
+          `SELECT id FROM users WHERE phone = $1 LIMIT 1`,
+          [normalizedPhone]
+        );
+        if (rows[0] && rows[0].id !== userId) {
+          throw new HttpError(409, "Phone number already in use");
+        }
+      }
+
       updated = await usersRepo.updateStudentDetails({
         userId,
-        fullName: parsed.data.fullName,
-        email: parsed.data.email,
-        phone: parsed.data.phone,
+        fullName: normalizedFullName,
+        email: normalizedEmail,
+        phone: normalizedPhone,
       });
       break;
     } catch (err) {
+      if (err && err.code === "23505") {
+        const msg = String(err.message || "");
+        if (err.constraint === "users_phone_key" || msg.includes("users_phone_key")) {
+          throw new HttpError(409, "Phone number already in use");
+        }
+        if (err.constraint === "users_email_key" || msg.includes("users_email_key")) {
+          throw new HttpError(409, "Email already in use");
+        }
+      }
       const transient = isTransientDbError(err);
       const isLast = attempt === maxAttempts;
       if (!transient || isLast) throw err;

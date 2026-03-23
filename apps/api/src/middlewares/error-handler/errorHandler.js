@@ -11,7 +11,7 @@ function notFound(req, res) {
 // IMPORTANT: 4 params must be there, else Express won't treat as error middleware
 function errorHandler(err, req, res, next) {
   if (res.headersSent) return next(err);
-  const status = err.statusCode || err.status || 500;
+  let status = err.statusCode || err.status || 500;
   let message = err.message || "Internal Server Error";
   let details = err.details || undefined;
 
