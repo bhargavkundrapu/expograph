@@ -71,6 +71,8 @@ export default function StudentCourses() {
   const [buyItem, setBuyItem] = useState(null);
   const openedFromUrlRef = useRef(false);
   const [fetchError, setFetchError] = useState("");
+  const continueTargetsRef = useRef({});
+  const continuePrefetchingRef = useRef(new Set());
 
   // Check if we're on the bonus courses page
   const isBonusCoursesPage = location.pathname.includes("bonus-courses");
@@ -79,6 +81,49 @@ export default function StudentCourses() {
     if (!token) return;
     fetchCourses();
   }, [token]);
+
+  // Warm a few "Continue Learning" targets in the background so click navigates immediately.
+  useEffect(() => {
+    if (!token) return;
+    if (!Array.isArray(courses) || courses.length === 0) return;
+    if (typeof window === "undefined") return;
+
+    const enrolledCandidates = courses.filter((c) => c?.enrolled === true && c?.slug).slice(0, 3);
+    if (enrolledCandidates.length === 0) return;
+
+    const timer = window.setTimeout(() => {
+      enrolledCandidates.forEach(async (c) => {
+        const slug = c.slug;
+        if (continueTargetsRef.current[slug] || continuePrefetchingRef.current.has(slug)) return;
+        continuePrefetchingRef.current.add(slug);
+        try {
+          const res = await apiFetch(`/api/v1/student/courses/${slug}`, { token }).catch(() => null);
+          const courseData = res?.data?.course ?? res?.data ?? null;
+          const mods = courseData?.modules || [];
+          const allLessons = mods.flatMap((m) => m.lessons || []);
+          const continueLesson =
+            allLessons.find((l) => l && !l.completed) || allLessons[0] || mods?.[0]?.lessons?.[0];
+          if (!continueLesson) return;
+
+          const modForLesson =
+            mods.find((m) =>
+              (m.lessons || []).some((l) => l?.id === continueLesson.id || l?.slug === continueLesson.slug)
+            ) || mods[0];
+
+          if (!modForLesson?.slug || !continueLesson?.slug) return;
+
+          continueTargetsRef.current[slug] = {
+            moduleSlug: modForLesson.slug,
+            lessonSlug: continueLesson.slug,
+          };
+        } finally {
+          continuePrefetchingRef.current.delete(slug);
+        }
+      });
+    }, 250);
+
+    return () => window.clearTimeout(timer);
+  }, [courses, token]);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -140,6 +185,49 @@ export default function StudentCourses() {
     }
     setSelectedCourse(course);
     await fetchCourseDetails(course.slug);
+  };
+
+  const handleContinueLearning = async (course, e) => {
+    e.stopPropagation();
+    if (!course?.slug) return;
+    try {
+      const cached = continueTargetsRef.current[course.slug];
+      if (cached?.moduleSlug && cached?.lessonSlug) {
+        navigate(getStudentLessonPath(course.slug, cached.moduleSlug, cached.lessonSlug));
+        return;
+      }
+
+      // Redirect directly to the first incomplete lesson for this course.
+      // This avoids the extra `/courses/:slug?continue=1` roundtrip.
+      const res = await apiFetch(`/api/v1/student/courses/${course.slug}`, { token }).catch(() => null);
+
+      const courseData = res?.data?.course ?? res?.data ?? null;
+      const mods = courseData?.modules || [];
+
+      const allLessons = mods.flatMap((m) => m.lessons || []);
+      const continueLesson =
+        allLessons.find((l) => l && !l.completed) ||
+        allLessons[0] ||
+        mods?.[0]?.lessons?.[0];
+
+      if (!continueLesson) {
+        navigate(`${getStudentCourseLandingPath(course.slug)}?continue=1`);
+        return;
+      }
+
+      const modForLesson =
+        mods.find((m) => (m.lessons || []).some((l) => l?.id === continueLesson.id || l?.slug === continueLesson.slug)) ||
+        mods[0];
+
+      if (modForLesson?.slug && continueLesson?.slug) {
+        navigate(getStudentLessonPath(course.slug, modForLesson.slug, continueLesson.slug));
+        return;
+      }
+
+      navigate(`${getStudentCourseLandingPath(course.slug)}?continue=1`);
+    } catch {
+      navigate(`${getStudentCourseLandingPath(course.slug)}?continue=1`);
+    }
   };
 
   const openBuyModal = (course) => {
@@ -520,12 +608,10 @@ export default function StudentCourses() {
                           Explore Course
                         </button>
                         <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            navigate(`${getStudentCourseLandingPath(course.slug)}?continue=1`);
-                          }}
+                          onClick={(e) => handleContinueLearning(course, e)}
                           className="w-full py-2.5 px-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold rounded-xl text-sm transition-all flex items-center justify-center gap-2 shadow-sm hover:shadow-md"
                         >
+                          <FiBookOpen className="w-4 h-4" />
                           Continue Learning
                         </button>
                       </>

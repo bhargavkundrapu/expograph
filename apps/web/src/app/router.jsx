@@ -12,6 +12,7 @@ import LoginPage from "../pages/auth/LoginPage";
 import NotFoundPageRoute from "../pages/NotFoundPage";
 import StudentHome from "../pages/lms/student/StudentHome";
 import StudentCourses from "../pages/lms/student/StudentCourses";
+import { StudentBookmarksSkeleton, StudentCertificatesSkeleton } from "../Components/common/SkeletonLoaders";
 
 const SolutionsPage = lazy(() => import("../pages/solutions/SolutionsPage"));
 const CoursesPage = lazy(() => import("../pages/courses/CoursesPage"));
@@ -72,15 +73,28 @@ const TenantAdminUsers = lazy(() => import("../pages/lms/admin/TenantAdminUsers"
 
 function LazyFallback() {
   return (
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "60vh" }}>
-      <div style={{ width: 32, height: 32, border: "3px solid #e5e7eb", borderTopColor: "#2563eb", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} />
-      <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
+    <div className="min-h-screen w-full flex items-center justify-center bg-slate-50 dark:bg-gradient-to-b dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 p-6 text-center">
+      <div className="flex flex-col items-center justify-center gap-4">
+        <div
+          className="w-12 h-12 rounded-full border-4 border-slate-200/70 border-t-blue-500 animate-spin"
+          aria-hidden
+        />
+        <p className="text-slate-600 dark:text-slate-200 font-medium">Loading...</p>
+      </div>
     </div>
   );
 }
 
 function L({ children }) {
   return <Suspense fallback={<LazyFallback />}>{children}</Suspense>;
+}
+
+function LBookmarks({ children }) {
+  return <Suspense fallback={<StudentBookmarksSkeleton />}>{children}</Suspense>;
+}
+
+function LCertificates({ children }) {
+  return <Suspense fallback={<StudentCertificatesSkeleton />}>{children}</Suspense>;
 }
 
 // Simple layout wrapper - just renders children
@@ -318,7 +332,7 @@ export const router = createBrowserRouter([
           { path: "bonus-courses/:courseSlug/modules/:moduleSlug/lessons/:lessonSlug", element: <L><StudentLesson /></L> },
           
           // Bookmarks
-          { path: "bookmarks", element: <L><StudentBookmarks /></L> },
+          { path: "bookmarks", element: <LBookmarks><StudentBookmarks /></LBookmarks> },
           
           // Question Bank
           { path: "question-bank", element: <L><StudentQuestionBank /></L> },
@@ -346,10 +360,10 @@ export const router = createBrowserRouter([
           { path: "submissions/:submissionId", element: <L><StudentSubmissions /></L> },
           
           // Certificates
-          { path: "certificates", element: <L><StudentCertificates /></L> },
-          { path: "certificates/list", element: <L><StudentCertificates /></L> },
-          { path: "certificates/:id", element: <L><StudentCertificates /></L> },
-          { path: "certificates/:id/view", element: <L><StudentCertificates /></L> },
+          { path: "certificates", element: <LCertificates><StudentCertificates /></LCertificates> },
+          { path: "certificates/list", element: <LCertificates><StudentCertificates /></LCertificates> },
+          { path: "certificates/:id", element: <LCertificates><StudentCertificates /></LCertificates> },
+          { path: "certificates/:id/view", element: <LCertificates><StudentCertificates /></LCertificates> },
           
           // Internships
           { path: "internships", element: <L><StudentInternships /></L> },

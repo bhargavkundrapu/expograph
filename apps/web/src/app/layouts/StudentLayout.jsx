@@ -126,9 +126,19 @@ export default function StudentLayout() {
     return () => clearTimeout(timer);
   }, []);
 
-  // Preload all student route chunks ASAP so every navigation is fast (home/courses are eager-loaded)
+  // Preload student route chunks when browser is idle.
+  // This keeps the initial LMS render responsive while still warming navigation.
   useEffect(() => {
-    const t = setTimeout(preloadAllStudentChunks, 80);
+    if (typeof window === "undefined") return;
+
+    const run = () => preloadAllStudentChunks();
+
+    if ("requestIdleCallback" in window) {
+      const idleId = window.requestIdleCallback(run, { timeout: 6000 });
+      return () => window.cancelIdleCallback?.(idleId);
+    }
+
+    const t = setTimeout(run, 2000);
     return () => clearTimeout(t);
   }, []);
 

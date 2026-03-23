@@ -40,12 +40,17 @@ export default function StudentProgress() {
   const fetchProgress = async () => {
     try {
       setLoading(true);
-      const res = await apiFetch("/api/v1/student/progress", { token });
-      setProgress(res?.data || progress);
+      // Fetch progress + enrolled courses in parallel (courses are needed for detailed overall %)
+      const [progressResSettled, coursesResSettled] = await Promise.allSettled([
+        apiFetch("/api/v1/student/progress", { token }),
+        apiFetch("/api/v1/student/courses", { token }),
+      ]);
 
-      // Fetch courses for progress details
-      const coursesRes = await apiFetch("/api/v1/student/courses", { token }).catch(() => ({ data: [] }));
-      setCourses(coursesRes?.data || []);
+      const progressData = progressResSettled.status === "fulfilled" ? progressResSettled.value?.data : null;
+      const coursesData = coursesResSettled.status === "fulfilled" ? coursesResSettled.value?.data : [];
+
+      setProgress((prev) => progressData || prev);
+      setCourses(Array.isArray(coursesData) ? coursesData : []);
 
       // Mock achievements for now
       setAchievements([

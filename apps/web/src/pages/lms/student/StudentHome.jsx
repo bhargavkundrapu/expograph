@@ -364,6 +364,7 @@ export default function StudentHome() {
       id: slide.id,
       title: slide.title,
       description: slide.subtitle,
+      backgroundImage: slide.backgroundImage,
       action: {
         label: slide.ctaLabel,
         onClick: () => {

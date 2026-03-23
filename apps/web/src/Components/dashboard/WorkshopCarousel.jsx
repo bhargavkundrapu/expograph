@@ -67,12 +67,27 @@ export default function WorkshopCarousel({ items = [], autoRotateInterval = 3000
               background: "#0b0f27",
             }}
           >
+            {/* Slide background image (per-slide) */}
+            <div
+              className="absolute inset-0"
+              aria-hidden
+              style={{
+                backgroundImage: currentItem.backgroundImage ? `url(${currentItem.backgroundImage})` : undefined,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                transform: "translateZ(0)",
+              }}
+            >
+              <div className="absolute inset-0 bg-[#0b0f27]/70" />
+              <div className="absolute inset-0 bg-gradient-to-r from-[#0b0f27]/90 via-[#0b0f27]/40 to-transparent" />
+            </div>
+
             {/* Abstract Background Shapes */}
-            <div className="absolute inset-0 overflow-hidden" style={{ WebkitTransform: 'translateZ(0)', transform: 'translateZ(0)' }}>
+            <div className="absolute inset-0 overflow-hidden" style={{ WebkitTransform: 'translateZ(0)', transform: 'translateZ(0)', pointerEvents: "none" }}>
               {/* Swirling purple/blue shapes on the left - Scale with carousel */}
               <div className="absolute left-0 top-0 w-full sm:w-[400px] md:w-[500px] h-full" style={{ WebkitTransform: 'translateZ(0)', transform: 'translateZ(0)' }}>
                 <div 
-                  className="absolute left-[-60px] sm:left-[-70px] md:left-[-80px] top-[-50px] sm:top-[-55px] md:top-[-60px] w-[250px] h-[250px] sm:w-[300px] sm:h-[300px] md:w-[350px] md:h-[350px] bg-purple-500 rounded-full opacity-70"
+                  className="absolute left-[-60px] sm:left-[-70px] md:left-[-80px] top-[-50px] sm:top-[-55px] md:top-[-60px] w-[250px] h-[250px] sm:w-[300px] sm:h-[300px] md:w-[350px] md:h-[350px] bg-purple-500 rounded-full opacity-25"
                   style={{ 
                     filter: 'blur(100px)',
                     WebkitFilter: 'blur(100px)',
@@ -81,7 +96,7 @@ export default function WorkshopCarousel({ items = [], autoRotateInterval = 3000
                   }}
                 ></div>
                 <div 
-                  className="absolute left-[60px] sm:left-[70px] md:left-[80px] top-[60px] sm:top-[70px] md:top-[80px] w-[200px] h-[200px] sm:w-[240px] sm:h-[240px] md:w-[280px] md:h-[280px] bg-blue-500 rounded-full opacity-60"
+                  className="absolute left-[60px] sm:left-[70px] md:left-[80px] top-[60px] sm:top-[70px] md:top-[80px] w-[200px] h-[200px] sm:w-[240px] sm:h-[240px] md:w-[280px] md:h-[280px] bg-blue-500 rounded-full opacity-18"
                   style={{ 
                     filter: 'blur(80px)',
                     WebkitFilter: 'blur(80px)',
@@ -90,7 +105,7 @@ export default function WorkshopCarousel({ items = [], autoRotateInterval = 3000
                   }}
                 ></div>
                 <div 
-                  className="absolute left-[-30px] sm:left-[-35px] md:left-[-40px] bottom-[-30px] sm:bottom-[-35px] md:bottom-[-40px] w-[180px] h-[180px] sm:w-[220px] sm:h-[220px] md:w-[250px] md:h-[250px] bg-indigo-500 rounded-full opacity-65"
+                  className="absolute left-[-30px] sm:left-[-35px] md:left-[-40px] bottom-[-30px] sm:bottom-[-35px] md:bottom-[-40px] w-[180px] h-[180px] sm:w-[220px] sm:h-[220px] md:w-[250px] md:h-[250px] bg-indigo-500 rounded-full opacity-22"
                   style={{ 
                     filter: 'blur(90px)',
                     WebkitFilter: 'blur(90px)',

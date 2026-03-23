@@ -6,6 +6,53 @@ import "./index.css";
 import App from "./App.jsx";
 import ErrorFallbackUI from "./Components/common/ErrorFallbackUI.jsx";
 
+function escapeRegExp(input) {
+  return String(input).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+// Initialize Sentry as early as possible.
+const SENTRY_DSN = import.meta.env.VITE_SENTRY_DSN;
+const API_URL = import.meta.env.VITE_API_URL;
+const apiOrigin = API_URL?.replace(/\/+$/, "");
+const tracePropagationTargets = [
+  "localhost",
+  apiOrigin ? new RegExp("^" + escapeRegExp(apiOrigin) + "/api") : /^https?:\/\/localhost:\d+\/api/,
+];
+
+// In local dev, Sentry tracing adds headers (`sentry-trace`, `baggage`) that can break
+// API CORS configs. Also, replay can generate additional envelope traffic.
+// We only enable these integrations in production.
+const enableTracing = !!import.meta.env.PROD;
+const enableReplay = !!import.meta.env.PROD;
+
+if (SENTRY_DSN) {
+  Sentry.init({
+    dsn: SENTRY_DSN,
+    sendDefaultPii: true,
+    environment: import.meta.env.MODE || (import.meta.env.PROD ? "production" : "development"),
+    release: "expograph-web",
+    debug: false,
+    integrations: [
+      ...(enableReplay ? [Sentry.replayIntegration()] : []),
+      ...(enableTracing ? [Sentry.browserTracingIntegration()] : []),
+    ],
+    // Tracing
+    tracesSampleRate: enableTracing ? 1.0 : 0.0,
+    tracePropagationTargets: enableTracing ? tracePropagationTargets : [],
+    // Session Replay
+    replaysSessionSampleRate: 0.1,
+    replaysOnErrorSampleRate: 1.0,
+    // Enable logs to be sent to Sentry (avoid console noise in dev)
+    enableLogs: !!import.meta.env.PROD,
+  });
+}
+
+// Dev-only helper so you can verify Sentry from the browser console.
+// Use a non-reserved name: Sentry itself uses `__SENTRY__` internally.
+if (!import.meta.env.PROD) {
+  window.__SENTRY_SDK__ = Sentry;
+}
+
 class GlobalErrorBoundary extends Component {
   state = { hasError: false };
   static getDerivedStateFromError() { return { hasError: true }; }
@@ -32,8 +79,8 @@ console.error = (...args) => {
   if (message.includes('cloudflarestream.com') && (message.includes('beacon') || message.includes('404'))) {
     return;
   }
-  // Suppress Sentry/Cloudflare Dash errors (harmless reporting failures)
-  if (message.includes('sentry') || message.includes('platform.dash.cloudflare.com')) {
+  // Suppress Cloudflare Dash errors (harmless reporting failures)
+  if (message.includes('platform.dash.cloudflare.com')) {
     return;
   }
   // Suppress API connection refused (expected when API server is not running)
@@ -91,15 +138,6 @@ window.addEventListener('unhandledrejection', (event) => {
     return false;
   }
 });
-
-const SENTRY_DSN = import.meta.env.VITE_SENTRY_DSN;
-
-if (import.meta.env.PROD && SENTRY_DSN) {
-  Sentry.init({
-    dsn: SENTRY_DSN,
-    environment: "production",
-  });
-}
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>

@@ -119,7 +119,18 @@ const corsOptions = {
   },
   credentials: true,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization", "X-Device-Id", "X-Tenant-Slug"],
+  // Sentry tracing (W3C baggage + traceparent) may add extra headers.
+  // If the API doesn't allow them, the browser blocks requests during preflight.
+  allowedHeaders: [
+    "Content-Type",
+    "Authorization",
+    "X-Device-Id",
+    "X-Tenant-Slug",
+    "baggage",
+    "sentry-trace",
+    "traceparent",
+    "tracestate",
+  ],
   maxAge: 86400,
   optionsSuccessStatus: 204,
 };

@@ -113,6 +113,111 @@ export function StudentCoursesSkeleton() {
   );
 }
 
+// Student Bookmarks Page Skeleton
+export function StudentBookmarksSkeleton() {
+  return (
+    <div className="min-h-screen p-4 sm:p-6 lg:p-8 bg-slate-50 animate-pulse">
+      <div className="max-w-4xl mx-auto space-y-6">
+        {/* Header */}
+        <div className="space-y-3">
+          <div className="h-10 sm:h-12 bg-slate-200 rounded-lg w-64" />
+          <div className="h-4 bg-slate-200 rounded w-80" />
+        </div>
+
+        {/* Bookmarked Lessons card */}
+        <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 space-y-4">
+          <div className="flex items-center justify-between gap-4">
+            <div className="h-4 bg-slate-200 rounded w-40" />
+            <div className="h-6 bg-slate-200 rounded w-16" />
+          </div>
+
+          <div className="space-y-3">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-slate-200" />
+                <div className="flex-1 min-w-0">
+                  <div className="h-4 bg-slate-200 rounded w-3/4 mb-2" />
+                  <div className="h-3 bg-slate-200 rounded w-1/2" />
+                </div>
+                <div className="w-6 h-6 rounded-lg bg-slate-200" />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Notes card */}
+        <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 space-y-4">
+          <div className="flex items-center justify-between gap-4">
+            <div className="h-4 bg-slate-200 rounded w-24" />
+            <div className="h-6 bg-slate-200 rounded w-16" />
+          </div>
+
+          <div className="space-y-3">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="rounded-xl border border-slate-200 p-3">
+                <div className="h-4 bg-slate-200 rounded w-2/3 mb-2" />
+                <div className="h-3 bg-slate-200 rounded w-full mb-2" />
+                <div className="h-3 bg-slate-200 rounded w-5/6" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Student Certifications Page Skeleton
+export function StudentCertificatesSkeleton() {
+  return (
+    <div className="min-h-screen p-4 sm:p-6 lg:p-8 bg-slate-50 animate-pulse">
+      <div className="max-w-4xl mx-auto space-y-6">
+        {/* Header */}
+        <div className="space-y-3">
+          <div className="h-10 sm:h-12 bg-slate-200 rounded-lg w-64" />
+          <div className="h-4 bg-slate-200 rounded w-full max-w-md" />
+          <div className="h-4 bg-slate-200 rounded w-3/4 max-w-sm" />
+        </div>
+
+        {/* How it works card */}
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 space-y-4">
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 rounded-xl bg-slate-200" />
+            <div className="flex-1 space-y-2">
+              <div className="h-5 bg-slate-200 rounded w-40" />
+              <div className="h-3 bg-slate-200 rounded w-full" />
+              <div className="h-3 bg-slate-200 rounded w-5/6" />
+            </div>
+          </div>
+          <div className="space-y-2">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="h-3 bg-slate-200 rounded w-11/12" />
+            ))}
+          </div>
+        </div>
+
+        {/* Certifications list */}
+        <div className="space-y-4">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="rounded-2xl border border-slate-200 bg-white p-6 space-y-4">
+              <div className="flex items-center justify-between gap-4">
+                <div className="h-4 bg-slate-200 rounded w-1/2" />
+                <div className="h-6 bg-slate-200 rounded w-24" />
+              </div>
+              <div className="h-3 bg-slate-200 rounded w-3/4" />
+              <div className="h-3 bg-slate-200 rounded w-2/3" />
+              <div className="flex gap-2">
+                <div className="h-9 bg-slate-200 rounded w-32" />
+                <div className="h-9 bg-slate-200 rounded w-28" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // Student Course Tree Skeleton
 export function StudentCourseTreeSkeleton() {
   return (

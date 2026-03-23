@@ -11,7 +11,18 @@ export type Slide = {
   ctaLabel: string;
   route: string;
   variant?: "pack" | "not-pack";
+  /** Optional background image to show in the student home carousel. */
+  backgroundImage?: string;
 };
+
+// Shared background images reused across slide variants.
+// (We keep a small set to avoid extra payload and keep the carousel lightweight.)
+const BG_CODING =
+  "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=2071&auto=format&fit=crop";
+const BG_CLIENT =
+  "https://images.unsplash.com/photo-1543269865-cbf427effbad?q=80&w=2070&auto=format&fit=crop";
+const BG_CERTS =
+  "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=2070&auto=format&fit=crop";
 
 /** Pack/pricing lives at /courses; student LMS at /lms/student/... */
 const NOT_PACK_SLIDES: Slide[] = [
@@ -22,6 +33,7 @@ const NOT_PACK_SLIDES: Slide[] = [
     ctaLabel: "Unlock Pack",
     route: "/courses",
     variant: "not-pack",
+    backgroundImage: BG_CODING,
   },
   {
     id: "s2",
@@ -30,6 +42,7 @@ const NOT_PACK_SLIDES: Slide[] = [
     ctaLabel: "See Pack Benefits",
     route: "/courses",
     variant: "not-pack",
+    backgroundImage: BG_CLIENT,
   },
   {
     id: "s3",
@@ -38,6 +51,7 @@ const NOT_PACK_SLIDES: Slide[] = [
     ctaLabel: "Upgrade Now",
     route: "/courses",
     variant: "not-pack",
+    backgroundImage: BG_CODING,
   },
   {
     id: "s4",
@@ -46,6 +60,7 @@ const NOT_PACK_SLIDES: Slide[] = [
     ctaLabel: "View Certifications",
     route: "/lms/student/certificates",
     variant: "not-pack",
+    backgroundImage: BG_CERTS,
   },
   {
     id: "s5",
@@ -54,14 +69,16 @@ const NOT_PACK_SLIDES: Slide[] = [
     ctaLabel: "Continue Learning",
     route: "/lms/student/courses",
     variant: "not-pack",
+    backgroundImage: BG_CODING,
   },
   {
     id: "s6",
-    title: "Demo Day this week",
-    subtitle: "Submit 1 project. Pack users get featured first.",
-    ctaLabel: "Join Demo Day",
+    title: "Start Client Lab Projects",
+    subtitle: "Get real client briefs, ship a project, and add it to your portfolio. Pack unlocks priority access.",
+    ctaLabel: "Open Client Lab",
     route: "/lms/student/client-lab",
     variant: "not-pack",
+    backgroundImage: BG_CLIENT,
   },
 ];
 
@@ -73,6 +90,7 @@ const PACK_SLIDES: Slide[] = [
     ctaLabel: "Continue",
     route: "/lms/student/courses",
     variant: "pack",
+    backgroundImage: BG_CODING,
   },
   {
     id: "p2",
@@ -81,6 +99,7 @@ const PACK_SLIDES: Slide[] = [
     ctaLabel: "Check Eligibility",
     route: "/lms/student/client-lab",
     variant: "pack",
+    backgroundImage: BG_CLIENT,
   },
   {
     id: "p3",
@@ -89,6 +108,7 @@ const PACK_SLIDES: Slide[] = [
     ctaLabel: "Open Certifications",
     route: "/lms/student/certificates",
     variant: "pack",
+    backgroundImage: BG_CERTS,
   },
 ];
 

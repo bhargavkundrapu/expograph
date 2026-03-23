@@ -97,7 +97,7 @@ function LockedClientLabContent({ isDark, checklist, onRetry }) {
 export default function StudentClientLab() {
   const navigate = useNavigate();
   const { projectId, taskId } = useParams();
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const { isDark } = useTheme();
   const [loading, setLoading] = useState(true);
   const [me, setMe] = useState(null);
@@ -113,7 +113,7 @@ export default function StudentClientLab() {
     if (!token) return;
     try {
       const res = await apiFetch("/api/v1/me", { token });
-      if (res?.ok) setMe(res.data);
+      if (res?.ok) setMe(res.data || null);
     } catch (e) {
       console.error(e);
     }
@@ -166,19 +166,35 @@ export default function StudentClientLab() {
   );
 
   useEffect(() => {
-    if (!token) return;
-    setLoading(true);
-    fetchMe().finally(() => setLoading(false));
-  }, [token, fetchMe]);
+    if (!user) return;
 
-  /* Always fetch assigned projects/tasks when we have me (for students).
-   * API returns [] when not eligible, so we don't rely on me.eligible_client_lab for the request.
-   * This ensures projects show as soon as the user is eligible and has assignments. */
+    // AuthProvider already calls `/api/v1/me` and should include client-lab fields.
+    // If present, avoid an extra `/api/v1/me` call for this route.
+    const hasClientLabState =
+      typeof user?.eligible_client_lab === "boolean" || user?.client_lab_checklist != null;
+    if (hasClientLabState) setMe(user);
+  }, [user]);
+
   useEffect(() => {
-    if (!token || !me) return;
-    fetchAssignedProjects();
-    fetchAssignedTasks();
-  }, [token, me, fetchAssignedProjects, fetchAssignedTasks]);
+    if (!token) return;
+
+    setLoading(true);
+
+    const hasClientLabState =
+      typeof user?.eligible_client_lab === "boolean" || user?.client_lab_checklist != null;
+
+    if (hasClientLabState) setMe(user);
+
+    Promise.allSettled([
+      hasClientLabState ? Promise.resolve() : fetchMe(),
+      // Fetch assigned items in parallel with me/checklist to reduce overall wait time.
+      fetchAssignedProjects(),
+      fetchAssignedTasks(),
+    ]).finally(() => setLoading(false));
+  }, [token, user, fetchMe, fetchAssignedProjects, fetchAssignedTasks]);
+
+  /* Always fetch assigned projects/tasks (for students).
+   * They return [] when not eligible, so we don't rely on me.eligible_client_lab for the request. */
 
   const eligible = !!me?.eligible_client_lab;
   const hasAssignments = projects.length > 0 || tasks.length > 0;
