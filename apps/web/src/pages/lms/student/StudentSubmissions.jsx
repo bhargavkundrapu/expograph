@@ -133,7 +133,7 @@ export default function StudentSubmissions() {
 
   if (selectedSubmission) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8" data-tour="projects-submit">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-8">
         <div className="max-w-4xl mx-auto">
           <button
             onClick={() => {

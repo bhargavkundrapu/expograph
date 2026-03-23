@@ -127,7 +127,7 @@ export function CourseContentsSidebar({
   return (
     <aside
       className={cn(
-        "flex flex-col w-full md:w-[360px] min-w-0 md:min-w-[360px] min-h-0 self-stretch bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 border-r border-slate-900 text-white",
+        "flex flex-col flex-1 min-h-0 w-full md:w-[360px] min-w-0 md:min-w-[360px] bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 border-r border-slate-900 text-white",
         className
       )}
       role="navigation"
@@ -169,8 +169,8 @@ export function CourseContentsSidebar({
       </header>
 
 
-      {/* Modules and Lessons List - min-h-0 allows flex child to shrink and enable scroll */}
-      <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden">
+      {/* Modules and Lessons List - flex-1 min-h-0 so this area shrinks and scrolls correctly */}
+      <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden lessons-sidebar-scroll overscroll-contain">
         {modules.length === 0 ? (
           <div className="px-4 py-8 text-center">
             <p className="text-sm text-slate-500">No modules available</p>

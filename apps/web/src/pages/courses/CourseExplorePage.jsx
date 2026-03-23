@@ -15,7 +15,9 @@ export default function CourseExplorePage() {
   const data = COURSE_EXPLORE_DATA[slug];
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
   }, [slug]);
 
   if (!data) {
@@ -266,13 +268,18 @@ export default function CourseExplorePage() {
         </div>
       </div>
 
-      <footer className="w-full border-t border-white/5 mt-12">
-        <TubesBackground className="min-h-[280px] bg-[#0a0a0a]" enableClickInteraction={false}>
-          <div className="flex flex-col items-center justify-center min-h-[280px] gap-4 text-center px-4">
-            <h2 className="text-4xl sm:text-5xl font-bold tracking-tighter text-white drop-shadow-[0_0_20px_rgba(0,0,0,1)]">
-              ExpoGraph flow
-            </h2>
-            <span className="text-xs text-white/40">© 2025 ExpoGraph Academy</span>
+      <footer className="w-full min-h-[560px] sm:min-h-[70vh] border-t border-black mt-12">
+        <TubesBackground className="min-h-[560px] sm:min-h-[70vh] bg-[#0a0a0a]" enableClickInteraction={true}>
+          <div className="flex flex-col items-center justify-center w-full min-h-[560px] sm:min-h-[70vh] gap-6 text-center px-4">
+            <div className="space-y-2 pointer-events-auto cursor-default select-none">
+              <h2 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tighter text-white drop-shadow-[0_0_20px_rgba(0,0,0,1)]">
+                ExpoGraph flow
+              </h2>
+            </div>
+            <div className="absolute bottom-8 left-0 right-0 flex flex-col items-center gap-2 text-white/50 pointer-events-none">
+              <span className="text-xs uppercase tracking-widest">Move the cursor around to interact and Click to randomize.</span>
+              <span className="text-xs text-white/40">© 2025 ExpoGraph Academy</span>
+            </div>
           </div>
         </TubesBackground>
       </footer>

@@ -196,7 +196,6 @@ export default function WorkshopCarousel({ items = [], autoRotateInterval = 3000
               >
                 {currentItem.action && (
                   <button
-                    data-tour={currentItem.id && ["s1", "s2", "s3"].includes(currentItem.id) ? "pack-upgrade-btn" : undefined}
                     onClick={currentItem.action.onClick}
                     className="min-h-[44px] w-full sm:w-auto px-3 py-1.5 sm:px-4 sm:py-2 md:px-5 md:py-2.5 lg:px-6 lg:py-3 bg-[#8b5cf6] hover:bg-[#7c3aed] text-white font-bold rounded-[8px] sm:rounded-[10px] md:rounded-[12px] transition-all duration-300 flex items-center justify-center gap-1.5 sm:gap-2 shadow-lg hover:shadow-xl text-xs sm:text-sm md:text-base"
                     style={{ 

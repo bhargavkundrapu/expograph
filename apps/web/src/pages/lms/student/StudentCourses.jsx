@@ -327,6 +327,7 @@ export default function StudentCourses() {
     <PageTransition>
     <div className={`min-h-screen p-4 md:p-8 transition-colors duration-200 ${isDark ? "bg-slate-900" : "bg-slate-50"}`}>
       <div className="max-w-7xl mx-auto">
+        <div className="min-h-[200px]">
         {/* Header Section */}
         <div className="mb-4 md:mb-8 animate-fade-slide-up">
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-4">
@@ -340,7 +341,7 @@ export default function StudentCourses() {
               )}
             </div>
             {courses.length > 0 && (
-              <div className="flex items-center gap-3" data-tour="courses-search-filter">
+              <div className="flex items-center gap-3">
                 <div className={`w-32 sm:w-48 rounded-full h-2 ${isDark ? "bg-slate-700" : "bg-slate-200"}`}>
                   <div
                     className="bg-blue-500 rounded-full h-2 progress-bar-animated"
@@ -380,7 +381,6 @@ export default function StudentCourses() {
               return (
                 <motion.div
                   key={course.id || index}
-                  data-tour="course-card"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.05 }}
@@ -416,7 +416,7 @@ export default function StudentCourses() {
                             <FiCheck className="w-5 h-5 text-white" />
                           </div>
                         ) : (
-                          <div data-tour="course-progress-label"><CircularProgress percentage={progress} size={40} /></div>
+                          <div><CircularProgress percentage={progress} size={40} /></div>
                         )}
                       </div>
                     </div>
@@ -470,7 +470,6 @@ export default function StudentCourses() {
                                 e.stopPropagation();
                                 navigate("/courses");
                               }}
-                              data-tour="pack-upsell-banner"
                               className="w-full py-2.5 px-4 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-xl text-sm transition-colors"
                             >
                               Get All Pack or All 3 Courses to Unlock
@@ -481,7 +480,6 @@ export default function StudentCourses() {
                                 e.stopPropagation();
                                 openBuyModal(course);
                               }}
-                              data-tour="course-cta-continue"
                               className="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm transition-colors"
                             >
                               Get Course — ₹{priceRupees}
@@ -538,6 +536,7 @@ export default function StudentCourses() {
             })}
           </div>
         )}
+        </div>
       </div>
 
       {/* Course Details Modal */}

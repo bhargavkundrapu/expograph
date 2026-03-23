@@ -10,6 +10,8 @@ import PublicOnly from "./PublicOnly";
 import HomeOrRedirect from "./HomeOrRedirect";
 import LoginPage from "../pages/auth/LoginPage";
 import NotFoundPageRoute from "../pages/NotFoundPage";
+import StudentHome from "../pages/lms/student/StudentHome";
+import StudentCourses from "../pages/lms/student/StudentCourses";
 
 const SolutionsPage = lazy(() => import("../pages/solutions/SolutionsPage"));
 const CoursesPage = lazy(() => import("../pages/courses/CoursesPage"));
@@ -38,8 +40,6 @@ const SuperAdminMentors = lazy(() => import("../pages/lms/superadmin/SuperAdminM
 const SuperAdminColleges = lazy(() => import("../pages/lms/superadmin/SuperAdminColleges"));
 const SuperAdminCertificationRequests = lazy(() => import("../pages/lms/superadmin/SuperAdminCertificationRequests"));
 
-const StudentHome = lazy(() => import("../pages/lms/student/StudentHome"));
-const StudentCourses = lazy(() => import("../pages/lms/student/StudentCourses"));
 const StudentLesson = lazy(() => import("../pages/lms/student/StudentLesson"));
 const StudentSubmissions = lazy(() => import("../pages/lms/student/StudentSubmissions"));
 const StudentProgress = lazy(() => import("../pages/lms/student/StudentProgress"));
@@ -55,8 +55,6 @@ const StudentBookmarks = lazy(() => import("../pages/lms/student/StudentBookmark
 const StudentCourseLanding = lazy(() => import("../pages/lms/student/StudentCourseLanding"));
 const StudentContact = lazy(() => import("../pages/lms/student/StudentContact"));
 const StudentProfile = lazy(() => import("../pages/lms/student/StudentProfile"));
-const StudentToursHelp = lazy(() => import("../pages/lms/student/StudentToursHelp"));
-
 const MentorHome = lazy(() => import("../pages/lms/mentor/MentorHome"));
 const MentorSubmissions = lazy(() => import("../pages/lms/mentor/MentorSubmissions"));
 const MentorClientLab = lazy(() => import("../pages/lms/mentor/MentorClientLab"));
@@ -74,9 +72,9 @@ const TenantAdminUsers = lazy(() => import("../pages/lms/admin/TenantAdminUsers"
 
 function LazyFallback() {
   return (
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "60vh", opacity: 0, animation: "lazyFadeIn 0.3s ease 300ms forwards" }}>
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "60vh" }}>
       <div style={{ width: 32, height: 32, border: "3px solid #e5e7eb", borderTopColor: "#2563eb", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} />
-      <style>{`@keyframes spin{to{transform:rotate(360deg)}}@keyframes lazyFadeIn{to{opacity:1}}`}</style>
+      <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
     </div>
   );
 }
@@ -298,7 +296,7 @@ export const router = createBrowserRouter([
           </RequireRole>
         ),
         children: [
-          { index: true, element: <L><StudentHome /></L> },
+          { index: true, element: <StudentHome /> },
           
           // Progress
           { path: "progress", element: <L><StudentProgress /></L> },
@@ -306,16 +304,16 @@ export const router = createBrowserRouter([
           { path: "progress/courses", element: <L><StudentProgress /></L> },
           { path: "progress/achievements", element: <L><StudentProgress /></L> },
           
-          // Courses
-          { path: "courses", element: <L><StudentCourses /></L> },
-          { path: "courses/list", element: <L><StudentCourses /></L> },
+          // Courses (eager-loaded for instant navigation)
+          { path: "courses", element: <StudentCourses /> },
+          { path: "courses/list", element: <StudentCourses /> },
           { path: "courses/:courseSlug", element: <L><StudentCourseLanding /></L> },
           { path: "courses/:courseSlug/modules/:moduleSlug/lessons/:lessonSlug", element: <L><StudentLesson /></L> },
           { path: "courses/:courseSlug/modules/:moduleSlug/lessons/:lessonSlug/complete", element: <L><StudentLesson /></L> },
           
-          // Bonus Courses (empty for now)
-          { path: "bonus-courses", element: <L><StudentCourses /></L> },
-          { path: "bonus-courses/list", element: <L><StudentCourses /></L> },
+          // Bonus Courses
+          { path: "bonus-courses", element: <StudentCourses /> },
+          { path: "bonus-courses/list", element: <StudentCourses /> },
           { path: "bonus-courses/:courseSlug", element: <L><StudentCourseLanding /></L> },
           { path: "bonus-courses/:courseSlug/modules/:moduleSlug/lessons/:lessonSlug", element: <L><StudentLesson /></L> },
           
@@ -374,9 +372,6 @@ export const router = createBrowserRouter([
           
           // Contact / Support
           { path: "contact", element: <L><StudentContact /></L> },
-
-          // Help / Tours
-          { path: "help/tours", element: <L><StudentToursHelp /></L> },
 
           // Referrals
           { path: "referrals", element: <L><StudentReferrals /></L> },

@@ -86,7 +86,7 @@ function ProgressWidget({ isDark, progress, schedule, accentColor, gamification 
   const weeklyPct = Math.min(100, Math.round((weeklyXP / weeklyXPGoal) * 100));
 
   return (
-    <div data-tour="progress-widget" className={`rounded-lg shadow-sm p-4 sm:p-6 hover-lift transition-colors ${isDark ? "bg-slate-800 border border-slate-700" : "bg-white"}`}>
+    <div className={`rounded-lg shadow-sm p-4 sm:p-6 hover-lift transition-colors ${isDark ? "bg-slate-800 border border-slate-700" : "bg-white"}`}>
       <div className="flex items-center justify-between mb-3 sm:mb-4">
         <div className="flex items-center gap-2">
           <h3 className={`text-lg sm:text-xl font-bold ${isDark ? "text-white" : "text-slate-900"}`}>Your Progress</h3>
@@ -281,7 +281,7 @@ export default function StudentHome() {
   const [currentCourse, setCurrentCourse] = useState(null);
   const [progress, setProgress] = useState({ completed: 0, streak: 0, consistency: 0 });
   const [events, setEvents] = useState([]);
-  const [packPurchased, setPackPurchased] = useState(false);
+  const packPurchased = user?.pack_purchased === true;
   const gamification = useGamification();
   const { setLastContinue, milestoneCelebrated, celebrateMilestone } = gamification;
   const [milestonePopup, setMilestonePopup] = useState(null);
@@ -297,28 +297,27 @@ export default function StudentHome() {
 
   const fetchDashboardData = async () => {
     setLoading(true);
-    const [scheduleSettled, courseSettled, progressSettled, eventsSettled, meSettled] = await Promise.allSettled([
+    // Critical data (schedule, current-course, progress): show page when these are ready
+    const criticalPromise = Promise.allSettled([
       apiFetch("/api/v1/student/schedule", { token }),
       apiFetch("/api/v1/student/current-course", { token }),
       apiFetch("/api/v1/student/progress", { token }),
-      apiFetch("/api/v1/student/events", { token }),
-      apiFetch("/api/v1/me", { token }),
     ]);
+    // Events load in parallel but don't block first paint
+    const eventsPromise = apiFetch("/api/v1/student/events", { token }).catch(() => ({ data: [] }));
+
+    const [scheduleSettled, courseSettled, progressSettled] = await criticalPromise;
     const scheduleRes = scheduleSettled.status === "fulfilled" ? scheduleSettled.value : null;
     const courseRes = courseSettled.status === "fulfilled" ? courseSettled.value : null;
     const progressRes = progressSettled.status === "fulfilled" ? progressSettled.value : null;
-    const eventsRes = eventsSettled.status === "fulfilled" ? eventsSettled.value : null;
-    const meRes = meSettled.status === "fulfilled" ? meSettled.value : null;
     if (scheduleSettled.status === "rejected") console.error("Dashboard schedule failed:", scheduleSettled.reason);
     if (courseSettled.status === "rejected") console.error("Dashboard current-course failed:", courseSettled.reason);
     if (progressSettled.status === "rejected") console.error("Dashboard progress failed:", progressSettled.reason);
-    if (eventsSettled.status === "rejected") console.error("Dashboard events failed:", eventsSettled.reason);
-    if (meSettled.status === "rejected") console.error("Dashboard /me failed:", meSettled.reason);
+
     try {
       const scheduleData = scheduleRes?.data ?? [];
       const courseData = courseRes?.data ?? null;
       const progressData = progressRes?.data ?? { completed: 0, streak: 0, consistency: 0 };
-      const eventsData = eventsRes?.data ?? [];
       if (scheduleData.length === 0 && courseData) {
         const course = courseData;
         setSchedule([{
@@ -338,9 +337,6 @@ export default function StudentHome() {
       }
       setCurrentCourse(courseData);
       setProgress(progressData);
-      setEvents(eventsData);
-      const meData = meRes?.data;
-      setPackPurchased(meData?.pack_purchased === true);
       if (courseData) setLastContinue(courseData);
       const pct = progressData.completed ?? 0;
       for (const m of [25, 50, 75, 100]) {
@@ -356,6 +352,9 @@ export default function StudentHome() {
     } finally {
       setLoading(false);
     }
+
+    // Fill in events when ready (non-blocking)
+    eventsPromise.then((res) => setEvents(res?.data ?? [])).catch(() => setEvents([]));
   };
 
   const carouselItems = useMemo(() => {
@@ -412,7 +411,7 @@ export default function StudentHome() {
         {/* Main Content Area */}
         <div className="flex-1 min-w-0 space-y-4 lg:space-y-5">
           {/* Carousel above greeting — may show pack upgrade CTA */}
-          <div data-tour="pack-upgrade-card">
+          <div>
             <WorkshopCarousel items={carouselItems} />
           </div>
 

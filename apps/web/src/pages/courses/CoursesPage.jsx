@@ -1,8 +1,16 @@
+import { useEffect } from "react";
 import { PricingWithChart } from "../../Components/ui/pricing-with-chart";
 import { Header } from "../../Components/ui/header-2";
+import { TubesBackground } from "../../Components/ui/neon-flow";
 import { cn } from "../../lib/utils";
 
 export default function CoursesPage() {
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  }, []);
+
   return (
     <div
       className="min-h-screen relative w-full overflow-x-hidden"
@@ -34,6 +42,23 @@ export default function CoursesPage() {
           )}
         />
       </div>
+
+      {/* Footer — ExpoGraph flow (same as Academy) */}
+      <footer className="w-full min-h-[560px] sm:min-h-[70vh] border-t border-black">
+        <TubesBackground className="min-h-[560px] sm:min-h-[70vh] bg-[#0a0a0a]" enableClickInteraction={true}>
+          <div className="flex flex-col items-center justify-center w-full min-h-[560px] sm:min-h-[70vh] gap-6 text-center px-4">
+            <div className="space-y-2 pointer-events-auto cursor-default select-none">
+              <h2 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tighter text-white drop-shadow-[0_0_20px_rgba(0,0,0,1)]">
+                ExpoGraph flow
+              </h2>
+            </div>
+            <div className="absolute bottom-8 left-0 right-0 flex flex-col items-center gap-2 text-white/50 pointer-events-none">
+              <span className="text-xs uppercase tracking-widest">Move the cursor around to interact and Click to randomize.</span>
+              <span className="text-xs text-white/40">© 2025 ExpoGraph Academy</span>
+            </div>
+          </div>
+        </TubesBackground>
+      </footer>
     </div>
   );
 }

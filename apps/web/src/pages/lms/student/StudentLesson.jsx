@@ -730,9 +730,9 @@ export default function StudentLesson() {
         {/* Content area with sidebar */}
         <div className="flex-1 flex overflow-hidden">
           {/* Desktop sidebar — normal flow */}
-          <div className="hidden md:flex md:self-stretch md:min-h-0">
+          <div className="hidden md:flex md:self-stretch md:min-h-0 md:flex-col">
             {sidebarVisible ? (
-              <div data-tour="lesson-progress" className="h-full">
+              <div className="h-full min-h-0 flex flex-col w-full">
               <CourseContentsSidebar
                 courseTitle={course?.title || "Course"}
                 modules={sidebarModules}
@@ -809,7 +809,7 @@ export default function StudentLesson() {
             )}
 
         {/* Main content - scrollable */}
-        <div ref={mainContentScrollRef} data-tour="lesson-content" className="flex-1 overflow-y-auto bg-white relative">
+        <div ref={mainContentScrollRef} className="flex-1 overflow-y-auto bg-white relative">
           {/* Fixed Navbar - Module Name > Lesson Name (hidden on mobile, shown on mobile top bar instead) */}
           {(moduleTitle || lesson?.title) && (
             <div className="hidden md:block sticky top-0 z-40 bg-white border-b border-slate-200 shadow-sm">
@@ -1328,12 +1328,12 @@ export default function StudentLesson() {
 
               {/* Quiz / practice (if present) — tour target when MCQs exist */}
               {mcqs?.length > 0 && (
-                <div data-tour="lesson-quiz" className="px-4 md:px-8 pb-4 md:pb-8" aria-label="Lesson quiz" />
+                <div className="px-4 md:px-8 pb-4 md:pb-8" aria-label="Lesson quiz" />
               )}
 
               {/* Resources (cheatsheets, links, text) */}
               {resources?.length > 0 && (
-                <div data-tour="lesson-resources" className="px-4 md:px-8 pb-4 md:pb-8">
+                <div className="px-4 md:px-8 pb-4 md:pb-8">
                   <div className="mt-8">
                     <h3 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
                       <FiLayers className="w-5 h-5 text-slate-600" />
@@ -1399,7 +1399,6 @@ export default function StudentLesson() {
                     {prevLesson && (
                       <button
                         type="button"
-                        data-tour="lesson-nav-prev"
                         onClick={handlePrevLesson}
                         className="px-6 py-2.5 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-md hover:bg-slate-50 flex items-center gap-2 transition-colors"
                       >
@@ -1410,7 +1409,6 @@ export default function StudentLesson() {
                     {!completed ? (<>
                       <button
                         type="button"
-                        data-tour="lesson-complete"
                         onClick={handleMarkComplete}
                         disabled={markCompleteLoading}
                         className="px-6 py-2.5 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-md hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-colors"
@@ -1442,7 +1440,6 @@ export default function StudentLesson() {
                   {nextLesson && (
                     <button
                       type="button"
-                      data-tour="lesson-nav-next"
                       onClick={handleNextLesson}
                       className="px-6 py-2.5 text-sm font-medium text-white bg-blue-600 border border-blue-600 rounded-md hover:bg-blue-700 flex items-center gap-2 transition-colors"
                     >
@@ -1460,7 +1457,7 @@ export default function StudentLesson() {
                   onShare={() => setShareModalOpen(true)}
                 />
                 {/* Notes */}
-                <div data-tour="lesson-notes" className="mt-4">
+                <div className="mt-4">
                   <LessonNotes lessonPath={lessonPath} />
                 </div>
                 {/* Lesson feedback — with love */}

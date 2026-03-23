@@ -8,16 +8,16 @@ import { InstallAppPrompt } from "./Components/InstallAppPrompt";
 
 export default function App() {
   return (
-    <ThemeProvider>
-      <DashboardPrefsProvider>
-        <GamificationProvider>
-          <AuthProvider>
+    <AuthProvider>
+      <ThemeProvider>
+        <DashboardPrefsProvider>
+          <GamificationProvider>
             <RouterProvider router={router} />
             {/* Install app prompt — below-medium devices only; dismissible with 7-day cooldown */}
             <InstallAppPrompt />
-          </AuthProvider>
-        </GamificationProvider>
-      </DashboardPrefsProvider>
-    </ThemeProvider>
+          </GamificationProvider>
+        </DashboardPrefsProvider>
+      </ThemeProvider>
+    </AuthProvider>
   );
 }
