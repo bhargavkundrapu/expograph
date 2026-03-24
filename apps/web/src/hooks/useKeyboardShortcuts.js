@@ -6,8 +6,18 @@ export const SHORTCUTS = [
   { keys: isMac ? "⌘ K" : "Ctrl+K", action: "openSearch", label: "Open search" },
   { keys: "?", action: "openHelp", label: "Show keyboard shortcuts" },
   { keys: "M", action: "markComplete", label: "Mark lesson as complete", context: "lesson" },
-  { keys: "→", action: "nextLesson", label: "Go to next lesson", context: "lesson" },
-  { keys: "←", action: "prevLesson", label: "Go to previous lesson", context: "lesson" },
+  {
+    keys: "→",
+    action: "videoSeekForward",
+    label: "Skip forward 10s (direct video)",
+    context: "lesson",
+  },
+  {
+    keys: "←",
+    action: "videoSeekBack",
+    label: "Skip back 20s (direct video)",
+    context: "lesson",
+  },
   { keys: "S", action: "toggleSidebar", label: "Toggle sidebar", context: "lesson" },
   { keys: "D", action: "toggleDarkMode", label: "Toggle dark mode" },
   { keys: "Esc", action: "closeModal", label: "Close modal / dialog" },
@@ -43,14 +53,16 @@ export function useKeyboardShortcuts(handlers = {}, enabled = true) {
         e.preventDefault();
         handlers.markComplete?.();
         break;
-      case "ArrowRight":
-        e.preventDefault();
-        handlers.nextLesson?.();
+      case "ArrowRight": {
+        const handled = handlers.videoSeekForward?.();
+        if (handled) e.preventDefault();
         break;
-      case "ArrowLeft":
-        e.preventDefault();
-        handlers.prevLesson?.();
+      }
+      case "ArrowLeft": {
+        const handled = handlers.videoSeekBackward?.();
+        if (handled) e.preventDefault();
         break;
+      }
       case "s":
       case "S":
         e.preventDefault();

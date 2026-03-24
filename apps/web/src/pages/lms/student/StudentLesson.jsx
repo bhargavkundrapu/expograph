@@ -10,6 +10,7 @@ import { ButtonLoading } from "../../../Components/common/LoadingStates";
 import { Stream } from "@cloudflare/stream-react";
 import {
   FiPlay,
+  FiPause,
   FiCheckCircle,
   FiLock,
   FiChevronRight,
@@ -48,6 +49,126 @@ import LessonFeedbackCard from "../../../Components/student/LessonFeedbackCard";
 import ShareProgressModal from "../../../Components/student/gamification/ShareProgressModal";
 import KeyboardShortcutsModal from "../../../Components/student/KeyboardShortcutsModal";
 import { useKeyboardShortcuts } from "../../../hooks/useKeyboardShortcuts";
+
+const NATIVE_SEEK_BACK_SEC = 20;
+const NATIVE_SEEK_FWD_SEC = 10;
+
+/** Direct URL / progressive video only — skip controls + synced play/pause (native controls stay for scrubber/volume/fullscreen). */
+function NativeLessonVideoPlayer({
+  lessonKey,
+  videoSrc,
+  videoRef,
+  captionsBlobUrl,
+  captionsEnabled,
+  setCaptionsEnabled,
+  setVideoReady,
+}) {
+  const [playing, setPlaying] = useState(false);
+
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v) return;
+    const onPlay = () => setPlaying(true);
+    const onPause = () => setPlaying(false);
+    const sync = () => setPlaying(!v.paused);
+    v.addEventListener("play", onPlay);
+    v.addEventListener("pause", onPause);
+    v.addEventListener("loadedmetadata", sync);
+    sync();
+    return () => {
+      v.removeEventListener("play", onPlay);
+      v.removeEventListener("pause", onPause);
+      v.removeEventListener("loadedmetadata", sync);
+    };
+  }, [videoRef, videoSrc, lessonKey]);
+
+  const seekBack = () => {
+    const v = videoRef.current;
+    if (!v) return;
+    v.currentTime = Math.max(0, v.currentTime - NATIVE_SEEK_BACK_SEC);
+  };
+  const seekFwd = () => {
+    const v = videoRef.current;
+    if (!v) return;
+    const dur = Number.isFinite(v.duration) ? v.duration : Infinity;
+    v.currentTime = Math.min(dur, v.currentTime + NATIVE_SEEK_FWD_SEC);
+  };
+  const togglePlay = () => {
+    const v = videoRef.current;
+    if (!v) return;
+    if (v.paused) v.play().catch(() => {});
+    else v.pause();
+  };
+
+  return (
+    <div className="relative bg-black overflow-hidden shadow-xl rounded-b-lg">
+      <div className="aspect-video bg-black relative md:max-h-[450px]">
+        <video
+          key={`vid-${lessonKey}-${captionsBlobUrl ? "cc" : "nocc"}`}
+          ref={videoRef}
+          src={videoSrc}
+          controls
+          controlsList="nodownload noremoteplayback"
+          disablePictureInPicture
+          className="w-full h-full"
+          onPlay={() => setVideoReady(true)}
+          crossOrigin="anonymous"
+        >
+          {captionsBlobUrl && (
+            <track kind="captions" srcLang="en" src={captionsBlobUrl} label="English" default />
+          )}
+          Your browser does not support the video tag.
+        </video>
+      </div>
+      {captionsBlobUrl && (
+        <button
+          type="button"
+          onClick={() => setCaptionsEnabled((v) => !v)}
+          className={`absolute top-2 right-2 z-10 px-3 py-1.5 rounded text-xs font-semibold transition-colors ${
+            captionsEnabled
+              ? "bg-white text-black hover:bg-slate-200"
+              : "bg-black/60 text-white/70 hover:bg-black/80"
+          }`}
+          title={captionsEnabled ? "Turn off captions" : "Turn on captions"}
+        >
+          CC {captionsEnabled ? "ON" : "OFF"}
+        </button>
+      )}
+      <div
+        className="flex items-center justify-center gap-2 sm:gap-4 px-3 py-2.5 sm:py-3 bg-gradient-to-b from-slate-900/98 to-slate-950 border-t border-white/10"
+        role="toolbar"
+        aria-label="Video playback shortcuts"
+      >
+        <button
+          type="button"
+          onClick={seekBack}
+          className="group flex items-center gap-1 sm:gap-1.5 min-h-[44px] px-2.5 sm:px-3 rounded-lg text-white/90 hover:bg-white/10 active:bg-white/15 transition-colors touch-manipulation"
+          aria-label={`Rewind ${NATIVE_SEEK_BACK_SEC} seconds`}
+        >
+          <FiChevronLeft className="w-5 h-5 opacity-90 group-hover:opacity-100 shrink-0" aria-hidden />
+          <span className="text-xs sm:text-sm font-semibold tabular-nums tracking-tight">{NATIVE_SEEK_BACK_SEC}s</span>
+        </button>
+        <button
+          type="button"
+          onClick={togglePlay}
+          className="flex items-center justify-center min-w-[48px] min-h-[48px] rounded-full bg-white text-slate-900 shadow-md hover:bg-slate-100 active:scale-[0.98] transition-all touch-manipulation ring-1 ring-white/30"
+          aria-label={playing ? "Pause" : "Play"}
+        >
+          {playing ? <FiPause className="w-5 h-5" aria-hidden /> : <FiPlay className="w-5 h-5 pl-0.5" aria-hidden />}
+        </button>
+        <button
+          type="button"
+          onClick={seekFwd}
+          className="group flex items-center gap-1 sm:gap-1.5 min-h-[44px] px-2.5 sm:px-3 rounded-lg text-white/90 hover:bg-white/10 active:bg-white/15 transition-colors touch-manipulation"
+          aria-label={`Forward ${NATIVE_SEEK_FWD_SEC} seconds`}
+        >
+          <span className="text-xs sm:text-sm font-semibold tabular-nums tracking-tight">{NATIVE_SEEK_FWD_SEC}s</span>
+          <FiChevronRight className="w-5 h-5 opacity-90 group-hover:opacity-100 shrink-0" aria-hidden />
+        </button>
+      </div>
+    </div>
+  );
+}
 
 function isAbortError(err) {
   if (!err) return false;
@@ -562,6 +683,22 @@ export default function StudentLesson() {
     await fetchLessonData(courseSlug, targetModuleSlug, prevLesson.slug, true);
   };
 
+  /** Arrow keys: seek native video element only (returns false for iframe-only lessons). */
+  const videoSeekForward = useCallback(() => {
+    const v = videoRef.current;
+    if (!v || !v.src) return false;
+    const dur = Number.isFinite(v.duration) ? v.duration : Infinity;
+    v.currentTime = Math.min(dur, v.currentTime + NATIVE_SEEK_FWD_SEC);
+    return true;
+  }, []);
+
+  const videoSeekBackward = useCallback(() => {
+    const v = videoRef.current;
+    if (!v || !v.src) return false;
+    v.currentTime = Math.max(0, v.currentTime - NATIVE_SEEK_BACK_SEC);
+    return true;
+  }, []);
+
   useKeyboardShortcuts({
     openSearch: () => setSearchModalOpen(true),
     openHelp: () => setShortcutsOpen(true),
@@ -571,8 +708,8 @@ export default function StudentLesson() {
       else if (selectedResource) setSelectedResource(null);
     },
     markComplete: () => { if (!completed && !markCompleteLoading) handleMarkComplete(); },
-    nextLesson: handleNextLesson,
-    prevLesson: handlePrevLesson,
+    videoSeekForward,
+    videoSeekBackward,
     toggleSidebar: () => setSidebarVisible(v => !v),
     toggleDarkMode: toggleMode,
   }, !loading);
@@ -975,88 +1112,16 @@ export default function StudentLesson() {
                       />
                     </div>
                   </div>
-                ) : lesson.video_url ? (
-                  <div className="bg-black overflow-hidden shadow-xl relative">
-                    <div className="aspect-video bg-black relative md:max-h-[450px]">
-                      <video
-                        key={`vid-${lesson.id}-${captionsBlobUrl ? "cc" : "nocc"}`}
-                        ref={videoRef}
-                        src={lesson.video_url}
-                        controls
-                        controlsList="nodownload noremoteplayback"
-                        disablePictureInPicture
-                        className="w-full h-full"
-                        onPlay={() => setVideoReady(true)}
-                        crossOrigin="anonymous"
-                      >
-                        {captionsBlobUrl && (
-                          <track
-                            kind="captions"
-                            srcLang="en"
-                            src={captionsBlobUrl}
-                            label="English"
-                            default
-                          />
-                        )}
-                        Your browser does not support the video tag.
-                      </video>
-                    </div>
-                    {captionsBlobUrl && (
-                      <button
-                        type="button"
-                        onClick={() => setCaptionsEnabled((v) => !v)}
-                        className={`absolute top-2 right-2 z-10 px-3 py-1.5 rounded text-xs font-semibold transition-colors ${
-                          captionsEnabled
-                            ? "bg-white text-black hover:bg-slate-200"
-                            : "bg-black/60 text-white/70 hover:bg-black/80"
-                        }`}
-                        title={captionsEnabled ? "Turn off captions" : "Turn on captions"}
-                      >
-                        CC {captionsEnabled ? "ON" : "OFF"}
-                      </button>
-                    )}
-                  </div>
-                ) : lesson.video_id && lesson.video_id.startsWith("http") ? (
-                  <div className="bg-black overflow-hidden shadow-xl relative">
-                    <div className="aspect-video bg-black relative md:max-h-[450px]">
-                      <video
-                        key={`vid-${lesson.id}-${captionsBlobUrl ? "cc" : "nocc"}`}
-                        ref={videoRef}
-                        src={lesson.video_id}
-                        controls
-                        controlsList="nodownload noremoteplayback"
-                        disablePictureInPicture
-                        className="w-full h-full"
-                        onPlay={() => setVideoReady(true)}
-                        crossOrigin="anonymous"
-                      >
-                        {captionsBlobUrl && (
-                          <track
-                            kind="captions"
-                            srcLang="en"
-                            src={captionsBlobUrl}
-                            label="English"
-                            default
-                          />
-                        )}
-                        Your browser does not support the video tag.
-                      </video>
-                    </div>
-                    {captionsBlobUrl && (
-                      <button
-                        type="button"
-                        onClick={() => setCaptionsEnabled((v) => !v)}
-                        className={`absolute top-2 right-2 z-10 px-3 py-1.5 rounded text-xs font-semibold transition-colors ${
-                          captionsEnabled
-                            ? "bg-white text-black hover:bg-slate-200"
-                            : "bg-black/60 text-white/70 hover:bg-black/80"
-                        }`}
-                        title={captionsEnabled ? "Turn off captions" : "Turn on captions"}
-                      >
-                        CC {captionsEnabled ? "ON" : "OFF"}
-                      </button>
-                    )}
-                  </div>
+                ) : lesson.video_url || (lesson.video_id && String(lesson.video_id).startsWith("http")) ? (
+                  <NativeLessonVideoPlayer
+                    lessonKey={lesson.id}
+                    videoSrc={lesson.video_url || lesson.video_id}
+                    videoRef={videoRef}
+                    captionsBlobUrl={captionsBlobUrl}
+                    captionsEnabled={captionsEnabled}
+                    setCaptionsEnabled={setCaptionsEnabled}
+                    setVideoReady={setVideoReady}
+                  />
                 ) : null}
                 </div>
               </div>

@@ -62,7 +62,7 @@ export default function WorkshopCarousel({ items = [], autoRotateInterval = 3000
       <div key={currentIndex} className="relative">
           {/* Main Carousel Card - Fixed heights per breakpoint */}
           <div
-            className="relative w-full rounded-[16px] sm:rounded-[20px] md:rounded-[24px] overflow-hidden shadow-xl h-[120px] sm:h-[140px] md:h-[160px] lg:h-[180px] xl:h-[200px]"
+            className="relative w-full rounded-[16px] sm:rounded-[20px] md:rounded-[24px] overflow-hidden shadow-xl h-[140px] sm:h-[170px] md:h-[160px] lg:h-[180px] xl:h-[200px]"
             style={{
               background: "#0b0f27",
             }}
@@ -118,12 +118,11 @@ export default function WorkshopCarousel({ items = [], autoRotateInterval = 3000
 
             {/* Content Container - Responsive padding and sizing */}
             <div 
-              className="relative z-10 h-full p-4 sm:p-6 md:p-8 lg:p-10 xl:p-12 flex items-center gap-3 sm:gap-4 md:gap-6 lg:gap-8 xl:gap-12"
+              className="relative z-10 p-4 sm:p-6 md:p-8 lg:p-10 xl:p-12 flex gap-3 sm:gap-4 md:gap-6 lg:gap-8 xl:gap-12 items-start md:items-center h-full"
               style={{
                 WebkitTransform: 'translateZ(0)',
                 transform: 'translateZ(0)',
                 isolation: 'isolate',
-                overflow: 'hidden',
                 width: '100%',
                 boxSizing: 'border-box',
               }}
@@ -161,38 +160,22 @@ export default function WorkshopCarousel({ items = [], autoRotateInterval = 3000
                   transform: 'translateZ(0)',
                   minWidth: 0,
                   maxWidth: '100%',
-                  overflow: 'hidden',
                   flex: '1 1 0%',
                 }}
               >
                 <h2 
-                  className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl 2xl:text-3xl font-bold text-white mb-1 sm:mb-1.5 md:mb-2 leading-tight"
+                  className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl 2xl:text-3xl font-bold text-white mb-1 sm:mb-1.5 md:mb-2 leading-tight w-full whitespace-normal break-words md:whitespace-nowrap md:overflow-hidden md:text-ellipsis"
                   style={{
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
                     WebkitFontSmoothing: 'antialiased',
                     MozOsxFontSmoothing: 'grayscale',
                     textRendering: 'optimizeLegibility',
-                    width: '100%',
                   }}
                 >
                   {currentItem.title}
                 </h2>
                 {currentItem.description && (
                   <p 
-                    className="text-xs sm:text-sm md:text-base lg:text-lg text-white/90 line-clamp-2 md:line-clamp-3"
-                    style={{
-                      display: '-webkit-box',
-                      WebkitBoxOrient: 'vertical',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      wordBreak: 'break-word',
-                      WebkitFontSmoothing: 'antialiased',
-                      MozOsxFontSmoothing: 'grayscale',
-                      textRendering: 'optimizeLegibility',
-                      maxWidth: '100%',
-                    }}
+                    className="text-xs sm:text-sm md:text-base lg:text-lg text-white/90 whitespace-pre-wrap break-words leading-snug md:line-clamp-3 md:overflow-hidden"
                   >
                     {currentItem.description}
                   </p>
@@ -201,7 +184,7 @@ export default function WorkshopCarousel({ items = [], autoRotateInterval = 3000
 
               {/* Right Section - CTA Button and Live Indicator - Scale with carousel */}
               <div 
-                className="flex-shrink-0 flex flex-col items-end gap-2 sm:gap-2.5 md:gap-3 relative z-20" 
+                className="flex-shrink-0 flex flex-col items-end justify-end h-full gap-2 sm:gap-2.5 md:gap-3 relative z-20 pb-3 sm:pb-4" 
                 style={{ 
                   WebkitTransform: 'translateZ(0)',
                   transform: 'translateZ(0)',
