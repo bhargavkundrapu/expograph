@@ -288,7 +288,14 @@ async function tryAutoApprove(approvalId, email) {
   }
 }
 
-const AUTO_APPROVE_INTERVAL_MS = 60_000;
+// WARNING (Neon scale-to-zero):
+// This background poller queries Postgres on a fixed interval even when no users are active.
+// Only enable it in production if absolutely needed, otherwise it will prevent Neon from scaling to zero.
+const AUTO_APPROVE_INTERVAL_MS = (() => {
+  const v = parseInt(process.env.AUTO_APPROVE_INTERVAL_MS, 10);
+  // Default: 5 minutes (was 60s)
+  return Number.isFinite(v) && v > 0 ? v : 300_000;
+})();
 const MAX_AUTO_APPROVE_BATCH = 5;
 let pollerRunning = false;
 

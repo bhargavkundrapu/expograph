@@ -35,7 +35,28 @@ async function createApproval({
   );
   if (!rows[0]) {
     const existing = await query(
-      `SELECT * FROM approvals WHERE payment_order_id = $1 LIMIT 1`,
+      `SELECT
+         id,
+         tenant_id,
+         payment_order_id,
+         item_type,
+         item_id,
+         customer_name,
+         customer_email,
+         customer_phone,
+         customer_college,
+         razorpay_order_id,
+         razorpay_payment_id,
+         status,
+         notes,
+         approved_by,
+         approved_at,
+         user_id,
+         created_at,
+         updated_at
+       FROM approvals
+       WHERE payment_order_id = $1
+       LIMIT 1`,
       [paymentOrderId]
     );
     return existing.rows[0];
@@ -44,19 +65,62 @@ async function createApproval({
 }
 
 async function findById(id) {
-  const { rows } = await query(`SELECT * FROM approvals WHERE id = $1 LIMIT 1`, [id]);
+  const { rows } = await query(
+    `SELECT
+       id,
+       tenant_id,
+       payment_order_id,
+       item_type,
+       item_id,
+       customer_name,
+       customer_email,
+       customer_phone,
+       customer_college,
+       razorpay_order_id,
+       razorpay_payment_id,
+       status,
+       notes,
+       approved_by,
+       approved_at,
+       user_id,
+       created_at,
+       updated_at
+     FROM approvals
+     WHERE id = $1
+     LIMIT 1`,
+    [id]
+  );
   return rows[0] ?? null;
 }
 
 async function listByStatus({ tenantId, status = "pending" }) {
   const { rows } = await query(
-    `SELECT a.*,
+    `SELECT
+       a.id,
+       a.tenant_id,
+       a.payment_order_id,
+       a.item_type,
+       a.item_id,
+       a.customer_name,
+       a.customer_email,
+       a.customer_phone,
+       a.customer_college,
+       a.razorpay_order_id,
+       a.razorpay_payment_id,
+       a.status,
+       a.notes,
+       a.approved_by,
+       a.approved_at,
+       a.user_id,
+       a.created_at,
+       a.updated_at,
        CASE WHEN a.item_type = 'course' THEN c.title ELSE p.title END AS item_title
      FROM approvals a
      LEFT JOIN courses c ON a.item_type = 'course' AND c.id = a.item_id
      LEFT JOIN course_packs p ON a.item_type = 'pack' AND p.id = a.item_id
      WHERE a.tenant_id = $1 AND a.status = $2
-     ORDER BY a.created_at DESC`,
+     ORDER BY a.created_at DESC
+     LIMIT 50`,
     [tenantId, status]
   );
   return rows;
@@ -64,7 +128,25 @@ async function listByStatus({ tenantId, status = "pending" }) {
 
 async function listAll({ tenantId }) {
   const { rows } = await query(
-    `SELECT a.*,
+    `SELECT
+       a.id,
+       a.tenant_id,
+       a.payment_order_id,
+       a.item_type,
+       a.item_id,
+       a.customer_name,
+       a.customer_email,
+       a.customer_phone,
+       a.customer_college,
+       a.razorpay_order_id,
+       a.razorpay_payment_id,
+       a.status,
+       a.notes,
+       a.approved_by,
+       a.approved_at,
+       a.user_id,
+       a.created_at,
+       a.updated_at,
        CASE WHEN a.item_type = 'course' THEN c.title ELSE p.title END AS item_title
      FROM approvals a
      LEFT JOIN courses c ON a.item_type = 'course' AND c.id = a.item_id

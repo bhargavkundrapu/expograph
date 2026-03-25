@@ -8,7 +8,12 @@ const app = createApp();
 
 const server = app.listen(env.PORT, () => {
   console.log(`ExpoGraph API running on port ${env.PORT} (${env.NODE_ENV})`);
-  startAutoApprovalPoller();
+  // IMPORTANT (Neon scale-to-zero):
+  // The auto-approval poller queries Postgres on an interval even with zero users.
+  // Only enable this when absolutely needed.
+  if (process.env.ENABLE_AUTO_APPROVAL_POLLER === "true") {
+    startAutoApprovalPoller();
+  }
 });
 
 server.keepAliveTimeout = 65_000;

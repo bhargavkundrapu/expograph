@@ -1,11 +1,29 @@
 // apps/api/src/db/pool.js
+// Use the Neon POOLED connection string (host ends with -pooler.neon.tech) for DATABASE_URL in production.
+// Direct connections prevent Neon scale-to-zero.
 const { env } = require("../config/env");
 
 const isNeon = /neon\.tech/i.test(env.DATABASE_URL);
 
 let pool;
 
-const POOL_MAX = parseInt(process.env.DB_POOL_MAX, 10) || 25;
+if (isNeon) {
+  try {
+    const url = new URL(env.DATABASE_URL);
+    const host = url.hostname || "";
+    if (!host.includes("-pooler") && host.endsWith(".neon.tech")) {
+      console.warn(
+        "WARNING: DATABASE_URL does not appear to be a Neon pooled connection. For production use the pooled connection string ending in -pooler.neon.tech to allow proper scale-to-zero. Check Neon Console → Connection Details → Pooled connection."
+      );
+    }
+  } catch (_) {
+    // If DATABASE_URL isn't parseable here, env.js will already error elsewhere.
+  }
+}
+
+// Keep pool size small (3-5) for Neon serverless to allow proper scale-to-zero.
+// Large pools leave idle connections open and prevent Neon from suspending compute.
+const POOL_MAX = parseInt(process.env.DB_POOL_MAX, 10) || 5;
 const QUERY_TIMEOUT_MS = 15_000;
 const CONNECTION_TIMEOUT_MS = 10_000;
 

@@ -3,7 +3,10 @@ const { HttpError } = require("../../utils/httpError");
 const { listPermissionsForUser } = require("../../modules/rbac/rbac.repo");
 
 const cache = new Map();
-const TTL_MS = 10_000;
+// Cache TTL set to 5 minutes to reduce DB queries per request.
+// Increasing this reduces Neon compute usage significantly.
+// If permissions change, users may need to wait up to 5 minutes or re-login to get updated permissions.
+const TTL_MS = 300_000;
 const MAX_PERM_CACHE = 1000;
 
 setInterval(() => {

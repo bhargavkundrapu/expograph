@@ -5,21 +5,11 @@
  */
 import { useRouteError, useNavigate } from "react-router-dom";
 import ErrorFallbackUI from "../Components/common/ErrorFallbackUI";
-
-function isChunkLoadError(error) {
-  const msg = error?.message ?? String(error ?? "");
-  return (
-    msg.includes("Loading chunk") ||
-    msg.includes("ChunkLoadError") ||
-    msg.includes("Failed to fetch dynamically imported module") ||
-    msg.includes("Importing a module script failed") ||
-    msg.includes("error loading dynamically imported module")
-  );
-}
+import { isChunkLoadError, chunkLoadUserMessage } from "../utils/chunkLoadError";
 
 function getFriendlyMessage(error) {
   if (isChunkLoadError(error)) {
-    return "The page didn’t load completely. This can happen on a slow or flaky connection. Try again.";
+    return chunkLoadUserMessage();
   }
   return "We hit a small bump. Try again — it usually works.";
 }

@@ -5,6 +5,7 @@ import * as Sentry from "@sentry/react";
 import "./index.css";
 import App from "./App.jsx";
 import ErrorFallbackUI from "./Components/common/ErrorFallbackUI.jsx";
+import { isChunkLoadError, chunkLoadUserMessage } from "./utils/chunkLoadError.js";
 
 function escapeRegExp(input) {
   return String(input).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -142,13 +143,25 @@ window.addEventListener('unhandledrejection', (event) => {
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <GlobalErrorBoundary>
-      <Sentry.ErrorBoundary fallback={
-        <ErrorFallbackUI
-          title="Something went wrong"
-          message="We hit a small bump. Try again — it usually works."
-          onRetry={() => window.location.reload()}
-        />
-      }>
+      <Sentry.ErrorBoundary
+        fallback={({ error, resetError }) => (
+          <ErrorFallbackUI
+            title="Something went wrong"
+            message={
+              isChunkLoadError(error)
+                ? chunkLoadUserMessage()
+                : "We hit a small bump. Try again — it usually works."
+            }
+            onRetry={() => {
+              if (isChunkLoadError(error)) {
+                window.location.reload();
+                return;
+              }
+              resetError();
+            }}
+          />
+        )}
+      >
         <App />
       </Sentry.ErrorBoundary>
     </GlobalErrorBoundary>

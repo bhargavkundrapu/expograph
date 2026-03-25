@@ -1,7 +1,7 @@
 'use client';
 
-import { Suspense, lazy, useRef, useState, useEffect } from 'react';
-const Spline = lazy(() => import('@splinetool/react-spline'));
+import { useRef, useState, useEffect } from 'react';
+import Spline from '@splinetool/react-spline';
 
 interface InteractiveRobotSplineProps {
   scene: string;
@@ -45,13 +45,7 @@ export function InteractiveRobotSpline({ scene, className }: InteractiveRobotSpl
 
   return (
     <div ref={containerRef} className={`w-full h-full ${className ?? ''}`}>
-      {ready ? (
-        <Suspense fallback={fallback}>
-          <Spline scene={scene} className={className} />
-        </Suspense>
-      ) : (
-        fallback
-      )}
+      {ready ? <Spline scene={scene} className={className} /> : fallback}
     </div>
   );
 }
