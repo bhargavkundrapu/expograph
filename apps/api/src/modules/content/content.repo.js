@@ -230,15 +230,95 @@ async function getCourseTreeAdmin({ tenantId, courseId }) {
   return { course, modules, lessons };
 }
 
-async function getPublishedCourseTreeBySlug({ tenantId, courseSlug }) {
-  const course = (await query(
+/** Same variants as student.repo bonus course lookup — URL may use plural while DB uses singular (or legacy slugs). */
+const BONUS_AI_AUTOMATION_SLUG_VARIANTS = [
+  "ai-automations",
+  "ai_automations",
+  "ai-automation",
+  "ai_automation",
+  "ai-agents",
+  "ai_agents",
+];
+
+function normalizeCourseSlugKey(slug) {
+  return String(slug || "")
+    .toLowerCase()
+    .replace(/_/g, "-")
+    .trim();
+}
+
+function isAiAutomationsSlugRequest(slug) {
+  const n = normalizeCourseSlugKey(slug);
+  if (!n) return false;
+  if (BONUS_AI_AUTOMATION_SLUG_VARIANTS.includes(n)) return true;
+  if (n.includes("ai-automation")) return true;
+  if (n.includes("ai-automat")) return true;
+  if (n === "ai-agents") return true;
+  return false;
+}
+
+/** Placeholder lesson slugs in URLs/CMS that are not real DB slugs — resolve to first lesson in module/course. */
+function isPlaceholderLessonSlug(slug) {
+  const n = normalizeCourseSlugKey(slug);
+  return n === "start" || n === "first" || n === "_first" || n === "begin" || n === "intro";
+}
+
+/**
+ * Resolve a published course row by URL slug, including AI Automations aliases (plural/singular, legacy names).
+ * Used by student course tree, lesson fetch, and progress so /courses/ai-automations matches DB slug ai-automation.
+ */
+async function findPublishedCourseRowBySlug({ tenantId, courseSlug }) {
+  const requested = String(courseSlug || "").trim();
+  const normReq = normalizeCourseSlugKey(requested);
+
+  const { rows: direct } = await query(
     `SELECT id, title, slug, description, level, price_in_paise
      FROM courses
      WHERE tenant_id=$1 AND status='published'
-     AND (slug = $2 OR REPLACE(slug, '_', '-') = $2)`,
-    [tenantId, courseSlug]
-  )).rows[0] ?? null;
+     AND (
+       slug = $2
+       OR REPLACE(slug, '_', '-') = $2
+       OR LOWER(REPLACE(slug, '_', '-')) = LOWER($3)
+     )
+     LIMIT 1`,
+    [tenantId, requested, normReq]
+  );
+  if (direct[0]) return direct[0];
 
+  if (!isAiAutomationsSlugRequest(requested)) return null;
+
+  for (const variant of BONUS_AI_AUTOMATION_SLUG_VARIANTS) {
+    const { rows } = await query(
+      `SELECT id, title, slug, description, level, price_in_paise
+       FROM courses
+       WHERE tenant_id=$1 AND status='published'
+       AND (
+         LOWER(REPLACE(slug, '_', '-')) = LOWER($2)
+         OR slug = $2
+       )
+       LIMIT 1`,
+      [tenantId, variant]
+    );
+    if (rows[0]) return rows[0];
+  }
+
+  const { rows: fallback } = await query(
+    `SELECT id, title, slug, description, level, price_in_paise
+     FROM courses
+     WHERE tenant_id=$1 AND status='published'
+     AND (
+       LOWER(title) LIKE '%ai automation%'
+       OR LOWER(slug) LIKE '%ai%automation%'
+     )
+     ORDER BY created_at ASC
+     LIMIT 1`,
+    [tenantId]
+  );
+  return fallback[0] ?? null;
+}
+
+async function getPublishedCourseTreeBySlug({ tenantId, courseSlug }) {
+  const course = await findPublishedCourseRowBySlug({ tenantId, courseSlug });
   if (!course) return null;
 
   const modules = (await query(
@@ -287,29 +367,22 @@ async function getPublishedCourseTreeBySlug({ tenantId, courseSlug }) {
     return lesson;
   });
 
-  // Group lessons by module_id
   const lessonsByModule = new Map();
   for (const l of lessons) {
     if (!lessonsByModule.has(l.module_id)) lessonsByModule.set(l.module_id, []);
     lessonsByModule.get(l.module_id).push(l);
   }
 
-  // Attach lessons[] to each module
   const modulesWithLessons = modules.map((m) => ({
     ...m,
     lessons: lessonsByModule.get(m.id) || [],
   }));
 
-  // Return a single object shape that frontend loves:
-  // data.course contains modules[] and each module has lessons[]
   return { course: { ...course, modules: modulesWithLessons } };
-
 }
 
-/** Match slugs with hyphen or underscore (e.g. user-schema-design or user_schema_design). */
-async function getPublishedLessonBySlugs({ tenantId, courseSlug, moduleSlug, lessonSlug }) {
-  const { rows } = await query(
-    `SELECT
+const PUBLISHED_LESSON_ROW_SELECT = `
+     SELECT
         c.id AS course_id, c.title AS course_title, c.slug AS course_slug,
         m.id AS module_id, m.title AS module_title, m.slug AS module_slug,
         l.id AS lesson_id, l.title AS lesson_title, l.slug AS lesson_slug, l.summary,
@@ -317,27 +390,17 @@ async function getPublishedLessonBySlugs({ tenantId, courseSlug, moduleSlug, les
         l.goal, l.video_url, l.video_captions, l.prompts, l.success_image_url, l.success_image_urls, l.learn_setup_steps, l.pdf_url
      FROM courses c
      JOIN course_modules m ON m.course_id = c.id AND m.tenant_id = c.tenant_id
-     JOIN lessons l ON l.module_id = m.id AND l.tenant_id = m.tenant_id
-     WHERE c.tenant_id = $1 AND c.status='published'
-       AND (c.slug = $2 OR REPLACE(c.slug, '_', '-') = $2)
-       AND (m.slug = $3 OR REPLACE(m.slug, '_', '-') = $3) AND m.status='published'
-       AND (l.slug = $4 OR REPLACE(l.slug, '_', '-') = $4) AND l.status='published'
-     LIMIT 1`,
-    [tenantId, courseSlug, moduleSlug, lessonSlug]
-  );
+     JOIN lessons l ON l.module_id = m.id AND l.tenant_id = m.tenant_id`;
 
-  const row = rows[0] ?? null;
+async function buildPublishedLessonPayload({ tenantId, row }) {
   if (!row) return null;
-
-  // Parse prompts JSONB if it exists
-  if (row.prompts && typeof row.prompts === 'string') {
+  if (row.prompts && typeof row.prompts === "string") {
     try {
       row.prompts = JSON.parse(row.prompts);
     } catch (e) {
       row.prompts = null;
     }
   }
-
   const resources = (await query(
     `SELECT id, type, title, url, body, sort_order
      FROM resources
@@ -355,6 +418,55 @@ async function getPublishedLessonBySlugs({ tenantId, courseSlug, moduleSlug, les
   )).rows;
 
   return { lesson: row, resources, practice };
+}
+
+/** Match slugs with hyphen or underscore (e.g. user-schema-design or user_schema_design). */
+async function getPublishedLessonBySlugs({ tenantId, courseSlug, moduleSlug, lessonSlug }) {
+  const course = await findPublishedCourseRowBySlug({ tenantId, courseSlug });
+  if (!course) return null;
+
+  const { rows } = await query(
+    `${PUBLISHED_LESSON_ROW_SELECT}
+     WHERE c.tenant_id = $1 AND c.status='published'
+       AND c.id = $2
+       AND (m.slug = $3 OR REPLACE(m.slug, '_', '-') = $3) AND m.status='published'
+       AND (l.slug = $4 OR REPLACE(l.slug, '_', '-') = $4) AND l.status='published'
+     LIMIT 1`,
+    [tenantId, course.id, moduleSlug, lessonSlug]
+  );
+
+  let row = rows[0] ?? null;
+
+  // CMS/legacy URLs sometimes use "start" instead of the real first lesson slug
+  if (!row && isPlaceholderLessonSlug(lessonSlug)) {
+    const { rows: r2 } = await query(
+      `${PUBLISHED_LESSON_ROW_SELECT}
+       WHERE c.tenant_id = $1 AND c.status='published'
+         AND c.id = $2
+         AND (m.slug = $3 OR REPLACE(m.slug, '_', '-') = $3) AND m.status='published'
+         AND l.status='published'
+       ORDER BY l.position ASC NULLS LAST, l.created_at ASC
+       LIMIT 1`,
+      [tenantId, course.id, moduleSlug]
+    );
+    row = r2[0] ?? null;
+  }
+
+  // Still placeholder: first published lesson in the whole course (wrong/missing module slug in URL)
+  if (!row && isPlaceholderLessonSlug(lessonSlug)) {
+    const { rows: r3 } = await query(
+      `${PUBLISHED_LESSON_ROW_SELECT}
+       WHERE c.tenant_id = $1 AND c.status='published'
+         AND c.id = $2
+         AND m.status='published' AND l.status='published'
+       ORDER BY m.position ASC NULLS LAST, m.created_at ASC, l.position ASC NULLS LAST, l.created_at ASC
+       LIMIT 1`,
+      [tenantId, course.id]
+    );
+    row = r3[0] ?? null;
+  }
+
+  return buildPublishedLessonPayload({ tenantId, row });
 }
 async function updateCourse({ tenantId, courseId, patch, updatedBy }) {
   const fields = [];
@@ -973,6 +1085,7 @@ module.exports = {
   addResource,
   addPractice,
   getCourseTreeAdmin,
+  findPublishedCourseRowBySlug,
   getPublishedCourseTreeBySlug,
   getPublishedLessonBySlugs,
   updateCourse,

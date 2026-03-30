@@ -1,5 +1,6 @@
 // apps/api/src/modules/progress/progress.repo.js
 const { query } = require("../../db/query");
+const contentRepo = require("../content/content.repo");
 
 /**
  * Make sure lesson belongs to tenant + published (student only access)
@@ -107,6 +108,11 @@ async function getSummary({ tenantId, userId }) {
   return rows[0] || { completed_lessons: 0, in_progress_lessons: 0, total_watch_seconds: 0 };
 }
 async function courseProgressBySlug({ tenantId, userId, courseSlug }) {
+  const course = await contentRepo.findPublishedCourseRowBySlug({ tenantId, courseSlug });
+  if (!course?.id) {
+    return { total: 0, completed: 0, percent: 0, completedLessonIds: [] };
+  }
+
   // total published lessons in this course
   const totalRow = (await query(
     `
@@ -117,12 +123,12 @@ async function courseProgressBySlug({ tenantId, userId, courseSlug }) {
     JOIN courses c
       ON c.id = m.course_id AND c.tenant_id = m.tenant_id
     WHERE c.tenant_id = $1
-      AND c.slug = $2
+      AND c.id = $2
       AND c.status = 'published'
       AND m.status = 'published'
       AND l.status = 'published'
     `,
-    [tenantId, courseSlug]
+    [tenantId, course.id]
   )).rows[0];
 
   const total = totalRow?.total ?? 0;
@@ -140,10 +146,10 @@ async function courseProgressBySlug({ tenantId, userId, courseSlug }) {
       ON c.id = m.course_id AND c.tenant_id = m.tenant_id AND c.status='published'
     WHERE lp.tenant_id = $1
       AND lp.user_id = $2
-      AND c.slug = $3
+      AND c.id = $3
       AND lp.completed_at IS NOT NULL
     `,
-    [tenantId, userId, courseSlug]
+    [tenantId, userId, course.id]
   );
 
   const completedLessonIds = rows.map(r => r.lesson_id);

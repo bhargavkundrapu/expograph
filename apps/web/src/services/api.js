@@ -152,7 +152,11 @@ export async function apiFetch(path, options = {}) {
 
           if (res.status === 401 && token) {
             clearSession();
-            if (typeof window !== "undefined" && !window.location.pathname.startsWith("/login")) {
+            if (
+              typeof window !== "undefined" &&
+              window.location.pathname !== "/login" &&
+              window.location.pathname !== "/adminlogin"
+            ) {
               window.location.href = "/login";
             }
             throw error;
@@ -244,7 +248,11 @@ export async function apiFetch(path, options = {}) {
 
       if (res.status === 401 && token) {
         clearSession();
-        if (typeof window !== "undefined" && !window.location.pathname.startsWith("/login")) {
+        if (
+          typeof window !== "undefined" &&
+          window.location.pathname !== "/login" &&
+          window.location.pathname !== "/adminlogin"
+        ) {
           window.location.href = "/login";
         }
         throw error;

@@ -172,9 +172,10 @@ export default function StudentCourseLanding() {
     const mod = modules.find(m => m.lessons?.some(l => l.id === continueLesson.id || l.slug === continueLesson.slug));
     if (mod?.slug) {
       setSearchParams({}, { replace: true });
-      navigate(getStudentLessonPath(courseSlug, mod.slug, continueLesson.slug), { replace: true });
+      const slugForPath = course?.slug || courseSlug;
+      navigate(getStudentLessonPath(slugForPath, mod.slug, continueLesson.slug), { replace: true });
     }
-  }, [loading, isEnrolled, course, modules, courseSlug, searchParams, setSearchParams, navigate]);
+  }, [loading, isEnrolled, course, modules, courseSlug, course?.slug, searchParams, setSearchParams, navigate]);
 
   const fetchCourseData = async () => {
     try {
@@ -232,6 +233,8 @@ export default function StudentCourseLanding() {
 
   const isLocked = !isEnrolled;
   const courseTitle = course?.title || course?.name || courseSlug;
+  /** Prefer API course.slug so lesson URLs match the DB (e.g. ai-automation vs ai-automations). */
+  const pathSlug = course?.slug || courseSlug;
   const totalLessons = isLocked
     ? (course?.total_lessons || 0)
     : modules.reduce((sum, m) => sum + (m.lessons?.length || m.totalLessons || 0), 0);
@@ -250,7 +253,7 @@ export default function StudentCourseLanding() {
       return;
     }
     if (mod?.slug && lesson?.slug) {
-      navigate(getStudentLessonPath(courseSlug, mod.slug, lesson.slug));
+      navigate(getStudentLessonPath(pathSlug, mod.slug, lesson.slug));
     }
   };
 
@@ -525,16 +528,16 @@ export default function StudentCourseLanding() {
               <div className="mt-10">
                 <LearningPath
                   modules={modules}
-                  courseSlug={courseSlug}
+                  courseSlug={pathSlug}
                   onNavigate={(cs, ms, ls) => navigate(getStudentLessonPath(cs, ms, ls))}
                 />
               </div>
 
               {/* Course feedback — with love (enrolled only) */}
-              {token && courseSlug && (
+              {token && pathSlug && (
                 <div className="mt-12 pt-8 border-t border-slate-200 dark:border-slate-700">
                   <CourseFeedbackCard
-                    courseSlug={courseSlug}
+                    courseSlug={pathSlug}
                     courseTitle={course?.title || course?.name}
                     token={token}
                   />

@@ -24,7 +24,7 @@ const CONTACT_INFO = [
   {
     icon: FiMapPin,
     label: "Location",
-    value: "Hyderabad, India",
+    value: "Vishakapatnam, India",
     href: null,
     color: "from-amber-400 to-orange-400",
   },

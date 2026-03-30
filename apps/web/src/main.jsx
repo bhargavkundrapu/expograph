@@ -11,8 +11,9 @@ function escapeRegExp(input) {
   return String(input).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
-// Initialize Sentry as early as possible.
+// Initialize Sentry as early as possible. Set VITE_SENTRY_DISABLE=true if the DSN returns 403 (blocked/invalid project).
 const SENTRY_DSN = import.meta.env.VITE_SENTRY_DSN;
+const SENTRY_DISABLED = import.meta.env.VITE_SENTRY_DISABLE === "true";
 const API_URL = import.meta.env.VITE_API_URL;
 const apiOrigin = API_URL?.replace(/\/+$/, "");
 const tracePropagationTargets = [
@@ -26,7 +27,7 @@ const tracePropagationTargets = [
 const enableTracing = !!import.meta.env.PROD;
 const enableReplay = !!import.meta.env.PROD;
 
-if (SENTRY_DSN) {
+if (SENTRY_DSN && !SENTRY_DISABLED) {
   Sentry.init({
     dsn: SENTRY_DSN,
     sendDefaultPii: true,
@@ -76,6 +77,11 @@ class GlobalErrorBoundary extends Component {
 const originalError = console.error;
 console.error = (...args) => {
   const message = String(args[0] || '');
+  // Sentry ingest 403: wrong DSN / project / org — browser still logs failed fetch; not actionable in-app
+  const joined = args.map((a) => (typeof a === "string" ? a : "")).join(" ");
+  if ((message.includes("ingest.sentry.io") || joined.includes("ingest.sentry.io")) && (message.includes("403") || joined.includes("403"))) {
+    return;
+  }
   // Suppress Cloudflare Stream analytics beacon errors
   if (message.includes('cloudflarestream.com') && (message.includes('beacon') || message.includes('404'))) {
     return;

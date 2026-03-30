@@ -81,6 +81,30 @@ function OtpInput({ length = 6, value, onChange, disabled }) {
   );
 }
 
+/** High-visibility “Important” notice below OTP inputs (spam / junk folders). */
+function ImportantPurchaseCaution({ children }) {
+  return (
+    <div
+      role="alert"
+      aria-live="polite"
+      className="rounded-xl border-2 border-amber-500 bg-gradient-to-b from-amber-100 to-amber-50 px-3.5 py-3 shadow-[0_0_0_1px_rgba(245,158,11,0.25)]"
+    >
+      <div className="flex items-start gap-3">
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-amber-500 text-white shadow-sm">
+          <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20" aria-hidden>
+            <path
+              fillRule="evenodd"
+              d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+              clipRule="evenodd"
+            />
+          </svg>
+        </span>
+        <div className="min-w-0 pt-0.5">{children}</div>
+      </div>
+    </div>
+  );
+}
+
 const OTHER_OPTION_VALUE = "Others (Working Professional / Not Listed)";
 
 function SearchableCollegeSelect({ value, onChange, colleges, placeholder = "Select college or others", inputClassName }) {
@@ -700,10 +724,15 @@ export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill, 
                             onChange={setOtpValue}
                             disabled={otpLoading}
                           />
-                          <p className="text-[11px] text-amber-700 bg-amber-50 border border-amber-200 rounded-md px-2.5 py-2 flex items-center gap-2">
-                            <svg className="w-3.5 h-3.5 flex-shrink-0 text-amber-600" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" /></svg>
-                            <span>If you don&apos;t see the email, check your <strong>spam or junk</strong> folder.</span>
-                          </p>
+                          <ImportantPurchaseCaution>
+                            <p className="text-xs font-bold uppercase tracking-wide text-amber-900">Important — read this</p>
+                            <p className="mt-1 text-sm font-semibold leading-snug text-amber-950">
+                              If you don&apos;t see the code in your inbox, check your{" "}
+                              <span className="underline decoration-2 decoration-amber-600">spam</span>,{" "}
+                              <span className="underline decoration-2 decoration-amber-600">junk</span>, or{" "}
+                              <span className="underline decoration-2 decoration-amber-600">Promotions</span> folder.
+                            </p>
+                          </ImportantPurchaseCaution>
                           {otpError && (
                             <p className="text-red-500 text-xs text-center">{otpError}</p>
                           )}
@@ -722,8 +751,15 @@ export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill, 
                               "Confirm code"
                             )}
                           </button>
-                          <p className="text-[11px] text-slate-400 text-center">
-                            Didn't receive it? Check your spam folder or {cooldown > 0 ? `resend in ${cooldown}s` : <button type="button" onClick={handleSendOtp} className="text-blue-600 hover:underline font-medium">resend code</button>}
+                          <p className="text-[11px] text-slate-500 text-center">
+                            Didn&apos;t receive it?{" "}
+                            {cooldown > 0 ? (
+                              `Resend in ${cooldown}s`
+                            ) : (
+                              <button type="button" onClick={handleSendOtp} className="text-blue-600 hover:underline font-medium">
+                                Resend code
+                              </button>
+                            )}
                           </p>
                         </div>
                       </motion.div>
@@ -732,8 +768,16 @@ export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill, 
 
                   {!otpSent && !emailVerified && (
                     <p className="mt-1.5 text-amber-600 text-[11px] flex items-start gap-1.5 leading-relaxed bg-amber-50 border border-amber-200 rounded-md px-2.5 py-2">
-                      <svg className="w-3.5 h-3.5 flex-shrink-0 mt-0.5 text-amber-500" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" /></svg>
-                      <span>We&apos;ll send a verification code to confirm your email. This ensures your login access after purchase.</span>
+                      <svg className="w-3.5 h-3.5 flex-shrink-0 mt-0.5 text-amber-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path
+                          fillRule="evenodd"
+                          d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      <span>
+                        We&apos;ll send a verification code to confirm your email. This ensures your login access after purchase.
+                      </span>
                     </p>
                   )}
                 </div>

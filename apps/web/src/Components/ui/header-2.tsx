@@ -15,7 +15,7 @@ export function Header() {
 	const location = useLocation();
 	const { token, role } = useAuth();
 	const isLoggedIn = !!(token && role);
-	const isLoginPage = location.pathname === '/login';
+	const isLoginPage = location.pathname === '/login' || location.pathname === '/adminlogin';
 	const portalPath = isLoggedIn ? homePathForRole(role) : '/login';
 	const portalLabel = isLoggedIn ? 'LMS Portal' : 'Login';
 

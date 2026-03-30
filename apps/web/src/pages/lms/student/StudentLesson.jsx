@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { getStudentLessonPath, getStudentCourseBasePath } from "../../../utils/studentCoursePaths";
+import { recoverStudentLessonRoute } from "../../../utils/recoverStudentLessonRoute";
 import { useAuth } from "../../../app/providers/AuthProvider";
 import { useTheme } from "../../../app/providers/ThemeProvider";
 import { apiFetch, ApiError } from "../../../services/api";
@@ -230,12 +231,21 @@ export default function StudentLesson() {
   const videoRef = useRef(null);
   const courseDataLoadedRef = useRef(false);
   const isManualNavigationRef = useRef(false);
+  const recoveryAttemptedRef = useRef(false);
   const mainContentScrollRef = useRef(null);
 
   useEffect(() => {
     const t = setTimeout(() => { preloadProfile(); preloadHome(); preloadCourses(); }, 2000);
     return () => clearTimeout(t);
   }, []);
+
+  useEffect(() => {
+    recoveryAttemptedRef.current = false;
+  }, [courseSlug, moduleSlug, lessonSlug]);
+
+  useEffect(() => {
+    courseDataLoadedRef.current = false;
+  }, [courseSlug]);
 
   const location = useLocation();
   const isBonusPath = location.pathname.includes("bonus-courses");
@@ -381,10 +391,26 @@ export default function StudentLesson() {
         setLoading(false);
         return;
       }
+      if (error instanceof ApiError && error.status === 404 && token && !recoveryAttemptedRef.current) {
+        recoveryAttemptedRef.current = true;
+        const rec = await recoverStudentLessonRoute({ token, courseSlug, moduleSlug, lessonSlug });
+        if (rec?.path) {
+          navigate(rec.path, { replace: true });
+          return;
+        }
+      }
       console.error("Failed to fetch course data:", error);
     }
   };
 
+  // Keep the URL aligned with the published course slug from the API (avoids wrong slug in links / bookmarks).
+  useEffect(() => {
+    if (!course?.slug || !courseSlug) return;
+    const fromApi = String(course.slug).toLowerCase().replace(/_/g, "-");
+    const fromRoute = String(courseSlug).toLowerCase().replace(/_/g, "-");
+    if (fromApi === fromRoute) return;
+    navigate(getStudentLessonPath(course.slug, moduleSlug, lessonSlug), { replace: true });
+  }, [course?.slug, courseSlug, moduleSlug, lessonSlug, navigate]);
 
   const fetchLessonData = async (courseSlugParam, moduleSlugParam, lessonSlugParam, isContentUpdate = false, signal) => {
     try {
@@ -431,6 +457,19 @@ export default function StudentLesson() {
       if (isAbortError(error)) return;
       if (error instanceof ApiError && error.status === 403) {
         setAccessDenied(true);
+      } else if (error instanceof ApiError && error.status === 404 && token && !recoveryAttemptedRef.current) {
+        recoveryAttemptedRef.current = true;
+        const rec = await recoverStudentLessonRoute({
+          token,
+          courseSlug: courseSlugParam,
+          moduleSlug: moduleSlugParam,
+          lessonSlug: lessonSlugParam,
+        });
+        if (rec?.path) {
+          navigate(rec.path, { replace: true });
+          return;
+        }
+        console.error("Failed to fetch lesson data:", error);
       } else {
         console.error("Failed to fetch lesson data:", error);
       }

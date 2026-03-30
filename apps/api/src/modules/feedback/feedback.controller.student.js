@@ -12,16 +12,10 @@ const FeedbackSchema = z.object({
   comment: z.string().max(2000).optional(),
 });
 
-/** Resolve course_id from courseSlug (published). */
+/** Resolve course_id from courseSlug (published), including AI Automations slug aliases. */
 async function resolveCourseId({ tenantId, courseSlug }) {
-  const { rows } = await query(
-    `SELECT id FROM courses
-     WHERE tenant_id = $1 AND status = 'published'
-     AND (slug = $2 OR REPLACE(slug, '_', '-') = $2)
-     LIMIT 1`,
-    [tenantId, courseSlug]
-  );
-  return rows[0]?.id ?? null;
+  const row = await contentRepo.findPublishedCourseRowBySlug({ tenantId, courseSlug });
+  return row?.id ?? null;
 }
 
 /** Submit course-level feedback. */

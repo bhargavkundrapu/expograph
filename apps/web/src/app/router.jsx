@@ -9,6 +9,7 @@ import PublicOnly from "./PublicOnly";
 
 import HomeOrRedirect from "./HomeOrRedirect";
 import LoginPage from "../pages/auth/LoginPage";
+import AdminLoginPage from "../pages/auth/AdminLoginPage";
 import NotFoundPageRoute from "../pages/NotFoundPage";
 import StudentHome from "../pages/lms/student/StudentHome";
 import StudentCourses from "../pages/lms/student/StudentCourses";
@@ -122,6 +123,7 @@ export const router = createBrowserRouter([
       { path: "/contact", element: <L><ContactPage /></L> },
       { path: "/demo/course-sidebar", element: <L><CourseContentsSidebarDemo /></L> },
       { path: "/login", element: <PublicOnly><LoginPage /></PublicOnly> },
+      { path: "/adminlogin", element: <PublicOnly><AdminLoginPage /></PublicOnly> },
       { path: "/account-pending", element: <L><AccountPendingPage /></L> },
       { path: "/payment-failure", element: <L><PaymentFailurePage /></L> },
       { path: "/not-found", element: <NotFoundPageRoute /> },
