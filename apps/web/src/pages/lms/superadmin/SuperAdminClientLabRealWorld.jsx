@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useAuth } from "../../../app/providers/AuthProvider";
 import { apiFetch } from "../../../services/api";
+import { GenericPageSkeleton } from "../../../Components/common/SkeletonLoaders";
 import {
   FiBriefcase,
   FiPlus,
@@ -202,11 +203,7 @@ export default function SuperAdminClientLabRealWorld() {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center lg:rounded-tl-lg overflow-hidden">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600" />
-      </div>
-    );
+    return <GenericPageSkeleton />;
   }
 
   return (

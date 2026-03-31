@@ -6,6 +6,7 @@ import { Header } from "../../Components/ui/header-2";
 import { BuyNowModal } from "../../Components/payments/BuyNowModal";
 import { cn } from "../../lib/utils";
 import { FiArrowLeft, FiBookOpen } from "react-icons/fi";
+import { RouteFallbackSkeleton } from "../../Components/common/SkeletonLoaders";
 
 function formatPrice(paise) {
   if (paise == null || paise === undefined) return "-";
@@ -69,8 +70,8 @@ export default function CourseDetailPage() {
     return (
       <div className="min-h-screen bg-black text-white">
         <Header />
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="animate-pulse text-slate-500">Loading...</div>
+        <div className="min-h-[60vh]">
+          <RouteFallbackSkeleton />
         </div>
       </div>
     );

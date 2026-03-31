@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useAuth } from "../../../app/providers/AuthProvider";
 import { apiFetch } from "../../../services/api";
+import { GenericPageSkeleton } from "../../../Components/common/SkeletonLoaders";
 import { ButtonLoading } from "../../../Components/common/LoadingStates";
 import { FiArrowLeft, FiSave, FiX, FiBook, FiFileText } from "react-icons/fi";
 
@@ -154,14 +155,7 @@ export default function SuperAdminModuleLessons() {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-4 sm:p-6 lg:p-8">
-        <div className="max-w-4xl mx-auto flex items-center justify-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500" />
-          <span className="ml-3 text-slate-600">Loading...</span>
-        </div>
-      </div>
-    );
+    return <GenericPageSkeleton />;
   }
 
   return (

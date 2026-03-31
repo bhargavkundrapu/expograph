@@ -83,7 +83,7 @@ export default function AccountPendingPage() {
                 ExpoGraph
               </h2>
               <span className="text-xs text-white/40">© 2025 ExpoGraph Academy</span>
-              <div className="absolute bottom-6 right-6 flex items-center gap-4 text-white/55 pointer-events-auto">
+              <div className="absolute bottom-3 left-0 right-0 flex items-center justify-center gap-4 text-white/55 pointer-events-auto sm:bottom-6 sm:left-auto sm:right-6 sm:justify-end">
                 <Link to="/privacy-policy" className="text-xs hover:text-white/80 underline underline-offset-2">
                   Privacy Policy
                 </Link>

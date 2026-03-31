@@ -13,7 +13,11 @@ import AdminLoginPage from "../pages/auth/AdminLoginPage";
 import NotFoundPageRoute from "../pages/NotFoundPage";
 import StudentHome from "../pages/lms/student/StudentHome";
 import StudentCourses from "../pages/lms/student/StudentCourses";
-import { StudentBookmarksSkeleton, StudentCertificatesSkeleton } from "../Components/common/SkeletonLoaders";
+import {
+  RouteFallbackSkeleton,
+  StudentBookmarksSkeleton,
+  StudentCertificatesSkeleton,
+} from "../Components/common/SkeletonLoaders";
 
 const SolutionsPage = lazy(() => import("../pages/solutions/SolutionsPage"));
 const CoursesPage = lazy(() => import("../pages/courses/CoursesPage"));
@@ -74,22 +78,8 @@ const TenantAdminHome = lazy(() => import("../pages/lms/admin/TenantAdminHome"))
 const TenantAdminSettings = lazy(() => import("../pages/lms/admin/TenantAdminSettings"));
 const TenantAdminUsers = lazy(() => import("../pages/lms/admin/TenantAdminUsers"));
 
-function LazyFallback() {
-  return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-slate-50 dark:bg-gradient-to-b dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 p-6 text-center">
-      <div className="flex flex-col items-center justify-center gap-4">
-        <div
-          className="w-12 h-12 rounded-full border-4 border-slate-200/70 border-t-blue-500 animate-spin"
-          aria-hidden
-        />
-        <p className="text-slate-600 dark:text-slate-200 font-medium">Loading...</p>
-      </div>
-    </div>
-  );
-}
-
 function L({ children }) {
-  return <Suspense fallback={<LazyFallback />}>{children}</Suspense>;
+  return <Suspense fallback={<RouteFallbackSkeleton />}>{children}</Suspense>;
 }
 
 function LBookmarks({ children }) {

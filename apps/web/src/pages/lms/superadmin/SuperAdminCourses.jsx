@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../../app/providers/AuthProvider";
 import { apiFetch } from "../../../services/api";
+import { GenericPageSkeleton } from "../../../Components/common/SkeletonLoaders";
 import { ButtonLoading } from "../../../Components/common/LoadingStates";
 import {
   FiBook,
@@ -575,14 +576,7 @@ export default function SuperAdminCourses() {
 
   // Loading state
   if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-slate-600">Loading...</p>
-        </div>
-      </div>
-    );
+    return <GenericPageSkeleton />;
   }
 
   // Courses List View

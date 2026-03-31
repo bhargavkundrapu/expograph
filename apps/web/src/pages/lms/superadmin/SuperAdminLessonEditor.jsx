@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useAuth } from "../../../app/providers/AuthProvider";
 import { apiFetch } from "../../../services/api";
+import { GenericPageSkeleton } from "../../../Components/common/SkeletonLoaders";
 import { ButtonLoading } from "../../../Components/common/LoadingStates";
 import StructuredSectionEditor, { isStructuredSections } from "../../../Components/admin/StructuredSectionEditor";
 import {
@@ -167,16 +168,7 @@ export default function SuperAdminLessonEditor() {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-4 sm:p-6 lg:p-8">
-        <div className="max-w-4xl mx-auto">
-          <div className="bg-white rounded-lg shadow-sm p-12 text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
-            <p className="mt-4 text-slate-600">Loading...</p>
-          </div>
-        </div>
-      </div>
-    );
+    return <GenericPageSkeleton />;
   }
 
   return (

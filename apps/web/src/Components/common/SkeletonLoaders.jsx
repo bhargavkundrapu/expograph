@@ -1302,3 +1302,19 @@ export function GenericPageSkeleton() {
     </div>
   );
 }
+
+// App route-level skeleton fallback (used by lazy-loaded routes)
+export function RouteFallbackSkeleton() {
+  return (
+    <div className="min-h-screen w-full bg-[#0a0a0a] p-6 animate-pulse">
+      <div className="mx-auto max-w-6xl space-y-6">
+        <div className="h-8 w-48 rounded-lg bg-white/10" />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <div key={i} className="h-32 rounded-2xl border border-white/10 bg-white/[0.04]" />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
