@@ -1,4 +1,4 @@
-import { createBrowserRouter, Outlet, Navigate } from "react-router-dom";
+import { createBrowserRouter, Outlet, Navigate, useLocation } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import RequireRole from "./RequireRole";
 import RouteErrorFallback from "./RouteErrorFallback";
@@ -14,7 +14,11 @@ import NotFoundPageRoute from "../pages/NotFoundPage";
 import StudentHome from "../pages/lms/student/StudentHome";
 import StudentCourses from "../pages/lms/student/StudentCourses";
 import {
+  CoursesPageSkeleton,
+  GenericPageSkeleton,
   RouteFallbackSkeleton,
+  StudentCoursesSkeleton,
+  StudentHomeSkeleton,
   StudentBookmarksSkeleton,
   StudentCertificatesSkeleton,
 } from "../Components/common/SkeletonLoaders";
@@ -78,8 +82,92 @@ const TenantAdminHome = lazy(() => import("../pages/lms/admin/TenantAdminHome"))
 const TenantAdminSettings = lazy(() => import("../pages/lms/admin/TenantAdminSettings"));
 const TenantAdminUsers = lazy(() => import("../pages/lms/admin/TenantAdminUsers"));
 
+function AuthRouteSkeleton() {
+  return (
+    <div className="min-h-screen bg-black pt-24 px-4">
+      <div className="mx-auto max-w-md animate-pulse space-y-5">
+        <div className="h-10 w-40 mx-auto rounded bg-white/10" />
+        <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-6 space-y-4">
+          <div className="h-8 w-56 mx-auto rounded bg-white/10" />
+          <div className="h-11 rounded-xl bg-white/10" />
+          <div className="h-11 rounded-xl bg-white/10" />
+          <div className="h-11 rounded-xl bg-violet-500/30" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ContactRouteSkeleton() {
+  return (
+    <div className="min-h-screen bg-black pt-24 px-4 animate-pulse">
+      <div className="mx-auto max-w-6xl space-y-6">
+        <div className="h-10 w-72 rounded bg-white/10" />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="rounded-2xl border border-white/10 bg-white/[0.04] h-72" />
+          <div className="rounded-2xl border border-white/10 bg-white/[0.04] h-72" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function CourseDetailRouteSkeleton() {
+  return (
+    <div className="min-h-screen bg-black pt-24 px-4 animate-pulse">
+      <div className="mx-auto max-w-4xl space-y-5">
+        <div className="h-5 w-36 rounded bg-white/10" />
+        <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-6 space-y-4">
+          <div className="h-8 w-3/4 rounded bg-white/10" />
+          <div className="h-4 w-full rounded bg-white/10" />
+          <div className="h-4 w-2/3 rounded bg-white/10" />
+          <div className="h-12 w-full rounded-xl bg-violet-500/30" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function LegalRouteSkeleton() {
+  return (
+    <div className="min-h-screen bg-[#0a0a0a] pt-24 px-4 animate-pulse">
+      <div className="mx-auto max-w-3xl space-y-4">
+        <div className="h-10 w-64 rounded bg-white/10" />
+        {[1, 2, 3, 4, 5, 6].map((i) => (
+          <div key={i} className="space-y-2">
+            <div className="h-6 w-48 rounded bg-white/10" />
+            <div className="h-4 w-full rounded bg-white/10" />
+            <div className="h-4 w-5/6 rounded bg-white/10" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function RouteAwareFallback() {
+  const { pathname } = useLocation();
+
+  if (pathname === "/login" || pathname === "/adminlogin") return <AuthRouteSkeleton />;
+  if (pathname === "/courses") return <CoursesPageSkeleton />;
+  if (pathname.startsWith("/courses/")) return <CourseDetailRouteSkeleton />;
+  if (pathname === "/contact") return <ContactRouteSkeleton />;
+  if (pathname.startsWith("/features/")) return <CourseDetailRouteSkeleton />;
+  if (pathname === "/privacy-policy" || pathname === "/terms-and-conditions") return <LegalRouteSkeleton />;
+  if (pathname === "/account-pending" || pathname === "/payment-failure") return <AuthRouteSkeleton />;
+
+  if (pathname.startsWith("/lms/student/courses")) return <StudentCoursesSkeleton />;
+  if (pathname === "/lms/student") return <StudentHomeSkeleton />;
+  if (pathname.startsWith("/lms/student")) return <GenericPageSkeleton />;
+  if (pathname.startsWith("/lms/superadmin")) return <GenericPageSkeleton />;
+  if (pathname.startsWith("/lms/mentor")) return <GenericPageSkeleton />;
+  if (pathname.startsWith("/lms/admin")) return <GenericPageSkeleton />;
+
+  return <RouteFallbackSkeleton />;
+}
+
 function L({ children }) {
-  return <Suspense fallback={<RouteFallbackSkeleton />}>{children}</Suspense>;
+  return <Suspense fallback={<RouteAwareFallback />}>{children}</Suspense>;
 }
 
 function LBookmarks({ children }) {
