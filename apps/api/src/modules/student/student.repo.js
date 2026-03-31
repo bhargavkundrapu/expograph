@@ -11,7 +11,7 @@ const MAIN_COURSE_SLUG_OPTIONS = [
 
 const BONUS_COURSE_SLUG_VARIANTS = ["ai-automations", "ai_automations", "ai-automation", "ai_automation"];
 
-/** Resolve AI Automations (bonus) course id. Bonus course is free for everyone — no lock/unlock. */
+/** Resolve AI Automations (bonus) course id. Bonus course is free for everyone - no lock/unlock. */
 async function getBonusCourseId({ tenantId }) {
   for (const slug of BONUS_COURSE_SLUG_VARIANTS) {
     if (!slug) continue;

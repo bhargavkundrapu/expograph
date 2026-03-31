@@ -6,7 +6,7 @@
 | Field      | Value                              |
 |------------|------------------------------------|
 | Lesson ID  | M7-L4                              |
-| Module     | M7 — Coding With AI                |
+| Module     | M7 - Coding With AI                |
 | Difficulty | Intermediate                       |
 | Time       | 10–15 minutes                      |
 
@@ -26,7 +26,7 @@ By the end of this lesson you will be able to:
 <!-- SEC-02 -->
 ## 💡 Use Case
 
-Your professor says "add unit tests" to your project. You wrote the code, it runs, but you have zero tests. Writing tests from scratch feels tedious — and you are not sure which cases to cover. AI can generate a complete test suite in seconds, but only if your prompt tells it the function, the expected behavior, and what kinds of cases to include.
+Your professor says "add unit tests" to your project. You wrote the code, it runs, but you have zero tests. Writing tests from scratch feels tedious - and you are not sure which cases to cover. AI can generate a complete test suite in seconds, but only if your prompt tells it the function, the expected behavior, and what kinds of cases to include.
 
 ---
 
@@ -57,9 +57,9 @@ Sure! Here are some general testing best practices:
 <!-- SEC-05 -->
 ## 🔍 Why It Failed
 
-- **No function provided** — The AI has nothing to test. It gave advice instead of actual test code.
-- **No context about behavior** — Without knowing what the function does, AI cannot write meaningful assertions.
-- **No test categories specified** — You did not ask for edge cases, error handling, or boundary values.
+- **No function provided** - The AI has nothing to test. It gave advice instead of actual test code.
+- **No context about behavior** - Without knowing what the function does, AI cannot write meaningful assertions.
+- **No test categories specified** - You did not ask for edge cases, error handling, or boundary values.
 
 ---
 
@@ -77,9 +77,9 @@ def is_valid_email(email):
     return bool(re.match(pattern, email))
 
 Write tests covering:
-1. Happy path — valid emails that should return True
-2. Edge cases — unusual but technically valid or invalid formats
-3. Error cases — inputs that are not strings or are empty
+1. Happy path - valid emails that should return True
+2. Edge cases - unusual but technically valid or invalid formats
+3. Error cases - inputs that are not strings or are empty
 
 Constraints: Use pytest. One function per test case. Use descriptive
 test names.
@@ -172,7 +172,7 @@ Try this yourself:
 
 1. Pick a function from your current project or use the one below.
 2. Write a prompt that asks AI for happy path, edge cases, and error cases. Include the function code.
-3. Run the generated tests. Check if any fail — that means either the test or your function has a bug.
+3. Run the generated tests. Check if any fail - that means either the test or your function has a bug.
 
 **Your task:** Generate test cases for this function using a structured prompt:
 
@@ -232,11 +232,11 @@ Before moving on, confirm:
 
 **Q2:** What is the difference between a happy path test and an edge case test?
 
-> **A2:** A happy path test checks normal, expected inputs (the function should work perfectly). An edge case test checks unusual or extreme inputs — boundary values, empty inputs, or unexpected formats that might break the function.
+> **A2:** A happy path test checks normal, expected inputs (the function should work perfectly). An edge case test checks unusual or extreme inputs - boundary values, empty inputs, or unexpected formats that might break the function.
 
 ---
 
 <!-- SEC-14 -->
 ## 💬 One-Line Takeaway
 
-> Give AI the function, tell it what to test, and ask what it missed — that is a test suite, not a guess.
+> Give AI the function, tell it what to test, and ask what it missed - that is a test suite, not a guess.

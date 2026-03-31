@@ -7,7 +7,7 @@ import { apiFetch } from "../../services/api";
 const STARS = [1, 2, 3, 4, 5];
 
 /**
- * Premium course-level feedback — "How was this course?" with stars + optional comment.
+ * Premium course-level feedback - "How was this course?" with stars + optional comment.
  * Renders at bottom of course landing; submits to POST .../courses/:courseSlug/feedback.
  */
 export default function CourseFeedbackCard({

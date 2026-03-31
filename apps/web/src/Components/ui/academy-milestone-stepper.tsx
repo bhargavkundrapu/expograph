@@ -11,14 +11,14 @@ const milestones: MilestoneData[] = [
   {
     id: 1,
     title: "Explore & pick your course",
-    description: "See what fits you — no commitment yet",
+    description: "See what fits you-no commitment yet",
     date: "Step 1",
     icon: <Search className="size-4" />,
   },
   {
     id: 2,
     title: "Enroll & start learning",
-    description: "One click, instant access — you set the pace",
+    description: "One click, instant access-you set the pace",
     date: "Step 2",
     icon: <Zap className="size-4" />,
   },
@@ -32,7 +32,7 @@ const milestones: MilestoneData[] = [
   {
     id: 4,
     title: "Show the world",
-    description: "Portfolio, resume & certificates — you're ready",
+    description: "Portfolio, resume & certificates-you're ready",
     icon: <Trophy className="size-4" />,
   },
 ];
@@ -58,10 +58,10 @@ const contentBlocks: ContentBlock[] = [
     title: "Explore & pick your course",
     body: (
       <>
-        Browse <strong className="text-blue-300">Vibe Coding</strong>, <strong className="text-blue-300">Prompt Engineering</strong>, <strong className="text-blue-300">Prompt to Profit</strong>, and <strong className="text-blue-300">AI Automations</strong>. Each page shows what you'll learn, what you'll build, and the tools you'll use. Take your time — pick the one that fits where you are now.
+        Browse <strong className="text-blue-300">Vibe Coding</strong>, <strong className="text-blue-300">Prompt Engineering</strong>, <strong className="text-blue-300">Prompt to Profit</strong>, and <strong className="text-blue-300">AI Automations</strong>. Each page shows what you'll learn, what you'll build, and the tools you'll use. Take your time-pick the one that fits where you are now.
       </>
     ),
-    scenario: "Real-world: Like choosing a path that actually leads somewhere — you see the map before you start.",
+    scenario: "Real-world: Like choosing a path that actually leads somewhere-you see the map before you start.",
     highlights: ["Vibe Coding", "Prompt Engineering", "Prompt to Profit", "AI Automations"],
     cta: "Browse courses",
     accent: {
@@ -77,7 +77,7 @@ const contentBlocks: ContentBlock[] = [
     title: "Enroll & start learning",
     body: (
       <>
-        One click and you're in. You get <strong className="text-violet-300">all lessons</strong>, <strong className="text-violet-300">smart prompts</strong>, and setup guides. No waiting, no complicated forms. You learn at your own pace — 10 minutes or 2 hours, it's up to you.
+        One click and you're in. You get <strong className="text-violet-300">all lessons</strong>, <strong className="text-violet-300">smart prompts</strong>, and setup guides. No waiting, no complicated forms. You learn at your own pace-10 minutes or 2 hours, it's up to you.
       </>
     ),
     scenario: "Real-world: Like unlocking a library you can visit anytime. No pressure to finish by a date.",
@@ -99,7 +99,7 @@ const contentBlocks: ContentBlock[] = [
         Every lesson has a clear <strong className="text-purple-300">goal → video → setup → prompts → check</strong>. You copy code in one click, build real projects, and can join <strong className="text-purple-300">Real Client Lab</strong> to work on real briefs and get mentor feedback. Small steps, real output.
       </>
     ),
-    scenario: "Real-world: You're not just watching — you're building something you can show in an interview or to a client.",
+    scenario: "Real-world: You're not just watching-you're building something you can show in an interview or to a client.",
     highlights: ["Structured lessons", "One-click code", "Real Client Lab", "Mentor support"],
     cta: "View courses",
     accent: {
@@ -115,10 +115,10 @@ const contentBlocks: ContentBlock[] = [
     title: "Show the world",
     body: (
       <>
-        You finish with a <strong className="text-fuchsia-300">portfolio of real work</strong>, a <strong className="text-fuchsia-300">resume</strong> built with our Resume Builder, and <strong className="text-fuchsia-300">MCA-recognised certificates</strong>. You're not just 'someone who took a course' — you're someone with proof. Ready for the next step.
+        You finish with a <strong className="text-fuchsia-300">portfolio of real work</strong>, a <strong className="text-fuchsia-300">resume</strong> built with our Resume Builder, and <strong className="text-fuchsia-300">MCA-recognised certificates</strong>. You're not just 'someone who took a course'-you're someone with proof. Ready for the next step.
       </>
     ),
-    scenario: "Real-world: When someone says 'show me what you've built', you have a link and a certificate — no awkward silence.",
+    scenario: "Real-world: When someone says 'show me what you've built', you have a link and a certificate-no awkward silence.",
     highlights: ["Portfolio", "Resume Builder", "Certificates", "Proof you're ready"],
     cta: "Start your journey",
     accent: {
@@ -184,7 +184,7 @@ export function AcademyMilestoneStepper() {
   return (
     <div className="w-full max-w-5xl mx-auto py-4 sm:py-8 px-2 sm:px-6">
       <p className="text-center text-white/40 text-xs sm:text-sm mb-6">
-        Click any step to see what happens — no signup needed to explore.
+        Click any step to see what happens-o signup needed to explore.
       </p>
       <div className="flex flex-col lg:flex-row gap-6 lg:gap-10">
         <div className="lg:w-80 shrink-0">

@@ -78,7 +78,7 @@ function LockedClientLabContent({ isDark, checklist, onRetry }) {
           </div>
           {checklist.eligible && (
             <p className="text-center text-emerald-600 dark:text-emerald-400 font-medium text-sm mb-2">
-              All set — Real Client Lab is unlocked. Refreshing…
+              All set-Real Client Lab is unlocked. Refreshing…
             </p>
           )}
           {onRetry && (

@@ -50,7 +50,7 @@ function useShouldShowPrompt() {
   const countedRef = useRef(false);
 
   useEffect(() => {
-    // Never show after installation (standalone) — not even once
+    // Never show after installation (standalone) - not even once
     if (isStandalone()) {
       setShow(false);
       return;
@@ -77,13 +77,13 @@ function useShouldShowPrompt() {
 const CHROME_STEPS = [
   { step: 1, text: "Tap the three dots (⋮) at the top right of your browser" },
   { step: 2, text: 'Select "Add to Home screen" or "Install app"' },
-  { step: 3, text: "Tap Install — ExpoGraph will appear on your home screen" },
+  { step: 3, text: "Tap Install-ExpoGraph will appear on your home screen" },
 ];
 
 const SAFARI_STEPS = [
   { step: 1, text: "Tap the Share button (square with arrow) at the bottom" },
   { step: 2, text: 'Scroll and tap "Add to Home Screen"' },
-  { step: 3, text: "Tap Add — ExpoGraph will appear on your home screen" },
+  { step: 3, text: "Tap Add-ExpoGraph will appear on your home screen" },
 ];
 
 function isLikelySafari() {
@@ -156,7 +156,7 @@ export function InstallAppPrompt() {
                     Install ExpoGraph
                   </h3>
                   <p className="text-sm text-slate-600 mt-0.5 leading-relaxed">
-                    Add to your home screen for quick access and a full-screen experience — like a native app.
+                    Add to your home screen for quick access and a full-screen experience-like a native app.
                   </p>
                 </div>
               </div>

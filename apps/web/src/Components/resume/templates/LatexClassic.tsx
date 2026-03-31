@@ -116,7 +116,7 @@ export default function LatexClassic({ data }: { data: ResumeData }) {
                     </div>
                     <div className="flex justify-between items-baseline gap-2">
                       <span className="italic text-black/90">
-                        {[edu.degree, edu.field].filter(Boolean).join(" in ") || "—"}
+                        {[edu.degree, edu.field].filter(Boolean).join(" in ") || "-"}
                       </span>
                       {edu.gpa != null && edu.gpa !== "" && (
                         <span className="text-[10px] italic whitespace-nowrap shrink-0">

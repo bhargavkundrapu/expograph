@@ -1,6 +1,6 @@
 # SEC-00: Lesson ID
 
-**M2-L3 — Length Control**
+**M2-L3 - Length Control**
 - **Module:** M2 – Output Control
 - **Difficulty:** Intermediate
 - **Time:** 10–15 minutes
@@ -41,8 +41,8 @@ Explain cloud computing.
 # SEC-04: ❌ Bad Output
 
 ```
-Cloud computing is the delivery of computing services — including servers,
-storage, databases, networking, software, analytics, and intelligence — over
+Cloud computing is the delivery of computing services - including servers,
+storage, databases, networking, software, analytics, and intelligence - over
 the internet to offer faster innovation, flexible resources, and economies
 of scale. There are three main types: IaaS, PaaS, and SaaS. IaaS provides
 virtualized computing resources, PaaS provides a platform for developers,
@@ -58,7 +58,7 @@ Azure, and Google Cloud dominate this space...
 
 - **No length constraint.** The AI had no idea if you wanted one sentence or one page.
 - **No audience signal.** Without knowing who it's for, the AI defaulted to a textbook-style explanation.
-- **Open-ended topic.** "Cloud computing" is broad — the AI tried to cover everything instead of being concise.
+- **Open-ended topic.** "Cloud computing" is broad - the AI tried to cover everything instead of being concise.
 
 ---
 
@@ -67,7 +67,7 @@ Azure, and Google Cloud dominate this space...
 ```
 Explain cloud computing in exactly 2 sentences. 
 Target audience: a first-year CS student.
-Keep it simple — no jargon.
+Keep it simple - no jargon.
 ```
 
 ---
@@ -143,7 +143,7 @@ Before you move on, confirm:
 
 # SEC-12: 📚 What You Learned
 
-1. AI has no default sense of "how long" — you must set the length explicitly every time.
+1. AI has no default sense of "how long" - you must set the length explicitly every time.
 2. Specific units work best: say "2 sentences" or "under 50 words," not "keep it short."
 3. You can get multiple lengths in one prompt by labeling each version and setting separate limits.
 
@@ -153,7 +153,7 @@ Before you move on, confirm:
 
 **Q1:** You ask for "a short explanation" and get 150 words. Is "short" a good length constraint?
 
-**A1:** No. "Short" is subjective — the AI interprets it differently every time. Use a measurable unit like "in 2 sentences" or "under 40 words" instead.
+**A1:** No. "Short" is subjective - the AI interprets it differently every time. Use a measurable unit like "in 2 sentences" or "under 40 words" instead.
 
 **Q2:** You want a one-liner and a full paragraph from the same prompt. What is the best way to structure this?
 
@@ -163,4 +163,4 @@ Before you move on, confirm:
 
 # SEC-14: 💬 One-Line Takeaway
 
-> "Keep it short" is not a length — give the AI a number, and it will hit the mark.
+> "Keep it short" is not a length - give the AI a number, and it will hit the mark.

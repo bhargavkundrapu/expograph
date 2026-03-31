@@ -14,7 +14,7 @@ import { COURSE_EXPLORE_DATA, COURSE_DURATION_HOURS } from "../../data/courseExp
 import { PriceCountdown, getOfferEndsAt24h } from "./price-countdown";
 
 function formatPrice(paise: number | null | undefined) {
-  if (paise == null || paise === undefined) return "—";
+  if (paise == null || paise === undefined) return "-";
   const rupees = Math.round(paise / 100);
   return `₹${rupees.toLocaleString("en-IN")}`;
 }
@@ -28,7 +28,7 @@ const courseDisplayNames: Record<string, string> = {
 const BONUS_SLUGS = ["ai-automations"];
 const COURSE_ORDER = ["vibe-coding", "prompt-engineering", "prompt-to-profit", "ai-automations"];
 
-function matchCourse(co, orderSlug) {
+function matchCourse(co: { slug?: string; title?: string }, orderSlug: string) {
   const s = (co.slug || "").toLowerCase().replace(/_/g, "-");
   const t = (co.title || "").toLowerCase().replace(/_/g, "-");
   const combined = `${s} ${t}`;
@@ -68,8 +68,8 @@ export function PricingWithChart() {
         ]);
         const courseData = coursesRes.status === "fulfilled" ? (coursesRes.value as { data?: unknown[] })?.data : [];
         const packData = packsRes.status === "fulfilled" ? (packsRes.value as { data?: unknown[] })?.data : [];
-        setCourses(Array.isArray(courseData) ? courseData : []);
-        setPacks(Array.isArray(packData) ? packData : []);
+        setCourses(Array.isArray(courseData) ? (courseData as typeof courses) : []);
+        setPacks(Array.isArray(packData) ? (packData as typeof packs) : []);
       } catch {
         setCourses([]);
         setPacks([]);
@@ -144,9 +144,9 @@ export function PricingWithChart() {
           </span>
           {!isBonus && course?.price_in_paise != null && <span className="text-white/50 text-sm">one-time</span>}
         </div>
-        {COURSE_DURATION_HOURS[orderSlug] != null && (
+        {COURSE_DURATION_HOURS[orderSlug as keyof typeof COURSE_DURATION_HOURS] != null && (
           <p className="text-xs text-white/55 mb-2">
-            <span className="text-white/70 font-medium">{COURSE_DURATION_HOURS[orderSlug]} hrs</span> to complete
+            <span className="text-white/70 font-medium">{COURSE_DURATION_HOURS[orderSlug as keyof typeof COURSE_DURATION_HOURS]} hrs</span> to complete
           </p>
         )}
         <h3 className="text-base font-bold text-white leading-tight mb-2">{displayTitle}</h3>
@@ -159,11 +159,11 @@ export function PricingWithChart() {
             </li>
           ))}
         </ul>
-        {COURSE_EXPLORE_DATA[orderSlug]?.tools?.length > 0 && (
+        {COURSE_EXPLORE_DATA[orderSlug as keyof typeof COURSE_EXPLORE_DATA]?.tools?.length > 0 && (
           <div className="mb-4">
             <p className="text-[10px] font-semibold uppercase tracking-wider text-white/40 mb-2">You&apos;ll work with</p>
             <div className="flex flex-wrap gap-2">
-              {(COURSE_EXPLORE_DATA[orderSlug].tools || []).slice(0, orderSlug === "prompt-to-profit" ? 12 : 6).map((toolName, i) => {
+              {(COURSE_EXPLORE_DATA[orderSlug as keyof typeof COURSE_EXPLORE_DATA].tools || []).slice(0, orderSlug === "prompt-to-profit" ? 12 : 6).map((toolName, i) => {
                 const Icon = getToolIcon(toolName);
                 const iconColor = getToolIconColor(toolName);
                 return (
@@ -213,12 +213,12 @@ export function PricingWithChart() {
           Pricing that Scales with You
         </h1>
         <p className="mt-2 text-sm text-white/60">
-          All starting at just <span className="text-emerald-400 font-semibold">₹99</span> — pick individual courses or go all-in with the All Pack for the best value.
+          All starting at just <span className="text-emerald-400 font-semibold">₹99</span>-pick individual courses or go all-in with the All Pack for the best value.
         </p>
       </div>
 
       <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-8">
-        {/* All Pack — bento hero card (lg:col-span-5) */}
+        {/* All Pack - bento hero card (lg:col-span-5) */}
         <div
           key="all-pack"
           className={cn(
@@ -267,27 +267,39 @@ export function PricingWithChart() {
             <ul className="text-white/70 grid gap-2 text-sm lg:w-[72%]">
               <li className="flex items-center gap-3">
                 <FilledCheck />
-                <span className="font-medium text-white/90">Vibe Coding</span>
+                <Link to="/courses/explore/vibe-coding" className="font-medium text-white/90 hover:text-white-400 transition-colors">
+                  <span className="font-medium text-white/90">Vibe Coding</span>
+                </Link>
               </li>
               <li className="flex items-center gap-3">
                 <FilledCheck />
-                <span className="font-medium text-white/90">Prompt Engineering</span>
+                <Link to="/courses/explore/prompt-engineering" className="font-medium text-white/90 hover:text-white-400 transition-colors">
+                  <span className="font-medium text-white/90">Prompt Engineering</span>
+                </Link>
               </li>
               <li className="flex items-center gap-3">
                 <FilledCheck />
-                <span className="font-medium text-white/90">Prompt to Profit</span>
+                <Link to="/courses/explore/prompt-to-profit" className="font-medium text-white/90 hover:text-white-400 transition-colors">
+                  <span className="font-medium text-white/90">Prompt to Profit</span>
+                </Link>
               </li>
               <li className="flex items-center gap-3 pl-6 border-t border-white/10 pt-2 mt-1">
                 <FilledCheck />
-                <span className="text-amber-400/95 font-medium">AI Automations (Bonus)</span>
+                <Link to="/courses/explore/ai-automations" className="font-medium text-white/90 hover:text-white-400 transition-colors">
+                  <span className="text-amber-400/95 font-medium">AI Automations (Bonus)</span>
+                </Link>
               </li>
               <li className="flex items-center gap-3 pl-6">
                 <FilledCheck />
-                <span className="font-medium text-purple-300">Real Client Lab</span>
+                <Link to="/features/real-client-lab" className="font-medium text-purple-300 hover:text-purple-400 transition-colors">
+                  Real Client Lab
+                </Link>
               </li>
               <li className="flex items-center gap-3 pl-6">
                 <FilledCheck />
-                <span className="font-medium text-white/90">Resume Builder</span>
+                <Link to="/features/resume-builder" className="font-medium text-white/90 hover:text-white-400 transition-colors">
+                  <span className="font-medium text-white/90">Resume Builder</span>
+                </Link>
               </li>
               <li className="flex items-center gap-3 pl-6">
                 <FilledCheck />
@@ -315,7 +327,7 @@ export function PricingWithChart() {
           </div>
         </div>
 
-        {/* Vibe Coding — lg:col-span-3 */}
+        {/* Vibe Coding - lg:col-span-3 */}
         <CourseBentoCard
           orderSlug="vibe-coding"
           course={vibeCourse}
@@ -324,7 +336,7 @@ export function PricingWithChart() {
           colSpan="lg:col-span-3"
         />
 
-        {/* Prompt Engineering — lg:col-span-4 */}
+        {/* Prompt Engineering - lg:col-span-4 */}
         <CourseBentoCard
           orderSlug="prompt-engineering"
           course={peCourse}
@@ -333,7 +345,7 @@ export function PricingWithChart() {
           colSpan="lg:col-span-4"
         />
 
-        {/* Prompt to Profit — lg:col-span-4 */}
+        {/* Prompt to Profit - lg:col-span-4 */}
         <CourseBentoCard
           orderSlug="prompt-to-profit"
           course={ptpCourse}
@@ -342,7 +354,7 @@ export function PricingWithChart() {
           colSpan="lg:col-span-4"
         />
 
-        {/* AI Automations — lg:col-span-8 */}
+        {/* AI Automations - lg:col-span-8 */}
         <CourseBentoCard
           orderSlug="ai-automations"
           course={aaCourse}
@@ -363,6 +375,9 @@ export function PricingWithChart() {
           setModalOpen(false);
           setSelectedItem(null);
         }}
+        onError={() => {}}
+        prefill={{}}
+        isLoggedIn={false}
         fromCourseRoute
       />
     </div>

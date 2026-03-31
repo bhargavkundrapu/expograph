@@ -8,7 +8,7 @@
 ---
 
 ## SEC-00: Lesson ID
-> M6-L4 — Generate captions and text overlays that boost engagement
+> M6-L4 - Generate captions and text overlays that boost engagement
 
 ---
 
@@ -23,7 +23,7 @@ What you'll learn in this lesson:
 ## SEC-02: 💡 Use Case
 **When would you use this?**
 
-Most people watch videos on mute. If your video has no captions or on-screen text, you lose those viewers instantly. Captions make your content accessible. Text overlays — like a bold stat or a hook phrase — make it scroll-stopping. This works for Instagram Reels, YouTube Shorts, or any presentation video.
+Most people watch videos on mute. If your video has no captions or on-screen text, you lose those viewers instantly. Captions make your content accessible. Text overlays - like a bold stat or a hook phrase - make it scroll-stopping. This works for Instagram Reels, YouTube Shorts, or any presentation video.
 
 ---
 
@@ -52,9 +52,9 @@ Upload your video to any of these platforms to generate captions.
 ---
 
 ## SEC-05: 🔍 Why It Failed
-- No script provided — the AI gave tool recommendations instead of actual captions
-- No timing or format requested — the output has no timestamps or styling
-- "Add captions" is an action, not a prompt — the AI didn't know what text to caption
+- No script provided - the AI gave tool recommendations instead of actual captions
+- No timing or format requested - the output has no timestamps or styling
+- "Add captions" is an action, not a prompt - the AI didn't know what text to caption
 
 ---
 
@@ -123,12 +123,12 @@ Tool 3: NotebookLM for smart study notes.
 These three tools saved me hours every week.
 Which one are you trying first? Comment below."
 
-Part 1 — Captions:
+Part 1 - Captions:
 - Timestamp (start–end)
 - Caption text (max 8 words per line)
 - Mark KEY WORDS in caps for emphasis
 
-Part 2 — Text Overlays:
+Part 2 - Text Overlays:
 - Hook text for the first 3 seconds (big, bold, attention-grabbing)
 - One stat overlay (e.g., a percentage or number)
 - Tool name labels that appear when each tool is mentioned
@@ -137,7 +137,7 @@ Part 2 — Text Overlays:
 Format both parts as numbered lists.
 ```
 
-**What changed**: Added a second output section for text overlays — hook text, stat callouts, tool labels, and CTA graphics — so you get both captions and visual design notes in one prompt.
+**What changed**: Added a second output section for text overlays - hook text, stat callouts, tool labels, and CTA graphics - so you get both captions and visual design notes in one prompt.
 
 ---
 
@@ -171,7 +171,7 @@ Before moving on, confirm:
 ## SEC-12: 🧠 What You Learned
 - Timed captions need timestamps, short lines, and key word emphasis to work on screen
 - Text overlays (hook text, stats, labels) are separate from captions and boost engagement
-- Providing your script in the prompt is the key to getting usable captions — not tool suggestions
+- Providing your script in the prompt is the key to getting usable captions - not tool suggestions
 
 ---
 
@@ -181,16 +181,16 @@ Before moving on, confirm:
 - B) So you know which words to bold or animate in your video editor
 - C) To make the caption file larger
 
-**Answer**: B) So you know which words to bold or animate in your video editor — emphasized words grab the viewer's eye and reinforce your message.
+**Answer**: B) So you know which words to bold or animate in your video editor - emphasized words grab the viewer's eye and reinforce your message.
 
 **Q2**: What's the difference between captions and text overlays?
 - A) They are the same thing
 - B) Captions follow the dialogue; text overlays are added graphics like stats, labels, and hooks
 - C) Text overlays replace captions
 
-**Answer**: B) Captions follow the dialogue; text overlays are added graphics like stats, labels, and hooks — both work together to maximize engagement.
+**Answer**: B) Captions follow the dialogue; text overlays are added graphics like stats, labels, and hooks - both work together to maximize engagement.
 
 ---
 
 ## SEC-14: ⚡ One-Line Takeaway
-> Captions make your video watchable on mute — text overlays make it impossible to scroll past.
+> Captions make your video watchable on mute - text overlays make it impossible to scroll past.

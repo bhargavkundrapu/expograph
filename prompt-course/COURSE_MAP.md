@@ -1,4 +1,4 @@
-# 🗺️ COURSE MAP — Intermediate Prompt Engineering
+# 🗺️ COURSE MAP-Intermediate Prompt Engineering
 
 > 10 Modules · 50 Lessons · Skills that get you hired
 
@@ -10,7 +10,7 @@
 | # | Lesson | Skill You Get |
 |---|--------|--------------|
 | M1-L1 | Prompt Anatomy & GCCF | Structure any prompt using Goal-Context-Constraints-Format |
-| M1-L2 | Ambiguity Killers | Remove vagueness — get precise outputs every time |
+| M1-L2 | Ambiguity Killers | Remove vagueness-get precise outputs every time |
 | M1-L3 | Clarifying Questions System | Make AI ask YOU questions before answering |
 | M1-L4 | Few-Shot Examples | Teach AI the pattern by showing 2–3 examples |
 | M1-L5 | Persona Basics | Make AI act as an expert, mentor, interviewer, or friend |
@@ -22,10 +22,10 @@
 
 | # | Lesson | Skill You Get |
 |---|--------|--------------|
-| M2-L1 | Format Control — Tables | Get clean, structured tables from any data |
-| M2-L2 | Format Control — JSON | Get machine-readable JSON output for projects |
-| M2-L3 | Length Control | Control output length — 1 line, 1 paragraph, or 1 page |
-| M2-L4 | Strict Mode — No Extra Text | Make AI output ONLY what you asked — nothing more |
+| M2-L1 | Format Control-Tables | Get clean, structured tables from any data |
+| M2-L2 | Format Control-JSON | Get machine-readable JSON output for projects |
+| M2-L3 | Length Control | Control output length-1 line, 1 paragraph, or 1 page |
+| M2-L4 | Strict Mode-No Extra Text | Make AI output ONLY what you asked-nothing more |
 | M2-L5 | Multi-Version Output | Get 3 different versions of the same content in one prompt |
 
 ---

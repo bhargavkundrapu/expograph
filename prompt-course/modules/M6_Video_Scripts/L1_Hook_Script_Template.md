@@ -8,7 +8,7 @@
 ---
 
 ## SEC-00: Lesson ID
-> M6-L1 — Write attention-grabbing video scripts with Hook-Body-CTA structure
+> M6-L1 - Write attention-grabbing video scripts with Hook-Body-CTA structure
 
 ---
 
@@ -51,9 +51,9 @@ all. Let me tell you about it...
 ---
 
 ## SEC-05: 🔍 Why It Failed
-- No topic specified — the AI had nothing concrete to write about
-- No structure requested — the output is a generic ramble with no hook
-- No duration or audience — the AI doesn't know if this is 30 seconds or 10 minutes
+- No topic specified - the AI had nothing concrete to write about
+- No structure requested - the output is a generic ramble with no hook
+- No duration or audience - the AI doesn't know if this is 30 seconds or 10 minutes
 
 ---
 
@@ -102,7 +102,7 @@ Write a 60-second video script about "3 free AI tools every
 college student should use."
 
 Structure:
-- Hook (first 3 seconds): Start with a pattern interrupt —
+- Hook (first 3 seconds): Start with a pattern interrupt -
   a surprising stat or a bold myth-buster
 - Emotional bridge: One line that connects to the viewer's pain
   (wasting time on assignments)
@@ -157,16 +157,16 @@ Before moving on, confirm:
 - B) Hook, Body, Call-to-Action
 - C) Title, Description, Tags
 
-**Answer**: B) Hook, Body, Call-to-Action — the Hook grabs attention, the Body delivers value, and the CTA tells viewers what to do next.
+**Answer**: B) Hook, Body, Call-to-Action - the Hook grabs attention, the Body delivers value, and the CTA tells viewers what to do next.
 
 **Q2**: Why should you specify a word count or duration in your script prompt?
 - A) To make the AI work faster
 - B) So the script matches your actual video length
 - C) It doesn't matter
 
-**Answer**: B) So the script matches your actual video length — a 60-second video needs roughly 150 words, and the AI needs that constraint to write the right amount.
+**Answer**: B) So the script matches your actual video length - a 60-second video needs roughly 150 words, and the AI needs that constraint to write the right amount.
 
 ---
 
 ## SEC-14: ⚡ One-Line Takeaway
-> A great video script isn't written — it's structured: hook them, help them, then tell them what to do next.
+> A great video script isn't written - it's structured: hook them, help them, then tell them what to do next.

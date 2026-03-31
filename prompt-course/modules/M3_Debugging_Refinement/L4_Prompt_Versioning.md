@@ -5,7 +5,7 @@
 | Field | Value |
 |-------|-------|
 | Lesson ID | M3-L4 |
-| Module | M3 — Debugging and Refinement |
+| Module | M3 - Debugging and Refinement |
 | Difficulty | Intermediate |
 | Time | 10–15 minutes |
 
@@ -25,7 +25,7 @@ By the end of this lesson, you will be able to:
 
 You've tweaked a prompt five times and finally got a great result. But can you remember what you changed? Could you reproduce it? Could you apply the same fixes to a different prompt?
 
-Prompt versioning is how professionals manage prompts in real projects. If you're building a study assistant, a code reviewer, or a project chatbot, you need to track which version of the prompt works best and why. This is also essential when working in teams — you can't share "I changed some stuff and it worked" with a teammate. Version numbers and changelogs give you a clear history.
+Prompt versioning is how professionals manage prompts in real projects. If you're building a study assistant, a code reviewer, or a project chatbot, you need to track which version of the prompt works best and why. This is also essential when working in teams - you can't share "I changed some stuff and it worked" with a teammate. Version numbers and changelogs give you a clear history.
 
 ---
 
@@ -57,9 +57,9 @@ the first attempt or reproduce their process for a different article.]
 
 ## SEC-05 · Why It Failed
 
-- **No version tracking** — Each tweak overwrites the previous one mentally. There's no record of what v1, v2, or v3 looked like.
-- **No changelog** — The user can't explain what they changed between versions or why.
-- **No comparison** — Without side-by-side versions, there's no way to measure improvement or identify which change made the difference.
+- **No version tracking** - Each tweak overwrites the previous one mentally. There's no record of what v1, v2, or v3 looked like.
+- **No changelog** - The user can't explain what they changed between versions or why.
+- **No comparison** - Without side-by-side versions, there's no way to measure improvement or identify which change made the difference.
 
 ---
 
@@ -133,9 +133,9 @@ Article: [paste article here]
 
 Try this yourself:
 
-1. **Write v1** — Start with a simple prompt: "Explain what a REST API is."
-2. **Log and improve** — Run it, note what's wrong, then create v2 with a specific fix. Write down: version number, what you changed, and why.
-3. **Create v3** — Review v2's output, find another issue, and create v3. Maintain your changelog.
+1. **Write v1** - Start with a simple prompt: "Explain what a REST API is."
+2. **Log and improve** - Run it, note what's wrong, then create v2 with a specific fix. Write down: version number, what you changed, and why.
+3. **Create v3** - Review v2's output, find another issue, and create v3. Maintain your changelog.
 
 **Your task:** After three versions, create a table like this and fill it in:
 
@@ -174,9 +174,9 @@ Before moving on, confirm you can do the following:
 
 ## SEC-12 · 📘 What You Learned
 
-1. **Version numbers create accountability** — Labeling prompts v1, v2, v3 forces you to be intentional about changes instead of randomly tweaking words.
-2. **Changelogs capture knowledge** — Writing down what you changed and why turns trial-and-error into a reusable learning record.
-3. **Comparison reveals impact** — A side-by-side version table shows which changes matter most, so you can apply the same patterns to future prompts.
+1. **Version numbers create accountability** - Labeling prompts v1, v2, v3 forces you to be intentional about changes instead of randomly tweaking words.
+2. **Changelogs capture knowledge** - Writing down what you changed and why turns trial-and-error into a reusable learning record.
+3. **Comparison reveals impact** - A side-by-side version table shows which changes matter most, so you can apply the same patterns to future prompts.
 
 ---
 
@@ -184,14 +184,14 @@ Before moving on, confirm you can do the following:
 
 **Q1:** You've improved a prompt three times but didn't track versions. A teammate asks "What changes made the biggest difference?" Can you answer? What should you have done?
 
-**A1:** You probably can't answer accurately — memory of small prompt tweaks fades fast. You should have labeled each version (v1, v2, v3), noted what changed and why, and rated the output quality. A simple table would let you point to the exact change that helped most.
+**A1:** You probably can't answer accurately - memory of small prompt tweaks fades fast. You should have labeled each version (v1, v2, v3), noted what changed and why, and rated the output quality. A simple table would let you point to the exact change that helped most.
 
 **Q2:** Your v2 prompt is worse than v1. Should you go back to v1 or try a v3?
 
-**A2:** Go back to v1 as your base and try a different change for v3. This is why versioning matters — you can always revert. Without version tracking, you might not even remember what v1 said. Note in your changelog: "v2 — added X — made output worse, reverted."
+**A2:** Go back to v1 as your base and try a different change for v3. This is why versioning matters - you can always revert. Without version tracking, you might not even remember what v1 said. Note in your changelog: "v2 - added X - made output worse, reverted."
 
 ---
 
 ## SEC-14 · 💬 One-Line Takeaway
 
-> Number your prompts, log your changes — what you can track, you can improve.
+> Number your prompts, log your changes - what you can track, you can improve.

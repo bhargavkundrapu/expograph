@@ -15,7 +15,7 @@ export default function StreakXPBar() {
       </div>
 
       {/* Level */}
-      <div className="flex items-center gap-1.5" title={`Level ${currentLevel.level} — ${currentLevel.title}`}>
+      <div className="flex items-center gap-1.5" title={`Level ${currentLevel.level}-${currentLevel.title}`}>
         <span className="text-base sm:text-lg">⚡</span>
         <span className="font-semibold">{totalXP.toLocaleString()} XP</span>
         <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${isDark ? "bg-indigo-500/20 text-indigo-300" : "bg-indigo-100 text-indigo-700"}`}>

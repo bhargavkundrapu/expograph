@@ -1,6 +1,6 @@
 # SEC-00: Lesson ID
 
-**M2-L2 — Format Control: JSON**
+**M2-L2 - Format Control: JSON**
 - **Module:** M2 – Output Control
 - **Difficulty:** Intermediate
 - **Time:** 10–15 minutes
@@ -139,7 +139,7 @@ Return ONLY valid JSON. No markdown fences, no explanation.
 
 Follow these steps:
 
-1. **Choose a data type.** Think of something you need mock data for — maybe products, books, or tasks.
+1. **Choose a data type.** Think of something you need mock data for - maybe products, books, or tasks.
 2. **Define the schema.** Write out every key, its data type, and any constraints (e.g., price must be a positive float).
 3. **Write the prompt.** Request 3 items as a JSON array. Include at least one nested object or array.
 
@@ -176,7 +176,7 @@ Before you move on, confirm:
 
 # SEC-12: 📚 What You Learned
 
-1. AI will not produce JSON unless you ask for it — always state the format explicitly.
+1. AI will not produce JSON unless you ask for it - always state the format explicitly.
 2. Providing a schema with key names, types, and constraints gives you predictable, valid output.
 3. Nested structures (objects inside objects, arrays of objects) work well when you show the AI the shape you expect.
 
@@ -196,4 +196,4 @@ Before you move on, confirm:
 
 # SEC-14: 💬 One-Line Takeaway
 
-> If you show the AI the exact JSON shape you want — keys, types, and nesting — it will fill in the data and hand you valid JSON every time.
+> If you show the AI the exact JSON shape you want - keys, types, and nesting - it will fill in the data and hand you valid JSON every time.

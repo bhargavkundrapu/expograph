@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { Link } from "react-router-dom";
 import { PricingWithChart } from "../../Components/ui/pricing-with-chart";
 import { Header } from "../../Components/ui/header-2";
 import { TubesBackground } from "../../Components/ui/neon-flow";
@@ -43,7 +44,7 @@ export default function CoursesPage() {
         />
       </div>
 
-      {/* Footer — ExpoGraph flow (same as Academy) */}
+      {/* Footer - ExpoGraph flow (same as Academy) */}
       <footer className="w-full min-h-[560px] sm:min-h-[70vh] border-t border-black">
         <TubesBackground className="min-h-[560px] sm:min-h-[70vh] bg-[#0a0a0a]" enableClickInteraction={true}>
           <div className="flex flex-col items-center justify-center w-full min-h-[560px] sm:min-h-[70vh] gap-6 text-center px-4">
@@ -55,6 +56,14 @@ export default function CoursesPage() {
             <div className="absolute bottom-8 left-0 right-0 flex flex-col items-center gap-2 text-white/50 pointer-events-none">
               <span className="text-xs uppercase tracking-widest">Move the cursor around to interact and Click to randomize.</span>
               <span className="text-xs text-white/40">© 2025 ExpoGraph Academy</span>
+            </div>
+            <div className="absolute bottom-8 right-6 flex items-center gap-4 text-white/55 pointer-events-auto">
+              <Link to="/privacy-policy" className="text-xs hover:text-white/80 underline underline-offset-2">
+                Privacy Policy
+              </Link>
+              <Link to="/terms-and-conditions" className="text-xs hover:text-white/80 underline underline-offset-2">
+                Terms &amp; Conditions
+              </Link>
             </div>
           </div>
         </TubesBackground>

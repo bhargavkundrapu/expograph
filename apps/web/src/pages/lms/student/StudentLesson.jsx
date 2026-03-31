@@ -54,7 +54,7 @@ import { useKeyboardShortcuts } from "../../../hooks/useKeyboardShortcuts";
 const NATIVE_SEEK_BACK_SEC = 20;
 const NATIVE_SEEK_FWD_SEC = 10;
 
-/** Direct URL / progressive video only — skip controls + synced play/pause (native controls stay for scrubber/volume/fullscreen). */
+/** Direct URL / progressive video only-skip controls + synced play/pause (native controls stay for scrubber/volume/fullscreen). */
 function NativeLessonVideoPlayer({
   lessonKey,
   videoSrc,
@@ -854,7 +854,7 @@ export default function StudentLesson() {
       <ConfettiBurst active={showLessonConfetti} onDone={() => setShowLessonConfetti(false)} />
       <XPFloat amount={xpFloatAmount} show={showXPFloat} />
       <main className="flex-1 flex flex-col min-w-0">
-        {/* Navbar — hidden on mobile, visible on md+ */}
+        {/* Navbar-hidden on mobile, visible on md+ */}
         <nav className="hidden md:block flex-shrink-0 bg-white border-b border-slate-200 shadow-sm px-6 py-3">
           <div className="flex items-center justify-between gap-4">
             <button onClick={() => navigate("/lms/student")} className="flex items-center gap-2 flex-shrink-0 cursor-pointer hover:opacity-80 transition-opacity">
@@ -905,7 +905,7 @@ export default function StudentLesson() {
 
         {/* Content area with sidebar */}
         <div className="flex-1 flex overflow-hidden">
-          {/* Desktop sidebar — normal flow */}
+          {/* Desktop sidebar-normal flow */}
           <div className="hidden md:flex md:self-stretch md:min-h-0 md:flex-col">
             {sidebarVisible ? (
               <div className="h-full min-h-0 flex flex-col w-full">
@@ -932,7 +932,7 @@ export default function StudentLesson() {
             ) : null}
           </div>
 
-          {/* Mobile sidebar — full-screen overlay */}
+          {/* Mobile sidebar-full-screen overlay */}
           <AnimatePresence>
             {sidebarVisible && (
               <motion.div
@@ -972,7 +972,7 @@ export default function StudentLesson() {
 
           {/* Main content area */}
           <div className="flex-1 flex flex-col min-w-0 relative">
-            {/* Open contents button — desktop only */}
+            {/* Open contents button-desktop only */}
             {!sidebarVisible && (
               <button
                 type="button"
@@ -1255,7 +1255,7 @@ export default function StudentLesson() {
                 </div>
               )}
 
-            {/* VC middle sections (Success Criteria) — after prompts, before success images */}
+            {/* VC middle sections (Success Criteria)-after prompts, before success images */}
             {(() => {
               const steps = lesson?.learn_setup_steps;
               const hasVC = Array.isArray(steps) && steps.length > 0 &&
@@ -1404,7 +1404,7 @@ export default function StudentLesson() {
                 );
               })()}
 
-              {/* VC bottom sections (learning + closing) — after success images */}
+              {/* VC bottom sections (learning + closing)-after success images */}
               {(() => {
                 const steps = lesson?.learn_setup_steps;
                 const hasVC = Array.isArray(steps) && steps.length > 0 &&
@@ -1430,7 +1430,7 @@ export default function StudentLesson() {
                 </div>
               )}
 
-              {/* Quiz / practice (if present) — tour target when MCQs exist */}
+              {/* Quiz / practice (if present)-tour target when MCQs exist */}
               {mcqs?.length > 0 && (
                 <div className="px-4 md:px-8 pb-4 md:pb-8" aria-label="Lesson quiz" />
               )}
@@ -1564,7 +1564,7 @@ export default function StudentLesson() {
                 <div className="mt-4">
                   <LessonNotes lessonPath={lessonPath} />
                 </div>
-                {/* Lesson feedback — with love */}
+                {/* Lesson feedback-with love */}
                 {token && courseSlug && moduleSlug && lessonSlug && (
                   <LessonFeedbackCard
                     courseSlug={courseSlug}

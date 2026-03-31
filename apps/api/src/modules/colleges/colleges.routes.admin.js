@@ -1,5 +1,5 @@
 /**
- * SuperAdmin colleges API — GET/POST /api/v1/admin/colleges, DELETE /api/v1/admin/colleges/:id
+ * SuperAdmin colleges API - GET/POST /api/v1/admin/colleges, DELETE /api/v1/admin/colleges/:id
  * Must be mounted BEFORE adminContentRouter so /colleges is matched correctly.
  */
 const express = require("express");

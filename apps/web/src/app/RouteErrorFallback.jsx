@@ -11,7 +11,7 @@ function getFriendlyMessage(error) {
   if (isChunkLoadError(error)) {
     return chunkLoadUserMessage();
   }
-  return "We hit a small bump. Try again — it usually works.";
+  return "We hit a small bump. Try again-it usually works.";
 }
 
 export default function RouteErrorFallback() {

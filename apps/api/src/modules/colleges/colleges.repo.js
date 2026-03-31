@@ -1,5 +1,5 @@
 /**
- * Colleges repository — tenant-scoped dropdown options for purchase form.
+ * Colleges repository - tenant-scoped dropdown options for purchase form.
  * Managed by SuperAdmin; consumed by public API for BuyNowModal.
  */
 const { query } = require("../../db/query");

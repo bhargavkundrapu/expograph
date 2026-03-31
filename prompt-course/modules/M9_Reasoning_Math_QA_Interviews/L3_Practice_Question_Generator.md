@@ -1,4 +1,4 @@
-# Lesson: Practice Question Generator — Unlimited Drills on Any Topic
+# Lesson: Practice Question Generator - Unlimited Drills on Any Topic
 
 <!-- SEC-00 -->
 ## 🆔 Lesson ID
@@ -6,7 +6,7 @@
 | Field      | Value                                      |
 |------------|--------------------------------------------|
 | Lesson ID  | M9-L3                                      |
-| Module     | M9 — Reasoning, Math, QA & Interviews      |
+| Module     | M9 - Reasoning, Math, QA & Interviews      |
 | Difficulty | Intermediate                               |
 | Time       | 10–15 minutes                              |
 
@@ -26,7 +26,7 @@ By the end of this lesson you will be able to:
 <!-- SEC-02 -->
 ## 💡 Use Case
 
-Exams are coming and you have run out of practice questions. Textbooks repeat the same problems. Previous-year papers are limited. With the right prompt, the AI becomes an unlimited question bank — customized to your syllabus, your difficulty level, and your preferred format. Use this for exam prep, competitive tests, or daily revision.
+Exams are coming and you have run out of practice questions. Textbooks repeat the same problems. Previous-year papers are limited. With the right prompt, the AI becomes an unlimited question bank - customized to your syllabus, your difficulty level, and your preferred format. Use this for exam prep, competitive tests, or daily revision.
 
 ---
 
@@ -55,9 +55,9 @@ Give me some questions on data structures.
 <!-- SEC-05 -->
 ## 🔍 Why It Failed
 
-- **No difficulty level** — the AI gave basic definition questions, not the problem-solving type you need for exams.
-- **No format specified** — you got open-ended questions with no answer key, so you cannot self-check.
-- **No count or scope** — "some questions" is vague. The AI picked 5 easy ones and stopped.
+- **No difficulty level** - the AI gave basic definition questions, not the problem-solving type you need for exams.
+- **No format specified** - you got open-ended questions with no answer key, so you cannot self-check.
+- **No count or scope** - "some questions" is vague. The AI picked 5 easy ones and stopped.
 
 ---
 
@@ -83,17 +83,17 @@ Rules:
 Q1: What is the output when you push 1, 2, 3 onto a stack
     and then pop twice?
     A) 1, 2    B) 3, 2    C) 2, 3    D) 3, 1
-    Answer: B — A stack is LIFO, so the last pushed (3) is
+    Answer: B - A stack is LIFO, so the last pushed (3) is
     popped first, then 2.
 
 Q2: Which data structure is used in BFS traversal of a graph?
     A) Stack    B) Queue    C) Array    D) Tree
-    Answer: B — BFS uses a queue to process nodes level by level.
+    Answer: B - BFS uses a queue to process nodes level by level.
 
 Q3: You insert elements 10, 20, 30 into a queue and dequeue
     once. What is at the front now?
     A) 10    B) 20    C) 30    D) Queue is empty
-    Answer: B — A queue is FIFO. After dequeuing 10, the
+    Answer: B - A queue is FIFO. After dequeuing 10, the
     front becomes 20.
 ```
 
@@ -125,7 +125,7 @@ Rules:
 2. Write a prompt asking for 5 MCQs at medium difficulty with an answer key and explanations.
 3. Paste it into the AI, then check: Are the questions actually medium-level? Do the answers and explanations make sense?
 
-**Your task:** Write a prompt that generates 6 practice questions on SQL joins — 2 easy, 2 medium, 2 hard — in MCQ format with answers and one-line explanations.
+**Your task:** Write a prompt that generates 6 practice questions on SQL joins - 2 easy, 2 medium, 2 hard - in MCQ format with answers and one-line explanations.
 
 ---
 
@@ -167,18 +167,18 @@ Write a single prompt that generates 10 MCQs:
 **Q1:** Your prompt says "Give me questions on arrays." What is the biggest problem?
 
 - A) It will generate too many questions
-- B) It lacks difficulty, count, and format — so you get random, uncheckable questions
+- B) It lacks difficulty, count, and format - so you get random, uncheckable questions
 - C) Arrays are too easy for practice
 
-> **A1:** B — Without specifying difficulty, count, and format, the AI gives you a random grab-bag of questions with no answer key.
+> **A1:** B - Without specifying difficulty, count, and format, the AI gives you a random grab-bag of questions with no answer key.
 
 **Q2:** Why is progressive difficulty useful in a practice set?
 
-> **A2:** It warms you up with easy questions first, builds confidence, then pushes you with harder ones — just like a real exam paper.
+> **A2:** It warms you up with easy questions first, builds confidence, then pushes you with harder ones - just like a real exam paper.
 
 ---
 
 <!-- SEC-14 -->
 ## 💬 One-Line Takeaway
 
-> The AI has infinite questions — but only a specific prompt gives you the right ones at the right level.
+> The AI has infinite questions - but only a specific prompt gives you the right ones at the right level.

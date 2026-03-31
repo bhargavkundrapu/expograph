@@ -15,7 +15,7 @@ export const featureData = [
     description: (
       <>
         <strong className="text-violet-400">One-click copy</strong> prompts, structured snippets &{" "}
-        <strong className="text-violet-400">error-handling</strong> command boxes — no more Googling for fixes.
+        <strong className="text-violet-400">error-handling</strong> command boxes-no more Googling for fixes.
       </>
     ),
     bullets: ["Copy-ready code prompts", "Error-fix snippets", "Command reference boxes"],

@@ -1,5 +1,5 @@
 /**
- * Public colleges API — GET /api/v1/public/colleges
+ * Public colleges API - GET /api/v1/public/colleges
  * Returns tenant-scoped list for purchase form dropdown (no auth).
  * Mount at /api/v1/public, route is /colleges.
  */

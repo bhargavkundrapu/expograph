@@ -1,4 +1,4 @@
-# Lesson: Ambiguity Killers — Remove Vagueness, Get Precision
+# Lesson: Ambiguity Killers - Remove Vagueness, Get Precision
 
 <!-- SEC-00 -->
 ## 🆔 Lesson ID
@@ -6,7 +6,7 @@
 | Field      | Value                          |
 |------------|--------------------------------|
 | Lesson ID  | M1-L2                          |
-| Module     | M1 — Foundations               |
+| Module     | M1 - Foundations               |
 | Difficulty | Intermediate                   |
 | Time       | 10–15 minutes                  |
 
@@ -26,7 +26,7 @@ By the end of this lesson you will be able to:
 <!-- SEC-02 -->
 ## 💡 Use Case
 
-Ambiguity creeps in when you are in a hurry — asking for "help with my project," "a good resume," or "some code." Every time the AI guesses wrong, you waste a follow-up message. Killing ambiguity up front is the single fastest way to improve your results for assignments, coding tasks, and placement prep.
+Ambiguity creeps in when you are in a hurry - asking for "help with my project," "a good resume," or "some code." Every time the AI guesses wrong, you waste a follow-up message. Killing ambiguity up front is the single fastest way to improve your results for assignments, coding tasks, and placement prep.
 
 ---
 
@@ -45,7 +45,7 @@ Help me with my project.
 ```
 Sure! I'd be happy to help with your project. Could you tell me more
 about what kind of project it is? What subject is it for? What do you
-need help with — research, writing, coding, or something else? Please
+need help with - research, writing, coding, or something else? Please
 share more details so I can assist you better.
 ```
 
@@ -54,9 +54,9 @@ share more details so I can assist you better.
 <!-- SEC-05 -->
 ## 🔍 Why It Failed
 
-- **No subject or domain** — the AI cannot tell if this is a coding project, a research paper, or a group presentation.
-- **No specific ask** — "help" could mean brainstorming, debugging, writing, or reviewing.
-- **No scope** — there is no indication of deadline, length, or deliverable.
+- **No subject or domain** - the AI cannot tell if this is a coding project, a research paper, or a group presentation.
+- **No specific ask** - "help" could mean brainstorming, debugging, writing, or reviewing.
+- **No scope** - there is no indication of deadline, length, or deliverable.
 
 ---
 
@@ -159,7 +159,7 @@ Rewrite it so the AI knows the programming language, the sorting algorithm, the 
 <!-- SEC-12 -->
 ## 📚 What You Learned
 
-1. Vague prompts force the AI to guess — and it usually guesses wrong.
+1. Vague prompts force the AI to guess - and it usually guesses wrong.
 2. Swapping words like "help," "some," and "good" for concrete details is the fastest fix.
 3. Adding constraints and format on top of specific details removes the last traces of ambiguity.
 
@@ -181,4 +181,4 @@ Rewrite it so the AI knows the programming language, the sorting algorithm, the 
 <!-- SEC-14 -->
 ## 💬 One-Line Takeaway
 
-> Every vague word in your prompt is a coin flip — replace it with a fact and the AI stops guessing.
+> Every vague word in your prompt is a coin flip - replace it with a fact and the AI stops guessing.

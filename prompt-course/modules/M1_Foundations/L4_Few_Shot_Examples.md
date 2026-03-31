@@ -1,4 +1,4 @@
-# Lesson: Few-Shot Examples — Teach AI by Showing, Not Telling
+# Lesson: Few-Shot Examples - Teach AI by Showing, Not Telling
 
 <!-- SEC-00 -->
 ## 🆔 Lesson ID
@@ -6,7 +6,7 @@
 | Field      | Value                          |
 |------------|--------------------------------|
 | Lesson ID  | M1-L4                          |
-| Module     | M1 — Foundations               |
+| Module     | M1 - Foundations               |
 | Difficulty | Intermediate                   |
 | Time       | 10–15 minutes                  |
 
@@ -26,7 +26,7 @@ By the end of this lesson you will be able to:
 <!-- SEC-02 -->
 ## 💡 Use Case
 
-Few-shot examples are powerful when you need the AI to follow a specific style, tone, or transformation rule — converting informal notes to formal language, formatting data in a custom way, or generating quiz questions that match your professor's style. Instead of explaining the pattern in words, you show it.
+Few-shot examples are powerful when you need the AI to follow a specific style, tone, or transformation rule - converting informal notes to formal language, formatting data in a custom way, or generating quiz questions that match your professor's style. Instead of explaining the pattern in words, you show it.
 
 ---
 
@@ -52,9 +52,9 @@ Convert this to formal language:
 <!-- SEC-05 -->
 ## 🔍 Why It Failed
 
-- **No examples** — the AI used its own idea of "formal," which may not match what you need.
-- **Inconsistent style** — without a reference, the next sentence you convert may come out in a completely different tone.
-- **No edge-case handling** — slang, abbreviations, or emojis would be treated unpredictably.
+- **No examples** - the AI used its own idea of "formal," which may not match what you need.
+- **Inconsistent style** - without a reference, the next sentence you convert may come out in a completely different tone.
+- **No edge-case handling** - slang, abbreviations, or emojis would be treated unpredictably.
 
 ---
 
@@ -106,7 +106,7 @@ Input: "yo the server's down again lol fix it pls"
 Output: "I would like to report that the server is currently
 experiencing downtime. Could the technical team please investigate?"
 
-Edge case — message with emoji and slang:
+Edge case - message with emoji and slang:
 Input: "great job on the demo 🔥🔥 u killed it ngl"
 Output: "Congratulations on an excellent demonstration. Your
 performance was truly impressive."
@@ -163,7 +163,7 @@ Write a few-shot prompt with 3 examples: two straightforward notes and one edge 
 
 **Q1:** What is the difference between zero-shot and few-shot prompting?
 
-> **A1:** Zero-shot gives the AI no examples — just the instruction. Few-shot provides 2 or more input-output examples so the AI can learn the pattern before generating.
+> **A1:** Zero-shot gives the AI no examples - just the instruction. Few-shot provides 2 or more input-output examples so the AI can learn the pattern before generating.
 
 **Q2:** You provide 3 examples but the AI still changes the format on the 4th input. What should you try?
 
@@ -174,4 +174,4 @@ Write a few-shot prompt with 3 examples: two straightforward notes and one edge 
 <!-- SEC-14 -->
 ## 💬 One-Line Takeaway
 
-> Don't explain the pattern — show it twice, and the AI will follow it forever.
+> Don't explain the pattern - show it twice, and the AI will follow it forever.

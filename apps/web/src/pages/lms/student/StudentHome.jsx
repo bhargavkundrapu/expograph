@@ -99,7 +99,7 @@ function ProgressWidget({ isDark, progress, schedule, accentColor, gamification 
           <span className="text-sm">🔥</span>
           <span className={`text-xs font-bold ${isDark ? "text-orange-400" : "text-orange-600"}`}>{currentStreak}d</span>
         </div>
-        <div className="flex items-center gap-1.5" title={`${totalXP.toLocaleString()} XP — Level ${currentLevel.level}`}>
+        <div className="flex items-center gap-1.5" title={`${totalXP.toLocaleString()} XP-Level ${currentLevel.level}`}>
           <span className="text-sm">⚡</span>
           <span className={`text-xs font-bold ${isDark ? "text-slate-200" : "text-slate-700"}`}>{totalXP.toLocaleString()} XP</span>
           <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold ${isDark ? "bg-indigo-500/20 text-indigo-300" : "bg-indigo-100 text-indigo-700"}`}>
@@ -154,7 +154,7 @@ function ProgressWidget({ isDark, progress, schedule, accentColor, gamification 
       >
         <div className="flex-1 min-w-0">
           <p className={`text-xs sm:text-sm font-medium ${isDark ? "text-white" : "text-slate-900"}`}>
-            Pending Units — {schedule.filter((item) => (item.progress || 0) < 100).length}
+            Pending Units-{schedule.filter((item) => (item.progress || 0) < 100).length}
           </p>
           <p className={`text-[10px] sm:text-xs mt-1 ${isDark ? "text-slate-400" : "text-slate-600"}`}>View Remaining Lessons</p>
         </div>
@@ -411,7 +411,7 @@ export default function StudentHome() {
       <div className="flex flex-col lg:flex-row gap-4 lg:gap-6 px-4 sm:px-6 lg:px-6 xl:px-8 py-4 sm:py-6 lg:py-8">
         {/* Main Content Area */}
         <div className="flex-1 min-w-0 space-y-4 lg:space-y-5">
-          {/* Carousel above greeting — may show pack upgrade CTA */}
+          {/* Carousel above greeting-may show pack upgrade CTA */}
           <div>
             <WorkshopCarousel items={carouselItems} />
           </div>
@@ -442,7 +442,7 @@ export default function StudentHome() {
           </div>
         </div>
 
-        {/* Right Sidebar — desktop only */}
+        {/* Right Sidebar-desktop only */}
         <div className="hidden lg:block w-full lg:w-72 xl:w-80 2xl:w-96 flex-shrink-0 space-y-4 stagger-children">
           {sideWidgetIds.map(id => renderSideWidget(id))}
         </div>

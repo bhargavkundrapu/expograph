@@ -344,7 +344,7 @@ export default function SuperAdminClientLabRealWorld() {
                           }}
                           className="text-sm border border-slate-300 rounded-lg px-2 py-1"
                         >
-                          <option value="">— Assign —</option>
+                          <option value="">-Assign -</option>
                           {eligibleStudents.map((s) => (
                             <option key={s.id} value={s.id}>
                               {s.full_name || s.email}{s.eligible_client_lab ? " ✓ Eligible" : ""}
@@ -389,7 +389,7 @@ export default function SuperAdminClientLabRealWorld() {
                     <div key={s.id} className="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
                       <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
                         <div>
-                          <div className="font-medium text-slate-900">{s.task_title} — {s.project_title}</div>
+                          <div className="font-medium text-slate-900">{s.task_title}-{s.project_title}</div>
                           <div className="text-sm text-slate-500">{s.student_name || s.student_email}</div>
                           {s.pr_link && (
                             <a href={s.pr_link} target="_blank" rel="noopener noreferrer" className="text-sm text-indigo-600 hover:underline mt-1 block">

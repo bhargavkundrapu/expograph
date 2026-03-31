@@ -1,6 +1,6 @@
 # SEC-00: Lesson ID
 
-**M8-L4 — Notes to Flashcards & Quiz**
+**M8-L4 - Notes to Flashcards & Quiz**
 - **Module:** M8 – Extraction, Notes & Research
 - **Difficulty:** Intermediate
 - **Time:** 10–15 minutes
@@ -19,13 +19,13 @@ By the end of this lesson, you will be able to:
 
 # SEC-02: 💡 Use Case
 
-You have pages of notes. Exams are next week. You need flashcards and quiz questions — fast.
+You have pages of notes. Exams are next week. You need flashcards and quiz questions - fast.
 
 - **Exam prep:** Convert lecture notes into flashcards you can review on your phone
 - **Study groups:** Generate quiz questions to test your friends before a test
 - **Coding practice:** Turn documentation notes into Q&A cards for memorizing syntax or concepts
 
-Manually creating flashcards takes hours. AI does it in seconds — if you prompt it right.
+Manually creating flashcards takes hours. AI does it in seconds - if you prompt it right.
 
 ---
 
@@ -130,7 +130,7 @@ release resources, and none can proceed.
   makes deadlock worse?
 - Back: In a normal wait, a process waits for a resource that will
   eventually be released. In deadlock, two or more processes form
-  a circular wait — none can proceed because each holds what the
+  a circular wait - none can proceed because each holds what the
   other needs.
 - Difficulty: Hard
 - Topic: Deadlock
@@ -180,7 +180,7 @@ Notes:
 ```
 
 **What changed:**
-- Added a "Hint" field to each flashcard for spaced repetition — helps you recall without flipping the card too soon
+- Added a "Hint" field to each flashcard for spaced repetition - helps you recall without flipping the card too soon
 - Added multiple-choice quiz questions with plausible distractors (wrong answers that sound right)
 - Requires an explanation for each quiz answer, so you learn even from practice questions
 
@@ -239,7 +239,7 @@ Before you move on, confirm:
 - B) Add "Answers must be 1–2 complete sentences" to your prompt
 - C) Copy more notes into the prompt
 
-**Answer:** B — Short answers don't help you learn. Specifying sentence length forces the AI to write answers that explain the concept, not just name it.
+**Answer:** B - Short answers don't help you learn. Specifying sentence length forces the AI to write answers that explain the concept, not just name it.
 
 **Q2:** Your quiz distractors are obviously wrong (e.g., "A process is a type of food"). How do you fix this?
 

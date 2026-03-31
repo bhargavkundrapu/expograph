@@ -29,7 +29,7 @@ import CourseFeedbackCard from "../../../Components/student/CourseFeedbackCard";
 
 const COURSE_HIGHLIGHTS = [
   { icon: "🛠️", title: "Real-World Projects", desc: "Build portfolio-worthy projects with hands-on guidance" },
-  { icon: "🧠", title: "Deep Understanding", desc: "Go beyond tutorials — master the concepts that matter" },
+  { icon: "🧠", title: "Deep Understanding", desc: "Go beyond tutorials-master the concepts that matter" },
   { icon: "🎯", title: "Industry-Ready Skills", desc: "Learn what top companies actually look for" },
   { icon: "🚀", title: "Career Growth", desc: "Skills that open doors to new opportunities" },
 ];
@@ -327,7 +327,7 @@ export default function StudentCourseLanding() {
                   className="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl transition-all text-base shadow-lg hover:shadow-xl flex items-center gap-2.5"
                 >
                   <FiLock className="w-5 h-5" />
-                  Enroll Now {priceRupees > 0 && `— ₹${priceRupees}`}
+                  Enroll Now {priceRupees > 0 && `-₹${priceRupees}`}
                 </button>
               ) : (
                 <button
@@ -458,7 +458,7 @@ export default function StudentCourseLanding() {
           </div>
         </div>
 
-        {/* Module Roadmap — only for enrolled users */}
+        {/* Module Roadmap-only for enrolled users */}
         {!isLocked && modules.length > 0 && (
           <div className={`px-4 sm:px-6 lg:px-8 py-10 sm:py-12 ${isDark ? "" : "bg-slate-50"}`}>
             <div className="max-w-5xl mx-auto">
@@ -466,7 +466,7 @@ export default function StudentCourseLanding() {
                 <FiTarget className="w-5 h-5 text-purple-500" /> Course Roadmap
               </h2>
               <p className={`text-sm mb-8 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
-                Your learning journey — module by module
+                Your learning journey-module by module
               </p>
 
               <div className="max-w-3xl space-y-3">
@@ -533,7 +533,7 @@ export default function StudentCourseLanding() {
                 />
               </div>
 
-              {/* Course feedback — with love (enrolled only) */}
+              {/* Course feedback-with love (enrolled only) */}
               {token && pathSlug && (
                 <div className="mt-12 pt-8 border-t border-slate-200 dark:border-slate-700">
                   <CourseFeedbackCard
@@ -563,7 +563,7 @@ export default function StudentCourseLanding() {
                 className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all inline-flex items-center gap-2"
               >
                 <FiLock className="w-4 h-4" />
-                Unlock Course {priceRupees > 0 && `— ₹${priceRupees}`}
+                Unlock Course {priceRupees > 0 && `-₹${priceRupees}`}
               </button>
             </div>
           </div>
@@ -587,7 +587,7 @@ export default function StudentCourseLanding() {
                 className="px-8 py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl transition-all shadow-lg inline-flex items-center gap-2"
               >
                 <FiLock className="w-5 h-5" />
-                Enroll Now {priceRupees > 0 && `— ₹${priceRupees}`}
+                Enroll Now {priceRupees > 0 && `-₹${priceRupees}`}
               </button>
             ) : (
               <button

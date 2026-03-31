@@ -5,7 +5,7 @@
 | Field      | Value                        |
 |------------|------------------------------|
 | Lesson ID  | M4-L4                       |
-| Module     | M4 — Truthfulness & Reliability |
+| Module     | M4 - Truthfulness & Reliability |
 | Difficulty | Intermediate                 |
 | Time       | 10–15 minutes                |
 
@@ -23,7 +23,7 @@ By the end of this lesson, you will be able to:
 
 ## SEC-02: 💡 Use Case
 
-You're building a project report and paste your team's data into AI to generate a summary table. The data is missing three fields — budget, timeline, and team lead for one sub-module. Instead of flagging the gaps, the AI invents plausible values. Your professor spots the fake data. You didn't even realize it was made up.
+You're building a project report and paste your team's data into AI to generate a summary table. The data is missing three fields - budget, timeline, and team lead for one sub-module. Instead of flagging the gaps, the AI invents plausible values. Your professor spots the fake data. You didn't even realize it was made up.
 
 This pattern shows up everywhere: filling forms from incomplete data, generating summaries from partial meeting notes, creating profiles from sparse resumes, or analyzing datasets with missing columns. Whenever input data has holes, AI will quietly fill them unless you tell it not to.
 
@@ -128,13 +128,13 @@ Role: Backend Developer
 Name: Sneha Iyer
 ```
 
-**What changed:** The upgrade introduces a three-tier tagging system — [CONFIRMED], [MISSING], and [ASSUMED]. Instead of a binary "fill or don't fill," the AI now has a middle option: it can make reasonable inferences but must label them clearly. This gives you maximum information while maintaining full transparency about data quality.
+**What changed:** The upgrade introduces a three-tier tagging system - [CONFIRMED], [MISSING], and [ASSUMED]. Instead of a binary "fill or don't fill," the AI now has a middle option: it can make reasonable inferences but must label them clearly. This gives you maximum information while maintaining full transparency about data quality.
 
 ---
 
 ## SEC-09: 🧪 Guided Practice
 
-1. **Create a deliberately incomplete dataset.** Use something from your project or coursework — a list of tasks with some missing deadlines, a table of students with some missing scores, or a set of API endpoints with some missing descriptions.
+1. **Create a deliberately incomplete dataset.** Use something from your project or coursework - a list of tasks with some missing deadlines, a table of students with some missing scores, or a set of API endpoints with some missing descriptions.
 2. **First, ask AI to "create a summary table" without any missing-data instructions.** Count how many cells the AI fills in with made-up data.
 3. **Now re-prompt with the three-tier tagging system** ([CONFIRMED], [MISSING], [ASSUMED]). Compare the outputs.
 
@@ -167,7 +167,7 @@ When processing incomplete data through AI:
 
 ## SEC-12: 📚 What You Learned
 
-1. **AI hates blank cells.** When data is missing, AI will fill gaps with plausible guesses rather than leave fields empty — and it won't tell you.
+1. **AI hates blank cells.** When data is missing, AI will fill gaps with plausible guesses rather than leave fields empty - and it won't tell you.
 2. **"NOT PROVIDED" is a powerful label.** Explicitly telling AI to use this phrase converts silent fabrication into visible gaps you can address.
 3. **Three-tier tags give you the full picture.** [CONFIRMED] / [MISSING] / [ASSUMED] lets AI still be helpful while being completely transparent about what's real, what's missing, and what's inferred.
 
@@ -183,10 +183,10 @@ When processing incomplete data through AI:
 
 **Q2:** When should you use [ASSUMED] instead of [MISSING]?
 
-**A2:** Use [ASSUMED] when the AI can make a reasonable inference from context — for example, inferring "Backend" as a category when the task mentions "database migration." Use [MISSING] when there is no contextual basis for a guess. The key is that [ASSUMED] must include the reasoning so you can accept or reject the inference.
+**A2:** Use [ASSUMED] when the AI can make a reasonable inference from context - for example, inferring "Backend" as a category when the task mentions "database migration." Use [MISSING] when there is no contextual basis for a guess. The key is that [ASSUMED] must include the reasoning so you can accept or reject the inference.
 
 ---
 
 ## SEC-14: 💬 One-Line Takeaway
 
-> A table with visible gaps is more honest — and more useful — than a table with invisible lies.
+> A table with visible gaps is more honest - and more useful - than a table with invisible lies.

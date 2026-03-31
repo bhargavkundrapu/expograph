@@ -22,7 +22,7 @@ Before referencing a column like `u.college`, confirm the migration that adds it
 - All queries MUST have timeouts via `query_timeout` and `statement_timeout` in pool config
 - `withTransaction` must wrap ROLLBACK in try-catch so broken connections still release
 - Background pollers (auto-approval, etc.) must be rate-limited with batch caps
-- Never run unbounded loops of DB operations — always cap iterations
+- Never run unbounded loops of DB operations - always cap iterations
 
 ## Always restart after DB-related code changes
 

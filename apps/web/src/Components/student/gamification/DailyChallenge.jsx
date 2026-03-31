@@ -36,7 +36,7 @@ export default function DailyChallenge() {
             <div className="text-center py-1">
               <div className="text-3xl mb-2">{dailyChallengeCorrect ? "🎉" : "🤔"}</div>
               <p className={`text-sm font-semibold mb-1 ${isDark ? "text-white" : "text-slate-800"}`}>
-                {dailyChallengeCorrect ? "Correct! Nice work!" : "Not quite — try tomorrow!"}
+                {dailyChallengeCorrect ? "Correct! Nice work!" : "Not quite-try tomorrow!"}
               </p>
               {dailyChallengeCorrect && (
                 <p className="text-xs text-green-500 font-semibold">+{xpRewards.dailyChallenge} XP earned</p>

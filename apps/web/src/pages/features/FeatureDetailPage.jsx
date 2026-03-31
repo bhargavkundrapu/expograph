@@ -17,7 +17,7 @@ const featureDetails = {
     hero: {
       badge: "Learn 10x Faster",
       title: "Smart Prompt Library",
-      subtitle: "Stop wasting hours searching for the right commands. Every prompt, error-fix, and code snippet you need — organized, structured, and ready to copy in one click.",
+      subtitle: "Stop wasting hours searching for the right commands. Every prompt, error-fix, and code snippet you need-organized, structured, and ready to copy in one click.",
       gradient: "from-violet-600 to-purple-600",
       accentColor: "violet",
     },
@@ -25,10 +25,10 @@ const featureDetails = {
       {
         title: "What You Get",
         items: [
-          { icon: <Copy className="h-5 w-5" />, title: "Copy-Ready Prompts", desc: "Pre-built prompts for every lesson — HTML, CSS, JavaScript, React, Node.js, and more. Just click, copy, and paste into your editor." },
-          { icon: <Code2 className="h-5 w-5" />, title: "Command Reference Boxes", desc: "Terminal commands, Git workflows, npm scripts — all organized by topic with clear explanations so you never feel lost." },
+          { icon: <Copy className="h-5 w-5" />, title: "Copy-Ready Prompts", desc: "Pre-built prompts for every lesson-HTML, CSS, JavaScript, React, Node.js, and more. Just click, copy, and paste into your editor." },
+          { icon: <Code2 className="h-5 w-5" />, title: "Command Reference Boxes", desc: "Terminal commands, Git workflows, npm scripts-all organized by topic with clear explanations so you never feel lost." },
           { icon: <Shield className="h-5 w-5" />, title: "Error-Handling Snippets", desc: "Common errors and their exact fixes. When something breaks, find the solution instantly instead of scrolling through Stack Overflow." },
-          { icon: <Zap className="h-5 w-5" />, title: "Structured by Lesson", desc: "Every lesson comes with its own prompt tab — Prompts, Commands, and Error Handling — so you always have the right tool at the right time." },
+          { icon: <Zap className="h-5 w-5" />, title: "Structured by Lesson", desc: "Every lesson comes with its own prompt tab-Prompts, Commands, and Error Handling-so you always have the right tool at the right time." },
         ],
       },
       {
@@ -36,8 +36,8 @@ const featureDetails = {
         steps: [
           { num: "01", title: "Open Any Lesson", desc: "Navigate to any lesson in your course. The prompt library loads automatically alongside your video and setup content." },
           { num: "02", title: "Browse by Tab", desc: "Switch between Prompts, Commands, and Error Handling tabs to find exactly what you need for the current task." },
-          { num: "03", title: "One-Click Copy", desc: "Hit the copy button on any snippet. It's instantly on your clipboard — paste it into your code editor, terminal, or browser." },
-          { num: "04", title: "Learn While Doing", desc: "Each prompt includes context about what it does and why, so you're not just copying — you're understanding." },
+          { num: "03", title: "One-Click Copy", desc: "Hit the copy button on any snippet. It's instantly on your clipboard-paste it into your code editor, terminal, or browser." },
+          { num: "04", title: "Learn While Doing", desc: "Each prompt includes context about what it does and why, so you're not just copying-you're understanding." },
         ],
       },
     ],
@@ -55,7 +55,7 @@ const featureDetails = {
     hero: {
       badge: "Get Hired",
       title: "Resume Builder",
-      subtitle: "Craft a professional, ATS-friendly resume in minutes — not hours. Our guided wizard walks you through every step, from summary to skills, and exports a polished PDF instantly.",
+      subtitle: "Craft a professional, ATS-friendly resume in minutes-not hours. Our guided wizard walks you through every step, from summary to skills, and exports a polished PDF instantly.",
       gradient: "from-blue-600 to-cyan-600",
       accentColor: "blue",
     },
@@ -63,10 +63,10 @@ const featureDetails = {
       {
         title: "Build Your Resume in 4 Simple Steps",
         items: [
-          { icon: <FileText className="h-5 w-5" />, title: "Step 1 — Fill Your Details", desc: "Enter your name, contact, summary, skills (up to 15), education, experience with bullet points, projects, and certifications — all guided with character limits and tips." },
-          { icon: <Presentation className="h-5 w-5" />, title: "Step 2 — Pick a Template", desc: "Choose between Modern and Classic professional templates designed to pass ATS scanners and impress recruiters." },
-          { icon: <Eye className="h-5 w-5" />, title: "Step 3 — Review & Perfect", desc: "Preview your resume exactly as it will look when printed. Make final tweaks and ensure everything reads perfectly." },
-          { icon: <ArrowRight className="h-5 w-5" />, title: "Step 4 — Download PDF", desc: "One-click PDF export. Your resume is ready to send to recruiters, upload to job portals, or share on LinkedIn." },
+          { icon: <FileText className="h-5 w-5" />, title: "Step 1-Fill Your Details", desc: "Enter your name, contact, summary, skills (up to 15), education, experience with bullet points, projects, and certifications-all guided with character limits and tips." },
+          { icon: <Presentation className="h-5 w-5" />, title: "Step 2-Pick a Template", desc: "Choose between Modern and Classic professional templates designed to pass ATS scanners and impress recruiters." },
+          { icon: <Eye className="h-5 w-5" />, title: "Step 3-Review & Perfect", desc: "Preview your resume exactly as it will look when printed. Make final tweaks and ensure everything reads perfectly." },
+          { icon: <ArrowRight className="h-5 w-5" />, title: "Step 4-Download PDF", desc: "One-click PDF export. Your resume is ready to send to recruiters, upload to job portals, or share on LinkedIn." },
         ],
       },
       {
@@ -93,7 +93,7 @@ const featureDetails = {
     hero: {
       badge: "Real Experience",
       title: "Real Client Lab",
-      subtitle: "Don't just learn — build. Work on actual projects from real clients, get mentor feedback on every submission, and walk away with portfolio-ready work that proves you can deliver.",
+      subtitle: "Don't just learn-build. Work on actual projects from real clients, get mentor feedback on every submission, and walk away with portfolio-ready work that proves you can deliver.",
       gradient: "from-purple-600 to-pink-600",
       accentColor: "purple",
     },
@@ -101,8 +101,8 @@ const featureDetails = {
       {
         title: "How the Real Client Lab Works",
         items: [
-          { icon: <Target className="h-5 w-5" />, title: "Real Client Projects", desc: "Companies submit actual project briefs — landing pages, dashboards, APIs, mobile designs. You pick up tasks just like in a real job." },
-          { icon: <Users className="h-5 w-5" />, title: "Mentor-Reviewed Work", desc: "Every submission is reviewed by an experienced mentor. You get real feedback — what's great, what needs improvement, and how to fix it." },
+          { icon: <Target className="h-5 w-5" />, title: "Real Client Projects", desc: "Companies submit actual project briefs-landing pages, dashboards, APIs, mobile designs. You pick up tasks just like in a real job." },
+          { icon: <Users className="h-5 w-5" />, title: "Mentor-Reviewed Work", desc: "Every submission is reviewed by an experienced mentor. You get real feedback-what's great, what needs improvement, and how to fix it." },
           { icon: <Award className="h-5 w-5" />, title: "Portfolio-Ready Output", desc: "Every completed project becomes a portfolio piece. Show employers you've built real things for real people, not just tutorials." },
           { icon: <TrendingUp className="h-5 w-5" />, title: "Unlock with All Pack", desc: "Real Client Lab unlocks when you have access to all required courses and complete each course at 100%. Get the All Pack to unlock." },
         ],
@@ -131,7 +131,7 @@ const featureDetails = {
     hero: {
       badge: "Your Dashboard",
       title: "Learning Portal",
-      subtitle: "A clean, intuitive LMS designed around how you actually learn. Track your progress, jump into lessons, catch upcoming events — all from one beautiful dashboard.",
+      subtitle: "A clean, intuitive LMS designed around how you actually learn. Track your progress, jump into lessons, catch upcoming events-all from one beautiful dashboard.",
       gradient: "from-fuchsia-600 to-rose-600",
       accentColor: "fuchsia",
     },
@@ -139,7 +139,7 @@ const featureDetails = {
       {
         title: "Everything in One Place",
         items: [
-          { icon: <LayoutDashboard className="h-5 w-5" />, title: "Personalized Dashboard", desc: "See your name, current course, upcoming schedule, and progress — all at a glance the moment you log in." },
+          { icon: <LayoutDashboard className="h-5 w-5" />, title: "Personalized Dashboard", desc: "See your name, current course, upcoming schedule, and progress-all at a glance the moment you log in." },
           { icon: <Clock className="h-5 w-5" />, title: "Smart Schedule", desc: "Your remaining lessons are laid out as a timeline. See what's next, what's in progress, and what's done. Click to jump directly into any lesson." },
           { icon: <Star className="h-5 w-5" />, title: "Progress Tracking", desc: "A visual progress ring shows your overall completion percentage. Know exactly where you stand and how much is left." },
           { icon: <Sparkles className="h-5 w-5" />, title: "Events & Workshops", desc: "Live sessions, challenges, and workshops appear right in your sidebar. Never miss an opportunity to learn something new." },
@@ -149,7 +149,7 @@ const featureDetails = {
         title: "Designed for Learners",
         steps: [
           { num: "01", title: "No Clutter", desc: "We stripped away everything unnecessary. You see your courses, your progress, and your next step. That's it." },
-          { num: "02", title: "Course Tree Navigation", desc: "Expand any course to see all modules and lessons. Click any lesson to jump directly to it — no hunting through menus." },
+          { num: "02", title: "Course Tree Navigation", desc: "Expand any course to see all modules and lessons. Click any lesson to jump directly to it-no hunting through menus." },
           { num: "03", title: "Buy & Unlock Instantly", desc: "See a course you want? Buy it directly from your dashboard. Payment processes in seconds and you're learning immediately." },
           { num: "04", title: "Mobile-Friendly", desc: "Learn from your phone, tablet, or laptop. The portal adapts seamlessly to any screen size." },
         ],
@@ -169,7 +169,7 @@ const featureDetails = {
     hero: {
       badge: "Step by Step",
       title: "Structured Lessons",
-      subtitle: "Every lesson follows a proven structure — Goal, Video, Setup, Prompts, Presentation, and Success Checkpoint. You always know what to learn, how to learn it, and when you've nailed it.",
+      subtitle: "Every lesson follows a proven structure-Goal, Video, Setup, Prompts, Presentation, and Success Checkpoint. You always know what to learn, how to learn it, and when you've nailed it.",
       gradient: "from-indigo-600 to-blue-600",
       accentColor: "indigo",
     },
@@ -177,8 +177,8 @@ const featureDetails = {
       {
         title: "Inside Every Lesson",
         items: [
-          { icon: <Target className="h-5 w-5" />, title: "Learning Goal", desc: "Each lesson starts with a clear goal — what you'll be able to do by the end. No ambiguity, no guessing what's important." },
-          { icon: <Video className="h-5 w-5" />, title: "Video Tutorials", desc: "High-quality video tutorials on every topic. Supports Cloudflare Stream, YouTube, and Vimeo — all with a clean, distraction-free player." },
+          { icon: <Target className="h-5 w-5" />, title: "Learning Goal", desc: "Each lesson starts with a clear goal-what you'll be able to do by the end. No ambiguity, no guessing what's important." },
+          { icon: <Video className="h-5 w-5" />, title: "Video Tutorials", desc: "High-quality video tutorials on every topic. Supports Cloudflare Stream, YouTube, and Vimeo-all with a clean, distraction-free player." },
           { icon: <BookOpen className="h-5 w-5" />, title: "Learn & Setup Steps", desc: "Step-by-step written instructions that walk you through the setup. Follow along at your own pace with numbered, navigable steps." },
           { icon: <Eye className="h-5 w-5" />, title: "Success Looks Like", desc: "See exactly what the final output should look like with reference images. Compare your work and know you're on the right track." },
         ],
@@ -187,7 +187,7 @@ const featureDetails = {
         title: "The Full Lesson Flow",
         steps: [
           { num: "01", title: "Read the Goal", desc: "Understand what this lesson will teach you. The goal appears prominently at the top so you start with clarity." },
-          { num: "02", title: "Watch the Video", desc: "Follow along with the video tutorial. Pause, rewind, replay — learn at your own pace." },
+          { num: "02", title: "Watch the Video", desc: "Follow along with the video tutorial. Pause, rewind, replay-learn at your own pace." },
           { num: "03", title: "Use Prompts & Setup", desc: "Copy code snippets from the Prompts tab. Follow the Learn & Setup steps to build the project hands-on." },
           { num: "04", title: "Check Your Work", desc: "Compare your output against the Success images. If it matches, mark the lesson complete and move to the next one." },
         ],
@@ -354,7 +354,7 @@ export default function FeatureDetailPage() {
           </section>
         )}
 
-        {/* Section 1 — Feature grid */}
+        {/* Section 1-Feature grid */}
         <section
           className="py-14 sm:py-16 md:py-20 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24"
           style={{ borderTop: "1px solid rgba(255, 255, 255, 0.06)" }}
@@ -380,7 +380,7 @@ export default function FeatureDetailPage() {
           </div>
         </section>
 
-        {/* Section 2 — Steps */}
+        {/* Section 2-Steps */}
         <section
           className="py-14 sm:py-16 md:py-20 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24"
           style={{ borderTop: "1px solid rgba(255, 255, 255, 0.06)" }}
@@ -418,7 +418,7 @@ export default function FeatureDetailPage() {
             <blockquote className="text-xl sm:text-2xl md:text-3xl font-medium text-white/80 leading-snug italic">
               "{detail.testimonial.quote}"
             </blockquote>
-            <p className="mt-4 text-sm sm:text-base text-white/40">— {detail.testimonial.role}</p>
+            <p className="mt-4 text-sm sm:text-base text-white/40">-{detail.testimonial.role}</p>
           </div>
         </section>
 
@@ -522,7 +522,7 @@ export default function FeatureDetailPage() {
           </div>
         )}
 
-        {/* Footer — ExpoGraph flow (TubesBackground) */}
+        {/* Footer-ExpoGraph flow (TubesBackground) */}
         <footer className="w-full min-h-[560px] sm:min-h-[70vh] border-t border-black">
           <TubesBackground className="min-h-[560px] sm:min-h-[70vh] bg-[#0a0a0a]" enableClickInteraction={true}>
             <div className="flex flex-col items-center justify-center w-full min-h-[560px] sm:min-h-[70vh] gap-6 text-center px-4">
@@ -534,6 +534,14 @@ export default function FeatureDetailPage() {
               <div className="absolute bottom-8 left-0 right-0 flex flex-col items-center gap-2 text-white/50 animate-pulse pointer-events-none">
                 <span className="text-xs uppercase tracking-widest">Move the cursor around to interact and Click to randomize.</span>
                 <span className="text-xs text-white/40">© 2025 ExpoGraph Academy</span>
+              </div>
+              <div className="absolute bottom-8 right-6 flex items-center gap-4 text-white/55 pointer-events-auto">
+                <Link to="/privacy-policy" className="text-xs hover:text-white/80 underline underline-offset-2">
+                  Privacy Policy
+                </Link>
+                <Link to="/terms-and-conditions" className="text-xs hover:text-white/80 underline underline-offset-2">
+                  Terms &amp; Conditions
+                </Link>
               </div>
             </div>
           </TubesBackground>

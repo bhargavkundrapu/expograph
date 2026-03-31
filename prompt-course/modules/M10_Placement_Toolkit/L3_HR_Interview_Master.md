@@ -6,7 +6,7 @@
 | Field      | Value                          |
 |------------|--------------------------------|
 | Lesson ID  | M10-L3                         |
-| Module     | M10 — Placement Toolkit        |
+| Module     | M10 - Placement Toolkit        |
 | Difficulty | Intermediate                   |
 | Time       | 10–15 minutes                  |
 
@@ -26,7 +26,7 @@ By the end of this lesson you will be able to:
 <!-- SEC-02 -->
 ## 💡 Use Case
 
-HR rounds test your communication, teamwork, and problem-solving — not your code. Most students ramble because they have no structure. STAR gives you a four-part framework: describe the **Situation**, explain the **Task**, detail the **Action** you took, and share the **Result**. Use this prompt technique the night before any HR interview to prepare 4–5 solid answers.
+HR rounds test your communication, teamwork, and problem-solving - not your code. Most students ramble because they have no structure. STAR gives you a four-part framework: describe the **Situation**, explain the **Task**, detail the **Action** you took, and share the **Result**. Use this prompt technique the night before any HR interview to prepare 4–5 solid answers.
 
 ---
 
@@ -53,9 +53,9 @@ Show enthusiasm for the role. End by saying why you're a good fit.
 <!-- SEC-05 -->
 ## 🔍 Why It Failed
 
-- **No personal details** — the AI has nothing about you, so it gives textbook advice anyone could find online.
-- **No structure requested** — you got a tip list instead of an actual rehearsable answer.
-- **No role context** — the answer is not tailored to any specific position.
+- **No personal details** - the AI has nothing about you, so it gives textbook advice anyone could find online.
+- **No structure requested** - you got a tip list instead of an actual rehearsable answer.
+- **No role context** - the answer is not tailored to any specific position.
 
 ---
 
@@ -161,7 +161,7 @@ Write a prompt that turns this into a STAR answer with 3 follow-up questions. Ru
 ## 📚 What You Learned
 
 1. STAR (Situation, Task, Action, Result) turns rambling stories into clear, impressive interview answers.
-2. Feeding the AI your raw experience produces a personalized answer — not a generic template.
+2. Feeding the AI your raw experience produces a personalized answer - not a generic template.
 3. Asking for follow-up questions in the same prompt prepares you for the interviewer's next move.
 
 ---
@@ -171,11 +171,11 @@ Write a prompt that turns this into a STAR answer with 3 follow-up questions. Ru
 
 **Q1:** What does the "A" in STAR stand for, and why is it the most important part?
 
-- A) Assessment — it shows your analytical thinking
-- B) Action — it shows what you specifically did to solve the problem
-- C) Achievement — it shows the final outcome
+- A) Assessment - it shows your analytical thinking
+- B) Action - it shows what you specifically did to solve the problem
+- C) Achievement - it shows the final outcome
 
-> **A1:** B — Action is where you prove your contribution. Interviewers want to hear what *you* did, not just what happened.
+> **A1:** B - Action is where you prove your contribution. Interviewers want to hear what *you* did, not just what happened.
 
 **Q2:** You give the AI a STAR prompt but forget to include your personal experience. What happens?
 
@@ -186,4 +186,4 @@ Write a prompt that turns this into a STAR answer with 3 follow-up questions. Ru
 <!-- SEC-14 -->
 ## 💬 One-Line Takeaway
 
-> An interview answer without STAR is a story without a punchline — give the AI your real experience and let it build the structure.
+> An interview answer without STAR is a story without a punchline - give the AI your real experience and let it build the structure.

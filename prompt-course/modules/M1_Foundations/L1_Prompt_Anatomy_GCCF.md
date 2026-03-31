@@ -1,4 +1,4 @@
-# Lesson: Prompt Anatomy — The GCCF Framework
+# Lesson: Prompt Anatomy - The GCCF Framework
 
 <!-- SEC-00 -->
 ## 🆔 Lesson ID
@@ -6,7 +6,7 @@
 | Field      | Value                          |
 |------------|--------------------------------|
 | Lesson ID  | M1-L1                          |
-| Module     | M1 — Foundations               |
+| Module     | M1 - Foundations               |
 | Difficulty | Intermediate                   |
 | Time       | 10–15 minutes                  |
 
@@ -26,7 +26,7 @@ By the end of this lesson you will be able to:
 <!-- SEC-02 -->
 ## 💡 Use Case
 
-Use GCCF every time you ask an AI for help — whether you are studying for exams, writing project documentation, preparing for a placement interview, or debugging code. A structured prompt saves you from getting generic answers you cannot use.
+Use GCCF every time you ask an AI for help - whether you are studying for exams, writing project documentation, preparing for a placement interview, or debugging code. A structured prompt saves you from getting generic answers you cannot use.
 
 ---
 
@@ -55,9 +55,9 @@ transportation.
 <!-- SEC-05 -->
 ## 🔍 Why It Failed
 
-- **No goal** — the AI does not know if you want a definition, a tutorial, or a comparison.
-- **No context** — it has no idea about your background or why you need this.
-- **No format** — you got a wall of text instead of something you can actually study from.
+- **No goal** - the AI does not know if you want a definition, a tutorial, or a comparison.
+- **No context** - it has no idea about your background or why you need this.
+- **No format** - you got a wall of text instead of something you can actually study from.
 
 ---
 
@@ -80,7 +80,7 @@ Format: Use a numbered list with one sentence per point.
 ```
 1. Machine learning lets computers find patterns in data without being
    explicitly programmed for every scenario.
-2. Supervised learning uses labelled examples — like showing the model
+2. Supervised learning uses labelled examples - like showing the model
    1,000 photos tagged "cat" or "dog" so it learns to classify new ones.
 3. Unsupervised learning finds hidden groups in data with no labels,
    such as clustering customers by purchase behaviour.
@@ -154,15 +154,15 @@ Rewrite their prompt using GCCF so the output is a short, jargon-free explanatio
 
 **Q1:** You write a prompt with a clear goal and format but no context. What is the most likely problem with the AI's response?
 
-> **A1:** The response will be generic because the AI does not know your background, level, or purpose — so it cannot tailor the depth or tone.
+> **A1:** The response will be generic because the AI does not know your background, level, or purpose - so it cannot tailor the depth or tone.
 
 **Q2:** Which GCCF element would you adjust to change the AI's reply from a paragraph to a table?
 
-> **A2:** **Format** — it controls the structure and layout of the output.
+> **A2:** **Format** - it controls the structure and layout of the output.
 
 ---
 
 <!-- SEC-14 -->
 ## 💬 One-Line Takeaway
 
-> A prompt without structure is a question without direction — use GCCF to give the AI a map before it starts walking.
+> A prompt without structure is a question without direction - use GCCF to give the AI a map before it starts walking.

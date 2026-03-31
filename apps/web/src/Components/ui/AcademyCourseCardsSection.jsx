@@ -31,7 +31,7 @@ export function AcademyCourseCardsSection() {
           <p className="text-xs font-bold uppercase tracking-widest text-purple-400 mb-2">Courses</p>
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white">All Pack & Courses</h2>
           <p className="mt-3 text-base text-white/60 max-w-2xl">
-            All starting at just <span className="text-emerald-400 font-semibold">₹99</span> — pick individual courses or go all-in with the All Pack for the best value.
+            All starting at just <span className="text-emerald-400 font-semibold">₹99</span>-pick individual courses or go all-in with the All Pack for the best value.
           </p>
         </div>
 

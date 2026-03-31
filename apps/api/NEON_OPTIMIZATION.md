@@ -33,7 +33,7 @@ Do these in order so you do not break the live app.
 
 ### 1) Run the DB indexes migration first
 
-**Option A — use the same migration runner as the rest of the app (simplest)**
+**Option A - use the same migration runner as the rest of the app (simplest)**
 
 From your machine (with production `DATABASE_URL` in `apps/api/.env`) or from Render’s **Shell**:
 
@@ -45,15 +45,15 @@ npm run migrate
 
 This applies `db/migrations/041_neon_optimization_indexes.sql` if it has not been applied yet. It creates a **composite index** on `approvals(tenant_id, status, created_at)` inside a normal transaction (brief lock while the index builds; usually fine for small/medium tables).
 
-**Option B — manual `psql` with `CREATE INDEX CONCURRENTLY` (zero blocking writes)**
+**Option B - manual `psql` with `CREATE INDEX CONCURRENTLY` (zero blocking writes)**
 
-Use this only if you need the index built without blocking writes on a very large `approvals` table. Run **one statement** from `apps/api/src/db/migrations/add_neon_optimization_indexes.sql` against production using a **direct** connection string (Neon console often labels “direct” vs “pooled”; pooler sometimes disallows `CONCURRENTLY` — if it errors, use direct for this one-off job).
+Use this only if you need the index built without blocking writes on a very large `approvals` table. Run **one statement** from `apps/api/src/db/migrations/add_neon_optimization_indexes.sql` against production using a **direct** connection string (Neon console often labels “direct” vs “pooled”; pooler sometimes disallows `CONCURRENTLY` - if it errors, use direct for this one-off job).
 
 ```bash
 psql "YOUR_PRODUCTION_DATABASE_URL" -c "CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_approvals_tenant_status_created ON approvals (tenant_id, status, created_at DESC);"
 ```
 
-If you already ran **Option A**, the index may already exist — `IF NOT EXISTS` makes it safe.
+If you already ran **Option A**, the index may already exist - `IF NOT EXISTS` makes it safe.
 
 ### 2) Set Render environment variables
 
@@ -74,7 +74,7 @@ Trigger a deploy or restart so the new code and env vars load (poller off by def
 
 ### 4) Verify after deploy
 
-1. **Health** — open or `curl` your API base URL:
+1. **Health** - open or `curl` your API base URL:
 
    ```bash
    curl -sS https://YOUR_API_HOST/health
@@ -82,9 +82,9 @@ Trigger a deploy or restart so the new code and env vars load (poller off by def
 
    Expect: `OK` (or `200`).
 
-2. **Razorpay flows** — run a **test payment** in Razorpay test mode (or a small real payment) and confirm the user still lands correctly and approvals still complete (callback + webhook). No UI change is expected unless something was misconfigured.
+2. **Razorpay flows** - run a **test payment** in Razorpay test mode (or a small real payment) and confirm the user still lands correctly and approvals still complete (callback + webhook). No UI change is expected unless something was misconfigured.
 
-3. **Neon active connections** — in Neon Console → your project → **Monitoring** or **Branches** → connection / activity views: after a few minutes with **no traffic**, active connections should drop toward **0** (scale-to-zero may take a short idle period).
+3. **Neon active connections** - in Neon Console → your project → **Monitoring** or **Branches** → connection / activity views: after a few minutes with **no traffic**, active connections should drop toward **0** (scale-to-zero may take a short idle period).
 
 ---
 

@@ -21,11 +21,11 @@ export default function DailyMotivation({ userName, onGoToLesson }) {
               {greeting}, {userName} 👋
             </h2>
             <p className={`text-xs sm:text-sm italic leading-relaxed ${isDark ? "text-slate-400" : "text-slate-500"}`}>
-              "{todayQuote.text}" — <span className="font-medium">{todayQuote.author}</span>
+              "{todayQuote.text}"-<span className="font-medium">{todayQuote.author}</span>
             </p>
           </div>
 
-          {/* Today's Goal — clickable, navigates to courses */}
+          {/* Today's Goal - clickable, navigates to courses */}
           <button
             onClick={onGoToLesson}
             className={`flex-shrink-0 flex items-center gap-2.5 rounded-xl px-3.5 py-2.5 transition-all group ${

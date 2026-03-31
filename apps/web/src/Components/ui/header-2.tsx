@@ -70,7 +70,7 @@ export function Header() {
 		<header
 			className="academy-header fixed top-0 left-0 right-0 z-[9999] w-full px-4 pt-4 pb-0 md:px-6 pointer-events-none"
 		>
-			{/* Nav bar wrapper — only this gets background/blur; header stays fully transparent */}
+			{/* Nav bar wrapper - only this gets background/blur; header stays fully transparent */}
 			<div
 				className={cn(
 					'academy-nav-bar pointer-events-auto relative z-[100] mx-auto w-full max-w-7xl ease-out',

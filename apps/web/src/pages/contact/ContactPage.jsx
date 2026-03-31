@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Header } from "../../Components/ui/header-2";
 import { TubesBackground } from "../../Components/ui/neon-flow";
 import { FiMail, FiPhone, FiMapPin, FiSend, FiMessageCircle, FiClock, FiCheckCircle } from "react-icons/fi";
@@ -131,7 +132,7 @@ export default function ContactPage() {
               <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">help</span>
             </h2>
             <p className="text-sm sm:text-base text-white/50 leading-relaxed mb-6">
-              Whether you need guidance picking the right course, facing a payment issue, or want to collaborate — drop us a message and we&apos;ll get back to you quickly.
+              Whether you need guidance picking the right course, facing a payment issue, or want to collaborate-drop us a message and we&apos;ll get back to you quickly.
             </p>
             <div className="space-y-4">
               {[
@@ -149,7 +150,7 @@ export default function ContactPage() {
             </div>
           </div>
 
-          {/* Right — form */}
+          {/* Right - form */}
           <div className="md:col-span-3">
             {submitted ? (
               <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/[0.06] p-8 sm:p-10 text-center">
@@ -302,6 +303,14 @@ export default function ContactPage() {
             <div className="absolute bottom-8 left-0 right-0 flex flex-col items-center gap-2 text-white/50 pointer-events-none">
               <span className="text-xs uppercase tracking-widest">Move the cursor around to interact and Click to randomize.</span>
               <span className="text-xs text-white/40">&copy; 2025 ExpoGraph Academy</span>
+            </div>
+            <div className="absolute bottom-8 right-6 flex items-center gap-4 text-white/55 pointer-events-auto">
+              <Link to="/privacy-policy" className="text-xs hover:text-white/80 underline underline-offset-2">
+                Privacy Policy
+              </Link>
+              <Link to="/terms-and-conditions" className="text-xs hover:text-white/80 underline underline-offset-2">
+                Terms &amp; Conditions
+              </Link>
             </div>
           </div>
         </TubesBackground>

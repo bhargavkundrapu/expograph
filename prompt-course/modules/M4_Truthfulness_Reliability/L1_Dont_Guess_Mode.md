@@ -5,7 +5,7 @@
 | Field      | Value                        |
 |------------|------------------------------|
 | Lesson ID  | M4-L1                       |
-| Module     | M4 — Truthfulness & Reliability |
+| Module     | M4 - Truthfulness & Reliability |
 | Difficulty | Intermediate                 |
 | Time       | 10–15 minutes                |
 
@@ -23,7 +23,7 @@ By the end of this lesson, you will be able to:
 
 ## SEC-02: 💡 Use Case
 
-You're researching a niche topic for your thesis — maybe a specific algorithm's time complexity on a rare data structure, or a regulation from an obscure government body. You paste the question into AI and get a confident-sounding answer. You cite it in your report. Your professor flags it as completely wrong.
+You're researching a niche topic for your thesis - maybe a specific algorithm's time complexity on a rare data structure, or a regulation from an obscure government body. You paste the question into AI and get a confident-sounding answer. You cite it in your report. Your professor flags it as completely wrong.
 
 This happens because AI models are trained to be helpful, not honest. They will guess rather than stay silent. Whether you're studying for exams, debugging code, or preparing placement interview answers, you need AI to tell you when it doesn't actually know something.
 
@@ -101,13 +101,13 @@ Rules:
    [LOW] = rough estimate, may be wrong
 ```
 
-**What changed:** The upgrade adds a confidence-tagging system. Now you don't just get a binary "I know / I don't know" — you get a spectrum. This lets you decide which parts of the answer to trust and which to double-check.
+**What changed:** The upgrade adds a confidence-tagging system. Now you don't just get a binary "I know / I don't know" - you get a spectrum. This lets you decide which parts of the answer to trust and which to double-check.
 
 ---
 
 ## SEC-09: 🧪 Guided Practice
 
-1. **Pick an obscure question** from one of your courses — something specific enough that the AI probably doesn't have the answer (e.g., "What was the pass percentage for my university's Data Structures exam in 2022?").
+1. **Pick an obscure question** from one of your courses - something specific enough that the AI probably doesn't have the answer (e.g., "What was the pass percentage for my university's Data Structures exam in 2022?").
 2. **First, ask it without any safety instruction.** Notice how the AI gives you a confident answer anyway.
 3. **Now re-ask with the "I don't know" rule and confidence tags.** Compare the two outputs.
 
@@ -142,7 +142,7 @@ Before submitting any research prompt, verify:
 
 1. **AI defaults to guessing.** Without an explicit instruction, models will fabricate plausible-sounding answers rather than admit ignorance.
 2. **"If unsure, say I don't know" is a simple, powerful addition** that changes the AI's behavior from always-answer mode to honest mode.
-3. **Confidence tags give you a trust spectrum** — not just yes/no, but a scale you can use to decide what needs independent verification.
+3. **Confidence tags give you a trust spectrum** - not just yes/no, but a scale you can use to decide what needs independent verification.
 
 ---
 
@@ -156,10 +156,10 @@ Before submitting any research prompt, verify:
 
 **Q2:** What is the difference between adding "If unsure, say I don't know" versus adding confidence tags?
 
-**A2:** "I don't know" is binary — the AI either answers or refuses. Confidence tags are a spectrum — the AI answers everything but labels each claim with how certain it is, giving you more nuanced information to work with.
+**A2:** "I don't know" is binary - the AI either answers or refuses. Confidence tags are a spectrum - the AI answers everything but labels each claim with how certain it is, giving you more nuanced information to work with.
 
 ---
 
 ## SEC-14: 💬 One-Line Takeaway
 
-> A confident tone is not the same as a correct answer — always give AI permission to say "I don't know."
+> A confident tone is not the same as a correct answer - always give AI permission to say "I don't know."

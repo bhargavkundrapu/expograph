@@ -250,12 +250,12 @@ export function StudentCourseTreeSkeleton() {
   );
 }
 
-// Student Lesson Skeleton — course-aware full page skeleton
+// Student Lesson Skeleton - course-aware full page skeleton
 export function StudentLessonSkeleton({ courseType }) {
   return (
     <div className="flex h-screen w-full overflow-hidden bg-slate-100 animate-pulse">
       <main className="flex-1 flex flex-col min-w-0">
-        {/* Navbar skeleton — hidden on mobile */}
+        {/* Navbar skeleton - hidden on mobile */}
         <nav className="hidden md:block flex-shrink-0 bg-white border-b border-slate-200 px-6 py-3">
           <div className="flex items-center justify-between gap-4">
             <div className="h-10 bg-slate-100 rounded w-52 ml-8"></div>
@@ -279,7 +279,7 @@ export function StudentLessonSkeleton({ courseType }) {
         </div>
 
         <div className="flex-1 flex overflow-hidden">
-          {/* Sidebar skeleton — desktop only */}
+          {/* Sidebar skeleton - desktop only */}
           <div className="hidden md:flex md:self-stretch md:min-h-0">
             <div className="w-72 lg:w-80 bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 p-4 space-y-3">
               <div className="flex items-center gap-2 mb-2">
@@ -314,7 +314,7 @@ export function StudentLessonSkeleton({ courseType }) {
               </div>
             </div>
 
-            {/* Content skeleton — course-specific */}
+            {/* Content skeleton - course-specific */}
             <div className="flex-1 overflow-y-auto bg-white">
               <LessonContentSkeleton courseType={courseType} />
             </div>
@@ -369,7 +369,7 @@ export function ScheduleItemSkeleton({ count = 5 }) {
   );
 }
 
-// Lesson Content Skeleton (for content area only) — delegates to course-specific skeleton
+// Lesson Content Skeleton (for content area only) - delegates to course-specific skeleton
 export function LessonContentSkeleton({ courseType }) {
   if (courseType === "prompt-engineering") return <PromptEngineeringContentSkeleton />;
   if (courseType === "vibe-coding") return <VibeCodingContentSkeleton />;
@@ -387,7 +387,7 @@ function ChatGptBusinessContentSkeleton() {
           <div className="h-6 bg-emerald-200 rounded-full w-16"></div>
           <div className="h-6 bg-slate-200 rounded w-48"></div>
         </div>
-        {/* CBM-01 Outcome Goal — emerald/teal gradient */}
+        {/* CBM-01 Outcome Goal - emerald/teal gradient */}
         <div className="bg-gradient-to-r from-emerald-200 to-teal-200 rounded-xl p-5">
           <div className="flex items-center gap-3 mb-2">
             <div className="w-8 h-8 bg-emerald-300/60 rounded-lg"></div>
@@ -395,7 +395,7 @@ function ChatGptBusinessContentSkeleton() {
           </div>
           <div className="h-5 bg-emerald-200/50 rounded w-4/5"></div>
         </div>
-        {/* CBM-02 Where You Use It — amber */}
+        {/* CBM-02 Where You Use It - amber */}
         <div className="bg-amber-50 border border-amber-200 rounded-xl p-5">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-8 h-8 bg-amber-100 rounded-lg"></div>
@@ -416,7 +416,7 @@ function ChatGptBusinessContentSkeleton() {
             ))}
           </div>
         </div>
-        {/* CBM-04/05 Bad prompt + output — red */}
+        {/* CBM-04/05 Bad prompt + output - red */}
         <div className="bg-red-50 border border-red-200 rounded-xl p-4">
           <div className="h-4 bg-red-200 rounded w-24 mb-3"></div>
           <div className="h-20 bg-red-100 rounded w-full"></div>
@@ -430,12 +430,12 @@ function ChatGptBusinessContentSkeleton() {
             ))}
           </div>
         </div>
-        {/* CBM-07/08 Good prompt + output — emerald */}
+        {/* CBM-07/08 Good prompt + output - emerald */}
         <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4">
           <div className="h-4 bg-emerald-200 rounded w-28 mb-3"></div>
           <div className="h-24 bg-emerald-100 rounded w-full"></div>
         </div>
-        {/* CBM-09 Upgrade — violet */}
+        {/* CBM-09 Upgrade - violet */}
         <div className="bg-violet-50 border border-violet-200 rounded-xl p-5">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-8 h-8 bg-violet-100 rounded-lg"></div>
@@ -443,7 +443,7 @@ function ChatGptBusinessContentSkeleton() {
           </div>
           <div className="h-20 bg-violet-100 rounded w-full"></div>
         </div>
-        {/* CBM-10 3 Variations — teal */}
+        {/* CBM-10 3 Variations - teal */}
         <div className="bg-teal-50 border border-teal-200 rounded-xl p-5">
           <div className="h-4 bg-teal-200 rounded w-28 mb-4"></div>
           <div className="space-y-3">
@@ -452,12 +452,12 @@ function ChatGptBusinessContentSkeleton() {
             ))}
           </div>
         </div>
-        {/* CBM-11 Prompt Card — amber */}
+        {/* CBM-11 Prompt Card - amber */}
         <div className="bg-amber-50 border-2 border-amber-200 rounded-xl p-5">
           <div className="h-4 bg-amber-200 rounded w-36 mb-3"></div>
           <div className="h-24 bg-white border border-amber-200 rounded"></div>
         </div>
-        {/* CBM-12 Guided Practice — sky */}
+        {/* CBM-12 Guided Practice - sky */}
         <div className="bg-sky-50 border border-sky-200 rounded-xl p-5">
           <div className="h-4 bg-sky-200 rounded w-28 mb-4"></div>
           <div className="space-y-2">
@@ -466,7 +466,7 @@ function ChatGptBusinessContentSkeleton() {
             ))}
           </div>
         </div>
-        {/* CBM-13 Challenge — teal gradient */}
+        {/* CBM-13 Challenge - teal gradient */}
         <div className="bg-gradient-to-r from-teal-200 to-cyan-200 rounded-xl p-5">
           <div className="h-4 bg-white/40 rounded w-32 mb-2"></div>
           <div className="h-3 bg-white/30 rounded w-4/5"></div>
@@ -504,7 +504,7 @@ function AiAutomationsContentSkeleton() {
   return (
     <div className="max-w-6xl mx-auto animate-pulse">
       <div className="px-4 md:px-8 pt-6 pb-8 space-y-5">
-        {/* AA-01 Today's Win — teal gradient hero */}
+        {/* AA-01 Today's Win - teal gradient hero */}
         <div className="bg-gradient-to-br from-teal-200 via-cyan-100 to-sky-100 rounded-2xl p-6 md:p-8">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-10 h-10 bg-teal-300/50 rounded-xl"></div>
@@ -514,7 +514,7 @@ function AiAutomationsContentSkeleton() {
           <div className="h-4 bg-teal-200/40 rounded w-3/5"></div>
         </div>
 
-        {/* AA-02 Why Care — orange card */}
+        {/* AA-02 Why Care - orange card */}
         <div className="bg-orange-50 border border-orange-200 rounded-2xl p-5">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-9 h-9 bg-orange-100 rounded-xl"></div>
@@ -527,7 +527,7 @@ function AiAutomationsContentSkeleton() {
           </div>
         </div>
 
-        {/* AA-03 Simple Meaning — sky card */}
+        {/* AA-03 Simple Meaning - sky card */}
         <div className="bg-sky-50 border border-sky-200 rounded-2xl p-5">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-9 h-9 bg-sky-100 rounded-xl"></div>
@@ -541,7 +541,7 @@ function AiAutomationsContentSkeleton() {
           </div>
         </div>
 
-        {/* AA-04 Where Used — indigo card */}
+        {/* AA-04 Where Used - indigo card */}
         <div className="bg-indigo-50 border border-indigo-200 rounded-2xl p-5">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-9 h-9 bg-indigo-100 rounded-xl"></div>
@@ -560,7 +560,7 @@ function AiAutomationsContentSkeleton() {
           </div>
         </div>
 
-        {/* AA-05 Flow — white with teal accents */}
+        {/* AA-05 Flow - white with teal accents */}
         <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
           <div className="px-5 py-4 bg-gradient-to-r from-teal-50 to-cyan-50 border-b border-teal-100">
             <div className="flex items-center gap-3">
@@ -575,7 +575,7 @@ function AiAutomationsContentSkeleton() {
           </div>
         </div>
 
-        {/* AA-06 Tool Setup — emerald card */}
+        {/* AA-06 Tool Setup - emerald card */}
         <div className="bg-emerald-50/50 border-2 border-emerald-200 rounded-2xl p-5">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-9 h-9 bg-emerald-100 rounded-xl"></div>
@@ -594,7 +594,7 @@ function AiAutomationsContentSkeleton() {
           </div>
         </div>
 
-        {/* AA-07 Build Steps — white with blue */}
+        {/* AA-07 Build Steps - white with blue */}
         <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
           <div className="px-6 py-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-blue-100">
             <div className="flex items-center gap-3">
@@ -612,7 +612,7 @@ function AiAutomationsContentSkeleton() {
           </div>
         </div>
 
-        {/* AA-08 Test — violet card */}
+        {/* AA-08 Test - violet card */}
         <div className="bg-violet-50 border border-violet-200 rounded-2xl p-5">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-9 h-9 bg-violet-100 rounded-xl"></div>
@@ -629,7 +629,7 @@ function AiAutomationsContentSkeleton() {
           </div>
         </div>
 
-        {/* AA-09 Mistakes — red card */}
+        {/* AA-09 Mistakes - red card */}
         <div className="bg-red-50 border border-red-200 rounded-2xl p-5">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-9 h-9 bg-red-100 rounded-xl"></div>
@@ -648,7 +648,7 @@ function AiAutomationsContentSkeleton() {
           </div>
         </div>
 
-        {/* AA-10 Upgrade — dark gradient */}
+        {/* AA-10 Upgrade - dark gradient */}
         <div className="bg-gradient-to-br from-violet-200 via-indigo-200 to-blue-200 rounded-2xl p-6">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-9 h-9 bg-white/30 rounded-xl"></div>
@@ -664,7 +664,7 @@ function AiAutomationsContentSkeleton() {
           </div>
         </div>
 
-        {/* AA-11 Mini Task — cyan gradient */}
+        {/* AA-11 Mini Task - cyan gradient */}
         <div className="bg-gradient-to-r from-cyan-200 to-teal-200 rounded-2xl p-6">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-9 h-9 bg-white/30 rounded-xl"></div>
@@ -674,7 +674,7 @@ function AiAutomationsContentSkeleton() {
           <div className="h-3 bg-white/30 rounded w-2/3"></div>
         </div>
 
-        {/* AA-12 Money Angle — amber gradient */}
+        {/* AA-12 Money Angle - amber gradient */}
         <div className="bg-gradient-to-r from-amber-200 via-orange-200 to-rose-200 rounded-2xl p-6">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-9 h-9 bg-white/30 rounded-xl"></div>
@@ -687,7 +687,7 @@ function AiAutomationsContentSkeleton() {
           <div className="h-3 bg-white/30 rounded w-full"></div>
         </div>
 
-        {/* AA-13 Key Notes — teal card */}
+        {/* AA-13 Key Notes - teal card */}
         <div className="bg-teal-50 border border-teal-200 rounded-2xl p-5">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-9 h-9 bg-teal-100 rounded-xl"></div>
@@ -703,7 +703,7 @@ function AiAutomationsContentSkeleton() {
           </div>
         </div>
 
-        {/* AA-14 Quick Quiz — indigo card */}
+        {/* AA-14 Quick Quiz - indigo card */}
         <div className="border-2 border-indigo-200 rounded-2xl p-5 bg-indigo-50/30">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-9 h-9 bg-indigo-100 rounded-xl"></div>
@@ -758,13 +758,13 @@ function GenericLessonContentSkeleton() {
   );
 }
 
-// Prompt Engineering course content skeleton — mirrors SEC-01 through SEC-14
+// Prompt Engineering course content skeleton - mirrors SEC-01 through SEC-14
 function PromptEngineeringContentSkeleton() {
   return (
     <div className="max-w-6xl mx-auto animate-pulse">
       <div className="px-4 md:px-8 pt-4 md:pt-6 pb-4 md:pb-8 space-y-5">
 
-        {/* SEC-01 Goal — blue gradient card */}
+        {/* SEC-01 Goal - blue gradient card */}
         <div className="bg-gradient-to-r from-blue-500/80 to-indigo-500/80 rounded-xl p-5">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-8 h-8 bg-white/20 rounded-lg"></div>
@@ -774,7 +774,7 @@ function PromptEngineeringContentSkeleton() {
           <div className="h-4 bg-white/15 rounded w-2/3 mt-2"></div>
         </div>
 
-        {/* SEC-02 Use Case — amber card */}
+        {/* SEC-02 Use Case - amber card */}
         <div className="bg-amber-50 border border-amber-200 rounded-xl p-5">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-8 h-8 bg-amber-100 rounded-lg"></div>
@@ -789,7 +789,7 @@ function PromptEngineeringContentSkeleton() {
           </div>
         </div>
 
-        {/* SEC-03 Bad Prompt — red prompt block */}
+        {/* SEC-03 Bad Prompt - red prompt block */}
         <div>
           <div className="flex items-center gap-3 mb-3">
             <div className="w-8 h-8 bg-red-100 rounded-lg"></div>
@@ -803,7 +803,7 @@ function PromptEngineeringContentSkeleton() {
           </div>
         </div>
 
-        {/* SEC-04 Bad Output — red output */}
+        {/* SEC-04 Bad Output - red output */}
         <div>
           <div className="flex items-center gap-3 mb-3">
             <div className="w-8 h-8 bg-red-100 rounded-lg"></div>
@@ -816,7 +816,7 @@ function PromptEngineeringContentSkeleton() {
           </div>
         </div>
 
-        {/* SEC-05 Why Failed — slate card with reasons */}
+        {/* SEC-05 Why Failed - slate card with reasons */}
         <div className="bg-slate-50 border border-slate-200 rounded-xl p-5">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-8 h-8 bg-slate-200 rounded-lg"></div>
@@ -832,7 +832,7 @@ function PromptEngineeringContentSkeleton() {
           </div>
         </div>
 
-        {/* SEC-06 Good Prompt — green prompt block */}
+        {/* SEC-06 Good Prompt - green prompt block */}
         <div>
           <div className="flex items-center gap-3 mb-3">
             <div className="w-8 h-8 bg-emerald-100 rounded-lg"></div>
@@ -848,7 +848,7 @@ function PromptEngineeringContentSkeleton() {
           <div className="h-3 bg-emerald-100 rounded w-40 mt-2"></div>
         </div>
 
-        {/* SEC-07 Good Output — green output */}
+        {/* SEC-07 Good Output - green output */}
         <div>
           <div className="flex items-center gap-3 mb-3">
             <div className="w-8 h-8 bg-emerald-100 rounded-lg"></div>
@@ -862,7 +862,7 @@ function PromptEngineeringContentSkeleton() {
           </div>
         </div>
 
-        {/* SEC-15 Best AI — recommendation card */}
+        {/* SEC-15 Best AI - recommendation card */}
         <div className="rounded-xl border-2 border-slate-200 overflow-hidden">
           <div className="bg-gradient-to-r from-emerald-400/80 to-teal-500/80 px-5 py-3 flex items-center gap-3">
             <div className="w-8 h-8 bg-white/20 rounded-lg"></div>
@@ -898,7 +898,7 @@ function PromptEngineeringContentSkeleton() {
           </div>
         </div>
 
-        {/* SEC-08 Upgrade — violet card */}
+        {/* SEC-08 Upgrade - violet card */}
         <div className="bg-gradient-to-br from-violet-50 to-purple-50 border border-violet-200 rounded-xl p-5">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-8 h-8 bg-violet-100 rounded-lg"></div>
@@ -913,7 +913,7 @@ function PromptEngineeringContentSkeleton() {
           <div className="h-4 bg-violet-100 rounded w-48 mt-3"></div>
         </div>
 
-        {/* SEC-09 Guided Practice — sky card */}
+        {/* SEC-09 Guided Practice - sky card */}
         <div className="bg-sky-50 border border-sky-200 rounded-xl p-5">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-8 h-8 bg-sky-100 rounded-lg"></div>
@@ -932,7 +932,7 @@ function PromptEngineeringContentSkeleton() {
           </div>
         </div>
 
-        {/* SEC-10 Challenge — cyan-teal gradient */}
+        {/* SEC-10 Challenge - cyan-teal gradient */}
         <div className="bg-gradient-to-r from-cyan-500/80 to-teal-400/80 rounded-xl p-5">
           <div className="flex items-center gap-3 mb-2">
             <div className="w-8 h-8 bg-white/20 rounded-lg"></div>
@@ -942,7 +942,7 @@ function PromptEngineeringContentSkeleton() {
           <div className="h-4 bg-white/15 rounded w-4/5"></div>
         </div>
 
-        {/* SEC-11 Checklist — white card */}
+        {/* SEC-11 Checklist - white card */}
         <div className="border border-slate-200 rounded-xl p-5 bg-white">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-8 h-8 bg-slate-100 rounded-lg"></div>
@@ -958,7 +958,7 @@ function PromptEngineeringContentSkeleton() {
           </div>
         </div>
 
-        {/* SEC-12 What You Learned — teal card */}
+        {/* SEC-12 What You Learned - teal card */}
         <div className="bg-teal-50 border border-teal-200 rounded-xl p-5">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-8 h-8 bg-teal-100 rounded-lg"></div>
@@ -974,7 +974,7 @@ function PromptEngineeringContentSkeleton() {
           </div>
         </div>
 
-        {/* SEC-13 Mini Quiz — indigo card */}
+        {/* SEC-13 Mini Quiz - indigo card */}
         <div className="border-2 border-indigo-200 rounded-xl p-5 bg-indigo-50/30">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-8 h-8 bg-indigo-100 rounded-lg"></div>
@@ -992,7 +992,7 @@ function PromptEngineeringContentSkeleton() {
           </div>
         </div>
 
-        {/* SEC-14 Takeaway — dark gradient */}
+        {/* SEC-14 Takeaway - dark gradient */}
         <div className="bg-gradient-to-r from-slate-800 to-slate-700 rounded-xl p-6 text-center">
           <div className="h-5 w-5 bg-yellow-400/40 rounded mx-auto mb-2"></div>
           <div className="h-5 bg-white/15 rounded w-2/3 mx-auto"></div>
@@ -1008,14 +1008,14 @@ function PromptEngineeringContentSkeleton() {
   );
 }
 
-// Vibe Coding course content skeleton — mirrors VC-01 through VC-10
+// Vibe Coding course content skeleton - mirrors VC-01 through VC-10
 function VibeCodingContentSkeleton() {
   return (
     <div className="max-w-6xl mx-auto animate-pulse">
       {/* Top sections: VC-01 to VC-04 */}
       <div className="px-4 md:px-8 pt-4 md:pt-6 pb-2 md:pb-4 space-y-5">
 
-        {/* VC-01 Mission — blue-violet gradient */}
+        {/* VC-01 Mission - blue-violet gradient */}
         <div className="bg-gradient-to-br from-blue-500/80 via-indigo-500/80 to-violet-600/80 rounded-2xl p-6 md:p-8">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-10 h-10 bg-white/15 rounded-xl"></div>
@@ -1026,7 +1026,7 @@ function VibeCodingContentSkeleton() {
           <div className="h-4 bg-white/10 rounded w-2/3 mt-3"></div>
         </div>
 
-        {/* VC-02 What You'll Build — white card */}
+        {/* VC-02 What You'll Build - white card */}
         <div className="bg-white border border-slate-200 rounded-2xl p-6">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-9 h-9 bg-indigo-50 rounded-xl"></div>
@@ -1047,7 +1047,7 @@ function VibeCodingContentSkeleton() {
           </div>
         </div>
 
-        {/* VC-03 Prerequisites — amber card */}
+        {/* VC-03 Prerequisites - amber card */}
         <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-9 h-9 bg-amber-100 rounded-xl"></div>
@@ -1063,7 +1063,7 @@ function VibeCodingContentSkeleton() {
           </div>
         </div>
 
-        {/* VC-04 Workflow — white card with steps */}
+        {/* VC-04 Workflow - white card with steps */}
         <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
           <div className="px-6 py-4 bg-slate-50 border-b border-slate-100 flex items-center gap-3">
             <div className="w-9 h-9 bg-blue-100 rounded-xl"></div>
@@ -1099,7 +1099,7 @@ function VibeCodingContentSkeleton() {
         </div>
       </div>
 
-      {/* VC-05 Success Criteria — emerald */}
+      {/* VC-05 Success Criteria - emerald */}
       <div className="px-4 md:px-8 pb-4 md:pb-6">
         <div className="rounded-2xl p-5 border-2 border-emerald-200 bg-white">
           <div className="flex items-center gap-3 mb-4">
@@ -1128,7 +1128,7 @@ function VibeCodingContentSkeleton() {
       {/* Bottom sections: VC-06 to VC-10 */}
       <div className="px-4 md:px-8 pb-4 md:pb-8 space-y-5">
 
-        {/* VC-06 Under the Hood — slate collapsible */}
+        {/* VC-06 Under the Hood - slate collapsible */}
         <div className="bg-slate-50 border border-slate-200 rounded-2xl">
           <div className="flex items-center gap-3 px-5 py-4">
             <div className="w-9 h-9 bg-slate-200 rounded-xl"></div>
@@ -1140,7 +1140,7 @@ function VibeCodingContentSkeleton() {
           </div>
         </div>
 
-        {/* VC-07 Pro Tips — violet */}
+        {/* VC-07 Pro Tips - violet */}
         <div className="bg-gradient-to-br from-violet-50 to-purple-50 border border-violet-200 rounded-2xl p-5">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-9 h-9 bg-violet-100 rounded-xl"></div>
@@ -1157,7 +1157,7 @@ function VibeCodingContentSkeleton() {
           </div>
         </div>
 
-        {/* VC-08 Common Pitfalls — red */}
+        {/* VC-08 Common Pitfalls - red */}
         <div className="bg-red-50 border border-red-200 rounded-2xl p-5">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-9 h-9 bg-red-100 rounded-xl"></div>
@@ -1176,7 +1176,7 @@ function VibeCodingContentSkeleton() {
           </div>
         </div>
 
-        {/* VC-09 Level Up — purple gradient */}
+        {/* VC-09 Level Up - purple gradient */}
         <div className="bg-gradient-to-r from-purple-500/80 to-indigo-600/80 rounded-2xl p-6">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-9 h-9 bg-white/15 rounded-xl"></div>
@@ -1186,7 +1186,7 @@ function VibeCodingContentSkeleton() {
           <div className="h-4 bg-white/10 rounded w-4/5"></div>
         </div>
 
-        {/* VC-10 Checkpoint — dark slate */}
+        {/* VC-10 Checkpoint - dark slate */}
         <div className="bg-gradient-to-br from-slate-800 to-slate-700 rounded-2xl p-6">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">

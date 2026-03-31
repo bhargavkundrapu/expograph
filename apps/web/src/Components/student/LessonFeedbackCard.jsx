@@ -7,7 +7,7 @@ import { apiFetch } from "../../services/api";
 const STARS = [1, 2, 3, 4, 5];
 
 /**
- * Premium lesson feedback card — "How was this lesson?" with stars + optional comment.
+ * Premium lesson feedback card - "How was this lesson?" with stars + optional comment.
  * Renders at bottom of lesson; submits to POST .../lessons/:lessonSlug/feedback.
  */
 export default function LessonFeedbackCard({

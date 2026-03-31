@@ -90,7 +90,7 @@ function SectionLessonId({ data }) {
   );
 }
 
-/* CBM-01: Outcome Goal — blue-indigo gradient (clean, professional) */
+/* CBM-01: Outcome Goal - blue-indigo gradient (clean, professional) */
 function SectionOutcomeGoal({ data }) {
   return (
     <SectionWrapper id="cbm-outcome">
@@ -110,7 +110,7 @@ function SectionOutcomeGoal({ data }) {
   );
 }
 
-/* CBM-02: Where You Use It — warm amber (use case) */
+/* CBM-02: Where You Use It - warm amber (use case) */
 function SectionWhereYouUseIt({ data }) {
   return (
     <SectionWrapper id="cbm-where-use">
@@ -134,7 +134,7 @@ function SectionWhereYouUseIt({ data }) {
   );
 }
 
-/* CBM-03: Inputs You Need — slate checklist */
+/* CBM-03: Inputs You Need - slate checklist */
 function SectionInputsYouNeed({ data }) {
   return (
     <SectionWrapper id="cbm-inputs">
@@ -278,7 +278,7 @@ function SectionUpgradePromptPro({ data }) {
   );
 }
 
-/* CBM-10: 3 Variations — teal (variety) */
+/* CBM-10: 3 Variations - teal (variety) */
 function Section3Variations({ data }) {
   return (
     <SectionWrapper id="cbm-variations">
@@ -304,7 +304,7 @@ function Section3Variations({ data }) {
   );
 }
 
-/* CBM-11: Prompt Card Final — amber/gold premium */
+/* CBM-11: Prompt Card Final - amber/gold premium */
 function SectionPromptCardFinal({ data }) {
   return (
     <SectionWrapper id="cbm-prompt-card">

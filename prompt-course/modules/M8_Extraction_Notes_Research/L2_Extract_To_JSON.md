@@ -1,6 +1,6 @@
 # SEC-00: Lesson ID
 
-**M8-L2 — Extract to JSON**
+**M8-L2 - Extract to JSON**
 - **Module:** M8 – Extraction, Notes & Research
 - **Difficulty:** Intermediate
 - **Time:** 10–15 minutes
@@ -154,7 +154,7 @@ Text:
 
 **What changed:**
 - Added an `availability` array with structured objects per day instead of a flat string
-- Added explicit null rules — if data is missing, the field still appears as `null` instead of being skipped
+- Added explicit null rules - if data is missing, the field still appears as `null` instead of being skipped
 - This produces JSON that code can parse without crashing on missing keys
 
 ---
@@ -163,7 +163,7 @@ Text:
 
 Follow these steps:
 
-1. **Pick a short text.** Copy a "About Us" or "Team" paragraph from any company website — something with names, roles, and details.
+1. **Pick a short text.** Copy a "About Us" or "Team" paragraph from any company website - something with names, roles, and details.
 2. **Design your schema.** Write the JSON keys you want: name, role, department, and at least one nested object or array.
 3. **Write the prompt.** Include your schema, a null rule for missing fields, and the "Return ONLY JSON" instruction.
 
@@ -210,7 +210,7 @@ Before you move on, confirm:
 - B) Specify the data type as `(integer)` in your schema
 - C) Ask for XML instead of JSON
 
-**Answer:** B — Always specify the data type next to each key. Writing `"age": (integer)` tells the AI to use a number, not a word.
+**Answer:** B - Always specify the data type next to each key. Writing `"age": (integer)` tells the AI to use a number, not a word.
 
 **Q2:** Your JSON extraction skips a field that wasn't in the source text. The key just disappears. How do you prevent this?
 
@@ -220,4 +220,4 @@ Before you move on, confirm:
 
 # SEC-14: ⚡ One-Line Takeaway
 
-> Show the AI your exact JSON schema — keys, types, and null rules — and it will extract structured data from any text.
+> Show the AI your exact JSON schema - keys, types, and null rules - and it will extract structured data from any text.

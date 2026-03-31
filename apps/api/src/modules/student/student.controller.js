@@ -82,7 +82,7 @@ const getEvents = asyncHandler(async (req, res) => {
   res.json({ ok: true, data: events });
 });
 
-// Courses — no-store so bonus course unlock settings (saved in SuperAdmin) apply immediately
+// Courses - no-store so bonus course unlock settings (saved in SuperAdmin) apply immediately
 const listCourses = asyncHandler(async (req, res) => {
   const { tenantId, userId } = req.auth;
   const courses = await repo.listEnrolledCourses({ tenantId, userId });

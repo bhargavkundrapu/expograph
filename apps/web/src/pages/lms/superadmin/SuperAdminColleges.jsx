@@ -158,7 +158,7 @@ export default function SuperAdminColleges() {
           <div className="px-5 py-4 border-b border-slate-100 bg-slate-50/50">
             <h2 className="font-semibold text-slate-800">Dropdown options ({colleges.length})</h2>
             <p className="text-xs text-slate-500 mt-1">
-              "{OTHER_LABEL}" is always shown in the purchase form — no need to add it.
+              "{OTHER_LABEL}" is always shown in the purchase form-no need to add it.
             </p>
           </div>
 
@@ -169,7 +169,7 @@ export default function SuperAdminColleges() {
           ) : colleges.length === 0 ? (
             <div className="px-5 py-12 text-center">
               <p className="text-slate-500 mb-1">No colleges added yet.</p>
-              <p className="text-sm text-slate-400">Add options above — they will appear in the purchase form dropdown.</p>
+              <p className="text-sm text-slate-400">Add options above-they will appear in the purchase form dropdown.</p>
             </div>
           ) : (
             <ul className="divide-y divide-slate-100">

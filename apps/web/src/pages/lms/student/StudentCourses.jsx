@@ -321,7 +321,7 @@ export default function StudentCourses() {
     );
   }
 
-  // Bonus courses page — Coming Soon (AI Automations lives in main Courses only)
+  // Bonus courses page-Coming Soon (AI Automations lives in main Courses only)
   if (isBonusCoursesPage) {
     return (
       <PageTransition>
@@ -333,7 +333,7 @@ export default function StudentCourses() {
                 Bonus Courses
               </h1>
               <p className={`text-sm ${isDark ? "text-slate-400" : "text-slate-600"}`}>
-                Free extra courses — coming soon.
+                Free extra courses-coming soon.
               </p>
             </div>
             <div className={`rounded-xl border p-12 text-center ${isDark ? "bg-slate-800 border-slate-700" : "bg-white border-slate-200"}`}>
@@ -460,7 +460,7 @@ export default function StudentCourses() {
               const isCompleted = progress === 100;
               const topicsCount = course.modules_count || course.topics_count || course.lessons_count || 0;
               const technologies = course.technologies || course.tags || [];
-              // AI Automations (bonus) is always accessible — never show as locked
+              // AI Automations (bonus) is always accessible-never show as locked
               const locked = !course.enrolled && !isBonusCourse(course);
               const priceRupees = course.price_in_paise ? Math.round(course.price_in_paise / 100) : 0;
               const canBuy = priceRupees >= 1;
@@ -570,7 +570,7 @@ export default function StudentCourses() {
                               }}
                               className="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm transition-colors"
                             >
-                              Get Course — ₹{priceRupees}
+                              Get Course-₹{priceRupees}
                             </button>
                           ) : null}
                         </div>

@@ -6,7 +6,7 @@
 | Field      | Value                          |
 |------------|--------------------------------|
 | Lesson ID  | M1-L3                          |
-| Module     | M1 — Foundations               |
+| Module     | M1 - Foundations               |
 | Difficulty | Intermediate                   |
 | Time       | 10–15 minutes                  |
 
@@ -26,7 +26,7 @@ By the end of this lesson you will be able to:
 <!-- SEC-02 -->
 ## 💡 Use Case
 
-When you are unsure about your own requirements — picking a project topic, drafting a cover letter, or designing a database schema — the AI can interview you first. This prevents wasted iterations and teaches you to think through requirements before building.
+When you are unsure about your own requirements - picking a project topic, drafting a cover letter, or designing a database schema - the AI can interview you first. This prevents wasted iterations and teaches you to think through requirements before building.
 
 ---
 
@@ -56,9 +56,9 @@ social progress...
 <!-- SEC-05 -->
 ## 🔍 Why It Failed
 
-- **No topic given** — the AI picked "importance of education" at random.
-- **No audience or purpose** — it does not know if this is for a class, a blog, or a scholarship application.
-- **No structure preference** — you got a generic five-paragraph style you may not even need.
+- **No topic given** - the AI picked "importance of education" at random.
+- **No audience or purpose** - it does not know if this is for a class, a blog, or a scholarship application.
+- **No structure preference** - you got a generic five-paragraph style you may not even need.
 
 ---
 
@@ -80,7 +80,7 @@ submission context.
 ## 📤 Good Output
 
 ```
-Great — let me ask a few things before I begin:
+Great - let me ask a few things before I begin:
 
 1. What is the essay topic or subject area?
 2. Who is the audience (professor, admissions committee, blog readers)?
@@ -121,7 +121,7 @@ Do not write anything until I answer all questions.
 2. Write a prompt that forces the AI to ask you 5 clarifying questions before starting.
 3. Answer the questions, then compare the final output with your original attempt.
 
-**Your task:** Write a clarifying-questions prompt for this scenario — you want the AI to help you plan a final-year capstone project, but you have not decided on a domain yet.
+**Your task:** Write a clarifying-questions prompt for this scenario - you want the AI to help you plan a final-year capstone project, but you have not decided on a domain yet.
 
 ---
 
@@ -147,7 +147,7 @@ Write a prompt that makes the AI ask 5 role-specific clarifying questions (compa
 <!-- SEC-12 -->
 ## 📚 What You Learned
 
-1. You can flip the conversation — make the AI interview you instead of guessing.
+1. You can flip the conversation - make the AI interview you instead of guessing.
 2. Specifying the number and topic of questions keeps the process focused.
 3. Domain-specific question prompts surface requirements you would otherwise forget.
 
@@ -169,4 +169,4 @@ Write a prompt that makes the AI ask 5 role-specific clarifying questions (compa
 <!-- SEC-14 -->
 ## 💬 One-Line Takeaway
 
-> The best prompt is sometimes not an answer — it is a set of questions that makes the real answer possible.
+> The best prompt is sometimes not an answer - it is a set of questions that makes the real answer possible.

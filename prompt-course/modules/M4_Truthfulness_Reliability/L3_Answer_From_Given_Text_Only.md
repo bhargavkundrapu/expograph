@@ -5,7 +5,7 @@
 | Field      | Value                        |
 |------------|------------------------------|
 | Lesson ID  | M4-L3                       |
-| Module     | M4 — Truthfulness & Reliability |
+| Module     | M4 - Truthfulness & Reliability |
 | Difficulty | Intermediate                 |
 | Time       | 10–15 minutes                |
 
@@ -23,7 +23,7 @@ By the end of this lesson, you will be able to:
 
 ## SEC-02: 💡 Use Case
 
-You're studying for a law exam. You paste a case summary into AI and ask a question about it. The AI gives you a nicely worded answer — but half of it comes from general legal knowledge, not from the case summary you pasted. You don't realize this, and your exam answer mixes up two different legal precedents.
+You're studying for a law exam. You paste a case summary into AI and ask a question about it. The AI gives you a nicely worded answer - but half of it comes from general legal knowledge, not from the case summary you pasted. You don't realize this, and your exam answer mixes up two different legal precedents.
 
 Closed-book mode is essential anytime you need answers grounded in a specific document: reading comprehension, contract analysis, research paper review, studying from specific notes, or extracting data from a provided report. You want the AI to act like a student who can only use the open textbook in front of them.
 
@@ -137,9 +137,9 @@ QUESTION: What is India doing in semiconductor manufacturing?
 
 ## SEC-09: 🧪 Guided Practice
 
-1. **Pick a paragraph from your textbook or lecture notes** — something about 100–200 words on a specific topic.
+1. **Pick a paragraph from your textbook or lecture notes** - something about 100–200 words on a specific topic.
 2. **Paste it into AI with a question, but without any closed-book instruction.** Notice how the AI adds extra information beyond your text.
-3. **Now re-prompt with the closed-book rules and the quoting requirement.** Compare how the output changes — especially notice what gets removed.
+3. **Now re-prompt with the closed-book rules and the quoting requirement.** Compare how the output changes - especially notice what gets removed.
 
 **Your task:** Take one paragraph from your study material. Write a closed-book prompt with the quoting requirement. In your submission, highlight which parts of the first (bad) output were NOT in the original text.
 
@@ -190,7 +190,7 @@ When using AI to answer from a specific document:
 
 **Q2:** Why is "quote the exact phrase" more effective than just saying "only use the provided text"?
 
-**A2:** "Only use the provided text" tells the AI what to do, but provides no proof mechanism. "Quote the exact phrase" adds accountability — if the AI can't produce a matching quote, you know the claim isn't grounded in your source. It turns a rule into a verifiable constraint.
+**A2:** "Only use the provided text" tells the AI what to do, but provides no proof mechanism. "Quote the exact phrase" adds accountability - if the AI can't produce a matching quote, you know the claim isn't grounded in your source. It turns a rule into a verifiable constraint.
 
 ---
 

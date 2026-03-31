@@ -380,7 +380,7 @@ function SectionCheckpoint({ data }) {
         </div>
         {done === total && (
           <div className="mt-4 text-center py-2 bg-emerald-500/20 rounded-lg border border-emerald-400/30">
-            <p className="text-sm font-bold text-emerald-300">All clear — you're ready for the next lesson!</p>
+            <p className="text-sm font-bold text-emerald-300">All clear-you're ready for the next lesson!</p>
           </div>
         )}
       </div>

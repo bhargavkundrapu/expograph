@@ -5,7 +5,7 @@
 | Field      | Value                        |
 |------------|------------------------------|
 | Lesson ID  | M4-L2                       |
-| Module     | M4 — Truthfulness & Reliability |
+| Module     | M4 - Truthfulness & Reliability |
 | Difficulty | Intermediate                 |
 | Time       | 10–15 minutes                |
 
@@ -25,7 +25,7 @@ By the end of this lesson, you will be able to:
 
 You're writing a technical blog post about quantum computing for your college magazine. You ask AI for an overview, and it gives you five paragraphs of fluent, confident text. You publish it. A reader comments that two of the "facts" are completely wrong.
 
-This happens all the time in study notes, project reports, and placement prep answers. AI mixes real facts with plausible-sounding inventions, and there's no way to tell them apart — unless you ask the AI to show its work. Verification prompts make AI accountable by forcing it to back up claims or flag them as uncertain.
+This happens all the time in study notes, project reports, and placement prep answers. AI mixes real facts with plausible-sounding inventions, and there's no way to tell them apart - unless you ask the AI to show its work. Verification prompts make AI accountable by forcing it to back up claims or flag them as uncertain.
 
 ---
 
@@ -92,7 +92,7 @@ For each point:
 
 5. Quantum computers are expected to complement, not replace,
    classical computers for the foreseeable future.
-   [UNSOURCED] — this is a widely held expert opinion but I
+   [UNSOURCED] - this is a widely held expert opinion but I
    cannot point to a single definitive source.
 ```
 
@@ -120,7 +120,7 @@ outdated, exaggerated, or commonly misunderstood.
 
 ## SEC-09: 🧪 Guided Practice
 
-1. **Pick a topic you're currently studying** — something technical where accuracy matters (e.g., "How does TCP/IP handle packet loss?" or "What is the time complexity of Dijkstra's algorithm?").
+1. **Pick a topic you're currently studying** - something technical where accuracy matters (e.g., "How does TCP/IP handle packet loss?" or "What is the time complexity of Dijkstra's algorithm?").
 2. **Ask AI without any verification requirement.** Read the output and try to spot any claims that feel vague or suspiciously confident.
 3. **Re-ask with the source-citation format and the fact-check review step.** Compare how the output changes.
 
@@ -164,7 +164,7 @@ Before trusting any AI-generated factual content, verify:
 
 **Q1:** You get an AI output that says "React was created by Facebook in 2013 [Source: React GitHub repository]." Should you trust this?
 
-**A1:** It's a good sign that a source is cited, but you should still verify. Check the React GitHub repo or Wikipedia to confirm. The citation makes it easier to verify — that's the point. (In this case, the claim is accurate.)
+**A1:** It's a good sign that a source is cited, but you should still verify. Check the React GitHub repo or Wikipedia to confirm. The citation makes it easier to verify - that's the point. (In this case, the claim is accurate.)
 
 ---
 

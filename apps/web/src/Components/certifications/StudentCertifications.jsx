@@ -228,7 +228,7 @@ export default function StudentCertifications() {
             Certifications
           </h1>
           <p className={`text-sm sm:text-base ${isDark ? "text-slate-400" : "text-slate-600"}`}>
-            <span>Complete courses to unlock certificates. Request when you hit 100% — admin approves, then you can download.</span>
+            <span>Complete courses to unlock certificates. Request when you hit 100% -admin approves, then you can download.</span>
           </p>
         </motion.div>
 

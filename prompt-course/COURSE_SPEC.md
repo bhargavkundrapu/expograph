@@ -1,4 +1,5 @@
-# 📘 COURSE SPEC — Intermediate Prompt Engineering
+# 📘 COURSE SPEC 
+Intermediate Prompt Engineering
 
 ## Course Title
 **Prompt Engineering: From Zero to Career-Ready**
@@ -7,7 +8,7 @@
 Intermediate
 
 ## Course Promise
-> By the end of this course, you will write clear, powerful prompts that get exactly the output you need — for study, coding, projects, resume, interviews, images, videos, and more. No guesswork. Just results.
+> By the end of this course, you will write clear, powerful prompts that get exactly the output you need-for study, coding, projects, resume, interviews, images, videos, and more. No guesswork. Just results.
 
 ## Target Audience
 - Engineering students (all branches)
@@ -25,15 +26,15 @@ Intermediate
 After completing this course, you will be able to:
 
 1. **Write structured prompts** using GCCF, 3R Loop, and CRAFTED frameworks
-2. **Control AI output** — format, length, style, and structure
+2. **Control AI output**-format, length, style, and structure
 3. **Debug bad prompts** and fix them systematically
-4. **Avoid hallucinations** — make AI stick to facts
+4. **Avoid hallucinations**-make AI stick to facts
 5. **Create image prompts** for thumbnails, posters, and social media
 6. **Write video scripts** with hooks, storyboards, and shot lists
-7. **Use AI for coding** — spec, debug, refactor, test, system design
-8. **Extract information** — tables, JSON, summaries, flashcards from any text
-9. **Solve reasoning problems** — math, logic, interview questions step-by-step
-10. **Build placement assets** — ATS resume, LinkedIn profile, interview prep, portfolio stories
+7. **Use AI for coding**-spec, debug, refactor, test, system design
+8. **Extract information**-tables, JSON, summaries, flashcards from any text
+9. **Solve reasoning problems**-math, logic, interview questions step-by-step
+10. **Build placement assets**-ATS resume, LinkedIn profile, interview prep, portfolio stories
 
 ## Course Structure
 - **10 Modules** (continuous, no tracks)

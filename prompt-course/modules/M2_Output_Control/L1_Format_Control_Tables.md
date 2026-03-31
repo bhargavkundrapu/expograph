@@ -1,6 +1,6 @@
 # SEC-00: Lesson ID
 
-**M2-L1 — Format Control: Tables**
+**M2-L1 - Format Control: Tables**
 - **Module:** M2 – Output Control
 - **Difficulty:** Intermediate
 - **Time:** 10–15 minutes
@@ -113,7 +113,7 @@ Follow these steps:
 2. **Define your columns.** Write column headers: Feature, then one column per database.
 3. **Write the prompt.** Ask the AI for a markdown table with at least 5 rows covering: Type (SQL/NoSQL), Scalability, Learning Curve, Best For, and License.
 
-**Your task:** Paste your prompt into an AI tool and check — did you get a clean table with exactly the columns and rows you asked for?
+**Your task:** Paste your prompt into an AI tool and check - did you get a clean table with exactly the columns and rows you asked for?
 
 ---
 
@@ -167,4 +167,4 @@ Before you move on, confirm:
 
 # SEC-14: 💬 One-Line Takeaway
 
-> If you don't tell the AI what shape the answer should be, it will always choose a paragraph — so always specify your table structure.
+> If you don't tell the AI what shape the answer should be, it will always choose a paragraph - so always specify your table structure.

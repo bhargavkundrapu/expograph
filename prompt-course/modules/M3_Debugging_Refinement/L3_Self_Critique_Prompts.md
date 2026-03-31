@@ -5,7 +5,7 @@
 | Field | Value |
 |-------|-------|
 | Lesson ID | M3-L3 |
-| Module | M3 — Debugging and Refinement |
+| Module | M3 - Debugging and Refinement |
 | Difficulty | Intermediate |
 | Time | 10–15 minutes |
 
@@ -50,9 +50,9 @@ TCP is used for web browsing and email. UDP is used for streaming and gaming.
 
 ## SEC-05 · Why It Failed
 
-- **No quality check** — The user accepted this at face value. The explanation is correct but shallow. It doesn't explain *why* TCP is reliable or *when* you'd choose one over the other.
-- **Surface-level answer** — Without asking for depth, the AI gave a textbook-minimum response that wouldn't help in an exam or interview.
-- **No self-review** — The user never asked the AI to check whether its own answer was complete, accurate, or useful.
+- **No quality check** - The user accepted this at face value. The explanation is correct but shallow. It doesn't explain *why* TCP is reliable or *when* you'd choose one over the other.
+- **Surface-level answer** - Without asking for depth, the AI gave a textbook-minimum response that wouldn't help in an exam or interview.
+- **No self-review** - The user never asked the AI to check whether its own answer was complete, accurate, or useful.
 
 ---
 
@@ -75,7 +75,7 @@ Then rewrite an improved version that fixes every issue you found.
 ## SEC-07 · Good Output
 
 ```
-[Initial explanation of TCP vs UDP — covers handshake, reliability, ordering, use cases]
+[Initial explanation of TCP vs UDP - covers handshake, reliability, ordering, use cases]
 
 SELF-CRITIQUE:
 - Well explained: basic differences and handshake concept
@@ -129,9 +129,9 @@ Rules:
 
 Try this yourself:
 
-1. **Ask without critique** — Send this prompt: "Explain what an API is and give an example." Save the response.
-2. **Add self-critique** — Now send: "Critique your previous answer. What's missing? What would confuse a beginner? Rate its clarity from 1-5 and justify the score."
-3. **Request improvement** — Send: "Now rewrite your answer fixing everything you identified. Target a 5/5 on clarity."
+1. **Ask without critique** - Send this prompt: "Explain what an API is and give an example." Save the response.
+2. **Add self-critique** - Now send: "Critique your previous answer. What's missing? What would confuse a beginner? Rate its clarity from 1-5 and justify the score."
+3. **Request improvement** - Send: "Now rewrite your answer fixing everything you identified. Target a 5/5 on clarity."
 
 **Your task:** Compare your original answer to the final version. List 3 specific improvements that the self-critique process produced.
 
@@ -169,9 +169,9 @@ Before moving on, confirm you can do the following:
 
 ## SEC-12 · 📘 What You Learned
 
-1. **AI can review itself** — By explicitly asking the AI to critique its own output, you surface errors and gaps that you might miss, especially in unfamiliar topics.
-2. **Rubrics force rigor** — A numbered scoring rubric (1-5) with named criteria produces more honest and actionable self-critique than an open-ended "what's wrong?"
-3. **Critique + rewrite = one prompt** — The most efficient pattern is: answer, then critique, then improved answer — all in a single prompt. This gets you a better result in one shot.
+1. **AI can review itself** - By explicitly asking the AI to critique its own output, you surface errors and gaps that you might miss, especially in unfamiliar topics.
+2. **Rubrics force rigor** - A numbered scoring rubric (1-5) with named criteria produces more honest and actionable self-critique than an open-ended "what's wrong?"
+3. **Critique + rewrite = one prompt** - The most efficient pattern is: answer, then critique, then improved answer - all in a single prompt. This gets you a better result in one shot.
 
 ---
 
@@ -179,14 +179,14 @@ Before moving on, confirm you can do the following:
 
 **Q1:** Why is "Critique your answer" less effective than providing a rubric with specific criteria?
 
-**A1:** "Critique your answer" is vague — the AI might mention one or two surface-level issues. A rubric with specific criteria (accuracy, completeness, clarity) forces the AI to evaluate each dimension separately, making it harder to skip over weaknesses.
+**A1:** "Critique your answer" is vague - the AI might mention one or two surface-level issues. A rubric with specific criteria (accuracy, completeness, clarity) forces the AI to evaluate each dimension separately, making it harder to skip over weaknesses.
 
 **Q2:** You ask an AI to score itself on a coding explanation and it gives itself 5/5 on everything. What should you do?
 
-**A2:** Add a constraint like "A score of 5 means a senior developer would use this as documentation. Be strict — most answers deserve a 3 or 4." You can also ask it to justify each score with evidence. AI tends to be generous with self-ratings unless you explicitly ask it to be critical.
+**A2:** Add a constraint like "A score of 5 means a senior developer would use this as documentation. Be strict - most answers deserve a 3 or 4." You can also ask it to justify each score with evidence. AI tends to be generous with self-ratings unless you explicitly ask it to be critical.
 
 ---
 
 ## SEC-14 · 💬 One-Line Takeaway
 
-> Don't just ask the AI for an answer — ask it to grade its own answer, then beat that grade.
+> Don't just ask the AI for an answer - ask it to grade its own answer, then beat that grade.

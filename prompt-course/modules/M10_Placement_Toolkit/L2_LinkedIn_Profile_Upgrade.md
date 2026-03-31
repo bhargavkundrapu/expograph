@@ -6,7 +6,7 @@
 | Field      | Value                          |
 |------------|--------------------------------|
 | Lesson ID  | M10-L2                         |
-| Module     | M10 — Placement Toolkit        |
+| Module     | M10 - Placement Toolkit        |
 | Difficulty | Intermediate                   |
 | Time       | 10–15 minutes                  |
 
@@ -53,9 +53,9 @@ I am a quick learner with good communication skills.
 <!-- SEC-05 -->
 ## 🔍 Why It Failed
 
-- **No role specified** — the AI wrote a generic bio that fits nobody and everybody.
-- **No current profile details** — the AI invented filler phrases like "passionate" and "quick learner."
-- **No format guidance** — you got one blob instead of separate headline, about, and experience sections.
+- **No role specified** - the AI wrote a generic bio that fits nobody and everybody.
+- **No current profile details** - the AI invented filler phrases like "passionate" and "quick learner."
+- **No format guidance** - you got one blob instead of separate headline, about, and experience sections.
 
 ---
 
@@ -94,14 +94,14 @@ responsive, user-first interfaces
 
 About:
 I build clean, responsive web interfaces using React.js and Tailwind
-CSS. Over the past year I shipped three projects — a weather app with
+CSS. Over the past year I shipped three projects - a weather app with
 live API data, a personal portfolio, and an e-commerce dashboard with
 filtering and cart logic. During my internship at a startup, I fixed
 UI bugs across 12 screens and improved load time by reducing
 unnecessary re-renders. I am looking for frontend roles where I can
 grow while delivering polished user experiences.
 
-Experience — Frontend Intern, XYZ Startup:
+Experience - Frontend Intern, XYZ Startup:
 • Resolved 40+ UI bugs across 12 screens, improving cross-browser
   consistency
 • Reduced component re-renders by 30% through memoization techniques
@@ -126,7 +126,7 @@ Format: Give me four sections:
   1. Headline (under 120 characters)
   2. About section (under 150 words, first person)
   3. Rewritten experience entry (3 bullet points with action verbs)
-  4. Keyword report — a table with two columns: "Keyword" and "Where
+  4. Keyword report - a table with two columns: "Keyword" and "Where
      it appears" (headline / about / experience / missing)
 Task breakdown: Target keywords that recruiters use when searching for
 frontend developers.
@@ -174,7 +174,7 @@ Write a CRAFTED prompt that generates a headline, about section, and a keyword p
 <!-- SEC-12 -->
 ## 📚 What You Learned
 
-1. Recruiters find you on LinkedIn through keyword searches — your profile must contain the right terms.
+1. Recruiters find you on LinkedIn through keyword searches - your profile must contain the right terms.
 2. The CRAFTED framework helps you give the AI enough context to write a specific, non-generic profile.
 3. A keyword placement report shows where each important term appears and what is missing.
 
@@ -189,7 +189,7 @@ Write a CRAFTED prompt that generates a headline, about section, and a keyword p
 - B) It contains no searchable keywords tied to a specific role
 - C) It uses first person
 
-> **A1:** B — phrases like "tech enthusiast" are not terms recruiters search for. Use specific skills like "React.js" or "SQL" instead.
+> **A1:** B - phrases like "tech enthusiast" are not terms recruiters search for. Use specific skills like "React.js" or "SQL" instead.
 
 **Q2:** In the CRAFTED framework, what does the "E" (Examples) do for a LinkedIn prompt?
 
@@ -200,4 +200,4 @@ Write a CRAFTED prompt that generates a headline, about section, and a keyword p
 <!-- SEC-14 -->
 ## 💬 One-Line Takeaway
 
-> Recruiters search LinkedIn like Google — if the right keywords are not in your profile, you are invisible.
+> Recruiters search LinkedIn like Google - if the right keywords are not in your profile, you are invisible.

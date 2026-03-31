@@ -6,7 +6,7 @@
 | Field      | Value                              |
 |------------|------------------------------------|
 | Lesson ID  | M7-L3                              |
-| Module     | M7 — Coding With AI                |
+| Module     | M7 - Coding With AI                |
 | Difficulty | Intermediate                       |
 | Time       | 10–15 minutes                      |
 
@@ -18,7 +18,7 @@
 By the end of this lesson you will be able to:
 
 - 🎯 Write a refactoring prompt that tells AI exactly what to improve
-- 🎯 Ask for specific improvements — readability, performance, or DRY principle (Don't Repeat Yourself)
+- 🎯 Ask for specific improvements - readability, performance, or DRY principle (Don't Repeat Yourself)
 - 🎯 Get AI to explain each change it makes so you learn while you clean up
 
 ---
@@ -26,7 +26,7 @@ By the end of this lesson you will be able to:
 <!-- SEC-02 -->
 ## 💡 Use Case
 
-Your semester project works, but the code is a mess. Copy-pasted blocks, confusing variable names, functions that do five things at once. You need to clean it up before the submission — or before a teammate reads it and loses their mind. AI can refactor your code fast, but only if you tell it what "better" means.
+Your semester project works, but the code is a mess. Copy-pasted blocks, confusing variable names, functions that do five things at once. You need to clean it up before the submission - or before a teammate reads it and loses their mind. AI can refactor your code fast, but only if you tell it what "better" means.
 
 ---
 
@@ -57,9 +57,9 @@ Here are some general suggestions to improve your code:
 <!-- SEC-05 -->
 ## 🔍 Why It Failed
 
-- **No code provided** — The AI gave textbook advice because it had nothing to refactor.
-- **"Better" is vague** — Better how? Faster? More readable? Fewer lines? The AI cannot read your mind.
-- **No constraints** — Without knowing the goal, the AI defaults to a generic checklist.
+- **No code provided** - The AI gave textbook advice because it had nothing to refactor.
+- **"Better" is vague** - Better how? Faster? More readable? Fewer lines? The AI cannot read your mind.
+- **No constraints** - Without knowing the goal, the AI defaults to a generic checklist.
 
 ---
 
@@ -121,7 +121,7 @@ def process_grades(student_data):
 
 What changed:
 1. Renamed d, r, i to student_data, results, name/score
-2. Extracted grade logic into get_grade() helper — removes 5 repeated
+2. Extracted grade logic into get_grade() helper - removes 5 repeated
    dict constructions
 3. Derived status from grade instead of duplicating pass/fail logic
 4. Used tuple unpacking (name, score) for clarity
@@ -177,7 +177,7 @@ Format:
 
 Try this yourself:
 
-1. Find a function you wrote recently that you know is messy — long, repetitive, or hard to read.
+1. Find a function you wrote recently that you know is messy - long, repetitive, or hard to read.
 2. Write a refactoring prompt with: the code, the specific improvement you want (readability, DRY, performance), and the constraint to keep the same behavior.
 3. Compare the AI's refactored version with your original. Check that the output is still correct.
 
@@ -237,7 +237,7 @@ Before moving on, confirm:
 <!-- SEC-12 -->
 ## 📘 What You Learned
 
-1. "Make it better" gives generic advice. Targeting specific qualities — readability, DRY, performance — gives real refactoring.
+1. "Make it better" gives generic advice. Targeting specific qualities - readability, DRY, performance - gives real refactoring.
 2. Always include the original code and the constraint to keep the same behavior. AI cannot refactor code it cannot see.
 3. Asking AI to explain each change turns refactoring into a learning session, not just a cleanup.
 
@@ -259,4 +259,4 @@ Before moving on, confirm:
 <!-- SEC-14 -->
 ## 💬 One-Line Takeaway
 
-> Tell AI what "better" means — vague refactoring requests get vague results.
+> Tell AI what "better" means - vague refactoring requests get vague results.

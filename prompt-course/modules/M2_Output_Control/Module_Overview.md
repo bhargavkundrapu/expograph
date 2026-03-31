@@ -19,7 +19,7 @@ Getting a good answer is step one. Getting it in the exact format you need is th
 | M2-L5 | Multi-Version Output | Get 3 different versions in one prompt |
 
 ## Key Skill
-Formatting is what separates a casual AI user from a power user. After this module, you control the output — not the AI.
+Formatting is what separates a casual AI user from a power user. After this module, you control the output - not the AI.
 
 ## Time to Complete
 50-75 minutes (5 lessons x 10-15 min each)

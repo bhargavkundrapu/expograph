@@ -135,7 +135,7 @@ export default function StudentProfile() {
           animate={{ opacity: 1, y: 0 }}
           className={`rounded-2xl overflow-hidden border shadow-lg ${isDark ? "bg-slate-800 border-slate-700" : "bg-white border-slate-100"}`}
         >
-          {/* Banner — visible, premium color; matches indigo/violet theme */}
+          {/* Banner - visible, premium color; matches indigo/violet theme */}
           <div
             className="h-24 sm:h-32 relative"
             style={
@@ -179,7 +179,7 @@ export default function StudentProfile() {
                   <p className={`text-xs mt-1 flex items-center gap-1.5 font-mono ${isDark ? "text-slate-500" : "text-slate-400"}`}>
                     <FiHash className="w-3.5 h-3.5" />
                     <span>User ID:</span>
-                    <span>{profileLoaded ? "—" : "…"}</span>
+                    <span>{profileLoaded ? "-" : "…"}</span>
                   </p>
                 )}
                 <div className="flex items-center gap-3 mt-2">
@@ -283,7 +283,7 @@ export default function StudentProfile() {
                 </button>
               ) : (
                 <p className={`font-mono text-lg ${isDark ? "text-slate-500" : "text-slate-400"}`}>
-                  {profileLoaded ? "—" : "…"}
+                  {profileLoaded ? "-" : "…"}
                 </p>
               )}
               <p className={`text-[10px] mt-0.5 ${isDark ? "text-slate-500" : "text-slate-400"}`}>

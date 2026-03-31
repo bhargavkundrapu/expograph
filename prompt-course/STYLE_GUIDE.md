@@ -1,4 +1,4 @@
-# ✍️ STYLE GUIDE — Prompt Engineering Course
+# ✍️ STYLE GUIDE - Prompt Engineering Course
 
 ## Writing Rules
 
@@ -12,7 +12,7 @@
 - Friendly. Like a senior student helping a junior.
 - Motivating. Never condescending.
 - Direct. Say what to do. Don't say "you might want to consider..."
-- Say "you" — talk directly to the student.
+- Say "you" - talk directly to the student.
 
 ### Jargon Policy
 - If a technical term is necessary, **explain it immediately** in the same sentence.
@@ -22,7 +22,7 @@
 ### Examples
 - Every concept MUST have at least one example.
 - Show **bad prompt → bad output** first, then **good prompt → good output**.
-- Examples must be **realistic** — things a student would actually do.
+- Examples must be **realistic** - things a student would actually do.
 - Keep example outputs short (3–8 lines max).
 
 ## Formatting Rules
@@ -82,8 +82,8 @@
 - "At the end of the day..."
 
 ### Difficulty Labels
-- **Easy** — Anyone can do this with zero experience
-- **Medium** — Needs you to think a bit and experiment
+- **Easy** - Anyone can do this with zero experience
+- **Medium** - Needs you to think a bit and experiment
 
 ## Mobile-Friendly Rules
 - Keep lines under 80 characters when possible

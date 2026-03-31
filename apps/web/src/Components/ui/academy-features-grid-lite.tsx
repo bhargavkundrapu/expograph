@@ -50,7 +50,7 @@ const featureDataLite = [
     icon: <LayoutDashboard className="h-4 w-4" />,
     title: "Learning Portal",
     tag: "Your Dashboard",
-    description: "A learner-friendly LMS — track progress, manage courses & stay on track.",
+    description: "A learner-friendly LMS-track progress, manage courses & stay on track.",
     accent: {
       borderBottom: "border-b-2 border-b-fuchsia-500/40",
       iconBg: "bg-fuchsia-500/10 border-fuchsia-500/30",

@@ -9,5 +9,5 @@ This folder follows the **shadcn-style** structure for reusable UI primitives an
 - **Stack:** Tailwind CSS (via `@tailwindcss/vite`), TypeScript (`.tsx`), and `cn()` from `@/lib/utils` for class merging. No extra setup needed for Tailwind or TypeScript in this project.
 
 - **Current components:**
-  - `isometric-wave-grid-background.tsx` — **IsoLevelWarp**: animated isometric wave grid with mouse interaction; used in the Academy hero. Props: `color` (RGB string), `speed`, `density`, `className`.
+  - `isometric-wave-grid-background.tsx`-**IsoLevelWarp**: animated isometric wave grid with mouse interaction; used in the Academy hero. Props: `color` (RGB string), `speed`, `density`, `className`.
 

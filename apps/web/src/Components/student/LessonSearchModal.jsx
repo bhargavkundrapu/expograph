@@ -365,7 +365,7 @@ export default function LessonSearchModal({
                 </div>
               )}
 
-              {/* Sections — shows matching content text */}
+              {/* Sections - shows matching content text */}
               {showSections && localSections.length > 0 && (
                 <div>
                   {activeTab === "all" && (

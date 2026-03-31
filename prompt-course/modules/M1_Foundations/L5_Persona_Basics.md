@@ -1,4 +1,4 @@
-# Lesson: Persona Basics — Give the AI a Role
+# Lesson: Persona Basics - Give the AI a Role
 
 <!-- SEC-00 -->
 ## 🆔 Lesson ID
@@ -6,7 +6,7 @@
 | Field      | Value                          |
 |------------|--------------------------------|
 | Lesson ID  | M1-L5                          |
-| Module     | M1 — Foundations               |
+| Module     | M1 - Foundations               |
 | Difficulty | Intermediate                   |
 | Time       | 10–15 minutes                  |
 
@@ -55,9 +55,9 @@ They are widely used in web applications, banking, and healthcare.
 <!-- SEC-05 -->
 ## 🔍 Why It Failed
 
-- **No persona** — the AI defaulted to a generic textbook tone that is neither engaging nor tailored.
-- **No audience** — it does not know if you are a beginner, an intermediate student, or a professional.
-- **No depth control** — you got a surface-level overview when you might have needed practical detail.
+- **No persona** - the AI defaulted to a generic textbook tone that is neither engaging nor tailored.
+- **No audience** - it does not know if you are a beginner, an intermediate student, or a professional.
+- **No depth control** - you got a surface-level overview when you might have needed practical detail.
 
 ---
 
@@ -87,10 +87,10 @@ A spreadsheet works fine when you have 50 rows. But when your app has
 and protect that data fast. That is what a database does.
 
 SQL databases (like PostgreSQL) are like a library with a strict
-cataloguing system — every book has a fixed shelf and category. Use
+cataloguing system - every book has a fixed shelf and category. Use
 SQL when your data has clear relationships, like users and their orders.
 
-NoSQL databases (like MongoDB) are like a big box of labelled folders —
+NoSQL databases (like MongoDB) are like a big box of labelled folders -
 flexible, no fixed structure. Use NoSQL when your data shape changes
 often, like storing different types of social media posts.
 
@@ -155,7 +155,7 @@ Write a prompt that makes the AI act as a senior interviewer at a product-based 
 <!-- SEC-12 -->
 ## 📚 What You Learned
 
-1. A persona changes what the AI says and how it says it — same question, different role, different answer.
+1. A persona changes what the AI says and how it says it - same question, different role, different answer.
 2. Defining persona traits (patient, strict, humorous) gives you control beyond just the role title.
 3. Combining persona + tone + audience constraints produces the most consistent and useful outputs.
 
@@ -170,11 +170,11 @@ Write a prompt that makes the AI act as a senior interviewer at a product-based 
 
 **Q2:** Why is "Act as an expert" a weak persona instruction?
 
-> **A2:** "Expert" is too generic — expert in what field? With what experience? Talking to whom? A strong persona includes the domain, experience level, and audience (e.g., "Act as a cybersecurity engineer with 8 years of experience explaining to a non-technical manager").
+> **A2:** "Expert" is too generic - expert in what field? With what experience? Talking to whom? A strong persona includes the domain, experience level, and audience (e.g., "Act as a cybersecurity engineer with 8 years of experience explaining to a non-technical manager").
 
 ---
 
 <!-- SEC-14 -->
 ## 💬 One-Line Takeaway
 
-> The role you give the AI decides the answer you get — choose the persona before you type the question.
+> The role you give the AI decides the answer you get - choose the persona before you type the question.

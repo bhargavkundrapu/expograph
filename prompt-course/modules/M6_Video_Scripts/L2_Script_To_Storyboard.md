@@ -8,7 +8,7 @@
 ---
 
 ## SEC-00: Lesson ID
-> M6-L2 — Convert a script into a visual shot-by-shot plan
+> M6-L2 - Convert a script into a visual shot-by-shot plan
 
 ---
 
@@ -23,7 +23,7 @@ What you'll learn in this lesson:
 ## SEC-02: 💡 Use Case
 **When would you use this?**
 
-You've written a great script. Now you need to actually film it. Without a storyboard, you'll forget what shots you need. A storyboard tells you exactly what to show on screen for every line — so filming takes 30 minutes instead of 3 hours.
+You've written a great script. Now you need to actually film it. Without a storyboard, you'll forget what shots you need. A storyboard tells you exactly what to show on screen for every line - so filming takes 30 minutes instead of 3 hours.
 
 ---
 
@@ -51,9 +51,9 @@ Here are some tips for creating one:
 ---
 
 ## SEC-05: 🔍 Why It Failed
-- No script provided — the AI has nothing to turn into a storyboard
-- No format specified — the AI gave generic tips instead of an actual scene-by-scene plan
-- No visual detail requested — the output has zero information about what appears on screen
+- No script provided - the AI has nothing to turn into a storyboard
+- No format specified - the AI gave generic tips instead of an actual scene-by-scene plan
+- No visual detail requested - the output has zero information about what appears on screen
 
 ---
 
@@ -90,15 +90,15 @@ Visual: Creator looking at camera, frustrated expression, messy desk
 Camera: Close-up on face
 
 Scene 2: "Tool 1: ChatGPT for brainstorming ideas."
-Visual: Screen recording — ChatGPT generating a list of ideas
+Visual: Screen recording - ChatGPT generating a list of ideas
 Camera: Screen capture with small facecam in corner
 
 Scene 3: "Tool 2: Gamma for instant presentations."
-Visual: Screen recording — Gamma turning notes into a slide deck
+Visual: Screen recording - Gamma turning notes into a slide deck
 Camera: Screen capture, zoom into the finished slide
 
 Scene 4: "Tool 3: NotebookLM for smart study notes."
-Visual: Screen recording — NotebookLM summarizing a PDF
+Visual: Screen recording - NotebookLM summarizing a PDF
 Camera: Screen capture with facecam reaction
 
 Scene 5: "Which one are you trying first? Comment below."
@@ -134,7 +134,7 @@ For each scene, provide:
 Format as a numbered list. Total video length: 60 seconds.
 ```
 
-**What changed**: Added timestamps for each scene, transition types between shots, and on-screen text notes — everything an editor needs to assemble the video without guessing.
+**What changed**: Added timestamps for each scene, transition types between shots, and on-screen text notes - everything an editor needs to assemble the video without guessing.
 
 ---
 
@@ -143,7 +143,7 @@ Try this yourself:
 
 1. Take any short script (use one from Lesson M6-L1 or write a new one)
 2. Write a prompt asking the AI to convert it into a storyboard with visuals and camera angles
-3. Check the output — does every scene have a clear visual description?
+3. Check the output - does every scene have a clear visual description?
 
 **Your task**: Convert a 45-second script about "my morning routine" into a 4-5 scene storyboard with camera angles and on-screen visuals.
 
@@ -178,16 +178,16 @@ Before moving on, confirm:
 - B) The actual script text
 - C) Your camera brand
 
-**Answer**: B) The actual script text — the AI can't create a shot-by-shot plan if it doesn't have the script to break down.
+**Answer**: B) The actual script text - the AI can't create a shot-by-shot plan if it doesn't have the script to break down.
 
 **Q2**: What does adding timestamps to a storyboard help with?
 - A) Making the video go viral
-- B) Pacing — knowing how long each scene should last
+- B) Pacing - knowing how long each scene should last
 - C) Choosing background music
 
-**Answer**: B) Pacing — timestamps tell you how long each scene runs so your video fits the target duration exactly.
+**Answer**: B) Pacing - timestamps tell you how long each scene runs so your video fits the target duration exactly.
 
 ---
 
 ## SEC-14: ⚡ One-Line Takeaway
-> A storyboard is your video's blueprint — give the AI your script and it will show you exactly what to film.
+> A storyboard is your video's blueprint - give the AI your script and it will show you exactly what to film.

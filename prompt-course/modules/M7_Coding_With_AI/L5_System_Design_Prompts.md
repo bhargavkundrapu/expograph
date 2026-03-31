@@ -6,7 +6,7 @@
 | Field      | Value                              |
 |------------|------------------------------------|
 | Lesson ID  | M7-L5                              |
-| Module     | M7 — Coding With AI                |
+| Module     | M7 - Coding With AI                |
 | Difficulty | Intermediate                       |
 | Time       | 10–15 minutes                      |
 
@@ -26,7 +26,7 @@ By the end of this lesson you will be able to:
 <!-- SEC-02 -->
 ## 💡 Use Case
 
-You are building your final year project and need to decide: monolith or microservices? SQL or NoSQL? REST or WebSockets? These choices shape everything. Or maybe you are preparing for a system design interview and need to practice thinking about scale, trade-offs, and components. AI can help you explore designs fast — but only if you give it real requirements and constraints.
+You are building your final year project and need to decide: monolith or microservices? SQL or NoSQL? REST or WebSockets? These choices shape everything. Or maybe you are preparing for a system design interview and need to practice thinking about scale, trade-offs, and components. AI can help you explore designs fast - but only if you give it real requirements and constraints.
 
 ---
 
@@ -59,9 +59,9 @@ Would you like me to go into detail on any of these steps?
 <!-- SEC-05 -->
 ## 🔍 Why It Failed
 
-- **No system specified** — The AI does not know if you are building a chat app, an e-commerce site, or a file storage service.
-- **No requirements or scale** — Without knowing the number of users, data size, or performance needs, the AI gave a textbook outline.
-- **No constraints** — The AI does not know your team size, timeline, or tech skills, so it cannot make real recommendations.
+- **No system specified** - The AI does not know if you are building a chat app, an e-commerce site, or a file storage service.
+- **No requirements or scale** - Without knowing the number of users, data size, or performance needs, the AI gave a textbook outline.
+- **No constraints** - The AI does not know your team size, timeline, or tech skills, so it cannot make real recommendations.
 
 ---
 
@@ -94,7 +94,7 @@ Task breakdown:
 2. Then add supporting components (auth, storage, status)
 3. Pick the simplest tech that fits the constraints
 
-Examples: Component description like "WebSocket Server — handles
+Examples: Component description like "WebSocket Server - handles
 real-time message delivery between connected clients."
 
 Desired depth: Enough detail to start coding. No theoretical
@@ -110,11 +110,11 @@ overviews.
 ## Chat App Architecture (Campus MVP)
 
 **System Components:**
-1. WebSocket Server — handles real-time message delivery
-2. REST API — handles auth, user profiles, chat history
-3. Message Queue — buffers messages when recipients are offline
-4. Database — stores users, messages, and chat rooms
-5. Auth Service — login/signup with JWT tokens
+1. WebSocket Server - handles real-time message delivery
+2. REST API - handles auth, user profiles, chat history
+3. Message Queue - buffers messages when recipients are offline
+4. Database - stores users, messages, and chat rooms
+5. Auth Service - login/signup with JWT tokens
 
 **Tech Stack:**
 - Backend: Node.js (Express + Socket.io)
@@ -187,7 +187,7 @@ option, not just what.
 
 Try this yourself:
 
-1. Pick a system you want to build — a URL shortener, a file sharing app, or a notification service.
+1. Pick a system you want to build - a URL shortener, a file sharing app, or a notification service.
 2. Write a CRAFTED prompt with specific requirements: user count, features, team skills, timeline, and budget.
 3. Check the output: does it have components, tech stack, data flow, and schema? If it is too vague, add more constraints and try again.
 
@@ -225,7 +225,7 @@ Before moving on, confirm:
 
 1. "Design a system" without requirements gives a textbook outline. Add users, features, team skills, and constraints to get a real architecture.
 2. The CRAFTED framework maps perfectly to system design: clear objective (the system), role (architect), added context (requirements), format (components + schema), task breakdown (design steps), examples (component descriptions), desired depth (actionable).
-3. Trade-off tables force AI to compare options instead of picking one. This is how real architects think — and how interviewers expect you to answer.
+3. Trade-off tables force AI to compare options instead of picking one. This is how real architects think - and how interviewers expect you to answer.
 
 ---
 
@@ -234,7 +234,7 @@ Before moving on, confirm:
 
 **Q1:** You ask AI to "design a backend" and it suggests Kubernetes, Redis, and Kafka. Your team is 2 students with 4 weeks. What was missing from your prompt?
 
-> **A1:** Constraints — team size, timeline, and skill level. Without those, the AI recommended enterprise-scale tools that are overkill for a student project.
+> **A1:** Constraints - team size, timeline, and skill level. Without those, the AI recommended enterprise-scale tools that are overkill for a student project.
 
 **Q2:** Why is a trade-off table more useful than a single tech recommendation?
 
@@ -245,4 +245,4 @@ Before moving on, confirm:
 <!-- SEC-14 -->
 ## 💬 One-Line Takeaway
 
-> A system design prompt without requirements is like a blueprint without measurements — technically a drawing, practically useless.
+> A system design prompt without requirements is like a blueprint without measurements - technically a drawing, practically useless.

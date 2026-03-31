@@ -8,7 +8,7 @@
 ---
 
 ## SEC-00: Lesson ID
-> M5-L5 — Debug and improve image prompts step by step using the 3R Loop
+> M5-L5 - Debug and improve image prompts step by step using the 3R Loop
 
 ---
 
@@ -23,7 +23,7 @@ What you'll learn in this lesson:
 ## SEC-02: 💡 Use Case
 **When would you use this?**
 
-You write a detailed image prompt, hit generate, and the result looks wrong — the face is distorted, the style is off, or the composition is nothing like what you asked for. Most people just hit "generate again" and hope for the best. That's a waste of time. This lesson teaches you to diagnose what went wrong and fix your prompt like a pro, so every round gets you closer to the image you want.
+You write a detailed image prompt, hit generate, and the result looks wrong - the face is distorted, the style is off, or the composition is nothing like what you asked for. Most people just hit "generate again" and hope for the best. That's a waste of time. This lesson teaches you to diagnose what went wrong and fix your prompt like a pro, so every round gets you closer to the image you want.
 
 ---
 
@@ -44,7 +44,7 @@ Output:
 A cluttered image with a shiny metallic robot standing in a
 generic classroom. The students are blurry and some have
 distorted hands. The robot's face looks uncanny. The composition
-is random — the robot is too small in the frame. The style is
+is random - the robot is too small in the frame. The style is
 trying to be photorealistic but falls into the uncanny valley.
 ```
 
@@ -52,8 +52,8 @@ trying to be photorealistic but falls into the uncanny valley.
 
 ## SEC-05: 🔍 Why It Failed
 - The prompt used **buzzwords** ("4k, masterpiece") instead of specific visual directions
-- No **composition** instructions — the AI didn't know what to focus on
-- The subject was **too complex** — many students plus a robot without clear hierarchy leads to chaos
+- No **composition** instructions - the AI didn't know what to focus on
+- The subject was **too complex** - many students plus a robot without clear hierarchy leads to chaos
 
 ---
 
@@ -61,19 +61,19 @@ trying to be photorealistic but falls into the uncanny valley.
 
 Using the **3R Loop** to fix it step by step:
 
-**Round 1 — Request:**
+**Round 1 - Request:**
 ```
 A futuristic robot teacher in a classroom full of students,
 photorealistic, 4k, ultra detailed, masterpiece
 ```
 Result: Cluttered, distorted, no clear focal point.
 
-**Round 1 — Review:**
+**Round 1 - Review:**
 - Problem 1: Too many subjects competing for attention
 - Problem 2: No camera angle or composition
-- Problem 3: "4k masterpiece" adds nothing — need actual style details
+- Problem 3: "4k masterpiece" adds nothing - need actual style details
 
-**Round 2 — Refine:**
+**Round 2 - Refine:**
 ```
 Subject: A sleek humanoid robot teacher standing at the front of a modern classroom, pointing at a holographic display
 Composition: Medium shot, the robot is the clear focal point in the center, 3-4 students visible from behind (backs of heads only, slightly blurred)
@@ -102,24 +102,24 @@ Clean composition with a clear focal point.
 ---
 
 ## SEC-08: 🚀 Upgrade Prompt
-Take it one level higher — use a systematic debugging checklist:
+Take it one level higher - use a systematic debugging checklist:
 
 **Image Debugging Checklist** (run through this every time an image looks wrong):
 
 ```
-1. SUBJECT CHECK — Is the main subject clear? Is there only one focal point?
+1. SUBJECT CHECK - Is the main subject clear? Is there only one focal point?
    Fix: Simplify. Remove competing subjects. Use "focal point is X."
 
-2. STYLE CHECK — Did the AI use the right art style?
+2. STYLE CHECK - Did the AI use the right art style?
    Fix: Be specific. Say "oil painting" not just "artistic." Add a reference like "in the style of Pixar 3D."
 
-3. COMPOSITION CHECK — Is the framing and camera angle right?
+3. COMPOSITION CHECK - Is the framing and camera angle right?
    Fix: Add camera angle (low, high, eye-level), framing (rule of thirds), and shot type (close-up, wide).
 
-4. ANATOMY CHECK — Are hands, faces, and limbs correct?
+4. ANATOMY CHECK - Are hands, faces, and limbs correct?
    Fix: Add negative prompts: "no extra fingers, no distorted faces, no extra limbs."
 
-5. MOOD CHECK — Does the image feel right emotionally?
+5. MOOD CHECK - Does the image feel right emotionally?
    Fix: Specify lighting (golden hour, neon, dramatic shadows) and color palette (warm, cool, muted).
 ```
 
@@ -138,25 +138,25 @@ Negative prompt: no distorted hands, no extra limbs, no blurry faces, no text, n
 Aspect ratio: 16:9
 ```
 
-**What changed**: Applied the full 5-point debugging checklist — every common failure point is now addressed in the prompt.
+**What changed**: Applied the full 5-point debugging checklist - every common failure point is now addressed in the prompt.
 
 Here are more examples of the 3R Loop fixing bad images:
 
-**Example 1 — Fixing a cluttered background:**
+**Example 1 - Fixing a cluttered background:**
 ```
 Problem: "A dog in a park" gave a messy image with too many elements.
 Refined: "A golden retriever sitting in a meadow, soft blurred background, shallow depth of field, centered framing, nothing else in the scene"
 ```
 Expected result: A clean, focused image of just the dog with a dreamy blurred background.
 
-**Example 2 — Fixing wrong style:**
+**Example 2 - Fixing wrong style:**
 ```
 Problem: "Cartoon cat" gave a 3D render instead of a 2D cartoon.
 Refined: "A cat in flat 2D cartoon style, thick black outlines, cel-shaded, like a Saturday morning cartoon, solid color fills, no 3D rendering, no shading gradients"
 ```
-Expected result: A proper flat 2D cartoon cat with clean outlines — not a 3D-looking render.
+Expected result: A proper flat 2D cartoon cat with clean outlines - not a 3D-looking render.
 
-**Example 3 — Fixing distorted anatomy:**
+**Example 3 - Fixing distorted anatomy:**
 ```
 Problem: A portrait had six fingers and asymmetrical eyes.
 Refined: Added "no extra fingers, no extra limbs, symmetrical face, anatomically correct hands" to the negative prompt, and switched to close-up framing to reduce complexity.
@@ -179,7 +179,7 @@ Try this yourself:
 ## SEC-10: 🏆 Challenge
 **5-Minute Challenge**:
 
-Here's a broken prompt — fix it using the 3R Loop and debugging checklist:
+Here's a broken prompt - fix it using the 3R Loop and debugging checklist:
 
 ```
 A beautiful fantasy castle on a mountain with dragons and knights
@@ -200,28 +200,28 @@ Before moving on, confirm:
 ---
 
 ## SEC-12: 🧠 What You Learned
-- Never accept a bad image — use the 3R Loop to Request, Review, and Refine in rounds
+- Never accept a bad image - use the 3R Loop to Request, Review, and Refine in rounds
 - Most image failures come from five issues: unclear subject, wrong style, bad composition, distorted anatomy, or missing mood
-- A debugging checklist removes guesswork — run through all five checks before generating again
+- A debugging checklist removes guesswork - run through all five checks before generating again
 
 ---
 
 ## SEC-13: 📋 Mini Quiz
 **Q1**: What is the first step of the 3R Loop when your image looks wrong?
 - A) Delete the prompt and start from scratch
-- B) Review the output — identify what specifically went wrong
+- B) Review the output - identify what specifically went wrong
 - C) Add "4k masterpiece" to the prompt
 
-**Answer**: B) Review the output — before changing anything, figure out what failed so you fix the right thing.
+**Answer**: B) Review the output - before changing anything, figure out what failed so you fix the right thing.
 
 **Q2**: Your AI image has a person with six fingers. What should you add to fix this?
 - A) "Make it more realistic"
 - B) A negative prompt like "no extra fingers, no extra limbs, anatomically correct hands"
 - C) "Better quality please"
 
-**Answer**: B) A negative prompt — telling the AI what to avoid is more effective than vague quality words.
+**Answer**: B) A negative prompt - telling the AI what to avoid is more effective than vague quality words.
 
 ---
 
 ## SEC-14: ⚡ One-Line Takeaway
-> Bad images aren't failures — they're feedback; use the 3R Loop to turn every flawed output into a better prompt.
+> Bad images aren't failures - they're feedback; use the 3R Loop to turn every flawed output into a better prompt.

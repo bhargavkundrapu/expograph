@@ -1,6 +1,6 @@
 # SEC-00: Lesson ID
 
-**M8-L1 — Extract to Table**
+**M8-L1 - Extract to Table**
 - **Module:** M8 – Extraction, Notes & Research
 - **Difficulty:** Intermediate
 - **Time:** 10–15 minutes
@@ -19,7 +19,7 @@ By the end of this lesson, you will be able to:
 
 # SEC-02: 💡 Use Case
 
-You have a paragraph full of facts, stats, or details buried in sentences. You need that data in a table — fast.
+You have a paragraph full of facts, stats, or details buried in sentences. You need that data in a table - fast.
 
 - **Studying:** Pull key dates, events, and outcomes from a history textbook paragraph
 - **Projects:** Extract feature lists from competitor product descriptions
@@ -72,7 +72,7 @@ Extract data from the text below into a markdown table.
 
 Columns: State | Area (sq km) | Population (millions) | Notable Fact
 Sort rows by Area, largest first.
-Use numbers only in the Area and Population columns — no words.
+Use numbers only in the Area and Population columns - no words.
 
 Text:
 India has 28 states. The largest by area is Rajasthan at 342,239 sq km
@@ -173,7 +173,7 @@ Before you move on, confirm:
 - B) You didn't specify a number format for that column
 - C) The source text was too long
 
-**Answer:** B — You need to tell the AI exactly how to format the column, e.g., "numbers only, no currency symbols or words."
+**Answer:** B - You need to tell the AI exactly how to format the column, e.g., "numbers only, no currency symbols or words."
 
 **Q2:** Your extracted table has 3 rows but the source text mentions 5 items. What should you fix?
 

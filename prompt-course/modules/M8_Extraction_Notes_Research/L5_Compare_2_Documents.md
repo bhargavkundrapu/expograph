@@ -1,6 +1,6 @@
 # SEC-00: Lesson ID
 
-**M8-L5 — Compare 2 Documents**
+**M8-L5 - Compare 2 Documents**
 - **Module:** M8 – Extraction, Notes & Research
 - **Difficulty:** Intermediate
 - **Time:** 10–15 minutes
@@ -23,7 +23,7 @@ You have two documents and need to spot what's different, what's similar, and wh
 
 - **Studying:** Compare two research papers on the same topic to find gaps and overlaps
 - **Projects:** Compare your project proposal draft against a competitor's or a previous version
-- **Placements:** Compare two job offer letters side by side — salary, benefits, role, growth
+- **Placements:** Compare two job offer letters side by side - salary, benefits, role, growth
 
 Reading both documents and mentally tracking differences is slow. A structured comparison table does it instantly.
 
@@ -216,7 +216,7 @@ Before you move on, confirm:
 - B) A list of specific comparison criteria
 - C) A longer prompt
 
-**Answer:** B — Without named criteria, the AI picks random points. A numbered list of criteria gives you a structured, row-by-row comparison.
+**Answer:** B - Without named criteria, the AI picks random points. A numbered list of criteria gives you a structured, row-by-row comparison.
 
 **Q2:** Your comparison table has a "Winner" column but every row says "Depends on use case." How do you fix this?
 
@@ -226,4 +226,4 @@ Before you move on, confirm:
 
 # SEC-14: ⚡ One-Line Takeaway
 
-> Name your criteria, set your columns, add a verdict row — and the AI will compare any two documents like a structured analyst.
+> Name your criteria, set your columns, add a verdict row - and the AI will compare any two documents like a structured analyst.

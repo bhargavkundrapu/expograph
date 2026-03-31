@@ -23,6 +23,8 @@ const FeatureDetailPage = lazy(() => import("../pages/features/FeatureDetailPage
 const ContactPage = lazy(() => import("../pages/contact/ContactPage"));
 const AccountPendingPage = lazy(() => import("../pages/payment/AccountPendingPage"));
 const PaymentFailurePage = lazy(() => import("../pages/payment/PaymentFailurePage"));
+const PrivacyPolicyPage = lazy(() => import("../pages/legal/PrivacyPolicyPage"));
+const TermsConditionsPage = lazy(() => import("../pages/legal/TermsConditionsPage"));
 const CourseContentsSidebarDemo = lazy(() => import("../pages/demo/CourseContentsSidebarDemo"));
 
 const SuperAdminHome = lazy(() => import("../pages/lms/superadmin/SuperAdminHome"));
@@ -124,6 +126,8 @@ export const router = createBrowserRouter([
       { path: "/demo/course-sidebar", element: <L><CourseContentsSidebarDemo /></L> },
       { path: "/login", element: <PublicOnly><LoginPage /></PublicOnly> },
       { path: "/adminlogin", element: <PublicOnly><AdminLoginPage /></PublicOnly> },
+      { path: "/privacy-policy", element: <L><PrivacyPolicyPage /></L> },
+      { path: "/terms-and-conditions", element: <L><TermsConditionsPage /></L> },
       { path: "/account-pending", element: <L><AccountPendingPage /></L> },
       { path: "/payment-failure", element: <L><PaymentFailurePage /></L> },
       { path: "/not-found", element: <NotFoundPageRoute /> },

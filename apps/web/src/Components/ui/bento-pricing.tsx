@@ -107,7 +107,7 @@ function PricingCard({
 }
 
 function formatPrice(paise: number | null | undefined) {
-  if (paise == null || paise === undefined) return "—";
+  if (paise == null || paise === undefined) return "-";
   const rupees = Math.round(paise / 100);
   return `₹${rupees.toLocaleString("en-IN")}`;
 }

@@ -64,7 +64,7 @@ const NOT_PACK_SLIDES: Slide[] = [
   },
   {
     id: "s5",
-    title: "You already started—don't stop",
+    title: "You already started-don't stop",
     subtitle: "Continue today and unlock pack-level perks.",
     ctaLabel: "Continue Learning",
     route: "/lms/student/courses",
@@ -132,7 +132,7 @@ export function getHomeCarouselSlides(userState: UserCarouselState | null | unde
       if (idx !== -1) {
         slides[idx] = {
           ...slides[idx],
-          subtitle: `You're at ${Math.round(pct)}% — finish and unlock.`,
+          subtitle: `You're at ${Math.round(pct)}%-finish and unlock.`,
         };
       }
     }

@@ -327,7 +327,7 @@ export default function SuperAdminApprovals() {
                       </span>
                       <span className="flex items-center gap-1.5">
                         <FiPhone className="w-4 h-4 shrink-0" />
-                        {a.customer_phone || "—"}
+                        {a.customer_phone || "-"}
                       </span>
                       {a.customer_college && (
                         <span className="text-slate-400">{a.customer_college}</span>

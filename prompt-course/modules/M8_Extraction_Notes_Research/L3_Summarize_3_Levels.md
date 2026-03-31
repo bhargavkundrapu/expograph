@@ -1,6 +1,6 @@
 # SEC-00: Lesson ID
 
-**M8-L3 — Summarize at 3 Levels**
+**M8-L3 - Summarize at 3 Levels**
 - **Module:** M8 – Extraction, Notes & Research
 - **Difficulty:** Intermediate
 - **Time:** 10–15 minutes
@@ -21,7 +21,7 @@ By the end of this lesson, you will be able to:
 
 Different situations need different summary lengths. A quick glance needs one line. A slide deck needs a paragraph. A report needs detail.
 
-- **Studying:** Summarize a research paper at all three levels — one for your flashcard, one for your notes, one for your assignment
+- **Studying:** Summarize a research paper at all three levels - one for your flashcard, one for your notes, one for your assignment
 - **Projects:** Give your team lead a one-liner and your documentation a detailed version
 - **Placements:** Quickly summarize a company's product for interview prep at whatever depth you need
 
@@ -64,9 +64,9 @@ technical support to help bridge these gaps.
 ```
 Summarize the following article at 3 levels:
 
-Level 1 — One-Line Summary: Max 20 words. Capture the core message.
-Level 2 — One-Paragraph Summary: 3–4 sentences. Cover the main argument, key evidence, and conclusion.
-Level 3 — Detailed Summary: 8–10 bullet points. Include key facts, statistics, examples, and counterarguments.
+Level 1 - One-Line Summary: Max 20 words. Capture the core message.
+Level 2 - One-Paragraph Summary: 3–4 sentences. Cover the main argument, key evidence, and conclusion.
+Level 3 - Detailed Summary: 8–10 bullet points. Include key facts, statistics, examples, and counterarguments.
 
 Label each level clearly.
 
@@ -79,18 +79,18 @@ Article:
 # SEC-07: ✅ Good Output
 
 ```
-**Level 1 — One-Line Summary:**
+**Level 1 - One-Line Summary:**
 Developing nations are shifting to renewable energy but face cost,
 infrastructure, and policy barriers.
 
-**Level 2 — One-Paragraph Summary:**
+**Level 2 - One-Paragraph Summary:**
 Developing nations are accelerating renewable energy adoption to combat
 climate change, with solar and wind leading the shift. Key barriers
 include high upfront costs, weak grid infrastructure, and inconsistent
 government policies. International funding from organizations like the
 World Bank is helping, but progress remains uneven across regions.
 
-**Level 3 — Detailed Summary:**
+**Level 3 - Detailed Summary:**
 - Renewable energy adoption grew 15% in developing nations in 2024
 - Solar energy leads adoption due to falling panel costs
 - Wind energy is growing in coastal and high-altitude regions
@@ -115,9 +115,9 @@ Audience A: A 10-year-old student (simple words, no jargon)
 Audience B: A policy researcher (technical terms, include data)
 
 Levels:
-Level 1 — One-Line Summary: Max 20 words.
-Level 2 — One-Paragraph Summary: 3–4 sentences.
-Level 3 — Detailed Summary: 8–10 bullet points.
+Level 1 - One-Line Summary: Max 20 words.
+Level 2 - One-Paragraph Summary: 3–4 sentences.
+Level 3 - Detailed Summary: 8–10 bullet points.
 
 Format as:
 ### Audience A
@@ -133,7 +133,7 @@ Article:
 **What changed:**
 - Added audience-specific summaries so the same content is explained differently for different readers
 - A child gets simple language; a researcher gets data and technical terms
-- This produces six summaries in one prompt — highly efficient for real-world use
+- This produces six summaries in one prompt - highly efficient for real-world use
 
 ---
 
@@ -190,7 +190,7 @@ Before you move on, confirm:
 - B) Add a strict word limit like "Max 20 words" to your prompt
 - C) Ask the AI to try again without changing the prompt
 
-**Answer:** B — The AI doesn't know what "one line" means to you. A specific word limit like "Max 20 words" forces a short output.
+**Answer:** B - The AI doesn't know what "one line" means to you. A specific word limit like "Max 20 words" forces a short output.
 
 **Q2:** Your Level 3 detailed summary has only 3 bullet points. What went wrong?
 
@@ -200,4 +200,4 @@ Before you move on, confirm:
 
 # SEC-14: ⚡ One-Line Takeaway
 
-> One prompt, three levels — a one-liner for your flashcard, a paragraph for your notes, and bullets for your report.
+> One prompt, three levels - a one-liner for your flashcard, a paragraph for your notes, and bullets for your report.

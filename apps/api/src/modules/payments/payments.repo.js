@@ -147,7 +147,7 @@ async function upsertUserFromPayment({ email, fullName, phone, college }, client
     return existingRow.id;
   }
 
-  // New user — try insert with phone, fall back without
+  // New user - try insert with phone, fall back without
   if (inTransaction) await db.query("SAVEPOINT insert_user");
   try {
     const { rows } = await db.query(
@@ -164,7 +164,7 @@ async function upsertUserFromPayment({ email, fullName, phone, college }, client
       const c = String(err.constraint || "");
 
       if (c.includes("phone") || c === "users_phone_uq") {
-        // Phone conflict — retry without phone
+        // Phone conflict - retry without phone
         const { rows } = await db.query(
           `INSERT INTO users (email, full_name, phone, college, is_active)
            VALUES ($1, $2, NULL, $3, true)
@@ -175,7 +175,7 @@ async function upsertUserFromPayment({ email, fullName, phone, college }, client
       }
 
       if (c.includes("email") || c === "users_email_uq" || c === "users_email_key") {
-        // Race condition — another process created the user between our SELECT and INSERT
+        // Race condition - another process created the user between our SELECT and INSERT
         const retry = await db.query(`SELECT id FROM users WHERE LOWER(email) = LOWER($1) LIMIT 1`, [normalizedEmail]);
         const row = retry?.rows?.[0];
         if (row) return row.id;

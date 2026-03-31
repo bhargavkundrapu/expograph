@@ -8,7 +8,7 @@
 ---
 
 ## SEC-00: Lesson ID
-> M5-L1 — Master the Subject + Style + Details + Mood formula for image prompts
+> M5-L1 - Master the Subject + Style + Details + Mood formula for image prompts
 
 ---
 
@@ -23,7 +23,7 @@ What you'll learn in this lesson:
 ## SEC-02: 💡 Use Case
 **When would you use this?**
 
-You need a thumbnail for your YouTube video, a banner for your project portfolio, or a social media post graphic. Instead of hiring a designer, you type a prompt into an AI image tool. But "a cat" gives you a random, boring image. This formula gives you control over every part of the image — so you get exactly what you picture in your head.
+You need a thumbnail for your YouTube video, a banner for your project portfolio, or a social media post graphic. Instead of hiring a designer, you type a prompt into an AI image tool. But "a cat" gives you a random, boring image. This formula gives you control over every part of the image - so you get exactly what you picture in your head.
 
 ---
 
@@ -48,9 +48,9 @@ No mood or atmosphere. Could be any cat photo from the internet.
 ---
 
 ## SEC-05: 🔍 Why It Failed
-- No **style** specified — the AI picked a generic, default look
+- No **style** specified - the AI picked a generic, default look
 - No **details** about the cat's breed, pose, or setting
-- No **mood** — the image feels flat and lifeless with no atmosphere
+- No **mood** - the image feels flat and lifeless with no atmosphere
 
 ---
 
@@ -73,7 +73,7 @@ Output:
 A beautiful digital painting of a white Persian cat perched on a
 deep red velvet cushion. The cat has striking golden eyes and wears
 a tiny gold crown. Soft pink cherry blossom petals float around it.
-The style is reminiscent of Studio Ghibli — gentle brushstrokes,
+The style is reminiscent of Studio Ghibli - gentle brushstrokes,
 warm tones, and a dreamy atmosphere. The lighting is soft golden
 hour, giving the whole scene a magical, fairy-tale quality.
 ```
@@ -97,7 +97,7 @@ Aspect ratio: 16:9
 
 Here are more example prompts using this formula:
 
-**Example 1 — Portfolio hero image:**
+**Example 1 - Portfolio hero image:**
 ```
 Subject: A laptop on a wooden desk with code on the screen
 Style: 3D render, minimal, isometric view
@@ -106,7 +106,7 @@ Mood: Clean, professional, focused
 ```
 Expected result: A clean isometric 3D desk scene perfect for a portfolio website header.
 
-**Example 2 — Instagram post:**
+**Example 2 - Instagram post:**
 ```
 Subject: A girl reading a book under a tree
 Style: Watercolor illustration, pastel palette
@@ -115,21 +115,21 @@ Mood: Peaceful, nostalgic, golden afternoon
 ```
 Expected result: A soft watercolor scene of a girl reading outdoors in autumn, ideal for a book-themed social post.
 
-**Example 3 — Presentation slide background:**
+**Example 3 - Presentation slide background:**
 ```
 Subject: Abstract mountain landscape
 Style: Flat vector art, geometric shapes
 Details: Layered mountain ridges, tiny cabin, starry sky
 Mood: Calm, inspiring, nighttime
 ```
-Expected result: A geometric vector mountain scene with stars — clean enough for a slide background with text overlaid.
+Expected result: A geometric vector mountain scene with stars - clean enough for a slide background with text overlaid.
 
 ---
 
 ## SEC-09: 📝 Guided Practice
 Try this yourself:
 
-1. Pick something you need a visual for — a project thumbnail, a social post, or a presentation slide
+1. Pick something you need a visual for - a project thumbnail, a social post, or a presentation slide
 2. Fill in all four parts: Subject, Style, Details, Mood
 3. Paste your prompt into an AI image tool (DALL-E, Midjourney, or Ideogram) and check the result
 
@@ -156,7 +156,7 @@ Before moving on, confirm:
 ## SEC-12: 🧠 What You Learned
 - Every image prompt needs four parts: Subject, Style, Details, and Mood
 - Negative prompts remove unwanted elements like watermarks, blur, and extra limbs
-- Aspect ratio controls the shape of your image — use 16:9 for thumbnails, 1:1 for social posts
+- Aspect ratio controls the shape of your image - use 16:9 for thumbnails, 1:1 for social posts
 
 ---
 
@@ -166,14 +166,14 @@ Before moving on, confirm:
 - B) Subject, Style, Details, Mood
 - C) Foreground, Background, Lighting, Filter
 
-**Answer**: B) Subject, Style, Details, Mood — these four parts give the AI enough information to generate a specific, high-quality image.
+**Answer**: B) Subject, Style, Details, Mood - these four parts give the AI enough information to generate a specific, high-quality image.
 
 **Q2**: What does a negative prompt do?
 - A) Makes the image darker
 - B) Tells the AI what to leave out of the image
 - C) Reverses the colors in the image
 
-**Answer**: B) Tells the AI what to leave out of the image — for example, "no watermark, no blurry edges" prevents common AI artifacts.
+**Answer**: B) Tells the AI what to leave out of the image - for example, "no watermark, no blurry edges" prevents common AI artifacts.
 
 ---
 

@@ -8,7 +8,7 @@
 ---
 
 ## SEC-00: Lesson ID
-> M5-L3 — Set art style, color palette, and lighting in image prompts
+> M5-L3 - Set art style, color palette, and lighting in image prompts
 
 ---
 
@@ -49,9 +49,9 @@ from 2010. No particular art style or mood.
 ---
 
 ## SEC-05: 🔍 Why It Failed
-- No **art style** — the AI defaulted to generic photorealism
-- No **lighting** direction — flat midday light with no atmosphere
-- No **color palette** — random default colors with no visual identity
+- No **art style** - the AI defaulted to generic photorealism
+- No **lighting** direction - flat midday light with no atmosphere
+- No **color palette** - random default colors with no visual identity
 
 ---
 
@@ -61,7 +61,7 @@ Prompt:
 ```
 Subject: A dense forest with a winding river cutting through it
 Style: Oil painting, impressionist, thick visible brushstrokes, like Claude Monet
-Lighting: Golden hour — warm sunlight filtering through the trees, long soft shadows
+Lighting: Golden hour - warm sunlight filtering through the trees, long soft shadows
 Color palette: Warm greens, deep amber, touches of burnt orange and soft gold
 Mood: Serene, nostalgic, early autumn
 ```
@@ -76,7 +76,7 @@ A stunning impressionist oil painting of a dense forest. A river
 winds through the scene, catching golden reflections. The light
 filters through the canopy in warm amber beams, casting long soft
 shadows on the forest floor. Thick, visible brushstrokes give
-the image a hand-painted feel. The palette is rich — deep greens,
+the image a hand-painted feel. The palette is rich - deep greens,
 burnt orange leaves, and gold highlights. The overall mood is
 peaceful and nostalgic, like a quiet autumn afternoon.
 ```
@@ -89,8 +89,8 @@ Take it one level higher:
 Prompt:
 ```
 Subject: A dense forest with a winding river cutting through it
-Style: Combine the thick brushstrokes of impressionist oil painting with the fantastical nature of Studio Ghibli backgrounds — lush, slightly exaggerated foliage
-Lighting: Golden hour — warm sunlight filtering through the trees at a low angle, volumetric light rays (god rays) visible in the mist
+Style: Combine the thick brushstrokes of impressionist oil painting with the fantastical nature of Studio Ghibli backgrounds - lush, slightly exaggerated foliage
+Lighting: Golden hour - warm sunlight filtering through the trees at a low angle, volumetric light rays (god rays) visible in the mist
 Color palette: Warm greens, deep amber, touches of burnt orange, soft gold, with cool blue-purple shadows for contrast
 Mood: Serene, magical, early autumn
 ```
@@ -99,17 +99,17 @@ Mood: Serene, magical, early autumn
 
 Here are more example prompts with style and lighting control:
 
-**Example 1 — Flat vector style for a presentation:**
+**Example 1 - Flat vector style for a presentation:**
 ```
 Subject: A person sitting at a desk with a laptop
 Style: Flat vector illustration, clean lines, minimal shading, Dribbble-style
-Lighting: Even, flat lighting — no shadows
-Color palette: Soft pastels — light blue, lavender, peach, white
+Lighting: Even, flat lighting - no shadows
+Color palette: Soft pastels - light blue, lavender, peach, white
 Mood: Clean, modern, friendly
 ```
-Expected result: A clean flat-design illustration of someone working — perfect for a slide deck or landing page.
+Expected result: A clean flat-design illustration of someone working - perfect for a slide deck or landing page.
 
-**Example 2 — Dramatic portrait with rim lighting:**
+**Example 2 - Dramatic portrait with rim lighting:**
 ```
 Subject: A young man in a hoodie looking straight at the camera
 Style: Cinematic photography, high contrast
@@ -117,9 +117,9 @@ Lighting: Rim light from behind (backlit), with a single blue light on the left 
 Color palette: Dark tones, deep blue, cool shadows, bright edge highlights
 Mood: Mysterious, intense, dramatic
 ```
-Expected result: A moody, high-contrast portrait with a glowing rim light — great for a music cover or personal brand image.
+Expected result: A moody, high-contrast portrait with a glowing rim light - great for a music cover or personal brand image.
 
-**Example 3 — Retro pixel art:**
+**Example 3 - Retro pixel art:**
 ```
 Subject: A small coffee shop on a rainy street corner
 Style: 16-bit pixel art, retro game aesthetic
@@ -127,7 +127,7 @@ Lighting: Warm interior glow spilling out of the shop windows onto the wet sidew
 Color palette: Muted blues and grays outside, warm yellows and oranges inside
 Mood: Cozy, lo-fi, nostalgic
 ```
-Expected result: A charming retro pixel-art scene with warm shop lights against a rainy backdrop — perfect for a lo-fi playlist thumbnail.
+Expected result: A charming retro pixel-art scene with warm shop lights against a rainy backdrop - perfect for a lo-fi playlist thumbnail.
 
 ---
 
@@ -135,7 +135,7 @@ Expected result: A charming retro pixel-art scene with warm shop lights against 
 Try this yourself:
 
 1. Pick one subject (a landscape, a person, or an object)
-2. Write two versions of the same prompt — one in "watercolor illustration" style with soft natural light, and one in "cyberpunk digital art" style with neon lighting
+2. Write two versions of the same prompt - one in "watercolor illustration" style with soft natural light, and one in "cyberpunk digital art" style with neon lighting
 3. Generate both and compare how style and lighting change the entire feel
 
 **Your task**: Write two prompts for the exact same subject but with completely different styles and lighting. Note three specific differences between the outputs.
@@ -159,7 +159,7 @@ Before moving on, confirm:
 ---
 
 ## SEC-12: 🧠 What You Learned
-- Art style tells the AI whether to paint, photograph, illustrate, or render — never leave it to chance
+- Art style tells the AI whether to paint, photograph, illustrate, or render - never leave it to chance
 - Lighting is the single biggest mood-setter: golden hour feels warm, rim light feels dramatic, flat light feels clean
 - You can combine multiple style references in one prompt to create a unique look
 
@@ -171,16 +171,16 @@ Before moving on, confirm:
 - B) The AI picks a generic default style, usually photorealistic
 - C) The AI asks you to choose a style
 
-**Answer**: B) The AI picks a generic default style, usually photorealistic — which is rarely what you actually want.
+**Answer**: B) The AI picks a generic default style, usually photorealistic - which is rarely what you actually want.
 
 **Q2**: Which lighting setup would create a warm, peaceful mood?
 - A) Harsh flash from the front
 - B) Golden hour sunlight at a low angle
 - C) Cold fluorescent overhead light
 
-**Answer**: B) Golden hour sunlight at a low angle — warm, directional light with long shadows creates a calm, inviting atmosphere.
+**Answer**: B) Golden hour sunlight at a low angle - warm, directional light with long shadows creates a calm, inviting atmosphere.
 
 ---
 
 ## SEC-14: ⚡ One-Line Takeaway
-> Style is the personality of your image and lighting is its emotion — define both, or the AI will pick boring defaults.
+> Style is the personality of your image and lighting is its emotion - define both, or the AI will pick boring defaults.

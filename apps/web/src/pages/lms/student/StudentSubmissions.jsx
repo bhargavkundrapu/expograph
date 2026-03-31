@@ -198,7 +198,7 @@ export default function StudentSubmissions() {
                   <h3 className="font-semibold text-slate-800 mb-3">Feedback</h3>
                   <p className="text-slate-700">{selectedSubmission.feedback}</p>
                   {selectedSubmission.reviewer && (
-                    <p className="text-sm text-slate-600 mt-4">— {selectedSubmission.reviewer}</p>
+                    <p className="text-sm text-slate-600 mt-4">-{selectedSubmission.reviewer}</p>
                   )}
                 </div>
               )}

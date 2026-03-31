@@ -6,7 +6,7 @@
 | Field      | Value                          |
 |------------|--------------------------------|
 | Lesson ID  | M10-L1                         |
-| Module     | M10 — Placement Toolkit        |
+| Module     | M10 - Placement Toolkit        |
 | Difficulty | Intermediate                   |
 | Time       | 10–15 minutes                  |
 
@@ -26,7 +26,7 @@ By the end of this lesson you will be able to:
 <!-- SEC-02 -->
 ## 💡 Use Case
 
-You found a great job posting online. You have a resume, but it was written for a general audience. Most companies use an ATS — software that scans resumes for matching keywords before a human ever sees them. If your resume does not match the job description, it gets rejected automatically. Use this prompt technique to tailor your resume for every application.
+You found a great job posting online. You have a resume, but it was written for a general audience. Most companies use an ATS - software that scans resumes for matching keywords before a human ever sees them. If your resume does not match the job description, it gets rejected automatically. Use this prompt technique to tailor your resume for every application.
 
 ---
 
@@ -55,9 +55,9 @@ Here are some tips to improve your resume:
 <!-- SEC-05 -->
 ## 🔍 Why It Failed
 
-- **No resume text** — the AI has nothing to work with, so it gives generic advice.
-- **No job description** — without knowing the target role, the AI cannot match keywords.
-- **No format** — you got tips instead of an actual rewritten resume.
+- **No resume text** - the AI has nothing to work with, so it gives generic advice.
+- **No job description** - without knowing the target role, the AI cannot match keywords.
+- **No format** - you got tips instead of an actual rewritten resume.
 
 ---
 
@@ -80,7 +80,7 @@ Django, REST APIs, PostgreSQL, and Git. Familiarity with Docker and CI/CD
 is a plus."
 
 Constraints: Keep the summary under 60 words. Use keywords from the job
-description naturally — do not stuff them.
+description naturally - do not stuff them.
 Format: Return only the rewritten summary. No tips or explanations.
 ```
 
@@ -167,7 +167,7 @@ Write a prompt that rewrites their summary for ATS and includes a keyword match 
 <!-- SEC-12 -->
 ## 📚 What You Learned
 
-1. An ATS scans for keyword matches — your resume must mirror the job description's language.
+1. An ATS scans for keyword matches - your resume must mirror the job description's language.
 2. Giving the AI both your resume and the job description produces a tailored rewrite, not generic tips.
 3. Adding a keyword analysis step shows you exactly what is covered and what is missing.
 
@@ -182,7 +182,7 @@ Write a prompt that rewrites their summary for ATS and includes a keyword match 
 - B) A generic rewrite with no keyword targeting
 - C) An error message
 
-> **A1:** B — without the job description, the AI has no keywords to target, so the rewrite will be generic.
+> **A1:** B - without the job description, the AI has no keywords to target, so the rewrite will be generic.
 
 **Q2:** What is the purpose of adding a keyword match table to your prompt?
 
@@ -193,4 +193,4 @@ Write a prompt that rewrites their summary for ATS and includes a keyword match 
 <!-- SEC-14 -->
 ## 💬 One-Line Takeaway
 
-> Your resume is not for humans first — it is for the ATS, so feed the AI both your resume and the job description to beat the filter.
+> Your resume is not for humans first - it is for the ATS, so feed the AI both your resume and the job description to beat the filter.

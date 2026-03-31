@@ -5,7 +5,7 @@
  */
 
 const defaultTitle = "Something went wrong";
-const defaultMessage = "We hit a small bump. Try again — it usually works.";
+const defaultMessage = "We hit a small bump. Try again-it usually works.";
 
 export default function ErrorFallbackUI({
   title = defaultTitle,

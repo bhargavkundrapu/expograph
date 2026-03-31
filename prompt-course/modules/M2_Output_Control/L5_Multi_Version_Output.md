@@ -1,6 +1,6 @@
 # SEC-00: Lesson ID
 
-**M2-L5 — Multi-Version Output**
+**M2-L5 - Multi-Version Output**
 - **Module:** M2 – Output Control
 - **Difficulty:** Intermediate
 - **Time:** 10–15 minutes
@@ -24,7 +24,7 @@ Multi-version output is useful when:
 - **Projects:** You need a formal bio for your portfolio AND a casual one for social media
 - **Placements:** You want to see your "Tell me about yourself" answer in 3 different tones before an interview
 - **Studying:** You want the same concept explained simply, technically, and as an analogy to compare which sticks
-- **Coding:** You need a function docstring in 3 styles — minimal, standard, and verbose
+- **Coding:** You need a function docstring in 3 styles - minimal, standard, and verbose
 
 Instead of prompting three times and losing context, you get everything in one shot.
 
@@ -67,9 +67,9 @@ Write 3 versions of a professional bio for me.
 About me: CS student, 3rd year, skilled in Python and React, built 2 
 full-stack projects, looking for backend internships.
 
-Version 1 — Formal: For a LinkedIn profile. Professional tone, third person.
-Version 2 — Conversational: For a personal website. Friendly, first person.
-Version 3 — Minimal: For a GitHub profile. Under 25 words, direct.
+Version 1 - Formal: For a LinkedIn profile. Professional tone, third person.
+Version 2 - Conversational: For a personal website. Friendly, first person.
+Version 3 - Minimal: For a GitHub profile. Under 25 words, direct.
 
 Label each version clearly.
 ```
@@ -79,17 +79,17 @@ Label each version clearly.
 # SEC-07: ✅ Good Output
 
 ```
-**Version 1 — Formal:**
+**Version 1 - Formal:**
 Aarav is a third-year Computer Science student with proficiency in Python
 and React. He has developed two full-stack applications and is actively
 seeking backend engineering internship opportunities.
 
-**Version 2 — Conversational:**
+**Version 2 - Conversational:**
 Hey! I'm a CS student in my third year who loves building things with
 Python and React. I've shipped two full-stack projects so far, and now
 I'm looking for a backend internship to level up.
 
-**Version 3 — Minimal:**
+**Version 3 - Minimal:**
 CS student. Python & React. 2 full-stack projects. Seeking backend internships.
 ```
 
@@ -103,9 +103,9 @@ Write 3 versions of a professional bio for me.
 About me: CS student, 3rd year, skilled in Python and React, built 2 
 full-stack projects, looking for backend internships.
 
-Version 1 — Formal: LinkedIn profile. Professional, third person, 2-3 sentences.
-Version 2 — Conversational: Personal website. Friendly, first person, 2-3 sentences.
-Version 3 — Minimal: GitHub profile. Under 25 words, no filler.
+Version 1 - Formal: LinkedIn profile. Professional, third person, 2-3 sentences.
+Version 2 - Conversational: Personal website. Friendly, first person, 2-3 sentences.
+Version 3 - Minimal: GitHub profile. Under 25 words, no filler.
 
 After all 3 versions, add an evaluation table:
 | Criteria         | Version 1 | Version 2 | Version 3 |
@@ -118,7 +118,7 @@ Rate Tone Match and Memorability as Low / Medium / High.
 - Added an evaluation table at the end so you can compare versions objectively
 - Defined specific criteria (Tone Match, Memorability, Word Count, Best Used For)
 - Used a rating scale (Low/Medium/High) to make comparison easy
-- Keeps everything in a single prompt — three bios plus analysis
+- Keeps everything in a single prompt - three bios plus analysis
 
 ---
 
@@ -126,7 +126,7 @@ Rate Tone Match and Memorability as Low / Medium / High.
 
 Follow these steps:
 
-1. **Pick content to multi-version.** Choose something you actually need — maybe an email, a project description, or an "about me" section.
+1. **Pick content to multi-version.** Choose something you actually need - maybe an email, a project description, or an "about me" section.
 2. **Define 3 tones.** Examples: formal vs. casual vs. humorous, or beginner-friendly vs. technical vs. analogy-based.
 3. **Add an evaluation section.** After the three versions, ask for a comparison table with at least 3 criteria.
 
@@ -181,4 +181,4 @@ Before you move on, confirm:
 
 # SEC-14: 💬 One-Line Takeaway
 
-> Don't settle for one draft — ask for three versions with different tones, then let the AI help you pick the best one.
+> Don't settle for one draft - ask for three versions with different tones, then let the AI help you pick the best one.

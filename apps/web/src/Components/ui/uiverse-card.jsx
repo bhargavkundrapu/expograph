@@ -31,7 +31,7 @@ const Card = () => {
             <div className="glass" />
             <div className="content">
               <span className="title">ExpoGraph</span>
-              <span className="text">Master Vibe Coding, Prompt Engineering & AI Automations — starting at ₹99</span>
+              <span className="text">Master Vibe Coding, Prompt Engineering & AI Automations-starting at ₹99</span>
             </div>
             <div className="bottom">
               <div className="social-buttons-container">

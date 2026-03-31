@@ -8,7 +8,7 @@
 ---
 
 ## SEC-00: Lesson ID
-> M6-L3 — Plan every shot and supporting B-roll footage for your video
+> M6-L3 - Plan every shot and supporting B-roll footage for your video
 
 ---
 
@@ -23,7 +23,7 @@ What you'll learn in this lesson:
 ## SEC-02: 💡 Use Case
 **When would you use this?**
 
-You're about to film a project demo or a campus vlog. You know your script but not what shots to capture. A shot list prevents you from missing key footage. B-roll — those extra clips of hands typing, screens loading, campus walks — makes your video look polished instead of amateur.
+You're about to film a project demo or a campus vlog. You know your script but not what shots to capture. A shot list prevents you from missing key footage. B-roll - those extra clips of hands typing, screens loading, campus walks - makes your video look polished instead of amateur.
 
 ---
 
@@ -51,9 +51,9 @@ Here are some general shots you might need for your video:
 ---
 
 ## SEC-05: 🔍 Why It Failed
-- No script or topic provided — the AI guessed with generic advice
-- No categories requested — all shots are lumped together with no structure
-- No B-roll mentioned — the output covers only primary shots, not supporting footage
+- No script or topic provided - the AI guessed with generic advice
+- No categories requested - all shots are lumped together with no structure
+- No B-roll mentioned - the output covers only primary shots, not supporting footage
 
 ---
 
@@ -85,14 +85,14 @@ List at least 3 shots per category.
 Output:
 ```
 PRIMARY SHOTS:
-1. Speaker intro — talking to camera, casual setting (0:00–0:03, close-up)
-2. Speaker explaining each tool — hand gestures (0:04–0:08, medium)
-3. Speaker CTA — pointing at camera (0:50–0:60, close-up)
+1. Speaker intro - talking to camera, casual setting (0:00–0:03, close-up)
+2. Speaker explaining each tool - hand gestures (0:04–0:08, medium)
+3. Speaker CTA - pointing at camera (0:50–0:60, close-up)
 
 SCREEN RECORDINGS:
-1. ChatGPT — typing a prompt and getting a brainstorm list (5s, screen capture)
-2. Gamma — notes turning into a slide deck (5s, screen capture)
-3. NotebookLM — uploading a PDF and getting a summary (5s, screen capture)
+1. ChatGPT - typing a prompt and getting a brainstorm list (5s, screen capture)
+2. Gamma - notes turning into a slide deck (5s, screen capture)
+3. NotebookLM - uploading a PDF and getting a summary (5s, screen capture)
 
 B-ROLL:
 1. Hands typing on laptop keyboard (3s, close-up)
@@ -128,7 +128,7 @@ For each B-roll clip, also add:
 List at least 3 shots per category.
 ```
 
-**What changed**: Added mood tags to every B-roll clip and insertion points that tell you exactly when to cut to each B-roll shot — so your edit matches the energy of your script.
+**What changed**: Added mood tags to every B-roll clip and insertion points that tell you exactly when to cut to each B-roll shot - so your edit matches the energy of your script.
 
 ---
 
@@ -172,16 +172,16 @@ Before moving on, confirm:
 - B) Supporting footage shown while the speaker talks
 - C) The background music track
 
-**Answer**: B) Supporting footage shown while the speaker talks — B-roll clips like hands typing or a screen loading make your video visually interesting.
+**Answer**: B) Supporting footage shown while the speaker talks - B-roll clips like hands typing or a screen loading make your video visually interesting.
 
 **Q2**: Why should you add mood tags to B-roll clips?
 - A) To make the prompt longer
 - B) To keep the visual energy consistent with the script's tone
 - C) To impress your editor
 
-**Answer**: B) To keep the visual energy consistent with the script's tone — a "calm" clip at a "hype" moment would feel wrong.
+**Answer**: B) To keep the visual energy consistent with the script's tone - a "calm" clip at a "hype" moment would feel wrong.
 
 ---
 
 ## SEC-14: ⚡ One-Line Takeaway
-> Plan your shots before you hit record — a shot list with B-roll turns a basic video into a professional one.
+> Plan your shots before you hit record - a shot list with B-roll turns a basic video into a professional one.

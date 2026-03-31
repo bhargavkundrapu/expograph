@@ -13,7 +13,7 @@ export default function App() {
         <DashboardPrefsProvider>
           <GamificationProvider>
             <RouterProvider router={router} />
-            {/* Install app prompt — below-medium devices only; dismissible with 7-day cooldown */}
+            {/* Install app prompt - below-medium devices only; dismissible with 7-day cooldown */}
             <InstallAppPrompt />
           </GamificationProvider>
         </DashboardPrefsProvider>

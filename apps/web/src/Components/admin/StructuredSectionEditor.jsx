@@ -118,13 +118,13 @@ const SEC_SCHEMA = {
     fields: [],
   },
   "SEC-DICT-NAV": {
-    label: "Dictionary — Nav Links",
+    label: "Dictionary-Nav Links",
     icon: FiBookOpen,
     color: "indigo",
     fields: [{ key: "links", label: "Links", type: "json" }],
   },
   "SEC-DICT-INTRO": {
-    label: "Dictionary — Intro",
+    label: "Dictionary-Intro",
     icon: FiBookOpen,
     color: "indigo",
     fields: [
@@ -133,7 +133,7 @@ const SEC_SCHEMA = {
     ],
   },
   "SEC-DICT-ENTRY": {
-    label: "Dictionary — Lesson Entry",
+    label: "Dictionary-Lesson Entry",
     icon: FiBookOpen,
     color: "indigo",
     fields: [

@@ -6,7 +6,7 @@
 | Field      | Value                              |
 |------------|------------------------------------|
 | Lesson ID  | M7-L1                              |
-| Module     | M7 — Coding With AI                |
+| Module     | M7 - Coding With AI                |
 | Difficulty | Intermediate                       |
 | Time       | 10–15 minutes                      |
 
@@ -26,7 +26,7 @@ By the end of this lesson you will be able to:
 <!-- SEC-02 -->
 ## 💡 Use Case
 
-You have a hackathon in 48 hours. Your team picked an idea but nobody wrote down what you are actually building. You need a clear spec — features, tech stack, folder structure, and what "done" looks like — before anyone writes a line of code. A good spec prompt saves you hours of confusion and mid-project rewrites.
+You have a hackathon in 48 hours. Your team picked an idea but nobody wrote down what you are actually building. You need a clear spec - features, tech stack, folder structure, and what "done" looks like - before anyone writes a line of code. A good spec prompt saves you hours of confusion and mid-project rewrites.
 
 ---
 
@@ -64,9 +64,9 @@ Here's a simple todo app using HTML, CSS, and JavaScript:
 <!-- SEC-05 -->
 ## 🔍 Why It Failed
 
-- **Jumped to code instead of planning** — You asked to "build" so the AI started coding immediately. You never got a spec.
-- **No requirements** — The AI guessed the tech stack, features, and scope because you gave it nothing to work with.
-- **No structure** — There is no mention of file organization, data model, or what features the app actually supports.
+- **Jumped to code instead of planning** - You asked to "build" so the AI started coding immediately. You never got a spec.
+- **No requirements** - The AI guessed the tech stack, features, and scope because you gave it nothing to work with.
+- **No structure** - There is no mention of file organization, data model, or what features the app actually supports.
 
 ---
 
@@ -97,7 +97,7 @@ Task breakdown:
 3. Then outline the folder structure
 
 Examples: Features should be like "User can create a task with a title
-and due date" — specific and testable.
+and due date" - specific and testable.
 
 Desired depth: Keep it concise. One page max. No boilerplate.
 ```
@@ -178,7 +178,7 @@ Task breakdown:
 2. Write one acceptance criterion per feature
 3. List 3–5 edge cases that could break the demo
 
-Examples: Acceptance criterion — "When user clicks 'Add Task' with an
+Examples: Acceptance criterion - "When user clicks 'Add Task' with an
 empty title, the app shows a validation error."
 
 Desired depth: One page. No boilerplate. Focus on what a reviewer
@@ -194,7 +194,7 @@ would check during the demo.
 
 Try this yourself:
 
-1. Pick a project idea you have been thinking about — a side project, a hackathon idea, or a college assignment.
+1. Pick a project idea you have been thinking about - a side project, a hackathon idea, or a college assignment.
 2. Write a CRAFTED prompt asking AI to generate a one-page spec. Include all seven CRAFTED fields.
 3. Check the output: does it have features, tech stack, folder structure, and a data model? If anything is missing, refine and try again.
 
@@ -244,7 +244,7 @@ Before moving on, confirm:
 
 **Q2:** Which CRAFTED field is most responsible for getting a folder structure and data model in the output?
 
-> **A2:** **Format** — it tells the AI exactly which sections to include and how to structure the output. Without it, the AI picks its own format.
+> **A2:** **Format** - it tells the AI exactly which sections to include and how to structure the output. Without it, the AI picks its own format.
 
 ---
 

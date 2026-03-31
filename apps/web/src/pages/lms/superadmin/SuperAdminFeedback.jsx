@@ -81,7 +81,7 @@ export default function SuperAdminFeedback() {
           Feedback
         </h1>
         <p className="text-slate-400 mt-1">
-          Course and lesson feedback from students — who said what and how they rated.
+          Course and lesson feedback from students-who said what and how they rated.
         </p>
       </motion.div>
 
@@ -186,7 +186,7 @@ export default function SuperAdminFeedback() {
                 </div>
                 <div className="text-slate-500 text-sm flex items-center gap-1 flex-shrink-0">
                   <FiCalendar className="w-3.5 h-3.5" />
-                  {row.created_at ? formatDateTime(row.created_at) : "—"}
+                  {row.created_at ? formatDateTime(row.created_at) : "-"}
                 </div>
               </div>
               <div className="mt-3 flex flex-wrap gap-4 text-sm">

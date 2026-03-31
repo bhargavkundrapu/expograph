@@ -5,7 +5,7 @@
 | Field | Value |
 |-------|-------|
 | Lesson ID | M3-L5 |
-| Module | M3 — Debugging and Refinement |
+| Module | M3 - Debugging and Refinement |
 | Difficulty | Intermediate |
 | Time | 10–15 minutes |
 
@@ -23,9 +23,9 @@ By the end of this lesson, you will be able to:
 
 ## SEC-02 · Use Case
 
-You keep writing similar prompts from scratch — one for summarizing, another for explaining concepts, another for debugging code. Each time you start with a blank page and reinvent the structure.
+You keep writing similar prompts from scratch - one for summarizing, another for explaining concepts, another for debugging code. Each time you start with a blank page and reinvent the structure.
 
-Templates fix this. Once you build a good prompt, you extract the reusable skeleton and swap in new content using placeholders. This saves time in study sessions (swap topics), coding (swap error messages), project work (swap requirements), and placements (swap interview questions). Think of templates as functions — write once, call many times.
+Templates fix this. Once you build a good prompt, you extract the reusable skeleton and swap in new content using placeholders. This saves time in study sessions (swap topics), coding (swap error messages), project work (swap requirements), and placements (swap interview questions). Think of templates as functions - write once, call many times.
 
 ---
 
@@ -57,7 +57,7 @@ I want to understand recursion. Explain simply, give example.
 - Hash tables explanation: 400 words, two examples, includes complexity
 - Recursion explanation: 150 words, no example despite asking for one
 
-Different structures, different depths, different quality — because each
+Different structures, different depths, different quality - because each
 prompt was written from scratch with slightly different wording.]
 ```
 
@@ -65,9 +65,9 @@ prompt was written from scratch with slightly different wording.]
 
 ## SEC-05 · Why It Failed
 
-- **Reinventing the wheel** — Each prompt was written from scratch even though they all ask for the same thing: explain a CS concept simply with an example.
-- **Inconsistent wording** — Small wording differences ("Make it simple" vs. "Explain simply" vs. "I need a simple explanation") led to inconsistent output quality.
-- **No structure guarantee** — Without a fixed template, some outputs included complexity analysis and some didn't, some had examples and some didn't.
+- **Reinventing the wheel** - Each prompt was written from scratch even though they all ask for the same thing: explain a CS concept simply with an example.
+- **Inconsistent wording** - Small wording differences ("Make it simple" vs. "Explain simply" vs. "I need a simple explanation") led to inconsistent output quality.
+- **No structure guarantee** - Without a fixed template, some outputs included complexity analysis and some didn't, some had examples and some didn't.
 
 ---
 
@@ -114,7 +114,7 @@ Structure your answer as:
    - Step 2: Middle = 9. Target 7 < 9, search left half [7]
    - Step 3: Middle = 7. Found!
 
-4. TIME COMPLEXITY: O(log n) — halving the list each step.
+4. TIME COMPLEXITY: O(log n) - halving the list each step.
 
 5. COMMON MISTAKE: Using binary search on an unsorted list. It only works
    on sorted data.
@@ -180,9 +180,9 @@ Task: Use template T-EXPLAIN-01 with [TOPIC] = "recursion" and
 
 Try this yourself:
 
-1. **Identify a repeated task** — Think of a prompt you've written more than twice (explaining concepts, summarizing, reviewing code, preparing for interviews).
-2. **Extract the template** — Take your best version of that prompt and replace the specific content with `[PLACEHOLDER]` variables. Keep the structure and format instructions fixed.
-3. **Test with two topics** — Use your template with two different inputs. Check that both outputs have consistent structure and quality.
+1. **Identify a repeated task** - Think of a prompt you've written more than twice (explaining concepts, summarizing, reviewing code, preparing for interviews).
+2. **Extract the template** - Take your best version of that prompt and replace the specific content with `[PLACEHOLDER]` variables. Keep the structure and format instructions fixed.
+3. **Test with two topics** - Use your template with two different inputs. Check that both outputs have consistent structure and quality.
 
 **Your task:** Create a template for placement interview prep using this skeleton:
 
@@ -232,9 +232,9 @@ Before moving on, confirm you can do the following:
 
 ## SEC-12 · 📘 What You Learned
 
-1. **Templates are prompt functions** — Write the structure once, then call it with different inputs. This saves time and guarantees consistent output quality.
-2. **Placeholders make prompts modular** — Using `[TOPIC]`, `[AUDIENCE]`, `[LANGUAGE]` and similar variables makes it clear what to change and what to keep.
-3. **A template library compounds your skills** — Every good prompt you build becomes a reusable tool. Over time, your library becomes a personal AI toolkit that makes you faster and more consistent.
+1. **Templates are prompt functions** - Write the structure once, then call it with different inputs. This saves time and guarantees consistent output quality.
+2. **Placeholders make prompts modular** - Using `[TOPIC]`, `[AUDIENCE]`, `[LANGUAGE]` and similar variables makes it clear what to change and what to keep.
+3. **A template library compounds your skills** - Every good prompt you build becomes a reusable tool. Over time, your library becomes a personal AI toolkit that makes you faster and more consistent.
 
 ---
 
@@ -252,4 +252,4 @@ Before moving on, confirm you can do the following:
 
 ## SEC-14 · 💬 One-Line Takeaway
 
-> Write every great prompt as a template — your future self will thank you for the reusable shortcut.
+> Write every great prompt as a template - your future self will thank you for the reusable shortcut.

@@ -1,6 +1,6 @@
 # SEC-00: Lesson ID
 
-**M2-L4 — Strict Mode: No Extra Text**
+**M2-L4 - Strict Mode: No Extra Text**
 - **Module:** M2 – Output Control
 - **Difficulty:** Intermediate
 - **Time:** 10–15 minutes
@@ -21,7 +21,7 @@ By the end of this lesson, you will be able to:
 
 Strict output matters when:
 
-- **Coding:** You need raw code — not "Sure! Here's a function that…" before it
+- **Coding:** You need raw code - not "Sure! Here's a function that…" before it
 - **Projects:** You're piping AI output into another tool or script that breaks on extra text
 - **Studying:** You want just the answer for flashcards, not a mini-lecture around it
 - **Placements:** You need a clean, direct answer in a mock interview, not a preamble
@@ -106,7 +106,7 @@ Your entire response must be exactly 5 lines, each containing only an algorithm 
 ```
 
 **What changed:**
-- Opens with "Output nothing except" — a strong strict-mode trigger
+- Opens with "Output nothing except" - a strong strict-mode trigger
 - Explicitly lists what to exclude (before-text, after-text, formatting, explanations)
 - Defines the exact shape of the response (5 lines, one name per line)
 - Leaves zero room for the AI to add anything extra
@@ -131,7 +131,7 @@ Follow these steps:
 
 You are building a script that reads AI output line by line. You need exactly 8 country names (Asian countries only), one per line, no numbering, no extra text whatsoever.
 
-Write a strict-mode prompt that guarantees the AI's entire response is exactly 8 lines of country names. Test it — if there is even one extra character of filler, refine your prompt until it's clean.
+Write a strict-mode prompt that guarantees the AI's entire response is exactly 8 lines of country names. Test it - if there is even one extra character of filler, refine your prompt until it's clean.
 
 ---
 
@@ -141,14 +141,14 @@ Before you move on, confirm:
 
 - [ ] I can identify preamble and closing filler in AI output
 - [ ] I used at least one strict instruction ("Output nothing except," "No introduction," etc.)
-- [ ] My output has zero extra text — only the content I requested
+- [ ] My output has zero extra text - only the content I requested
 - [ ] I defined the exact format of the response (lines, count, structure)
 
 ---
 
 # SEC-12: 📚 What You Learned
 
-1. AI adds conversational filler (intros, outros, "Let me know!") by default — you must explicitly turn it off.
+1. AI adds conversational filler (intros, outros, "Let me know!") by default - you must explicitly turn it off.
 2. The "output nothing except" pattern is the strongest way to enforce strict output.
 3. Listing what to exclude is just as important as listing what to include.
 
@@ -168,4 +168,4 @@ Before you move on, confirm:
 
 # SEC-14: 💬 One-Line Takeaway
 
-> The AI will always try to be polite — it's your job to tell it to stop talking and just give the answer.
+> The AI will always try to be polite - it's your job to tell it to stop talking and just give the answer.

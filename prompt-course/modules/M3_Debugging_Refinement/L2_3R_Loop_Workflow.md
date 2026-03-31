@@ -5,7 +5,7 @@
 | Field | Value |
 |-------|-------|
 | Lesson ID | M3-L2 |
-| Module | M3 — Debugging and Refinement |
+| Module | M3 - Debugging and Refinement |
 | Difficulty | Intermediate |
 | Time | 10–15 minutes |
 
@@ -25,7 +25,7 @@ By the end of this lesson, you will be able to:
 
 Most people try a prompt once, get a mediocre result, and either accept it or start over from scratch. Neither approach is efficient.
 
-The 3R Loop gives you a structured method for improving prompts — the same way a developer debugs code. You don't rewrite the whole program; you find the bug, fix it, and test again. Whether you're generating study notes, debugging code, writing project reports, or preparing for placements, the 3R Loop turns a 30-minute frustration into a 5-minute iteration.
+The 3R Loop gives you a structured method for improving prompts - the same way a developer debugs code. You don't rewrite the whole program; you find the bug, fix it, and test again. Whether you're generating study notes, debugging code, writing project reports, or preparing for placements, the 3R Loop turns a 30-minute frustration into a 5-minute iteration.
 
 ---
 
@@ -50,9 +50,9 @@ def validate_email(email):
 
 ## SEC-05 · Why It Failed
 
-- **Single attempt, no review** — The user accepted the first output without checking if it actually handles edge cases (e.g., "@@.." would pass this check).
-- **No success criteria stated** — The prompt didn't define what "validate" means, so the AI used the simplest possible check.
-- **No iteration** — Without a Review step, the user never identified the gap between what they got and what they needed.
+- **Single attempt, no review** - The user accepted the first output without checking if it actually handles edge cases (e.g., "@@.." would pass this check).
+- **No success criteria stated** - The prompt didn't define what "validate" means, so the AI used the simplest possible check.
+- **No iteration** - Without a Review step, the user never identified the gap between what they got and what they needed.
 
 ---
 
@@ -60,7 +60,7 @@ def validate_email(email):
 
 This shows the full 3R Loop in action across three turns.
 
-**Turn 1 — REQUEST:**
+**Turn 1 - REQUEST:**
 ```
 Write a Python function to validate an email address. It should check for
 a proper format like user@domain.com.
@@ -68,7 +68,7 @@ a proper format like user@domain.com.
 
 *AI gives a basic regex solution. You review it.*
 
-**Turn 2 — REVIEW + REFINE:**
+**Turn 2 - REVIEW + REFINE:**
 ```
 Your function has issues:
 - It accepts emails with spaces like "user @domain.com"
@@ -83,7 +83,7 @@ Refine the function to:
 
 *AI gives an improved version. You review again.*
 
-**Turn 3 — REVIEW + REFINE:**
+**Turn 3 - REVIEW + REFINE:**
 ```
 Better, but two more issues:
 - It allows consecutive dots like "user@domain..com"
@@ -158,11 +158,11 @@ Now generate the v3 output AND a changelog showing what changed from v1 → v2 �
 
 Try this yourself:
 
-1. **Request** — Send this prompt to an AI: "Write a summary of the Python `map()` function."
-2. **Review** — Read the output carefully. Find at least 2 things that are missing, wrong, or not useful for your level. Write them down.
-3. **Refine** — Send a follow-up prompt that says: "Your summary had these issues: [your list]. Rewrite it to fix them and add a practical example using `map()` with a list of student grades."
+1. **Request** - Send this prompt to an AI: "Write a summary of the Python `map()` function."
+2. **Review** - Read the output carefully. Find at least 2 things that are missing, wrong, or not useful for your level. Write them down.
+3. **Refine** - Send a follow-up prompt that says: "Your summary had these issues: [your list]. Rewrite it to fix them and add a practical example using `map()` with a list of student grades."
 
-**Your task:** Complete all three steps and compare your v1 output to your v2 output. Notice how much better v2 is — that's the power of one 3R cycle.
+**Your task:** Complete all three steps and compare your v1 output to your v2 output. Notice how much better v2 is - that's the power of one 3R cycle.
 
 ---
 
@@ -198,9 +198,9 @@ Before moving on, confirm you can do the following:
 
 ## SEC-12 · 📘 What You Learned
 
-1. **The 3R Loop is a cycle, not a one-shot** — Request, Review, Refine. Then repeat. Each pass gets you closer to what you actually need.
-2. **Review is the critical step** — Most people skip it. Naming what's wrong before refining is what makes the next version better, not random rewording.
-3. **Tracked changes beat guesswork** — When you document what changed between versions, you learn which tweaks have the biggest impact and can reuse those patterns.
+1. **The 3R Loop is a cycle, not a one-shot** - Request, Review, Refine. Then repeat. Each pass gets you closer to what you actually need.
+2. **Review is the critical step** - Most people skip it. Naming what's wrong before refining is what makes the next version better, not random rewording.
+3. **Tracked changes beat guesswork** - When you document what changed between versions, you learn which tweaks have the biggest impact and can reuse those patterns.
 
 ---
 
@@ -208,7 +208,7 @@ Before moving on, confirm you can do the following:
 
 **Q1:** What are the three steps of the 3R Loop, and which step do most beginners skip?
 
-**A1:** Request, Review, Refine. Most beginners skip the Review step — they either accept the first output or rewrite from scratch without analyzing what specifically went wrong.
+**A1:** Request, Review, Refine. Most beginners skip the Review step - they either accept the first output or rewrite from scratch without analyzing what specifically went wrong.
 
 **Q2:** You asked AI to "explain recursion" and got a 500-word essay with no code examples. You refine by saying "Add a code example." Is this a good refinement? Why or why not?
 
@@ -218,4 +218,4 @@ Before moving on, confirm you can do the following:
 
 ## SEC-14 · 💬 One-Line Takeaway
 
-> Great prompts aren't written — they're refined through the loop of Request, Review, and Refine.
+> Great prompts aren't written - they're refined through the loop of Request, Review, and Refine.

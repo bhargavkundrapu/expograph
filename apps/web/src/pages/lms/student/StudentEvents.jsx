@@ -72,7 +72,7 @@ function EventCard({ event, isDark, onClick }) {
 function EventDetail({ event, isDark, onBack }) {
   const startTime = formatTime(event.starts_at);
   const endTime = formatTime(event.ends_at);
-  const timeRange = [startTime, endTime].filter(Boolean).join(" – ") || "—";
+  const timeRange = [startTime, endTime].filter(Boolean).join(" – ") || "-";
 
   return (
     <motion.div

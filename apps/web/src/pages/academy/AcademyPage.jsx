@@ -1,4 +1,4 @@
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { lazy, Suspense, useState, useCallback, useEffect, memo } from "react";
 import { useAuth } from "../../app/providers/AuthProvider";
 import { Header } from "../../Components/ui/header-2";
@@ -55,20 +55,20 @@ function HeroSkeleton() {
 }
 
 const reviewsRow1 = [
-  { name: "Arjun S.", role: "Vibe Coding Student", text: "The Vibe Coding course taught me to build full apps using smart prompts. I shipped my first SaaS in 2 weeks — at ₹99, this is unreal.", rating: 5, highlight: "Vibe Coding" },
+  { name: "Arjun S.", role: "Vibe Coding Student", text: "The Vibe Coding course taught me to build full apps using smart prompts. I shipped my first SaaS in 2 weeks-at ₹99, this is unreal.", rating: 5, highlight: "Vibe Coding" },
   { name: "Priya M.", role: "AI Automations Student", text: "The AI Automations course is next level. I automated my entire workflow and landed a freelance gig through Real Client Lab in 3 weeks.", rating: 5, highlight: "AI Automations" },
-  { name: "Rahul K.", role: "CS Student, 3rd Year", text: "Paid ₹15,000 elsewhere for worse content. Vibe Coding + Prompt Engineering at ₹99 each? ExpoGraph is honestly criminal — in a good way.", rating: 5, highlight: "Unbeatable Value" },
+  { name: "Rahul K.", role: "CS Student, 3rd Year", text: "Paid ₹15,000 elsewhere for worse content. Vibe Coding + Prompt Engineering at ₹99 each? ExpoGraph is honestly criminal-in a good way.", rating: 5, highlight: "Unbeatable Value" },
   { name: "Sneha D.", role: "Prompt Engineering Student", text: "Prompt Engineering taught me how to think like a 10x developer. The resume builder + MCA certificate helped me crack 3 interviews.", rating: 5, highlight: "Prompt Engineering" },
-  { name: "Karthik V.", role: "Startup Founder", text: "I built my entire MVP using Vibe Coding techniques from ExpoGraph. Saved me lakhs in hiring costs — all from a ₹99 course.", rating: 5, highlight: "Vibe Coding" },
-  { name: "Meera J.", role: "B.Tech Student", text: "Took all 3 courses — Vibe Coding, Prompt Engineering, and AI Automations. Other platforms make you watch. ExpoGraph makes you BUILD.", rating: 5, highlight: "All 3 Courses" },
+  { name: "Karthik V.", role: "Startup Founder", text: "I built my entire MVP using Vibe Coding techniques from ExpoGraph. Saved me lakhs in hiring costs-all from a ₹99 course.", rating: 5, highlight: "Vibe Coding" },
+  { name: "Meera J.", role: "B.Tech Student", text: "Took all 3 courses-Vibe Coding, Prompt Engineering, and AI Automations. Other platforms make you watch. ExpoGraph makes you BUILD.", rating: 5, highlight: "All 3 Courses" },
 ];
 
 const reviewsRow2 = [
-  { name: "Vikram T.", role: "Freelancer", text: "AI Automations + Real Client Lab = real portfolio pieces. Clients don't care about tutorials — they care about real work you've shipped.", rating: 5, highlight: "Real Client Lab" },
-  { name: "Ananya R.", role: "BCA Student", text: "Started with Prompt Engineering, then Vibe Coding — went from zero to building full apps in 8 weeks. The structured lessons are brilliant.", rating: 5, highlight: "Zero to Builder" },
-  { name: "Deepak P.", role: "Working Professional", text: "The Vibe Coding course respects your time. No fluff — just pure, actionable skills I use at my job daily. Worth every paisa.", rating: 5, highlight: "No Filler" },
+  { name: "Vikram T.", role: "Freelancer", text: "AI Automations + Real Client Lab = real portfolio pieces. Clients don't care about tutorials-they care about real work you've shipped.", rating: 5, highlight: "Real Client Lab" },
+  { name: "Ananya R.", role: "BCA Student", text: "Started with Prompt Engineering, then Vibe Coding-went from zero to building full apps in 8 weeks. The structured lessons are brilliant.", rating: 5, highlight: "Zero to Builder" },
+  { name: "Deepak P.", role: "Working Professional", text: "The Vibe Coding course respects your time. No fluff-just pure, actionable skills I use at my job daily. Worth every paisa.", rating: 5, highlight: "No Filler" },
   { name: "Riya G.", role: "MCA Student", text: "The MCA-recognised certificate with a unique ID got me 2 interview calls in a week. Employers were genuinely impressed.", rating: 5, highlight: "Verified Certificate" },
-  { name: "Aditya N.", role: "All-Access Pack User", text: "₹199 for all 3 courses — Vibe Coding, Prompt Engineering, AI Automations + Real Client Lab + Resume Builder. Best investment of my life.", rating: 5, highlight: "All-Access Pack" },
+  { name: "Aditya N.", role: "All-Access Pack User", text: "₹199 for all 3 courses-Vibe Coding, Prompt Engineering, AI Automations + Real Client Lab + Resume Builder. Best investment of my life.", rating: 5, highlight: "All-Access Pack" },
   { name: "Pooja S.", role: "Prompt Engineering Student", text: "Prompt Engineering changed everything. I'm 3x faster, building AI-powered tools, and charging premium freelance rates now.", rating: 5, highlight: "Prompt Engineering" },
 ];
 
@@ -117,15 +117,15 @@ const ReviewCard = memo(function ReviewCard({ r }) {
 });
 
 const faqData = [
-  { q: "What is ExpoGraph Academy?", a: "ExpoGraph Academy teaches Vibe Coding, Prompt Engineering & AI Automations through structured lessons, smart prompts, and hands-on projects. You don't just watch — you build." },
+  { q: "What is ExpoGraph Academy?", a: "ExpoGraph Academy teaches Vibe Coding, Prompt Engineering & AI Automations through structured lessons, smart prompts, and hands-on projects. You don't just watch-you build." },
   { q: "What courses do you offer?", a: "We offer three focused courses: Vibe Coding (build apps using AI), Prompt Engineering (master the art of prompting), and AI Automations (automate workflows with intelligent automations). Together, they cover everything from building to deploying real-world AI-powered projects." },
-  { q: "What are Smart Prompts?", a: "Smart Prompts are structured prompt boxes you can copy and use directly. They help you learn vibe coding — how to think, prompt, and build like a professional developer." },
-  { q: "What is the Real Client Lab?", a: "The Real Client Lab connects you with actual clients and real-world projects. You build, deliver, and grow your portfolio with work that matters — not just tutorials." },
-  { q: "Do I get a Resume Builder?", a: "Yes! Our built-in Resume Builder helps you create a professional resume using your completed courses, projects, and Real Client Lab work — ready for employers." },
-  { q: "How much does it cost?", a: "Each course (Vibe Coding, Prompt Engineering, AI Automations) starts at just ₹99 and our all-access course pack is only ₹199 — that's all 3 courses + Real Client Lab + Resume Builder for less than a coffee." },
-  { q: "Do I get certificates?", a: "Absolutely. Every course you complete earns you a verifiable certificate with a unique ID — issued by ExpoGraph, a company recognised by MCA, Government of India." },
+  { q: "What are Smart Prompts?", a: "Smart Prompts are structured prompt boxes you can copy and use directly. They help you learn vibe coding-how to think, prompt, and build like a professional developer." },
+  { q: "What is the Real Client Lab?", a: "The Real Client Lab connects you with actual clients and real-world projects. You build, deliver, and grow your portfolio with work that matters-not just tutorials." },
+  { q: "Do I get a Resume Builder?", a: "Yes! Our built-in Resume Builder helps you create a professional resume using your completed courses, projects, and Real Client Lab work-ready for employers." },
+  { q: "How much does it cost?", a: "Each course (Vibe Coding, Prompt Engineering, AI Automations) starts at just ₹99 and our all-access course pack is only ₹199-that's all 3 courses + Real Client Lab + Resume Builder for less than a coffee." },
+  { q: "Do I get certificates?", a: "Absolutely. Every course you complete earns you a verifiable certificate with a unique ID-issued by ExpoGraph, a company recognised by MCA, Government of India." },
   { q: "Is there community support?", a: "Yes! Join our community on Instagram, YouTube, and LinkedIn. Connect with fellow users, get tips, and stay updated on new courses and opportunities." },
-  { q: "How is ExpoGraph different from other platforms?", a: "Unlike generic platforms, ExpoGraph focuses on 3 cutting-edge courses — Vibe Coding, Prompt Engineering & AI Automations — with real client projects, smart AI prompts, and a resume builder. Everything you need to actually get hired, not just learn theory." },
+  { q: "How is ExpoGraph different from other platforms?", a: "Unlike generic platforms, ExpoGraph focuses on 3 cutting-edge courses-Vibe Coding, Prompt Engineering & AI Automations-with real client projects, smart AI prompts, and a resume builder. Everything you need to actually get hired, not just learn theory." },
 ];
 
 const SimpleFAQ = memo(function SimpleFAQ() {
@@ -184,7 +184,7 @@ export default function AcademyPage() {
       <Header />
 
       <div className="academy-scroll-content overflow-x-hidden">
-        {/* Hero Section — Interactive 3D Robot (desktop) / Static bg (mobile) */}
+        {/* Hero Section-Interactive 3D Robot (desktop) / Static bg (mobile) */}
       <section className="relative w-full min-h-[100dvh] sm:min-h-screen h-screen overflow-hidden bg-black" style={{ backgroundColor: "#000000", maxWidth: "100vw" }}>
         {isMobile ? (
           <div
@@ -234,7 +234,7 @@ export default function AcademyPage() {
               className="text-sm sm:text-[15px] md:text-lg text-white md:text-white/60 max-w-xs sm:max-w-sm md:max-w-lg mt-12 sm:mt-14 md:mt-0 mb-0 md:mb-6 leading-relaxed mx-auto md:mx-0 animate-[fadeInUp_0.5s_0.1s_ease-out_both]"
               style={{ fontFamily: "var(--font-dm)", textShadow: "0 2px 10px rgba(0,0,0,0.8)" }}
             >
-              Master vibe coding with smart prompts, structured lessons, and build for real clients in our Real Client Lab — the fastest way to grow your career.
+              Master vibe coding with smart prompts, structured lessons, and build for real clients in our Real Client Lab-the fastest way to grow your career.
             </p>
             <div
               className="flex justify-center md:justify-start gap-3 sm:gap-4 md:gap-4 flex-wrap pointer-events-auto mt-14 sm:mt-16 md:mt-0 animate-[fadeInUp_0.6s_0.15s_ease-out_both]"
@@ -282,9 +282,9 @@ export default function AcademyPage() {
           }
           subtitle={
             <>
-              Master <strong className="text-white/90">Vibe Coding</strong>, <strong className="text-white/90">Prompt Engineering</strong> & <strong className="text-white/90">AI Automations</strong> — with smart prompts, structured lessons, and a{" "}
-              <strong className="text-white/90">Real Client Lab</strong> to build for actual clients — all starting at just{" "}
-              <strong className="text-emerald-400">₹99</strong>. You don't just learn — you ship real work and grow your career.
+              Master <strong className="text-white/90">Vibe Coding</strong>, <strong className="text-white/90">Prompt Engineering</strong> & <strong className="text-white/90">AI Automations</strong>-with smart prompts, structured lessons, and a{" "}
+              <strong className="text-white/90">Real Client Lab</strong> to build for actual clients-all starting at just{" "}
+              <strong className="text-emerald-400">₹99</strong>. You don't just learn-you ship real work and grow your career.
             </>
           }
           actions={[
@@ -313,10 +313,10 @@ export default function AcademyPage() {
         />
       </section>
 
-      {/* Course Cards — Third section below Where Learning Meets */}
+      {/* Course Cards-Third section below Where Learning Meets */}
       <AcademyCourseCardsSection />
 
-      {/* Designed by top techies & IITians — trust, small impact */}
+      {/* Designed by top techies & IITians-trust, small impact */}
       <section
         className="py-6 sm:py-8 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24"
         style={{ backgroundColor: "#000000" }}
@@ -326,12 +326,12 @@ export default function AcademyPage() {
             Built for the real world
           </p>
           <p className="text-base sm:text-lg text-white/90 leading-relaxed">
-            Our curriculum and courses are designed by <span className="text-amber-300 font-semibold">top techies and IITians</span> — so you learn what the industry actually uses, not just theory.
+            Our curriculum and courses are designed by <span className="text-amber-300 font-semibold">top techies and IITians</span>-so you learn what the industry actually uses, not just theory.
           </p>
         </div>
       </section>
 
-      {/* Officially Recognised — MCA */}
+      {/* Officially Recognised-MCA */}
       <section
         className="py-8 sm:py-10 md:py-12 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24"
         style={{ backgroundColor: "#000000" }}
@@ -359,7 +359,7 @@ export default function AcademyPage() {
         </div>
       </section>
 
-      {/* Call to Action — Join Academy */}
+      {/* Call to Action-Join Academy */}
       <section
         id="cta"
         className="py-12 md:py-16 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24"
@@ -368,7 +368,7 @@ export default function AcademyPage() {
         <CallToAction1 />
       </section>
 
-      {/* What Features Are There With Us — with glowing effect */}
+      {/* What Features Are There With Us-with glowing effect */}
       <section
         id="features"
         className="py-14 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 academy-section-gpu heavy-section"
@@ -385,7 +385,7 @@ export default function AcademyPage() {
             </span>
           </h2>
           <p className="mt-3 sm:mt-4 text-sm sm:text-base md:text-lg text-white/60 max-w-2xl mx-auto">
-            Powerful tools and real-world experience, all in one place — starting at just <span className="text-emerald-400 font-semibold">₹99</span>
+            Powerful tools and real-world experience, all in one place-starting at just <span className="text-emerald-400 font-semibold">₹99</span>
           </p>
         </div>
         <div className="relative rounded-2xl sm:rounded-3xl mx-auto max-w-6xl overflow-hidden">
@@ -419,7 +419,7 @@ export default function AcademyPage() {
             </span>
           </h2>
           <p className="mt-3 sm:mt-4 text-sm sm:text-base md:text-lg text-white/60 max-w-2xl mx-auto">
-            Every course you complete comes with a verifiable certificate recognised by MCA — yours for just <span className="text-amber-400 font-semibold">₹99</span>
+            Every course you complete comes with a verifiable certificate recognised by MCA-yours for just <span className="text-amber-400 font-semibold">₹99</span>
           </p>
         </div>
 
@@ -446,7 +446,7 @@ export default function AcademyPage() {
                 <div className="space-y-3">
                   <div className="flex items-start gap-2.5">
                     <svg className="w-4 h-4 text-amber-400 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 6L9 17l-5-5" /></svg>
-                    <p className="text-sm text-white/60">Unique certificate ID for each user — verifiable and shareable</p>
+                    <p className="text-sm text-white/60">Unique certificate ID for each user-verifiable and shareable</p>
                   </div>
                   <div className="flex items-start gap-2.5">
                     <svg className="w-4 h-4 text-amber-400 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 6L9 17l-5-5" /></svg>
@@ -458,7 +458,7 @@ export default function AcademyPage() {
                   </div>
                   <div className="flex items-start gap-2.5">
                     <svg className="w-4 h-4 text-amber-400 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 6L9 17l-5-5" /></svg>
-                    <p className="text-sm text-white/60">Download as professional PDF — ready for employers</p>
+                    <p className="text-sm text-white/60">Download as professional PDF-ready for employers</p>
                   </div>
                 </div>
               </div>
@@ -475,7 +475,7 @@ export default function AcademyPage() {
                 </div>
                 <div>
                   <h4 className="text-sm sm:text-base font-semibold text-white mb-1">Recognised by MCA</h4>
-                  <p className="text-xs sm:text-sm text-white/60 leading-relaxed">ExpoGraph is recognised by the MCA (Ministry of Corporate Affairs), Government of India — your certificates carry weight.</p>
+                  <p className="text-xs sm:text-sm text-white/60 leading-relaxed">ExpoGraph is recognised by the MCA (Ministry of Corporate Affairs), Government of India-your certificates carry weight.</p>
                 </div>
               </div>
 
@@ -487,7 +487,7 @@ export default function AcademyPage() {
                 </div>
                 <div>
                   <h4 className="text-sm sm:text-base font-semibold text-white mb-1">Backed by Real Projects</h4>
-                  <p className="text-xs sm:text-sm text-white/60 leading-relaxed">Your certificate isn't just a paper — it's backed by hands-on projects and Real Client Lab work you actually built.</p>
+                  <p className="text-xs sm:text-sm text-white/60 leading-relaxed">Your certificate isn't just a paper-it's backed by hands-on projects and Real Client Lab work you actually built.</p>
                 </div>
               </div>
 
@@ -500,7 +500,7 @@ export default function AcademyPage() {
                 </div>
                 <div>
                   <h4 className="text-sm sm:text-base font-semibold text-white mb-1">Industry Recognized Skills</h4>
-                  <p className="text-xs sm:text-sm text-white/60 leading-relaxed">Our Vibe Coding, Prompt Engineering & AI Automations courses teach production-level tools and workflows — employers trust the skills you demonstrate.</p>
+                  <p className="text-xs sm:text-sm text-white/60 leading-relaxed">Our Vibe Coding, Prompt Engineering & AI Automations courses teach production-level tools and workflows-employers trust the skills you demonstrate.</p>
                 </div>
               </div>
             </div>
@@ -528,7 +528,7 @@ export default function AcademyPage() {
                   </span>
                 </h2>
                 <p className="mt-3 sm:mt-4 text-sm sm:text-base text-white/60 max-w-lg mx-auto md:mx-0 leading-relaxed">
-                  Other platforms charge ₹5,000–₹50,000 for generic tutorials. At ExpoGraph, you get Vibe Coding, Prompt Engineering & AI Automations — structured courses with smart prompts, a resume builder, MCA-recognised certificates & real client projects — all for a price anyone can afford.
+                  Other platforms charge ₹5,000–₹50,000 for generic tutorials. At ExpoGraph, you get Vibe Coding, Prompt Engineering & AI Automations-structured courses with smart prompts, a resume builder, MCA-recognised certificates & real client projects-all for a price anyone can afford.
                 </p>
               </div>
               <div className="flex flex-row md:flex-col items-center gap-4 sm:gap-5 shrink-0">
@@ -552,7 +552,7 @@ export default function AcademyPage() {
         </div>
       </section>
 
-      {/* User Reviews — Social Proof */}
+      {/* User Reviews-Social Proof */}
       <section
         id="reviews"
         className="py-14 sm:py-16 md:py-20 lg:py-24 overflow-hidden academy-section-gpu heavy-section"
@@ -570,12 +570,12 @@ export default function AcademyPage() {
               </span>
             </h2>
             <p className="mt-3 sm:mt-4 text-sm sm:text-base md:text-lg text-white/60 max-w-2xl mx-auto">
-              From Vibe Coding to Prompt Engineering to AI Automations — our users are shipping real projects and landing real opportunities
+              From Vibe Coding to Prompt Engineering to AI Automations-our users are shipping real projects and landing real opportunities
             </p>
           </div>
         </div>
 
-        {/* Row 1 — scrolls left */}
+        {/* Row 1-scrolls left */}
         <div className="relative mb-3 sm:mb-4">
           <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-24 bg-gradient-to-r from-black to-transparent z-10 pointer-events-none" />
           <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-24 bg-gradient-to-l from-black to-transparent z-10 pointer-events-none" />
@@ -586,7 +586,7 @@ export default function AcademyPage() {
           </div>
         </div>
 
-        {/* Row 2 — scrolls right */}
+        {/* Row 2-scrolls right */}
         <div className="relative">
           <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-24 bg-gradient-to-r from-black to-transparent z-10 pointer-events-none" />
           <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-24 bg-gradient-to-l from-black to-transparent z-10 pointer-events-none" />
@@ -609,7 +609,7 @@ export default function AcademyPage() {
         </div>
       </section>
 
-      {/* Community / Connect Section — Join the vibe */}
+      {/* Community / Connect Section-Join the vibe */}
       <section
         id="connect"
         className="connect-section-vibe py-16 sm:py-20 md:py-24 lg:py-28 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 academy-section-gpu heavy-section"
@@ -625,9 +625,9 @@ export default function AcademyPage() {
             </span>
           </h2>
           <p className="mt-4 sm:mt-5 text-sm sm:text-base md:text-lg text-white/55 max-w-xl mx-auto leading-relaxed">
-            You're part of a growing family of builders and creators. Follow for tips, wins and career growth — one tap to join.
+            You're part of a growing family of builders and creators. Follow for tips, wins and career growth-one tap to join.
           </p>
-          {/* Lightweight stats strip — no heavy grid */}
+          {/* Lightweight stats strip-no heavy grid */}
           <div className="mt-6 sm:mt-8 flex flex-wrap items-center justify-center gap-x-3 sm:gap-x-4 gap-y-2 text-sm text-white/40">
             <span className="text-emerald-400/80 font-semibold">2K+ builders</span>
             <span className="text-white/30">·</span>
@@ -740,7 +740,7 @@ export default function AcademyPage() {
         </div>
       </section>
 
-      {/* Footer — ExpoGraph flow (TubesBackground) */}
+      {/* Footer-ExpoGraph flow (TubesBackground) */}
       <footer className="w-full min-h-[560px] sm:min-h-[70vh] border-t border-black">
         <TubesBackground className="min-h-[560px] sm:min-h-[70vh] bg-[#0a0a0a]" enableClickInteraction={true}>
           <div className="flex flex-col items-center justify-center w-full min-h-[560px] sm:min-h-[70vh] gap-6 text-center px-4">
@@ -752,6 +752,14 @@ export default function AcademyPage() {
             <div className="absolute bottom-8 left-0 right-0 flex flex-col items-center gap-2 text-white/50 pointer-events-none">
               <span className="text-xs uppercase tracking-widest">Move the cursor around to interact and Click to randomize.</span>
               <span className="text-xs text-white/40">© 2025 ExpoGraph Academy</span>
+            </div>
+            <div className="absolute bottom-8 right-6 flex items-center gap-4 text-white/55 pointer-events-auto">
+              <Link to="/privacy-policy" className="text-xs hover:text-white/80 underline underline-offset-2">
+                Privacy Policy
+              </Link>
+              <Link to="/terms-and-conditions" className="text-xs hover:text-white/80 underline underline-offset-2">
+                Terms &amp; Conditions
+              </Link>
             </div>
           </div>
         </TubesBackground>

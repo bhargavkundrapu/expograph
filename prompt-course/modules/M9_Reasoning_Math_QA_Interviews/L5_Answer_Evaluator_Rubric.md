@@ -1,4 +1,4 @@
-# Lesson: Answer Evaluator & Rubric — Make AI Grade Like a Real Interviewer
+# Lesson: Answer Evaluator & Rubric - Make AI Grade Like a Real Interviewer
 
 <!-- SEC-00 -->
 ## 🆔 Lesson ID
@@ -6,7 +6,7 @@
 | Field      | Value                                      |
 |------------|--------------------------------------------|
 | Lesson ID  | M9-L5                                      |
-| Module     | M9 — Reasoning, Math, QA & Interviews      |
+| Module     | M9 - Reasoning, Math, QA & Interviews      |
 | Difficulty | Intermediate                               |
 | Time       | 10–15 minutes                              |
 
@@ -26,7 +26,7 @@ By the end of this lesson you will be able to:
 <!-- SEC-02 -->
 ## 💡 Use Case
 
-You practiced an interview question or wrote a long answer for an exam. But who checks it? Friends are busy. Teachers are unavailable. With the right prompt, the AI becomes your evaluator — it reads your answer, scores it against a rubric, and tells you exactly what to fix. Use this for interview prep, exam answers, or any written response you want feedback on.
+You practiced an interview question or wrote a long answer for an exam. But who checks it? Friends are busy. Teachers are unavailable. With the right prompt, the AI becomes your evaluator - it reads your answer, scores it against a rubric, and tells you exactly what to fix. Use this for interview prep, exam answers, or any written response you want feedback on.
 
 ---
 
@@ -56,9 +56,9 @@ to make your answer more complete.
 <!-- SEC-05 -->
 ## 🔍 Why It Failed
 
-- **No rubric** — the AI has no criteria to grade against, so it gives vague encouragement.
-- **No score** — "partially correct" tells you nothing about where you stand.
-- **No structure** — the feedback is a blob of text instead of actionable, categorized points.
+- **No rubric** - the AI has no criteria to grade against, so it gives vague encouragement.
+- **No score** - "partially correct" tells you nothing about where you stand.
+- **No structure** - the feedback is a blob of text instead of actionable, categorized points.
 
 ---
 
@@ -121,7 +121,7 @@ Question: "Explain polymorphism in object-oriented programming."
 
 My answer: "Polymorphism means many forms. It is used in Java."
 
-Step 1 — Grade my answer using this rubric:
+Step 1 - Grade my answer using this rubric:
 1. Correctness (0-3): Are the facts accurate?
 2. Completeness (0-3): Does it cover key aspects (definition,
    types, example)?
@@ -130,13 +130,13 @@ Step 1 — Grade my answer using this rubric:
 For each criterion, give a score and explain what is right
 and what is missing.
 
-Step 2 — Write an ideal answer to the same question (under
+Step 2 - Write an ideal answer to the same question (under
 100 words).
 
-Step 3 — Compare my answer to the ideal answer. Show a table
+Step 3 - Compare my answer to the ideal answer. Show a table
 with columns: Criterion | My Score | Ideal Score | Gap.
 
-Step 4 — Give me 2 specific action items to close the gap.
+Step 4 - Give me 2 specific action items to close the gap.
 ```
 
 **What changed:** We added comparative scoring. The AI now writes an ideal answer, puts both scores side by side in a table, and gives you targeted action items. You can see exactly where you fall short and what to fix first.
@@ -148,7 +148,7 @@ Step 4 — Give me 2 specific action items to close the gap.
 
 1. Pick an interview question you recently practiced (e.g., "What is DBMS normalization?").
 2. Write your best answer in 3–4 sentences.
-3. Use the good prompt template above — paste your question, your answer, and the rubric. Run it and read the scores.
+3. Use the good prompt template above - paste your question, your answer, and the rubric. Run it and read the scores.
 
 **Your task:** Write a rubric-based evaluation prompt for this question: "What is the difference between a process and a thread?" Use three criteria: Correctness (0-3), Completeness (0-3), Example Quality (0-3). Include your own answer and ask the AI to grade it.
 
@@ -197,7 +197,7 @@ Write an upgrade prompt that:
 - B) There is no rubric, so the AI cannot give specific scores or explain what is missing
 - C) The answer was actually perfect
 
-> **A1:** B — Without a rubric, the AI has no framework to score against, so it falls back on vague phrases like "mostly correct."
+> **A1:** B - Without a rubric, the AI has no framework to score against, so it falls back on vague phrases like "mostly correct."
 
 **Q2:** What does comparative scoring add that a simple rubric alone does not?
 
@@ -208,4 +208,4 @@ Write an upgrade prompt that:
 <!-- SEC-14 -->
 ## 💬 One-Line Takeaway
 
-> Give the AI a rubric and it stops being a cheerleader — it becomes a coach who shows you exactly where to improve.
+> Give the AI a rubric and it stops being a cheerleader - it becomes a coach who shows you exactly where to improve.

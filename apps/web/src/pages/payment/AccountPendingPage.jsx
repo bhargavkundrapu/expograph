@@ -22,7 +22,7 @@ export default function AccountPendingPage() {
       <Header />
 
       <div className="overflow-x-hidden pt-20 sm:pt-24">
-        {/* Main content — centered, neat design inspired by Academy */}
+        {/* Main content-centered, neat design inspired by Academy */}
         <section className="relative min-h-[70vh] flex flex-col items-center justify-center px-4 sm:px-6 md:px-8 py-16">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(120,80,255,0.15),transparent)]" />
           <motion.div
@@ -38,7 +38,7 @@ export default function AccountPendingPage() {
               Payment successful
             </h1>
             <p className="text-lg sm:text-xl text-slate-400 leading-relaxed">
-              Your account will be created in a moment. We're customising your LMS portal — it takes a few minutes.
+              Your account will be created in a moment. We're customising your LMS portal-it takes a few minutes.
             </p>
 
             <div className="flex items-center justify-center gap-2 text-slate-500 py-4">
@@ -75,14 +75,22 @@ export default function AccountPendingPage() {
           </motion.div>
         </section>
 
-        {/* Footer — same as Academy */}
+        {/* Footer-same as Academy */}
         <footer className="w-full min-h-[320px] sm:min-h-[40vh] border-t border-white/5">
           <TubesBackground className="min-h-[320px] sm:min-h-[40vh] bg-[#0a0a0a]" enableClickInteraction={false}>
-            <div className="flex flex-col items-center justify-center w-full min-h-[320px] sm:min-h-[40vh] gap-4 text-center px-4">
+            <div className="relative flex flex-col items-center justify-center w-full min-h-[320px] sm:min-h-[40vh] gap-4 text-center px-4">
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tighter text-white">
                 ExpoGraph
               </h2>
               <span className="text-xs text-white/40">© 2025 ExpoGraph Academy</span>
+              <div className="absolute bottom-6 right-6 flex items-center gap-4 text-white/55 pointer-events-auto">
+                <Link to="/privacy-policy" className="text-xs hover:text-white/80 underline underline-offset-2">
+                  Privacy Policy
+                </Link>
+                <Link to="/terms-and-conditions" className="text-xs hover:text-white/80 underline underline-offset-2">
+                  Terms &amp; Conditions
+                </Link>
+              </div>
             </div>
           </TubesBackground>
         </footer>

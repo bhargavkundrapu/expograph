@@ -6,7 +6,7 @@
 | Field      | Value                          |
 |------------|--------------------------------|
 | Lesson ID  | M10-L5                         |
-| Module     | M10 — Placement Toolkit        |
+| Module     | M10 - Placement Toolkit        |
 | Difficulty | Intermediate                   |
 | Time       | 10–15 minutes                  |
 
@@ -54,9 +54,9 @@ college assignment.
 <!-- SEC-05 -->
 ## 🔍 Why It Failed
 
-- **No project details** — the AI has nothing specific, so it writes filler.
-- **No format** — you got a vague paragraph instead of a structured description.
-- **No audience context** — the AI does not know this is for a recruiter, so it writes like a school report.
+- **No project details** - the AI has nothing specific, so it writes filler.
+- **No format** - you got a vague paragraph instead of a structured description.
+- **No audience context** - the AI does not know this is for a recruiter, so it writes like a school report.
 
 ---
 
@@ -115,9 +115,9 @@ used it to replace their Excel-based reporting.
 Constraints: Main description under 100 words. Recruiter audience.
 Format: Return three sections:
   1. Project description in Problem-Solution-Impact format
-  2. Metrics box — a bullet list of 3–4 quantified achievements
+  2. Metrics box - a bullet list of 3–4 quantified achievements
      (use numbers: users, speed, time saved, etc.)
-  3. Tech stack tags — a single line listing each technology as a
+  3. Tech stack tags - a single line listing each technology as a
      tag (e.g., React · Node.js · MongoDB)
 ```
 
@@ -159,7 +159,7 @@ Write a prompt that turns this into a Problem-Solution-Impact description with a
 ## 📚 What You Learned
 
 1. Problem-Solution-Impact turns "I built X with Y" into a story that shows your value.
-2. Numbers make your project memorable — quantify speed, users, time saved, or records handled.
+2. Numbers make your project memorable - quantify speed, users, time saved, or records handled.
 3. A tech stack tag line makes your skills instantly scannable for recruiters.
 
 ---
@@ -170,10 +170,10 @@ Write a prompt that turns this into a Problem-Solution-Impact description with a
 **Q1:** Your project description says "Built a web app using React." Why would a recruiter skip over it?
 
 - A) React is not popular enough
-- B) It has no problem, no impact, and no numbers — it says nothing about value
+- B) It has no problem, no impact, and no numbers - it says nothing about value
 - C) It is too short
 
-> **A1:** B — without a problem and impact, the description does not show why the project matters or what you achieved.
+> **A1:** B - without a problem and impact, the description does not show why the project matters or what you achieved.
 
 **Q2:** What is the purpose of the metrics box in the Upgrade Prompt?
 
@@ -184,4 +184,4 @@ Write a prompt that turns this into a Problem-Solution-Impact description with a
 <!-- SEC-14 -->
 ## 💬 One-Line Takeaway
 
-> A project without a story is just code — use Problem-Solution-Impact to show recruiters what you built, why it mattered, and what it achieved.
+> A project without a story is just code - use Problem-Solution-Impact to show recruiters what you built, why it mattered, and what it achieved.

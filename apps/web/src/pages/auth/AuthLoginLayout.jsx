@@ -11,11 +11,11 @@ export const testimonials = [
   { name: "Rahul K.", role: "CS Student, 3rd Year", text: "Vibe Coding + Prompt Engineering at ₹99 each? I've paid ₹10K+ elsewhere for worse content. Absolute steal." },
   { name: "Sneha D.", role: "Prompt Engineering Student", text: "Prompt Engineering taught me to think like a 10x developer. The resume builder + certificate helped me crack 3 interviews." },
   { name: "Vikram T.", role: "Freelancer", text: "AI Automations + Real Client Lab gave me actual portfolio pieces. No other platform does that at this price point." },
-  { name: "Ananya R.", role: "BCA Student", text: "Started with Prompt Engineering, then Vibe Coding — went from zero to building full apps in 8 weeks. Brilliant." },
+  { name: "Ananya R.", role: "BCA Student", text: "Started with Prompt Engineering, then Vibe Coding-went from zero to building full apps in 8 weeks. Brilliant." },
 ];
 
 /**
- * Shared shell for /login and /adminlogin — same visual layout as the public login experience.
+ * Shared shell for /login and /adminlogin-same visual layout as the public login experience.
  */
 export default function AuthLoginLayout({ cardTitle = "Welcome Back", cardSubtitle = "Prompt Smart. Vibe Code. Grow Your Career.", children }) {
   return (
@@ -49,7 +49,7 @@ export default function AuthLoginLayout({ cardTitle = "Welcome Back", cardSubtit
                 </span>
               </h2>
               <p className="text-base text-white/50 leading-relaxed mb-8 max-w-md">
-                Join 2,000+ users mastering Vibe Coding, Prompt Engineering & AI Automations — with smart prompts and real-world projects, all starting at just ₹99.
+                Join 2,000+ users mastering Vibe Coding, Prompt Engineering & AI Automations-with smart prompts and real-world projects, all starting at just ₹99.
               </p>
 
               <div className="flex gap-6 mb-10">
@@ -142,7 +142,7 @@ export default function AuthLoginLayout({ cardTitle = "Welcome Back", cardSubtit
                     ))}
                   </div>
                   <p className="text-xs text-white/50 leading-relaxed">"Vibe Coding taught me to build full apps with smart prompts. I shipped my first SaaS in 2 weeks flat."</p>
-                  <span className="text-[10px] text-white/30 mt-1 block">— Arjun S., Vibe Coding Student</span>
+                  <span className="text-[10px] text-white/30 mt-1 block">-Arjun S., Vibe Coding Student</span>
                 </div>
               </div>
 

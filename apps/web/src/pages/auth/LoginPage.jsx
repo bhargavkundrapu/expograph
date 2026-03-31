@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../../app/providers/AuthProvider";
 import { homePathForRole } from "../../app/roles";
@@ -160,6 +160,26 @@ export default function LoginPage() {
         </motion.div>
       )}
 
+      <motion.div
+        initial={{ opacity: 0, y: -8 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="mb-6 rounded-xl border border-violet-400/25 bg-violet-500/[0.08] px-4 py-4"
+      >
+        <p className="text-sm text-violet-100 leading-relaxed">
+          New here? Purchase any course (starting from <span className="font-semibold text-white">₹99</span>) to
+          unlock student access, then log in with your registered email.
+        </p>
+        <Link
+          to="/courses"
+          className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-violet-200 hover:text-white transition-colors underline underline-offset-4"
+        >
+          Explore courses
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+          </svg>
+        </Link>
+      </motion.div>
+
       <AnimatePresence mode="wait">
         {step === 1 && (
           <motion.form
@@ -295,7 +315,7 @@ export default function LoginPage() {
                     </svg>
                   </span>
                   <div className="min-w-0 pt-0.5">
-                    <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-amber-200">Important — read this</p>
+                    <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-amber-200">Important-read this</p>
                     <p className="mt-1.5 text-sm font-semibold leading-snug text-amber-50">
                       Can&apos;t find the email? Check your{" "}
                       <span className="text-white underline decoration-2 decoration-amber-300/90 underline-offset-2">spam</span>,{" "}

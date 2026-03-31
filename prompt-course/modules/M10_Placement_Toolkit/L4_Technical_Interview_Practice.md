@@ -6,7 +6,7 @@
 | Field      | Value                          |
 |------------|--------------------------------|
 | Lesson ID  | M10-L4                         |
-| Module     | M10 — Placement Toolkit        |
+| Module     | M10 - Placement Toolkit        |
 | Difficulty | Intermediate                   |
 | Time       | 10–15 minutes                  |
 
@@ -55,9 +55,9 @@ Give me interview questions.
 <!-- SEC-05 -->
 ## 🔍 Why It Failed
 
-- **No role specified** — the mix of HR and technical questions shows the AI is guessing.
-- **No difficulty level** — the questions range from trivial to irrelevant.
-- **No tech stack** — a React developer and a Java backend developer need completely different questions.
+- **No role specified** - the mix of HR and technical questions shows the AI is guessing.
+- **No difficulty level** - the questions range from trivial to irrelevant.
+- **No tech stack** - a React developer and a Java backend developer need completely different questions.
 
 ---
 
@@ -136,7 +136,7 @@ Columns: # | Question | Difficulty | Time | Hint
 <!-- SEC-09 -->
 ## 🛠️ Guided Practice
 
-1. Decide your target role and tech stack (e.g., "Frontend Developer — React, TypeScript, CSS").
+1. Decide your target role and tech stack (e.g., "Frontend Developer - React, TypeScript, CSS").
 2. Pick the interview round type you want to practice (theory, coding, or system design).
 3. Build a prompt using the Good Prompt structure. Include difficulty progression and ask for at least 5 questions.
 
@@ -181,7 +181,7 @@ Write a prompt that generates 4 SQL questions and 2 case-study questions with di
 - B) The difficulty constraint
 - C) The format section
 
-> **A1:** B — tweak the difficulty constraint. Ask for "medium to hard" or specify "no questions below medium difficulty."
+> **A1:** B - tweak the difficulty constraint. Ask for "medium to hard" or specify "no questions below medium difficulty."
 
 **Q2:** Why is adding a time limit to each question useful for practice?
 
@@ -192,4 +192,4 @@ Write a prompt that generates 4 SQL questions and 2 case-study questions with di
 <!-- SEC-14 -->
 ## 💬 One-Line Takeaway
 
-> Random practice is noise — tell the AI your role, stack, and difficulty level, and it becomes your personal interview coach.
+> Random practice is noise - tell the AI your role, stack, and difficulty level, and it becomes your personal interview coach.

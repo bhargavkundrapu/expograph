@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { Header } from "../../Components/ui/header-2";
 import { TubesBackground } from "../../Components/ui/neon-flow";
 import { COURSE_EXPLORE_DATA } from "../../data/courseExploreData";
@@ -53,7 +53,7 @@ export default function CourseExplorePage() {
           Back to Courses
         </button>
 
-        {/* Hero — warm and simple */}
+        {/* Hero-warm and simple */}
         <header className="mb-12">
           <div className="flex items-center gap-2 mb-4">
             <span
@@ -91,11 +91,11 @@ export default function CourseExplorePage() {
         {/* Price line */}
         <div className="mb-10 p-4 rounded-xl border border-white/10 bg-white/[0.03]">
           <p className="text-sm text-white/60">
-            All starting at just <span className="text-emerald-400 font-semibold">₹99</span> — pick this course or go all-in with the All Pack.
+            All starting at just <span className="text-emerald-400 font-semibold">₹99</span>-pick this course or go all-in with the All Pack.
           </p>
         </div>
 
-        {/* What is this course — simple words */}
+        {/* What is this course-simple words */}
         <section className="mb-12">
           <h2 className="flex items-center gap-2 text-xl font-bold mb-4 text-white">
             <FiBookOpen className="w-5 h-5 text-white/70" />
@@ -104,7 +104,7 @@ export default function CourseExplorePage() {
           <p className="text-white/75 leading-relaxed text-base">{data.whatIs}</p>
         </section>
 
-        {/* What you can do with this course — right place, high impact */}
+        {/* What you can do with this course-right place, high impact */}
         {hasWhatYouCanDo && (
           <section className="mb-12 p-6 rounded-2xl border border-white/10 bg-white/[0.04]">
             <h2 className="flex items-center gap-2 text-xl font-bold mb-2 text-white">
@@ -125,7 +125,7 @@ export default function CourseExplorePage() {
           </section>
         )}
 
-        {/* Real-world scenarios — relatable */}
+        {/* Real-world scenarios-relatable */}
         {hasRealWorldScenarios && (
           <section className="mb-12">
             <h2 className="flex items-center gap-2 text-xl font-bold mb-4 text-white">
@@ -180,7 +180,7 @@ export default function CourseExplorePage() {
           </section>
         )}
 
-        {/* Uses — what you'll use it for */}
+        {/* Uses-what you'll use it for */}
         <section className="mb-12">
           <h2 className="flex items-center gap-2 text-xl font-bold mb-4 text-white">
             <FiZap className="w-5 h-5 text-white/70" />
@@ -279,6 +279,14 @@ export default function CourseExplorePage() {
             <div className="absolute bottom-8 left-0 right-0 flex flex-col items-center gap-2 text-white/50 pointer-events-none">
               <span className="text-xs uppercase tracking-widest">Move the cursor around to interact and Click to randomize.</span>
               <span className="text-xs text-white/40">© 2025 ExpoGraph Academy</span>
+            </div>
+            <div className="absolute bottom-8 right-6 flex items-center gap-4 text-white/55 pointer-events-auto">
+              <Link to="/privacy-policy" className="text-xs hover:text-white/80 underline underline-offset-2">
+                Privacy Policy
+              </Link>
+              <Link to="/terms-and-conditions" className="text-xs hover:text-white/80 underline underline-offset-2">
+                Terms &amp; Conditions
+              </Link>
             </div>
           </div>
         </TubesBackground>

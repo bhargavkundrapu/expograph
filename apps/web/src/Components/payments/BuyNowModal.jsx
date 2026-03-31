@@ -354,7 +354,7 @@ export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill, 
       .catch(() => setColleges([]));
   }, [open, tenant?.slug]);
 
-  // Reset verification when email changes (only for guest users) — also clear cooldown so "Verify" works for the new email
+  // Reset verification when email changes (only for guest users) - also clear cooldown so "Verify" works for the new email
   useEffect(() => {
     if (!isAuth && form.email.trim().toLowerCase() !== verifiedEmailRef.current) {
       setEmailVerified(false);
@@ -529,7 +529,7 @@ export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill, 
               return;
             }
 
-            // LMS route: existing user just unlocked — stay on page
+            // LMS route: existing user just unlocked - stay on page
             if (unlocked) {
               onSuccess?.();
               return;
@@ -725,7 +725,7 @@ export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill, 
                             disabled={otpLoading}
                           />
                           <ImportantPurchaseCaution>
-                            <p className="text-xs font-bold uppercase tracking-wide text-amber-900">Important — read this</p>
+                            <p className="text-xs font-bold uppercase tracking-wide text-amber-900">Important-read this</p>
                             <p className="mt-1 text-sm font-semibold leading-snug text-amber-950">
                               If you don&apos;t see the code in your inbox, check your{" "}
                               <span className="underline decoration-2 decoration-amber-600">spam</span>,{" "}

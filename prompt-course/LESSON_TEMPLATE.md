@@ -1,4 +1,4 @@
-# 📐 LESSON TEMPLATE — Mandatory Structure
+# 📐 LESSON TEMPLATE - Mandatory Structure
 
 > Every lesson MUST follow this exact template. Every section MUST be present. Every section MUST use the exact SEC code as shown.
 
@@ -17,7 +17,7 @@
 ---
 
 ## SEC-00: Lesson ID
-> M#-L# — [Short lesson description in one line]
+> M#-L# - [Short lesson description in one line]
 
 ---
 
@@ -41,7 +41,7 @@ Connect to: study / coding / projects / placements / resume / interviews / caree
 
 Prompt:
 ```
-[The bad prompt — something a beginner would write]
+[The bad prompt - something a beginner would write]
 ```
 
 ---
@@ -50,13 +50,13 @@ Prompt:
 
 Output:
 ```
-[Realistic output the AI would give for the bad prompt — short, 3–6 lines]
+[Realistic output the AI would give for the bad prompt - short, 3–6 lines]
 ```
 
 ---
 
 ## SEC-05: 🔍 Why It Failed
-- [Reason 1 — what's wrong with the prompt]
+- [Reason 1 - what's wrong with the prompt]
 - [Reason 2]
 - [Reason 3 (optional)]
 
@@ -75,7 +75,7 @@ Prompt:
 
 Output:
 ```
-[Realistic output the AI would give for the good prompt — short, 5–8 lines]
+[Realistic output the AI would give for the good prompt - short, 5–8 lines]
 ```
 
 ---
@@ -85,7 +85,7 @@ Take it one level higher:
 
 Prompt:
 ```
-[An even better version — adds one more technique or layer]
+[An even better version - adds one more technique or layer]
 ```
 
 **What changed**: [1 sentence explaining the upgrade]
@@ -95,7 +95,7 @@ Prompt:
 ## SEC-09: 📝 Guided Practice
 Try this yourself:
 
-1. [Step 1 — specific instruction]
+1. [Step 1 - specific instruction]
 2. [Step 2]
 3. [Step 3]
 
@@ -121,14 +121,14 @@ Before moving on, confirm:
 ---
 
 ## SEC-12: 🧠 What You Learned
-- [Key learning 1 — one sentence]
+- [Key learning 1 - one sentence]
 - [Key learning 2]
 - [Key learning 3]
 
 ---
 
 ## SEC-13: 📋 Mini Quiz
-**Q1**: [Question about the lesson — multiple choice or fill-in]
+**Q1**: [Question about the lesson - multiple choice or fill-in]
 - A) [option]
 - B) [option]
 - C) [option]
@@ -149,13 +149,13 @@ Before moving on, confirm:
 
 ## Template Rules
 
-1. **Every section is mandatory** — never skip a section
-2. **Use the exact SEC codes** — SEC-00 through SEC-14
-3. **Keep the order** — sections must appear in this exact order
-4. **Section headers must include the emoji** — it helps scanning
-5. **Prompt blocks use triple backticks** — always
-6. **Bad prompt comes before good prompt** — always
-7. **Guided practice must be actionable** — student does something right now
-8. **Challenge must be time-boxed** — "5-minute challenge"
-9. **Mini quiz has exactly 2 questions** — no more, no less
-10. **One-line takeaway is a single sentence** — powerful and memorable
+1. **Every section is mandatory** - never skip a section
+2. **Use the exact SEC codes** - SEC-00 through SEC-14
+3. **Keep the order** - sections must appear in this exact order
+4. **Section headers must include the emoji** - it helps scanning
+5. **Prompt blocks use triple backticks** - always
+6. **Bad prompt comes before good prompt** - always
+7. **Guided practice must be actionable** - student does something right now
+8. **Challenge must be time-boxed** - "5-minute challenge"
+9. **Mini quiz has exactly 2 questions** - no more, no less
+10. **One-line takeaway is a single sentence** - powerful and memorable

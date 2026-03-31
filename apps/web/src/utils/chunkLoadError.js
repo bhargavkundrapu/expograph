@@ -15,5 +15,5 @@ export function isChunkLoadError(error) {
 }
 
 export function chunkLoadUserMessage() {
-  return "The page didn’t load completely — often after a dev server restart. Try again to refresh.";
+  return "The page didn’t load completely-often after a dev server restart. Try again to refresh.";
 }

@@ -412,7 +412,7 @@ function SectionTakeaway({ data }) {
   );
 }
 
-// ——— Image Prompting module: example images below prompts (per-lesson config) ———
+// --- Image Prompting module: example images below prompts (per-lesson config) ---
 const IMAGE_PROMPTING_MODULE_SLUG = "m5-image-prompting";
 const IMAGE_PROMPTING_GALLERY = {
   "image-prompt-formula": {
@@ -499,10 +499,10 @@ function ImageBelowPrompt({ urls, variant }) {
   );
 }
 
-// ——— Video Script module: reference videos below prompts (per-lesson config) ———
+// --- Video Script module: reference videos below prompts (per-lesson config) ---
 const VIDEO_SCRIPT_MODULE_SLUG = "m6-video-scripts";
 const VIDEO_REFERENCE_DISCLAIMER =
-  "These reference clips were created with Adobe Firefly for demonstration. For your own projects, we recommend tools like Veo 3 or Sora 4 for higher-quality video. Use these as a learning reference—your results will vary based on the tool and prompts you use.";
+  "These reference clips were created with Adobe Firefly for demonstration. For your own projects, we recommend tools like Veo 3 or Sora 4 for higher-quality video. Use these as a learning reference-your results will vary based on the tool and prompts you use.";
 
 const VIDEO_SCRIPT_GALLERY = {
   "hook-script-template": {
@@ -667,7 +667,7 @@ function SectionStart({ data }) {
   );
 }
 
-// ——— Dictionary lesson sections (different template: nav, intro, per-lesson prompt + keywords) ———
+// --- Dictionary lesson sections (different template: nav, intro, per-lesson prompt + keywords) ---
 
 function SectionDictNav({ data }) {
   const links = data?.links || [];
@@ -710,7 +710,7 @@ function SectionDictIntro({ data }) {
         <h3 className="text-xl font-bold text-slate-900 mb-2">{headline}</h3>
         <p className="text-slate-700 leading-relaxed">{description}</p>
         <p className="mt-3 text-sm text-slate-600">
-          Replace the <code className="px-1.5 py-0.5 rounded bg-slate-200 font-mono text-xs">[placeholders]</code> in each prompt and swap keywords from the list below to create different scenarios — with love, for you.
+          Replace the <code className="px-1.5 py-0.5 rounded bg-slate-200 font-mono text-xs">[placeholders]</code> in each prompt and swap keywords from the list below to create different scenarios-with love, for you.
         </p>
       </div>
     </SectionWrapper>
@@ -758,7 +758,7 @@ function SectionDictEntry({ data }) {
     <SectionWrapper id={`dict-${anchorId}`}>
       <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
         <h4 className="text-lg font-bold text-slate-900 mb-1">{lessonTitle}</h4>
-        <p className="text-xs text-slate-500 mb-4">Default prompt — replace the placeholders for your scenario.</p>
+        <p className="text-xs text-slate-500 mb-4">Default prompt-replace the placeholders for your scenario.</p>
         {defaultPrompt && (
           <div className="mb-6">
             <DictPromptBlock content={defaultPrompt} />

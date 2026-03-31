@@ -1,5 +1,5 @@
 /**
- * Colleges controller — SuperAdmin CRUD + public list for purchase form dropdown.
+ * Colleges controller - SuperAdmin CRUD + public list for purchase form dropdown.
  */
 const repo = require("./colleges.repo");
 

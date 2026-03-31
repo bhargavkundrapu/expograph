@@ -8,7 +8,7 @@ import { cn } from "../../lib/utils";
 import { FiArrowLeft, FiBookOpen } from "react-icons/fi";
 
 function formatPrice(paise) {
-  if (paise == null || paise === undefined) return "—";
+  if (paise == null || paise === undefined) return "-";
   const rupees = Math.round(paise / 100);
   return `₹${rupees.toLocaleString("en-IN")}`;
 }

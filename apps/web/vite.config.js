@@ -57,7 +57,7 @@ export default defineConfig({
     },
   },
   // Pre-bundle Spline + runtime so dev doesn’t thrash on nested dynamic imports.
-  // Do NOT set optimizeDeps.force here — it causes 504 "Outdated Optimize Dep" when
+  // Do NOT set optimizeDeps.force here - it causes 504 "Outdated Optimize Dep" when
   // the browser still requests old hashed dep URLs after each restart (see vitejs/vite#14284).
   optimizeDeps: {
     include: ['@splinetool/react-spline', '@splinetool/runtime'],

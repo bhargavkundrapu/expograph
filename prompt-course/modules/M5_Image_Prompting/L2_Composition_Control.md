@@ -8,7 +8,7 @@
 ---
 
 ## SEC-00: Lesson ID
-> M5-L2 — Control layout, camera angle, and framing in image prompts
+> M5-L2 - Control layout, camera angle, and framing in image prompts
 
 ---
 
@@ -23,7 +23,7 @@ What you'll learn in this lesson:
 ## SEC-02: 💡 Use Case
 **When would you use this?**
 
-You generate an image of a person for a project poster, but the AI places them in the corner with awkward cropping. Or you want a dramatic hero shot for a presentation cover, but you get a flat, straight-on photo. Composition control lets you direct the AI like a photographer — you decide where the subject sits, how the camera is angled, and what the viewer sees first.
+You generate an image of a person for a project poster, but the AI places them in the corner with awkward cropping. Or you want a dramatic hero shot for a presentation cover, but you get a flat, straight-on photo. Composition control lets you direct the AI like a photographer - you decide where the subject sits, how the camera is angled, and what the viewer sees first.
 
 ---
 
@@ -41,7 +41,7 @@ A woman standing in a city at night
 Output:
 ```
 A full-body shot of a woman standing in the center of a dark city
-street. The framing is awkward — too much empty space above her
+street. The framing is awkward - too much empty space above her
 head. The background is cluttered. No clear focal point. Looks
 like a random snapshot, not a composed photograph.
 ```
@@ -49,9 +49,9 @@ like a random snapshot, not a composed photograph.
 ---
 
 ## SEC-05: 🔍 Why It Failed
-- No **camera angle** — the AI defaulted to a flat, straight-on view
-- No **framing** instructions — the subject is poorly positioned with wasted space
-- No **composition rules** — no rule of thirds, no leading lines, no visual flow
+- No **camera angle** - the AI defaulted to a flat, straight-on view
+- No **framing** instructions - the subject is poorly positioned with wasted space
+- No **composition rules** - no rule of thirds, no leading lines, no visual flow
 
 ---
 
@@ -91,27 +91,27 @@ Prompt:
 Subject: A woman in a leather jacket standing on a rain-soaked city street at night
 Composition: Medium shot, low angle camera (slightly below eye level)
 Framing: Subject on the left third, rule of thirds, leading lines from the road converging toward her
-Depth of field: Shallow — subject is sharp, background is softly blurred (bokeh)
+Depth of field: Shallow - subject is sharp, background is softly blurred (bokeh)
 Foreground: Raindrops on a glass surface in the bottom of the frame, slightly out of focus
 Style: Cinematic photography, neon reflections on wet pavement
 Mood: Bold, confident, cyberpunk atmosphere
 ```
 
-**What changed**: Added shallow depth of field for a professional look and a blurred foreground element (raindrops on glass) that creates layers — making the image feel three-dimensional instead of flat.
+**What changed**: Added shallow depth of field for a professional look and a blurred foreground element (raindrops on glass) that creates layers - making the image feel three-dimensional instead of flat.
 
 Here are more example prompts with composition terms:
 
-**Example 1 — Close-up portrait:**
+**Example 1 - Close-up portrait:**
 ```
 Subject: A young programmer wearing glasses, looking at camera
 Composition: Close-up shot, eye-level camera, centered framing
-Depth of field: Very shallow — only the eyes are in sharp focus
+Depth of field: Very shallow - only the eyes are in sharp focus
 Style: Studio portrait, soft ring light
 Mood: Friendly, approachable, professional
 ```
-Expected result: A sharp, professional headshot with creamy background blur — great for a LinkedIn profile or team page.
+Expected result: A sharp, professional headshot with creamy background blur - great for a LinkedIn profile or team page.
 
-**Example 2 — Wide establishing shot:**
+**Example 2 - Wide establishing shot:**
 ```
 Subject: A coworking space with people at laptops
 Composition: Wide shot, high angle (bird's eye view tilted at 45 degrees)
@@ -128,9 +128,9 @@ Try this yourself:
 
 1. Take the prompt you wrote in Lesson M5-L1 and add composition instructions: pick a camera angle (low, high, eye-level) and a framing rule (rule of thirds, centered, symmetrical)
 2. Generate the image and compare it to the version without composition terms
-3. Try changing the camera angle from low to high — notice how the mood shifts
+3. Try changing the camera angle from low to high - notice how the mood shifts
 
-**Your task**: Write two versions of the same image prompt — one with a low-angle close-up and one with a high-angle wide shot. Compare how they feel.
+**Your task**: Write two versions of the same image prompt - one with a low-angle close-up and one with a high-angle wide shot. Compare how they feel.
 
 ---
 
@@ -163,16 +163,16 @@ Before moving on, confirm:
 - B) Makes them look powerful and dominant
 - C) Makes the background brighter
 
-**Answer**: B) Makes them look powerful and dominant — low-angle shots look up at the subject, giving them visual authority.
+**Answer**: B) Makes them look powerful and dominant - low-angle shots look up at the subject, giving them visual authority.
 
 **Q2**: What does "shallow depth of field" mean in an image prompt?
 - A) The image is very small in resolution
 - B) The subject is sharp and the background is blurred
 - C) The image has no background at all
 
-**Answer**: B) The subject is sharp and the background is blurred — this creates a professional photography look and draws the viewer's eye to the subject.
+**Answer**: B) The subject is sharp and the background is blurred - this creates a professional photography look and draws the viewer's eye to the subject.
 
 ---
 
 ## SEC-14: ⚡ One-Line Takeaway
-> You're not just describing an image — you're directing a camera, so tell the AI exactly where to point it.
+> You're not just describing an image - you're directing a camera, so tell the AI exactly where to point it.

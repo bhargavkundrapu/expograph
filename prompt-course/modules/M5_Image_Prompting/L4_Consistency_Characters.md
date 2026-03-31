@@ -8,7 +8,7 @@
 ---
 
 ## SEC-00: Lesson ID
-> M5-L4 — Keep the same character looking consistent across multiple images
+> M5-L4 - Keep the same character looking consistent across multiple images
 
 ---
 
@@ -23,7 +23,7 @@ What you'll learn in this lesson:
 ## SEC-02: 💡 Use Case
 **When would you use this?**
 
-You're building a comic strip, a storyboard, or a series of social media posts featuring the same character — maybe a mascot for your project or a persona for your brand. If you describe the character differently each time, the AI gives you a different-looking person in every image. A character reference sheet solves this. It's how professionals keep characters on-model across dozens of frames.
+You're building a comic strip, a storyboard, or a series of social media posts featuring the same character - maybe a mascot for your project or a persona for your brand. If you describe the character differently each time, the AI gives you a different-looking person in every image. A character reference sheet solves this. It's how professionals keep characters on-model across dozens of frames.
 
 ---
 
@@ -45,14 +45,14 @@ Output:
 Image 1: A girl with shoulder-length wavy brown hair and a round face.
 Image 2: A completely different woman with straight black hair,
          sharper features, and glasses.
-Image 3: A third person — younger, with a ponytail, different skin
+Image 3: A third person - younger, with a ponytail, different skin
          tone, different face shape. None of them look related.
 ```
 
 ---
 
 ## SEC-05: 🔍 Why It Failed
-- Each prompt describes the character **vaguely and differently** — so the AI creates three different people
+- Each prompt describes the character **vaguely and differently** - so the AI creates three different people
 - No **fixed details** like face shape, hairstyle, clothing, or distinguishing features
 - No **character reference sheet** to anchor the AI to one consistent design
 
@@ -91,7 +91,7 @@ Anika (oval face, warm brown skin, straight black shoulder-length hair with side
 
 Output:
 ```
-A digital illustration of the same character — Anika — sitting at
+A digital illustration of the same character - Anika - sitting at
 a wooden desk. She has her signature straight black hair with a
 side part, round glasses, and silver nose stud. She's wearing her
 teal hoodie. A warm desk lamp illuminates her face as she focuses
@@ -117,28 +117,28 @@ Lighting: Stage spotlights from above, warm tones, slight lens flare
 Mood: Energetic, proud, inspiring
 ```
 
-**What changed**: Added a specific pose, expression, and scene while repeating every physical detail from the character sheet — this gives a completely new scene but the same recognizable character.
+**What changed**: Added a specific pose, expression, and scene while repeating every physical detail from the character sheet - this gives a completely new scene but the same recognizable character.
 
 Here are more examples of reusing a character:
 
-**Example 1 — Character in a different setting:**
+**Example 1 - Character in a different setting:**
 ```
 Anika (same character details) walking through a rainy street, holding a transparent umbrella, neon signs reflecting on the wet road, cinematic photography style, contemplative mood
 ```
-Expected result: Anika in a moody rain scene — same face, same outfit, different environment and emotion.
+Expected result: Anika in a moody rain scene - same face, same outfit, different environment and emotion.
 
-**Example 2 — Character in an action scene:**
+**Example 2 - Character in an action scene:**
 ```
 Anika (same character details) running through a futuristic corridor, alarm lights flashing red, motion blur on the background, anime style, intense and urgent mood
 ```
-Expected result: Anika in a dynamic running pose with anime aesthetics — recognizable character in a completely different genre.
+Expected result: Anika in a dynamic running pose with anime aesthetics - recognizable character in a completely different genre.
 
 ---
 
 ## SEC-09: 📝 Guided Practice
 Try this yourself:
 
-1. Create a character reference sheet for a character of your choice — fill in face shape, hair, eyes, skin tone, outfit, and one unique accessory
+1. Create a character reference sheet for a character of your choice - fill in face shape, hair, eyes, skin tone, outfit, and one unique accessory
 2. Use that reference to write two prompts: one where the character is studying, and one where they are outdoors
 3. Generate both images and check if the character looks like the same person
 
@@ -164,7 +164,7 @@ Before moving on, confirm:
 
 ## SEC-12: 🧠 What You Learned
 - AI image tools generate a new random character every time unless you lock in specific details
-- A character reference sheet lists face shape, hair, eyes, skin, outfit, and accessories — repeat it in every prompt
+- A character reference sheet lists face shape, hair, eyes, skin, outfit, and accessories - repeat it in every prompt
 - You can change the pose, scene, and mood while keeping identity by copy-pasting the character block into each new prompt
 
 ---
@@ -175,16 +175,16 @@ Before moving on, confirm:
 - B) Each prompt describes the character differently or too vaguely
 - C) AI tools can only generate one character per account
 
-**Answer**: B) Each prompt describes the character differently or too vaguely — without fixed details, the AI fills in gaps randomly each time.
+**Answer**: B) Each prompt describes the character differently or too vaguely - without fixed details, the AI fills in gaps randomly each time.
 
 **Q2**: What is the most important thing to include in every prompt to keep a character consistent?
 - A) The character's name only
 - B) The same physical details (face, hair, eyes, outfit, accessories) repeated every time
 - C) The same background and lighting
 
-**Answer**: B) The same physical details repeated every time — names alone don't help AI image tools, but specific physical descriptions do.
+**Answer**: B) The same physical details repeated every time - names alone don't help AI image tools, but specific physical descriptions do.
 
 ---
 
 ## SEC-14: ⚡ One-Line Takeaway
-> A character reference sheet is your character's passport — carry it into every prompt, and they'll always look like themselves.
+> A character reference sheet is your character's passport - carry it into every prompt, and they'll always look like themselves.

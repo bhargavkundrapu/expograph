@@ -8,7 +8,7 @@
 ---
 
 ## SEC-00: Lesson ID
-> M6-L5 — Ready-made templates for 30, 45, and 60-second short-form videos
+> M6-L5 - Ready-made templates for 30, 45, and 60-second short-form videos
 
 ---
 
@@ -23,7 +23,7 @@ What you'll learn in this lesson:
 ## SEC-02: 💡 Use Case
 **When would you use this?**
 
-You want to post a Reel, a YouTube Short, or a LinkedIn video — but you don't know how to fit your idea into 30, 45, or 60 seconds. These templates give you a plug-and-play structure. Pick your duration, fill in the blanks, and you have a script ready to record.
+You want to post a Reel, a YouTube Short, or a LinkedIn video - but you don't know how to fit your idea into 30, 45, or 60 seconds. These templates give you a plug-and-play structure. Pick your duration, fill in the blanks, and you have a script ready to record.
 
 ---
 
@@ -51,9 +51,9 @@ Anyway, hope you enjoyed this. See you next time!
 ---
 
 ## SEC-05: 🔍 Why It Failed
-- No duration specified — "short" could mean 15 seconds or 5 minutes
-- No structure or template — the output is filler with no real content
-- No topic or platform — the AI wrote a generic script that works nowhere
+- No duration specified - "short" could mean 15 seconds or 5 minutes
+- No structure or template - the output is filler with no real content
+- No topic or platform - the AI wrote a generic script that works nowhere
 
 ---
 
@@ -63,18 +63,18 @@ Prompt:
 ```
 Give me 3 video script templates for short-form content:
 
-Template 1 — 30 seconds (~75 words):
+Template 1 - 30 seconds (~75 words):
 - Hook (3 sec)
 - One key point (20 sec)
 - CTA (7 sec)
 
-Template 2 — 45 seconds (~110 words):
+Template 2 - 45 seconds (~110 words):
 - Hook (3 sec)
 - Two key points (30 sec)
 - Quick recap (5 sec)
 - CTA (7 sec)
 
-Template 3 — 60 seconds (~150 words):
+Template 3 - 60 seconds (~150 words):
 - Hook (3 sec)
 - Three key points (40 sec)
 - Summary (10 sec)
@@ -94,7 +94,7 @@ Format each template clearly with labels.
 
 Output:
 ```
-TEMPLATE 1 — 30 SECONDS (~75 words)
+TEMPLATE 1 - 30 SECONDS (~75 words)
 [0:00–0:03] HOOK: "AI won't take your job. But someone who
 knows how to use AI will."
 [0:04–0:23] POINT: Prompt engineering lets you get 10x better
@@ -102,23 +102,23 @@ results from ChatGPT. One good prompt can replace an hour of
 Googling. It's the single most useful skill you can learn this year.
 [0:24–0:30] CTA: "Follow for more AI tips."
 
-TEMPLATE 2 — 45 SECONDS (~110 words)
+TEMPLATE 2 - 45 SECONDS (~110 words)
 [0:00–0:03] HOOK: "I wasted 2 hours on an assignment. Then I
 learned this."
 [0:04–0:18] POINT 1: Prompt engineering teaches you to talk to
 AI the right way. Better prompts mean better answers.
 [0:19–0:33] POINT 2: You can use it for resumes, coding, study
-notes, presentations — basically everything in college.
+notes, presentations - basically everything in college.
 [0:34–0:38] RECAP: One skill. Every use case.
 [0:39–0:45] CTA: "Save this and try it today."
 
-TEMPLATE 3 — 60 SECONDS (~150 words)
+TEMPLATE 3 - 60 SECONDS (~150 words)
 [0:00–0:03] HOOK: "ChatGPT gives everyone the same AI. Your
 prompt is what makes the difference."
 [0:04–0:17] POINT 1: Most people type vague prompts and get
 vague answers. Prompt engineering fixes that.
 [0:18–0:30] POINT 2: You can generate study notes, debug code,
-write emails, and build presentations — all with the right prompt.
+write emails, and build presentations - all with the right prompt.
 [0:31–0:43] POINT 3: Companies are already hiring for this skill.
 LinkedIn has 10,000+ prompt engineering job listings right now.
 [0:44–0:53] SUMMARY: Learn to prompt well and you'll stand out
@@ -156,7 +156,7 @@ For each template include:
 Format each template clearly with labels.
 ```
 
-**What changed**: Each template is now tuned for a specific platform — different tone, CTA style, and production tips for Instagram, YouTube, and LinkedIn.
+**What changed**: Each template is now tuned for a specific platform - different tone, CTA style, and production tips for Instagram, YouTube, and LinkedIn.
 
 ---
 
@@ -188,7 +188,7 @@ Before moving on, confirm:
 ---
 
 ## SEC-12: 🧠 What You Learned
-- Different video durations need different structures — a 30s video has one point, a 60s video has three
+- Different video durations need different structures - a 30s video has one point, a 60s video has three
 - Specifying word count and timestamps keeps the AI's output within your time limit
 - Platform-specific optimization changes the tone, CTA, and production style of the same script
 
@@ -200,14 +200,14 @@ Before moving on, confirm:
 - B) One
 - C) Five
 
-**Answer**: B) One — 30 seconds is only ~75 words, so you have time for one strong point and a CTA.
+**Answer**: B) One - 30 seconds is only ~75 words, so you have time for one strong point and a CTA.
 
 **Q2**: Why should you optimize a script for a specific platform?
 - A) Because AI can't write for multiple platforms
 - B) Each platform has different audience expectations, tone, and CTA styles
 - C) It doesn't make a difference
 
-**Answer**: B) Each platform has different audience expectations, tone, and CTA styles — a LinkedIn video should sound professional while an Instagram Reel should be fast and punchy.
+**Answer**: B) Each platform has different audience expectations, tone, and CTA styles - a LinkedIn video should sound professional while an Instagram Reel should be fast and punchy.
 
 ---
 

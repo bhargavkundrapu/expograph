@@ -1,4 +1,4 @@
-# Lesson: Final Only vs Show Steps — Controlling Reasoning Visibility
+# Lesson: Final Only vs Show Steps - Controlling Reasoning Visibility
 
 <!-- SEC-00 -->
 ## 🆔 Lesson ID
@@ -6,7 +6,7 @@
 | Field      | Value                                      |
 |------------|--------------------------------------------|
 | Lesson ID  | M9-L2                                      |
-| Module     | M9 — Reasoning, Math, QA & Interviews      |
+| Module     | M9 - Reasoning, Math, QA & Interviews      |
 | Difficulty | Intermediate                               |
 | Time       | 10–15 minutes                              |
 
@@ -26,7 +26,7 @@ By the end of this lesson you will be able to:
 <!-- SEC-02 -->
 ## 💡 Use Case
 
-Sometimes you need a quick answer — like converting units while coding or checking a formula during a timed exam. Other times you need the full solution path — like studying a proof or reviewing a tricky word problem. This lesson teaches you to control exactly how much reasoning the AI shows, so you get what you need without wasting time.
+Sometimes you need a quick answer - like converting units while coding or checking a formula during a timed exam. Other times you need the full solution path - like studying a proof or reviewing a tricky word problem. This lesson teaches you to control exactly how much reasoning the AI shows, so you get what you need without wasting time.
 
 ---
 
@@ -55,9 +55,9 @@ political, economic, and cultural centre of France.
 <!-- SEC-05 -->
 ## 🔍 Why It Failed
 
-- **Too much information** — you asked a one-line question and got a paragraph you did not need.
-- **No output control** — the AI defaults to being "helpful" by over-explaining.
-- **Wastes time** — during rapid-fire study or quizzes, extra text slows you down.
+- **Too much information** - you asked a one-line question and got a paragraph you did not need.
+- **No output control** - the AI defaults to being "helpful" by over-explaining.
+- **Wastes time** - during rapid-fire study or quizzes, extra text slows you down.
 
 ---
 
@@ -104,7 +104,7 @@ Question: What is the capital of France?
 2. Confirm you get a single number with no extra text.
 3. Now ask: "Explain why 0.1 + 0.2 ≠ 0.3 in programming. Show full working with each step labeled."
 
-**Your task:** Write one prompt that uses the conditional mode from the upgrade. Ask two questions inside the same prompt — one simple ("What is 7²?") and one complex ("Why is the sum of angles in a triangle 180°?"). Check that the AI gives a short answer for the first and detailed steps for the second.
+**Your task:** Write one prompt that uses the conditional mode from the upgrade. Ask two questions inside the same prompt - one simple ("What is 7²?") and one complex ("Why is the sum of angles in a triangle 180°?"). Check that the AI gives a short answer for the first and detailed steps for the second.
 
 ---
 
@@ -148,7 +148,7 @@ Write a single system-style prompt that sets the conditional mode, then list thr
 - B) "Show only the final answer. No explanation."
 - C) "Keep it short."
 
-> **A1:** B — "Show only the final answer. No explanation." is the most precise. Options A and C are vague and the AI may still add extra sentences.
+> **A1:** B - "Show only the final answer. No explanation." is the most precise. Options A and C are vague and the AI may still add extra sentences.
 
 **Q2:** What is the benefit of a conditional mode prompt over writing separate instructions each time?
 
@@ -159,4 +159,4 @@ Write a single system-style prompt that sets the conditional mode, then list thr
 <!-- SEC-14 -->
 ## 💬 One-Line Takeaway
 
-> Control the dial — tell the AI when to think out loud and when to just give you the answer.
+> Control the dial - tell the AI when to think out loud and when to just give you the answer.

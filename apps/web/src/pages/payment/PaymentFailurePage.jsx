@@ -79,11 +79,22 @@ export default function PaymentFailurePage() {
 
         <footer className="w-full min-h-[320px] sm:min-h-[40vh] border-t border-white/5">
           <TubesBackground className="min-h-[320px] sm:min-h-[40vh] bg-[#0a0a0a]" enableClickInteraction={false}>
-            <div className="flex flex-col items-center justify-center w-full min-h-[320px] sm:min-h-[40vh] gap-4 text-center px-4">
+            <div className="relative flex flex-col items-center justify-center w-full min-h-[320px] sm:min-h-[40vh] gap-4 text-center px-4">
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tighter text-white">
                 ExpoGraph
               </h2>
               <span className="text-xs text-white/40">© 2025 ExpoGraph Academy</span>
+              <div className="absolute bottom-6 right-6 flex items-center gap-4 text-white/55 pointer-events-auto">
+                <Link to="/privacy-policy" className="text-xs hover:text-white/80 underline underline-offset-2">
+                  Privacy Policy
+                </Link>
+                <Link
+                  to="/terms-and-conditions"
+                  className="text-xs hover:text-white/80 underline underline-offset-2"
+                >
+                  Terms &amp; Conditions
+                </Link>
+              </div>
             </div>
           </TubesBackground>
         </footer>

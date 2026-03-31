@@ -242,21 +242,21 @@ export default function AdminCertifications() {
                       <td className="px-4 py-3">
                         <span className="font-medium text-slate-900 dark:text-white flex items-center gap-2">
                           <FiUser className="w-4 h-4 text-slate-400" />
-                          {row.student_name || "—"}
+                          {row.student_name || "-"}
                         </span>
                       </td>
                       <td className="px-4 py-3 text-slate-600 dark:text-slate-300 flex items-center gap-2">
                         <FiMail className="w-4 h-4 text-slate-400 shrink-0" />
-                        {row.student_email || "—"}
+                        {row.student_email || "-"}
                       </td>
                       <td className="px-4 py-3 text-slate-600 dark:text-slate-300 hidden sm:table-cell flex items-center gap-2">
                         <FiPhone className="w-4 h-4 text-slate-400 shrink-0" />
-                        {row.student_phone || "—"}
+                        {row.student_phone || "-"}
                       </td>
                       <td className="px-4 py-3">
                         <span className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
                           <FiBook className="w-4 h-4 text-slate-400 shrink-0" />
-                          {row.course_title || "—"}
+                          {row.course_title || "-"}
                         </span>
                       </td>
                       <td className="px-4 py-3 text-slate-600 dark:text-slate-400 flex items-center gap-2">
@@ -267,7 +267,7 @@ export default function AdminCertifications() {
                               month: "short",
                               day: "numeric",
                             })
-                          : "—"}
+                          : "-"}
                       </td>
                       <td className="px-4 py-3">
                         <span

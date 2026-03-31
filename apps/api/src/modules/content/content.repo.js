@@ -230,7 +230,7 @@ async function getCourseTreeAdmin({ tenantId, courseId }) {
   return { course, modules, lessons };
 }
 
-/** Same variants as student.repo bonus course lookup — URL may use plural while DB uses singular (or legacy slugs). */
+/** Same variants as student.repo bonus course lookup - URL may use plural while DB uses singular (or legacy slugs). */
 const BONUS_AI_AUTOMATION_SLUG_VARIANTS = [
   "ai-automations",
   "ai_automations",
@@ -257,7 +257,7 @@ function isAiAutomationsSlugRequest(slug) {
   return false;
 }
 
-/** Placeholder lesson slugs in URLs/CMS that are not real DB slugs — resolve to first lesson in module/course. */
+/** Placeholder lesson slugs in URLs/CMS that are not real DB slugs - resolve to first lesson in module/course. */
 function isPlaceholderLessonSlug(slug) {
   const n = normalizeCourseSlugKey(slug);
   return n === "start" || n === "first" || n === "_first" || n === "begin" || n === "intro";

@@ -1,4 +1,4 @@
-# Lesson: Stepwise Reasoning — Chain-of-Thought Prompting
+# Lesson: Stepwise Reasoning - Chain-of-Thought Prompting
 
 <!-- SEC-00 -->
 ## 🆔 Lesson ID
@@ -6,7 +6,7 @@
 | Field      | Value                                      |
 |------------|--------------------------------------------|
 | Lesson ID  | M9-L1                                      |
-| Module     | M9 — Reasoning, Math, QA & Interviews      |
+| Module     | M9 - Reasoning, Math, QA & Interviews      |
 | Difficulty | Intermediate                               |
 | Time       | 10–15 minutes                              |
 
@@ -26,7 +26,7 @@ By the end of this lesson you will be able to:
 <!-- SEC-02 -->
 ## 💡 Use Case
 
-You are solving a math problem for an exam or assignment. You paste it into the AI and get a final number — but no working. You have no idea if it is right, and you cannot learn from it. Chain-of-thought prompting fixes this. It forces the AI to show each step, so you can follow the logic, catch mistakes, and actually understand the solution.
+You are solving a math problem for an exam or assignment. You paste it into the AI and get a final number - but no working. You have no idea if it is right, and you cannot learn from it. Chain-of-thought prompting fixes this. It forces the AI to show each step, so you can follow the logic, catch mistakes, and actually understand the solution.
 
 ---
 
@@ -51,9 +51,9 @@ What is 23% of 847?
 <!-- SEC-05 -->
 ## 🔍 Why It Failed
 
-- **No reasoning shown** — the AI jumped straight to the answer. If it made an error, you would never notice.
-- **No learning value** — you cannot study from a single number with no working.
-- **No verification** — the AI did not double-check itself, so silent mistakes slip through.
+- **No reasoning shown** - the AI jumped straight to the answer. If it made an error, you would never notice.
+- **No learning value** - you cannot study from a single number with no working.
+- **No verification** - the AI did not double-check itself, so silent mistakes slip through.
 
 ---
 
@@ -116,7 +116,7 @@ What is 23% of 847?
 
 "A shopkeeper buys 80 items at ₹25 each. He sells 60% of them at ₹35 each and the rest at ₹20 each. What is his total profit or loss?"
 
-Write a chain-of-thought prompt that forces the AI to show the cost, revenue from each group, total revenue, and profit/loss — each on a separate line — with a verification step at the end.
+Write a chain-of-thought prompt that forces the AI to show the cost, revenue from each group, total revenue, and profit/loss - each on a separate line - with a verification step at the end.
 
 ---
 
@@ -148,7 +148,7 @@ Write a chain-of-thought prompt that forces the AI to show the cost, revenue fro
 - B) "Solve step by step"
 - C) "Be accurate"
 
-> **A1:** B — "Solve step by step" tells the AI to show each calculation instead of jumping to the final number.
+> **A1:** B - "Solve step by step" tells the AI to show each calculation instead of jumping to the final number.
 
 **Q2:** Why does adding "verify your answer" improve accuracy?
 
@@ -159,4 +159,4 @@ Write a chain-of-thought prompt that forces the AI to show the cost, revenue fro
 <!-- SEC-14 -->
 ## 💬 One-Line Takeaway
 
-> When you make the AI show its work, you catch its mistakes — and learn the method yourself.
+> When you make the AI show its work, you catch its mistakes - and learn the method yourself.

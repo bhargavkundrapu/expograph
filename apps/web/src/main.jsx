@@ -64,7 +64,7 @@ class GlobalErrorBoundary extends Component {
       return (
         <ErrorFallbackUI
           title="Something went wrong"
-          message="We hit a small bump. Try again — it usually works."
+          message="We hit a small bump. Try again-it usually works."
           onRetry={() => window.location.reload()}
         />
       );
@@ -77,7 +77,7 @@ class GlobalErrorBoundary extends Component {
 const originalError = console.error;
 console.error = (...args) => {
   const message = String(args[0] || '');
-  // Sentry ingest 403: wrong DSN / project / org — browser still logs failed fetch; not actionable in-app
+  // Sentry ingest 403: wrong DSN / project / org - browser still logs failed fetch; not actionable in-app
   const joined = args.map((a) => (typeof a === "string" ? a : "")).join(" ");
   if ((message.includes("ingest.sentry.io") || joined.includes("ingest.sentry.io")) && (message.includes("403") || joined.includes("403"))) {
     return;
@@ -156,7 +156,7 @@ createRoot(document.getElementById("root")).render(
             message={
               isChunkLoadError(error)
                 ? chunkLoadUserMessage()
-                : "We hit a small bump. Try again — it usually works."
+                : "We hit a small bump. Try again-it usually works."
             }
             onRetry={() => {
               if (isChunkLoadError(error)) {

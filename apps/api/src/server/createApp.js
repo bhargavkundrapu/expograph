@@ -139,7 +139,7 @@ app.use(cors(corsOptions));
 app.options(/.*/, cors(corsOptions));
 
 
-  // Request timeout — 60s for /api/v1/me (heavy aggregate), 30s for others
+  // Request timeout - 60s for /api/v1/me (heavy aggregate), 30s for others
   const ME_PATH = "/api/v1/me";
   app.use((req, res, next) => {
     const ms = req.method === "GET" && req.path === ME_PATH ? 60_000 : 30_000;

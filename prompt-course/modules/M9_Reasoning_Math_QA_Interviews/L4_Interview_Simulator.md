@@ -1,4 +1,4 @@
-# Lesson: Interview Simulator — Your 24/7 Mock Interview Partner
+# Lesson: Interview Simulator - Your 24/7 Mock Interview Partner
 
 <!-- SEC-00 -->
 ## 🆔 Lesson ID
@@ -6,7 +6,7 @@
 | Field      | Value                                      |
 |------------|--------------------------------------------|
 | Lesson ID  | M9-L4                                      |
-| Module     | M9 — Reasoning, Math, QA & Interviews      |
+| Module     | M9 - Reasoning, Math, QA & Interviews      |
 | Difficulty | Intermediate                               |
 | Time       | 10–15 minutes                              |
 
@@ -26,7 +26,7 @@ By the end of this lesson you will be able to:
 <!-- SEC-02 -->
 ## 💡 Use Case
 
-Placement season is here and you need mock interview practice. Finding a human partner at midnight is hard. The AI can play the role of an interviewer — asking questions, pressing with follow-ups, and scoring your answers — if you set it up correctly. Use this for campus placements, internship interviews, or any job prep.
+Placement season is here and you need mock interview practice. Finding a human partner at midnight is hard. The AI can play the role of an interviewer - asking questions, pressing with follow-ups, and scoring your answers - if you set it up correctly. Use this for campus placements, internship interviews, or any job prep.
 
 ---
 
@@ -56,9 +56,9 @@ Sure! Here are some tips for interview preparation:
 <!-- SEC-05 -->
 ## 🔍 Why It Failed
 
-- **No role assigned** — the AI gave generic tips instead of acting as an interviewer.
-- **No context** — it does not know your field, experience level, or the type of interview.
-- **No interaction** — you got a tips list, not an actual mock interview you can practice with.
+- **No role assigned** - the AI gave generic tips instead of acting as an interviewer.
+- **No context** - it does not know your field, experience level, or the type of interview.
+- **No interaction** - you got a tips list, not an actual mock interview you can practice with.
 
 ---
 
@@ -140,7 +140,7 @@ Wipro ask in campus placements.
 Desired depth: Keep questions practical, not theoretical definitions.
 ```
 
-**What changed:** We added a follow-up rule and a scoring rubric. Now the AI does not just accept your answer — it pushes deeper like a real interviewer, then gives you a score and actionable feedback at the end.
+**What changed:** We added a follow-up rule and a scoring rubric. Now the AI does not just accept your answer - it pushes deeper like a real interviewer, then gives you a score and actionable feedback at the end.
 
 ---
 
@@ -196,7 +196,7 @@ Write a CRAFTED prompt that:
 - B) A role assignment telling the AI to be the interviewer
 - C) A word count limit
 
-> **A1:** B — Without a clear role ("You are a senior engineer conducting an interview"), the AI defaults to giving advice instead of asking questions.
+> **A1:** B - Without a clear role ("You are a senior engineer conducting an interview"), the AI defaults to giving advice instead of asking questions.
 
 **Q2:** Why should you include "Ask one question at a time. Wait for my answer." in an interview simulation prompt?
 
@@ -207,4 +207,4 @@ Write a CRAFTED prompt that:
 <!-- SEC-14 -->
 ## 💬 One-Line Takeaway
 
-> Give the AI a role, a round type, and a wait instruction — and you have a mock interviewer available 24/7.
+> Give the AI a role, a round type, and a wait instruction - and you have a mock interviewer available 24/7.

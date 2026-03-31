@@ -6,7 +6,7 @@
 | Field      | Value                              |
 |------------|------------------------------------|
 | Lesson ID  | M7-L2                              |
-| Module     | M7 — Coding With AI                |
+| Module     | M7 - Coding With AI                |
 | Difficulty | Intermediate                       |
 | Time       | 10–15 minutes                      |
 
@@ -26,7 +26,7 @@ By the end of this lesson you will be able to:
 <!-- SEC-02 -->
 ## 💡 Use Case
 
-It is 2 AM. Your assignment is due in 4 hours. Your code throws an error you have never seen before. You paste it into an AI tool and say "fix it" — the AI guesses wrong and you waste another hour. This lesson teaches you how to give AI the right context so it finds the real bug on the first try. Works for assignments, side projects, and coding interviews.
+It is 2 AM. Your assignment is due in 4 hours. Your code throws an error you have never seen before. You paste it into an AI tool and say "fix it" - the AI guesses wrong and you waste another hour. This lesson teaches you how to give AI the right context so it finds the real bug on the first try. Works for assignments, side projects, and coding interviews.
 
 ---
 
@@ -57,9 +57,9 @@ the actual code, I can only offer general debugging tips:
 <!-- SEC-05 -->
 ## 🔍 Why It Failed
 
-- **No code provided** — The AI cannot debug code it cannot see. It gave generic advice instead.
-- **No error message** — Without the actual error, the AI has no clue what went wrong.
-- **No expected vs actual behavior** — The AI does not know what "doesn't work" means. A crash? Wrong output? Infinite loop?
+- **No code provided** - The AI cannot debug code it cannot see. It gave generic advice instead.
+- **No error message** - Without the actual error, the AI has no clue what went wrong.
+- **No expected vs actual behavior** - The AI does not know what "doesn't work" means. A crash? Wrong output? Infinite loop?
 
 ---
 
@@ -144,7 +144,7 @@ Tasks:
 Format: Number each section. Keep explanations to 1–2 sentences each.
 ```
 
-**What changed:** We added root cause analysis, asked for other risky inputs, and requested a defensive coding pattern. This turns a one-off fix into a learning moment. You do not just fix this bug — you learn to prevent the next one.
+**What changed:** We added root cause analysis, asked for other risky inputs, and requested a defensive coding pattern. This turns a one-off fix into a learning moment. You do not just fix this bug - you learn to prevent the next one.
 
 ---
 
@@ -230,4 +230,4 @@ Before moving on, confirm:
 <!-- SEC-14 -->
 ## 💬 One-Line Takeaway
 
-> Show AI the code, the error, and the gap between what you expected and what happened — that is the fastest path to a fix.
+> Show AI the code, the error, and the gap between what you expected and what happened - that is the fastest path to a fix.

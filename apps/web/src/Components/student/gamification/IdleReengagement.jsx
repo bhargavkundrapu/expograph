@@ -8,7 +8,7 @@ import { FiX, FiAlertTriangle, FiHeart, FiArrowRight, FiZap } from "react-icons/
 const WHATS_NEW = [
   "Achievement badges and XP system to track your growth",
   "Daily challenges with bonus XP rewards",
-  "Learning streak system — keep your fire burning!",
+  "Learning streak system-keep your fire burning!",
   "Share your progress on LinkedIn & Instagram",
   "Course landing pages with roadmap view",
 ];

@@ -43,7 +43,7 @@ export default function CallToAction1() {
           </div>
         </div>
         <p className="text-xs sm:text-sm text-white/50 mt-2 sm:mt-3 max-w-md">
-          Less than the price of a coffee — real skills, real projects, real career growth.
+          Less than the price of a coffee-real skills, real projects, real career growth.
         </p>
         <button
           type="button"
