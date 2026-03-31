@@ -8,6 +8,7 @@ import { cn } from "../../lib/utils";
 import { getToolIcon, getToolIconColor } from "../../lib/toolIcons";
 
 const ACADEMY_COURSES_HASH = "/academy#courses";
+const COURSE_ROUTE_BASE = "/courses";
 
 export default function CourseExplorePage() {
   const { slug } = useParams();
@@ -256,7 +257,7 @@ export default function CourseExplorePage() {
                 : "Ready to start? Get this course or the All Pack for everything."}
           </p>
           <button
-            onClick={() => navigate(ACADEMY_COURSES_HASH)}
+            onClick={() => navigate(COURSE_ROUTE_BASE)}
             className={cn(
               "px-8 py-4 rounded-xl font-semibold text-white transition-all",
               `bg-gradient-to-r ${data.gradient}`,
