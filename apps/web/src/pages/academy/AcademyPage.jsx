@@ -234,7 +234,7 @@ export default function AcademyPage() {
               className="text-sm sm:text-[15px] md:text-lg text-white md:text-white/60 max-w-xs sm:max-w-sm md:max-w-lg mt-12 sm:mt-14 md:mt-0 mb-0 md:mb-6 leading-relaxed mx-auto md:mx-0 animate-[fadeInUp_0.5s_0.1s_ease-out_both]"
               style={{ fontFamily: "var(--font-dm)", textShadow: "0 2px 10px rgba(0,0,0,0.8)" }}
             >
-              Master vibe coding with smart prompts, structured lessons, and build for real clients in our Real Client Lab-the fastest way to grow your career.
+              Master vibe coding with smart prompts, structured lessons, and build for real clients in our Real Client Lab — the fastest way to grow your career.
             </p>
             <div
               className="flex justify-center md:justify-start gap-3 sm:gap-4 md:gap-4 flex-wrap pointer-events-auto mt-14 sm:mt-16 md:mt-0 animate-[fadeInUp_0.6s_0.15s_ease-out_both]"
@@ -314,7 +314,7 @@ export default function AcademyPage() {
       </section>
 
       {/* Course Cards-Third section below Where Learning Meets */}
-      <section id="coursess">
+      <section id="coursess" >
       <AcademyCourseCardsSection  />
       </section>
 
@@ -755,7 +755,7 @@ export default function AcademyPage() {
               <span className="text-xs uppercase tracking-widest">Move the cursor around to interact and Click to randomize.</span>
               <span className="text-xs text-white/40">© 2025 ExpoGraph Academy</span>
             </div>
-            <div className="absolute bottom-3 left-0 right-0 flex items-center justify-center gap-4 text-white/55 pointer-events-auto sm:bottom-8 sm:left-auto sm:right-6 sm:justify-end">
+            <div className="absolute bottom-8 right-6 flex items-center gap-4 text-white/55 pointer-events-auto">
               <Link to="/privacy-policy" className="text-xs hover:text-white/80 underline underline-offset-2">
                 Privacy Policy
               </Link>
