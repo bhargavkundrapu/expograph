@@ -11,10 +11,10 @@ const pageTransition = {
   ease: [0.22, 1, 0.36, 1],
 };
 
-export default function PageTransition({ children, className = "" }) {
+export default function PageTransition({ children, className = "", skipInitialFade = false }) {
   return (
     <motion.div
-      initial="initial"
+      initial={skipInitialFade ? false : "initial"}
       animate="animate"
       exit="exit"
       variants={pageVariants}

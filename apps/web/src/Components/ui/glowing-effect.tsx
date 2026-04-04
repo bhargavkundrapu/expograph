@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useCallback, useEffect, useRef } from "react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { animate } from "motion/react";
 
@@ -32,6 +32,8 @@ const GlowingEffect = memo(
     const containerRef = useRef<HTMLDivElement>(null);
     const lastPosition = useRef({ x: 0, y: 0 });
     const animationFrameRef = useRef<number>(0);
+    /** Only run pointer/scroll sync while near viewport — avoids global scroll work across the whole page */
+    const [effectsActive, setEffectsActive] = useState(false);
 
     const handleMove = useCallback(
       (e?: MouseEvent | { x: number; y: number }) => {
@@ -98,9 +100,34 @@ const GlowingEffect = memo(
     );
 
     useEffect(() => {
-      if (disabled) return;
+      if (disabled) {
+        setEffectsActive(false);
+        return;
+      }
+      const el = containerRef.current;
+      if (!el) return;
 
-      const handleScroll = () => handleMove();
+      const io = new IntersectionObserver(
+        ([entry]) => {
+          setEffectsActive(Boolean(entry?.isIntersecting));
+        },
+        { root: null, rootMargin: "120px", threshold: 0 }
+      );
+      io.observe(el);
+      return () => io.disconnect();
+    }, [disabled]);
+
+    useEffect(() => {
+      if (disabled || !effectsActive) return;
+
+      let scrollRaf = 0;
+      const handleScroll = () => {
+        if (scrollRaf) return;
+        scrollRaf = requestAnimationFrame(() => {
+          scrollRaf = 0;
+          handleMove();
+        });
+      };
       const handlePointerMove = (e: PointerEvent) => handleMove(e);
 
       window.addEventListener("scroll", handleScroll, { passive: true });
@@ -109,13 +136,14 @@ const GlowingEffect = memo(
       });
 
       return () => {
+        if (scrollRaf) cancelAnimationFrame(scrollRaf);
         if (animationFrameRef.current) {
           cancelAnimationFrame(animationFrameRef.current);
         }
         window.removeEventListener("scroll", handleScroll);
         document.body.removeEventListener("pointermove", handlePointerMove);
       };
-    }, [handleMove, disabled]);
+    }, [handleMove, disabled, effectsActive]);
 
     return (
       <>
@@ -172,7 +200,7 @@ const GlowingEffect = memo(
               "rounded-[inherit]",
               'after:content-[""] after:rounded-[inherit] after:absolute after:inset-[calc(-1*var(--glowingeffect-border-width))]',
               "after:[border:var(--glowingeffect-border-width)_solid_transparent]",
-              "after:[background:var(--gradient)] after:[background-attachment:fixed]",
+              "after:[background:var(--gradient)] after:[background-attachment:scroll]",
               "after:opacity-[var(--active)] after:transition-opacity after:duration-300",
               "after:[mask-clip:padding-box,border-box]",
               "after:[mask-composite:intersect]",

@@ -1,6 +1,6 @@
 "use client";
 
-import { Copy, FileText, FlaskConical, LayoutDashboard, Layers, ArrowRight } from "lucide-react";
+import { Copy, FileText, FlaskConical, LayoutDashboard, Layers, ArrowRight, TrendingUp, Rocket } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
 import React from "react";
@@ -69,6 +69,32 @@ const featureDataLite = [
       iconBg: "bg-indigo-500/10 border-indigo-500/30",
       iconColor: "text-indigo-400",
       tagBg: "bg-indigo-500/10 text-indigo-400",
+    },
+  },
+  {
+    slug: "jobs-search-hub",
+    icon: <TrendingUp className="h-4 w-4" />,
+    title: "Jobs Search Hub",
+    tag: "Careers",
+    description: "India-first job search: role presets, smart keywords & redirects to top portals — in your LMS.",
+    accent: {
+      borderBottom: "border-b-2 border-b-emerald-500/40",
+      iconBg: "bg-emerald-500/10 border-emerald-500/30",
+      iconColor: "text-emerald-400",
+      tagBg: "bg-emerald-500/10 text-emerald-400",
+    },
+  },
+  {
+    slug: "startup-launchpad",
+    icon: <Rocket className="h-4 w-4" />,
+    title: "Startup LaunchPad",
+    tag: "Founder Path",
+    description: "Guided founder journey in your LMS—path, readiness, tools, and legal timing (not a course flow).",
+    accent: {
+      borderBottom: "border-b-2 border-b-orange-500/40",
+      iconBg: "bg-orange-500/10 border-orange-500/30",
+      iconColor: "text-orange-400",
+      tagBg: "bg-orange-500/10 text-orange-400",
     },
   },
 ];

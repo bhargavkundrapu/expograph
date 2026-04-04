@@ -1,10 +1,11 @@
 import { useNavigate, useLocation, Link } from "react-router-dom";
-import { lazy, Suspense, useState, useCallback, useEffect, memo } from "react";
+import { createElement, lazy, Suspense, useState, useCallback, useEffect, memo } from "react";
 import { useAuth } from "../../app/providers/AuthProvider";
 import { Header } from "../../Components/ui/header-2";
 import HeroSection from "../../Components/ui/hero-section-9";
 import CallToAction1 from "../../Components/ui/call-to-action-1";
-import { FiUsers as Users, FiBriefcase as Briefcase, FiChevronDown } from "react-icons/fi";
+import { FiUsers as Users, FiBriefcase as Briefcase, FiChevronDown, FiZap } from "react-icons/fi";
+import { AcademyFeaturesGrid } from "../../Components/ui/academy-features-grid";
 import { AcademyFeaturesGridLite } from "../../Components/ui/academy-features-grid-lite";
 import { AcademyCourseCardsSection } from "../../Components/ui/AcademyCourseCardsSection";
 import { TubesBackground } from "../../Components/ui/neon-flow";
@@ -13,28 +14,9 @@ import { GlowingEffect } from "../../Components/ui/glowing-effect";
 
 const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
 
-const InteractiveRobotSpline = isMobile ? null : lazy(() =>
-  import("../../Components/ui/interactive-3d-robot").then((m) => ({ default: m.InteractiveRobotSpline }))
-);
-const AcademyFeaturesGrid = isMobile ? null : lazy(() =>
-  import("../../Components/ui/academy-features-grid").then((m) => ({ default: m.AcademyFeaturesGrid }))
-);
-
-function SectionSkeleton({ height = "h-96" }) {
-  return (
-    <div className={`w-full ${height} flex items-center justify-center`}>
-      <div className="w-full max-w-4xl mx-auto px-4 space-y-4 animate-pulse">
-        <div className="h-4 bg-white/[0.06] rounded-full w-1/4 mx-auto" />
-        <div className="h-8 bg-white/[0.06] rounded-full w-2/3 mx-auto" />
-        <div className="h-4 bg-white/[0.06] rounded-full w-1/2 mx-auto" />
-        <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="h-32 bg-white/[0.04] rounded-2xl" />
-          <div className="h-32 bg-white/[0.04] rounded-2xl" />
-        </div>
-      </div>
-    </div>
-  );
-}
+const InteractiveRobotSpline = isMobile
+  ? null
+  : lazy(() => import("../../Components/ui/interactive-3d-robot").then((m) => ({ default: m.InteractiveRobotSpline })));
 
 function HeroSkeleton() {
   return (
@@ -53,6 +35,12 @@ function HeroSkeleton() {
     </div>
   );
 }
+
+const heroStatIconClass = "h-5 w-5 text-muted-foreground";
+const HERO_SECTION_STATS = [
+  { value: "2K", label: "Active users", icon: createElement(Users, { className: heroStatIconClass }) },
+  { value: "100+", label: "Tutors", icon: createElement(Briefcase, { className: heroStatIconClass }) },
+];
 
 const reviewsRow1 = [
   { name: "Arjun S.", role: "Vibe Coding Student", text: "The Vibe Coding course taught me to build full apps using smart prompts. I shipped my first SaaS in 2 weeks-at ₹99, this is unreal.", rating: 5, highlight: "Vibe Coding" },
@@ -193,6 +181,7 @@ export default function AcademyPage() {
           />
         ) : (
           <LazyMount
+            initialMount
             placeholderHeight="100vh"
             rootMargin="300px"
             placeholder={<HeroSkeleton />}
@@ -301,10 +290,7 @@ export default function AcademyPage() {
               className: "hover:scale-105 hover:shadow-lg hover:shadow-white/10 hover:border-white/30",
             },
           ]}
-          stats={[
-            { value: "2K", label: "Active users", icon: <Users className="h-5 w-5 text-muted-foreground" /> },
-            { value: "100+", label: "Tutors", icon: <Briefcase className="h-5 w-5 text-muted-foreground" /> },
-          ]}
+          stats={HERO_SECTION_STATS}
           images={[
             "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=2071&auto=format&fit=crop",
             "https://images.unsplash.com/photo-1543269865-cbf427effbad?q=80&w=2070&auto=format&fit=crop",
@@ -313,9 +299,9 @@ export default function AcademyPage() {
         />
       </section>
 
-      {/* Course Cards-Third section below Where Learning Meets */}
-      <section id="coursess" >
-      <AcademyCourseCardsSection  />
+      {/* Course cards (packs & courses) */}
+      <section id="coursess">
+        <AcademyCourseCardsSection />
       </section>
 
       {/* Designed by top techies & IITians-trust, small impact */}
@@ -370,6 +356,53 @@ export default function AcademyPage() {
         <CallToAction1 />
       </section>
 
+      {/* Startup LaunchPad — founder product inside LMS */}
+      <section
+        id="startup-launchpad"
+        className="py-14 sm:py-16 md:py-20 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 academy-section-gpu heavy-section"
+        style={{ backgroundColor: "#000000" }}
+      >
+        <div className="max-w-5xl mx-auto rounded-3xl border border-orange-500/20 bg-gradient-to-br from-orange-950/40 via-black/80 to-amber-950/20 overflow-hidden">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10 p-6 sm:p-8 md:p-10 lg:p-12">
+            <div>
+              <p className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold tracking-widest uppercase text-orange-300/90 mb-3">
+                <FiZap className="w-4 h-4 text-orange-400" aria-hidden />
+                New in your LMS
+              </p>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white leading-tight">
+                Startup LaunchPad
+              </h2>
+              <p className="mt-2 text-lg text-orange-200/90 font-medium">Your startup path, in the right order</p>
+              <p className="mt-4 text-sm sm:text-base text-white/65 leading-relaxed">
+                A guided founder journey from idea to MVP, launch, legal setup, and growth—inside the student portal. Progress, readiness, actions, and tools. Not a course flow; a startup control center.
+              </p>
+              <ul className="mt-6 space-y-2 text-sm text-white/70">
+                <li className="flex gap-2"><span className="text-orange-400">→</span> 12-stage path with unlocks</li>
+                <li className="flex gap-2"><span className="text-orange-400">→</span> Startup Readiness Check + founder dashboard</li>
+                <li className="flex gap-2"><span className="text-orange-400">→</span> Founder tools & legal timing guidance</li>
+              </ul>
+            </div>
+            <div className="flex flex-col justify-center gap-3 sm:gap-4">
+              <button
+                type="button"
+                onClick={() => navigate(token && role === "Student" ? "/lms/startup-launchpad" : "/login")}
+                className="w-full min-h-[52px] rounded-2xl font-semibold text-white bg-gradient-to-r from-orange-600 to-amber-600 hover:brightness-110 transition shadow-lg shadow-orange-500/20"
+              >
+                {token && role === "Student" ? "Open Startup LaunchPad" : "Login to open LaunchPad"}
+              </button>
+              <button
+                type="button"
+                onClick={() => navigate("/features/startup-launchpad")}
+                className="w-full min-h-[48px] rounded-2xl border border-white/15 text-white/90 hover:bg-white/5 transition text-sm font-medium"
+              >
+                See how it works
+              </button>
+              <p className="text-xs text-white/45 text-center lg:text-left">Available to enrolled students in the LMS sidebar.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* What Features Are There With Us-with glowing effect */}
       <section
         id="features"
@@ -390,15 +423,13 @@ export default function AcademyPage() {
             Powerful tools and real-world experience, all in one place-starting at just <span className="text-emerald-400 font-semibold">₹99</span>
           </p>
         </div>
-        <div className="relative rounded-2xl sm:rounded-3xl mx-auto max-w-6xl overflow-hidden">
+        <div className="relative rounded-2xl sm:rounded-3xl mx-auto max-w-6xl overflow-hidden academy-features-glow-host">
           <GlowingEffect glow disabled={false} />
           <div className="relative z-10">
             {isMobile ? (
               <AcademyFeaturesGridLite />
             ) : (
-              <Suspense fallback={<SectionSkeleton height="h-64" />}>
-                <AcademyFeaturesGrid />
-              </Suspense>
+              <AcademyFeaturesGrid />
             )}
           </div>
         </div>
@@ -611,6 +642,53 @@ export default function AcademyPage() {
         </div>
       </section>
 
+      {/* Jobs Search Hub — before Join the vibe; borders match other academy sections */}
+      <section
+        id="jobs-hub"
+        className="py-10 sm:py-12 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 academy-section-gpu heavy-section"
+        style={{ backgroundColor: "#000000", borderTop: "1px solid rgba(255, 255, 255, 0.06)" }}
+      >
+        <div className="max-w-5xl mx-auto rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 sm:p-8 md:p-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+          <div className="space-y-3 min-w-0">
+            <p className="text-xs font-semibold uppercase tracking-widest text-white/50">New in LMS</p>
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white leading-tight">
+              Jobs Search Hub — your India-first career command center
+            </h2>
+            <p className="text-sm sm:text-base text-white/60 max-w-xl">
+              B.Tech role presets, editable keyword chips, and one-tap searches on LinkedIn, Naukri, Indeed, Internshala & more. Saved searches and apply tracking stay on your device — no scraping, no extra server cost.
+            </p>
+            <Link to="/features/jobs-search-hub" className="inline-flex text-sm text-violet-400/90 hover:text-violet-300 font-medium">
+              Full feature tour →
+            </Link>
+          </div>
+          <div className="flex flex-col sm:flex-row md:flex-col gap-3 shrink-0 w-full sm:w-auto">
+            {token && role === "Student" ? (
+              <Link
+                to="/lms/jobs"
+                className="min-h-[44px] inline-flex items-center justify-center px-6 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm text-center"
+              >
+                Open Jobs Hub
+              </Link>
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  className="min-h-[44px] inline-flex items-center justify-center px-6 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm text-center"
+                >
+                  Login to unlock
+                </Link>
+                <Link
+                  to="/courses"
+                  className="min-h-[44px] inline-flex items-center justify-center px-6 rounded-xl border border-white/[0.12] text-white/90 hover:bg-white/[0.06] text-sm font-medium text-center"
+                >
+                  Get a course
+                </Link>
+              </>
+            )}
+          </div>
+        </div>
+      </section>
+
       {/* Community / Connect Section-Join the vibe */}
       <section
         id="connect"
@@ -742,29 +820,43 @@ export default function AcademyPage() {
         </div>
       </section>
 
-      {/* Footer-ExpoGraph flow (TubesBackground) */}
+      {/* Footer WebGL deferred until near viewport — avoids GPU contention while scrolling the long page */}
       <footer className="w-full min-h-[560px] sm:min-h-[70vh] border-t border-black">
-        <TubesBackground className="min-h-[560px] sm:min-h-[70vh] bg-[#0a0a0a]" enableClickInteraction={true}>
-          <div className="flex flex-col items-center justify-center w-full min-h-[560px] sm:min-h-[70vh] gap-6 text-center px-4">
-            <div className="space-y-2 pointer-events-auto cursor-default select-none">
-              <h2 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tighter text-white drop-shadow-[0_0_20px_rgba(0,0,0,1)]">
-                ExpoGraph flow
-              </h2>
+        <LazyMount
+          placeholderHeight="min(560px, 70vh)"
+          rootMargin="480px"
+          className="w-full min-h-[560px] sm:min-h-[70vh]"
+          placeholder={
+            <div
+              className="w-full min-h-[560px] sm:min-h-[70vh] bg-[#0a0a0a] flex flex-col items-center justify-center gap-4 text-white/40 text-sm"
+              aria-hidden
+            >
+              <div className="w-8 h-8 border-2 border-white/15 border-t-white/50 rounded-full animate-spin" />
             </div>
-            <div className="absolute bottom-8 left-0 right-0 flex flex-col items-center gap-2 text-white/50 pointer-events-none">
-              <span className="text-xs uppercase tracking-widest">Move the cursor around to interact and Click to randomize.</span>
-              <span className="text-xs text-white/40">© 2025 ExpoGraph Academy</span>
+          }
+        >
+          <TubesBackground className="min-h-[560px] sm:min-h-[70vh] bg-[#0a0a0a]" enableClickInteraction={true}>
+            <div className="flex flex-col items-center justify-center w-full min-h-[560px] sm:min-h-[70vh] gap-6 text-center px-4">
+              <div className="space-y-2 pointer-events-auto cursor-default select-none">
+                <h2 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tighter text-white drop-shadow-[0_0_20px_rgba(0,0,0,1)]">
+                  ExpoGraph flow
+                </h2>
+              </div>
+              <div className="absolute bottom-8 left-0 right-0 flex flex-col items-center gap-2 text-white/50 pointer-events-none">
+                <span className="text-xs uppercase tracking-widest">Move the cursor around to interact and Click to randomize.</span>
+                <span className="text-xs text-white/40">© 2025 ExpoGraph Academy</span>
+              </div>
+              <div className="absolute bottom-8 right-6 flex items-center gap-4 text-white/55 pointer-events-auto">
+                <Link to="/privacy-policy" className="text-xs hover:text-white/80 underline underline-offset-2">
+                  Privacy Policy
+                </Link>
+                <Link to="/terms-and-conditions" className="text-xs hover:text-white/80 underline underline-offset-2">
+                  Terms &amp; Conditions
+                </Link>
+              </div>
             </div>
-            <div className="absolute bottom-8 right-6 flex items-center gap-4 text-white/55 pointer-events-auto">
-              <Link to="/privacy-policy" className="text-xs hover:text-white/80 underline underline-offset-2">
-                Privacy Policy
-              </Link>
-              <Link to="/terms-and-conditions" className="text-xs hover:text-white/80 underline underline-offset-2">
-                Terms &amp; Conditions
-              </Link>
-            </div>
-          </div>
-        </TubesBackground>
+          </TubesBackground>
+        </LazyMount>
       </footer>
       </div>
     </div>

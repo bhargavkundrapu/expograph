@@ -9,7 +9,8 @@ import {
   Copy, FileText, FlaskConical, LayoutDashboard, Layers,
   ArrowRight, ArrowLeft, CheckCircle2, Sparkles, Target,
   Video, BookOpen, Code2, Presentation, Eye, Zap, Users,
-  Star, Award, TrendingUp, Shield, Clock, Heart
+  Star, Award, TrendingUp, Shield, Clock, Heart, Globe, ExternalLink,
+  Rocket, Map, ClipboardList,
 } from "lucide-react";
 
 const featureDetails = {
@@ -203,6 +204,84 @@ const featureDetails = {
       role: "Backend Development Student",
     },
   },
+  "jobs-search-hub": {
+    hero: {
+      badge: "Career Command Center",
+      title: "Jobs Search Hub",
+      subtitle:
+        "Your India-first career command center inside ExpoGraph: pick Software, ECE, Mechanical, Civil or Business tracks, tune keyword chips, and open perfect searches on LinkedIn, Naukri, Indeed, Internshala & more — no scraping, no server cost, all on your device.",
+      gradient: "from-emerald-600 to-teal-600",
+      accentColor: "emerald",
+    },
+    sections: [
+      {
+        title: "Built for Daily Job Search",
+        items: [
+          { icon: <TrendingUp className="h-5 w-5" />, title: "Role taxonomy", desc: "Category → sub-role presets with default & optional keywords for B.Tech paths beyond only software." },
+          { icon: <Globe className="h-5 w-5" />, title: "Platform-aware URLs", desc: "We build safe search links per portal. Unsupported filters fold into keywords so nothing breaks." },
+          { icon: <ExternalLink className="h-5 w-5" />, title: "You apply on the real site", desc: "ExpoGraph never stores job listings. Every apply happens on LinkedIn, Naukri, or the portal you choose." },
+          { icon: <Shield className="h-5 w-5" />, title: "Privacy-first", desc: "Saved searches and apply status live in your browser (localStorage). Nothing extra hits our servers." },
+        ],
+      },
+      {
+        title: "How to Use It",
+        steps: [
+          { num: "01", title: "Pick a preset or chips", desc: "Choose a track or type keywords — up to 12 chips to keep URLs sane." },
+          { num: "02", title: "Set location & filters", desc: "City, remote/hybrid, experience band, date posted — mapped where each site supports it." },
+          { num: "03", title: "Select platforms", desc: "Multi-select portals or hit Search all to open every partner in a new tab." },
+          { num: "04", title: "Track & iterate", desc: "Save named searches, copy keyword strings, and mark Applied / Interview / Rejected per search template." },
+        ],
+      },
+    ],
+    stats: [
+      { value: "11+", label: "Job portals" },
+      { value: "0", label: "Server jobs stored" },
+      { value: "100%", label: "Redirect-only" },
+    ],
+    testimonial: {
+      quote: "I open the hub every morning — same keywords across Naukri and LinkedIn without typing them five times.",
+      role: "Final Year B.Tech Student",
+    },
+  },
+  "startup-launchpad": {
+    hero: {
+      badge: "Founder Operating System",
+      title: "Startup LaunchPad",
+      subtitle:
+        "Your startup path, in the right order. A guided founder journey from idea to MVP, launch, legal setup, and growth—inside the student LMS as a premium product utility, not a course flow.",
+      gradient: "from-orange-600 to-amber-600",
+      accentColor: "orange",
+    },
+    sections: [
+      {
+        title: "What you get",
+        items: [
+          { icon: <Map className="h-5 w-5" />, title: "12-stage founder path", desc: "Idea → problem → customer → validation → business model → MVP → branding → launch → first users → revenue → legal setup → growth. Locked until you complete the previous step." },
+          { icon: <ClipboardList className="h-5 w-5" />, title: "Startup Readiness Check", desc: "A short diagnostic—not a test—that estimates your stage, readiness score, and three next actions." },
+          { icon: <LayoutDashboard className="h-5 w-5" />, title: "Founder dashboard", desc: "A control center: current stage, progress, next step, profile snapshot, tools, and Founder Guide prompts." },
+          { icon: <Shield className="h-5 w-5" />, title: "Legal timing", desc: "Registration and structure guidance appears when it makes sense—after clarity, not before." },
+        ],
+      },
+      {
+        title: "How to use it",
+        steps: [
+          { num: "01", title: "Open LaunchPad", desc: "From the LMS sidebar: Startup LaunchPad. Start with Readiness or jump into your path." },
+          { num: "02", title: "Run Readiness (optional)", desc: "Answer quick questions to see your stage and suggested focus." },
+          { num: "03", title: "Work each stage", desc: "Use action cards, warnings, and expected outputs—then mark the step complete to unlock the next." },
+          { num: "04", title: "Use tools & guide", desc: "Open Founder Tools for templates, and Ask Founder Guide for decision prompts (AI can plug in later)." },
+        ],
+      },
+    ],
+    stats: [
+      { value: "12", label: "Stages in order" },
+      { value: "1", label: "Founder dashboard" },
+      { value: "0", label: "Course-style flows" },
+    ],
+    testimonial: {
+      quote: "It feels like a startup control center—not another list of videos to watch.",
+      role: "Student Founder",
+    },
+  },
 };
 
 const accentColors = {
@@ -255,6 +334,26 @@ const accentColors = {
     hoverBg: "hover:bg-indigo-500/20",
     solidBg: "bg-indigo-600",
     solidHover: "hover:bg-indigo-700",
+  },
+  emerald: {
+    text: "text-emerald-400",
+    bg: "bg-emerald-500/10",
+    border: "border-emerald-500/20",
+    gradient: "from-emerald-600 to-teal-600",
+    ring: "ring-emerald-500/30",
+    hoverBg: "hover:bg-emerald-500/20",
+    solidBg: "bg-emerald-600",
+    solidHover: "hover:bg-emerald-700",
+  },
+  orange: {
+    text: "text-orange-400",
+    bg: "bg-orange-500/10",
+    border: "border-orange-500/20",
+    gradient: "from-orange-600 to-amber-600",
+    ring: "ring-orange-500/30",
+    hoverBg: "hover:bg-orange-500/20",
+    solidBg: "bg-orange-600",
+    solidHover: "hover:bg-orange-700",
   },
 };
 
@@ -348,6 +447,46 @@ export default function FeatureDetailPage() {
                 >
                   Get All Pack
                   <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {slug === "jobs-search-hub" && (
+          <section className="px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 -mt-4 mb-4">
+            <div className="max-w-2xl mx-auto">
+              <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-5 text-center">
+                <p className="text-emerald-200/90 font-medium mb-2">Included with your LMS access</p>
+                <p className="text-sm text-white/70 mb-4">
+                  Jobs Search Hub lives in the student portal — role presets, keyword chips, multi-portal search, saved searches & apply tracking. No extra fee.
+                </p>
+                <Link
+                  to={token && role === "Student" ? "/lms/jobs" : "/login"}
+                  className="inline-flex items-center gap-2 px-6 py-2.5 bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 rounded-xl text-emerald-200 font-semibold transition-colors"
+                >
+                  {token && role === "Student" ? "Open Jobs Hub" : "Login to open Jobs Hub"}
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {slug === "startup-launchpad" && (
+          <section className="px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 -mt-4 mb-4">
+            <div className="max-w-2xl mx-auto">
+              <div className="rounded-2xl border border-orange-500/30 bg-orange-500/10 p-5 text-center">
+                <p className="text-orange-200/90 font-medium mb-2">Included with your student LMS</p>
+                <p className="text-sm text-white/70 mb-4">
+                  Startup LaunchPad lives in the student portal—a founder path, readiness check, dashboard, tools, and legal timing guidance. Not a course; a guided product experience.
+                </p>
+                <Link
+                  to={token && role === "Student" ? "/lms/startup-launchpad" : "/login"}
+                  className="inline-flex items-center gap-2 px-6 py-2.5 bg-orange-500/20 hover:bg-orange-500/30 border border-orange-500/40 rounded-xl text-orange-200 font-semibold transition-colors"
+                >
+                  {token && role === "Student" ? "Open Startup LaunchPad" : "Login to open LaunchPad"}
+                  <Rocket className="h-4 w-4" />
                 </Link>
               </div>
             </div>

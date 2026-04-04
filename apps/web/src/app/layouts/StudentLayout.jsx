@@ -27,6 +27,8 @@ const preloadMap = {
   "/lms/student/referrals": () => import("../../pages/lms/student/StudentReferrals"),
   "/lms/student/question-bank": () => import("../../pages/lms/student/StudentQuestionBank"),
   "/lms/student/internships": () => import("../../pages/lms/student/StudentInternships"),
+  "/lms/jobs": () => import("../../pages/lms/student/StudentJobsPage"),
+  "/lms/startup-launchpad": () => import("../../Components/startup-launchpad/StartupLaunchPadShell"),
   // Dynamic routes (preloaded so course/lesson pages open fast)
   "/lms/student/courses/landing": () => import("../../pages/lms/student/StudentCourseLanding"),
   "/lms/student/lesson": () => import("../../pages/lms/student/StudentLesson"),
@@ -49,6 +51,8 @@ import {
   FiMoon,
   FiSun,
   FiBookmark,
+  FiTrendingUp,
+  FiZap,
 } from "react-icons/fi";
 
 export default function StudentLayout() {
@@ -81,6 +85,8 @@ export default function StudentLayout() {
     { path: "/lms/student/certificates", label: "Certificates", icon: FiAward },
     { path: "/lms/student/client-lab", label: "Real Client Lab", icon: FiBriefcase },
     { path: "/lms/student/resume-builder", label: "Resume Builder", icon: FiFileText },
+    { path: "/lms/jobs", label: "Jobs Hub", icon: FiTrendingUp },
+    { path: "/lms/startup-launchpad", label: "Startup LaunchPad", icon: FiZap },
     { path: "/lms/student/contact", label: "Support", icon: FiHelpCircle },
   ];
 
@@ -92,10 +98,12 @@ export default function StudentLayout() {
     // - Show Resume Builder where Real Client Lab position was
     { path: "/lms/student/resume-builder", label: "Resume", icon: FiAward },
     { path: "/lms/student/client-lab", label: "Client Lab", icon: FiBriefcase },
+    { path: "/lms/startup-launchpad", label: "LaunchPad", icon: FiZap, title: "Startup LaunchPad" },
   ];
 
   const isActive = (path) => {
     if (path === "/lms/student") return location.pathname === path;
+    if (path === "/lms/jobs") return location.pathname === "/lms/jobs";
     return location.pathname.startsWith(path);
   };
 
@@ -223,6 +231,20 @@ export default function StudentLayout() {
                     >
                       <FiBookmark className="w-4 h-4" />
                       <span>Bookmarks</span>
+                      <FiChevronRight className="w-4 h-4 ml-auto text-slate-500" />
+                    </button>
+                    <button
+                      type="button"
+                      onMouseEnter={() => preloadMap["/lms/jobs"]?.()}
+                      onClick={() => {
+                        setProfileOpen(false);
+                        preloadMap["/lms/jobs"]?.();
+                        navigate("/lms/jobs");
+                      }}
+                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-700/50 transition-colors text-sm"
+                    >
+                      <FiTrendingUp className="w-4 h-4" />
+                      <span>Jobs Hub</span>
                       <FiChevronRight className="w-4 h-4 ml-auto text-slate-500" />
                     </button>
                     <button
@@ -430,7 +452,7 @@ export default function StudentLayout() {
 
       {/* ── Mobile Bottom Navigation ── */}
       <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-slate-900/95 backdrop-blur-md safe-area-pb">
-        <div className="flex items-center justify-around px-1 py-1.5">
+        <div className="flex items-center justify-around px-0.5 py-1.5 gap-0.5">
           {mobileBottomItems.map((item) => {
             const Icon = item.icon;
             const active = isActive(item.path);
@@ -438,15 +460,17 @@ export default function StudentLayout() {
               <Link
                 key={item.path}
                 to={item.path}
+                title={item.title ?? item.label}
+                aria-label={item.title ?? item.label}
                 onTouchStart={() => preloadMap[item.path]?.()}
-                className={`flex flex-col items-center justify-center gap-0.5 py-1.5 px-2.5 rounded-xl min-w-0 transition-all duration-200 btn-press ${active ? "" : "text-slate-500 active:text-slate-300"}`}
+                className={`flex flex-col items-center justify-center gap-0.5 py-1.5 px-1 sm:px-2 rounded-xl min-w-0 flex-1 max-w-[20%] transition-all duration-200 btn-press ${active ? "" : "text-slate-500 active:text-slate-300"}`}
                 style={active ? { color: accent.value } : undefined}
               >
                 <div className="relative">
                   <Icon className="w-5 h-5" />
                   {active && <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full" style={{ backgroundColor: accent.value }} />}
                 </div>
-                <span className="text-[10px] font-medium leading-tight">{item.label}</span>
+                <span className="text-[9px] sm:text-[10px] font-medium leading-tight text-center line-clamp-2">{item.label}</span>
               </Link>
             );
           })}

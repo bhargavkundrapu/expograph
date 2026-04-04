@@ -17,6 +17,8 @@ export interface LazyMountProps {
   /** Optional placeholder node (same dimensions as placeholderHeight). */
   placeholder?: React.ReactNode;
   className?: string;
+  /** When true, children mount on first paint (no IntersectionObserver wait). */
+  initialMount?: boolean;
 }
 
 export function LazyMount({
@@ -25,13 +27,15 @@ export function LazyMount({
   rootMargin = DEFAULT_ROOT_MARGIN,
   placeholder,
   className,
+  initialMount = false,
 }: LazyMountProps) {
   const ref = useRef<HTMLDivElement | null>(null);
-  const [shouldMount, setShouldMount] = useState(false);
+  const [shouldMount, setShouldMount] = useState(initialMount);
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+    if (initialMount) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -43,7 +47,7 @@ export function LazyMount({
 
     observer.observe(el);
     return () => observer.disconnect();
-  }, [rootMargin]);
+  }, [rootMargin, initialMount]);
 
   return (
     <div

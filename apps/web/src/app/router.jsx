@@ -22,6 +22,7 @@ import {
   StudentBookmarksSkeleton,
   StudentCertificatesSkeleton,
 } from "../Components/common/SkeletonLoaders";
+import { LaunchPadProvider } from "../Components/startup-launchpad/LaunchPadContext";
 
 const SolutionsPage = lazy(() => import("../pages/solutions/SolutionsPage"));
 const CoursesPage = lazy(() => import("../pages/courses/CoursesPage"));
@@ -67,6 +68,16 @@ const StudentBookmarks = lazy(() => import("../pages/lms/student/StudentBookmark
 const StudentCourseLanding = lazy(() => import("../pages/lms/student/StudentCourseLanding"));
 const StudentContact = lazy(() => import("../pages/lms/student/StudentContact"));
 const StudentProfile = lazy(() => import("../pages/lms/student/StudentProfile"));
+const StudentJobsPage = lazy(() => import("../pages/lms/student/StudentJobsPage"));
+const StartupLaunchPadShell = lazy(() => import("../Components/startup-launchpad/StartupLaunchPadShell"));
+const LaunchPadHomeScreen = lazy(() => import("../Components/startup-launchpad/screens/HomeScreen"));
+const LaunchPadReadinessScreen = lazy(() => import("../Components/startup-launchpad/screens/ReadinessScreen"));
+const LaunchPadDashboardScreen = lazy(() => import("../Components/startup-launchpad/screens/DashboardScreen"));
+const LaunchPadPathScreen = lazy(() => import("../Components/startup-launchpad/screens/PathScreen"));
+const LaunchPadStageScreen = lazy(() => import("../Components/startup-launchpad/screens/StageScreen"));
+const LaunchPadToolsScreen = lazy(() => import("../Components/startup-launchpad/screens/ToolsScreen"));
+const LaunchPadLegalScreen = lazy(() => import("../Components/startup-launchpad/screens/LegalScreen"));
+const LaunchPadProfileScreen = lazy(() => import("../Components/startup-launchpad/screens/ProfileScreen"));
 const MentorHome = lazy(() => import("../pages/lms/mentor/MentorHome"));
 const MentorSubmissions = lazy(() => import("../pages/lms/mentor/MentorSubmissions"));
 const MentorClientLab = lazy(() => import("../pages/lms/mentor/MentorClientLab"));
@@ -158,6 +169,8 @@ function RouteAwareFallback() {
 
   if (pathname.startsWith("/lms/student/courses")) return <StudentCoursesSkeleton />;
   if (pathname === "/lms/student") return <StudentHomeSkeleton />;
+  if (pathname === "/lms/jobs") return <GenericPageSkeleton />;
+  if (pathname.startsWith("/lms/startup-launchpad")) return <GenericPageSkeleton />;
   if (pathname.startsWith("/lms/student")) return <GenericPageSkeleton />;
   if (pathname.startsWith("/lms/superadmin")) return <GenericPageSkeleton />;
   if (pathname.startsWith("/lms/mentor")) return <GenericPageSkeleton />;
@@ -384,6 +397,44 @@ export const router = createBrowserRouter([
           { path: "settings", element: <L><MentorSettings /></L> },
           { path: "settings/profile", element: <L><MentorSettings /></L> },
           { path: "settings/preferences", element: <L><MentorSettings /></L> },
+        ],
+      },
+      {
+        path: "/lms/jobs",
+        element: (
+          <RequireRole allow={["Student"]}>
+            <StudentLayout />
+          </RequireRole>
+        ),
+        children: [{ index: true, element: <L><StudentJobsPage /></L> }],
+      },
+      {
+        path: "/lms/startup-launchpad",
+        element: (
+          <RequireRole allow={["Student"]}>
+            <StudentLayout />
+          </RequireRole>
+        ),
+        children: [
+          {
+            element: (
+              <LaunchPadProvider>
+                <L>
+                  <StartupLaunchPadShell />
+                </L>
+              </LaunchPadProvider>
+            ),
+            children: [
+              { index: true, element: <L><LaunchPadHomeScreen /></L> },
+              { path: "readiness", element: <L><LaunchPadReadinessScreen /></L> },
+              { path: "dashboard", element: <L><LaunchPadDashboardScreen /></L> },
+              { path: "path", element: <L><LaunchPadPathScreen /></L> },
+              { path: "stage/:stageSlug", element: <L><LaunchPadStageScreen /></L> },
+              { path: "tools", element: <L><LaunchPadToolsScreen /></L> },
+              { path: "legal", element: <L><LaunchPadLegalScreen /></L> },
+              { path: "profile", element: <L><LaunchPadProfileScreen /></L> },
+            ],
+          },
         ],
       },
       {

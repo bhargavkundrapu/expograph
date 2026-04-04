@@ -1,11 +1,5 @@
 /* Premium Academy Design System */
 
-/* Heavy below-the-fold sections: allow browser to skip offscreen content for smoother scroll */
-.heavy-section {
-  content-visibility: auto;
-  contain-intrinsic-size: 800px;
-}
-
 /* Glass Card */
 .glass-card {
   background: rgba(19, 43, 70, 0.55);

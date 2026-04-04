@@ -16,7 +16,7 @@ export default function CallToAction1() {
   return (
     <>
       <div className="w-full max-w-5xl mx-auto flex flex-col items-center justify-center text-center bg-gradient-to-b from-[#5524B7] to-[#380B60] rounded-xl sm:rounded-2xl px-4 py-8 sm:px-6 sm:py-10 md:px-10 md:py-14 lg:px-14 lg:py-16 text-white">
-        <div className="inline-flex items-center justify-center px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-purple-600/10 backdrop-blur border border-purple-500/40 text-xs sm:text-sm">
+        <div className="inline-flex items-center justify-center px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-purple-600/20 border border-purple-500/40 text-xs sm:text-sm">
           <p className="font-medium leading-snug text-center">Join 2K+ users who are Vibing</p>
         </div>
         <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl md:leading-[1.2] lg:leading-[60px] font-semibold max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl mt-4 sm:mt-5 bg-gradient-to-r from-white to-[#CAABFF] text-transparent bg-clip-text flex items-center justify-center gap-1.5 sm:gap-2 flex-wrap">

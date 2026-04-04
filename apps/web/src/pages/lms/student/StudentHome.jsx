@@ -400,7 +400,7 @@ export default function StudentHome() {
   };
 
   return (
-    <PageTransition>
+    <PageTransition skipInitialFade>
     <div className={`min-h-screen rounded-t-3xl overflow-hidden md:rounded-none transition-colors duration-200 ${isDark ? "bg-slate-900" : "bg-slate-50"}`}>
       <ConfettiBurst active={showConfetti} onDone={() => setShowConfetti(false)} />
       <AchievementToast />
