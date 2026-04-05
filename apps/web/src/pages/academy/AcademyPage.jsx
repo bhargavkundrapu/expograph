@@ -1,5 +1,5 @@
 import { useNavigate, useLocation, Link } from "react-router-dom";
-import { createElement, lazy, Suspense, useState, useCallback, useEffect, memo } from "react";
+import { createElement, lazy, Suspense, useState, useCallback, useEffect, useRef, memo } from "react";
 import { useAuth } from "../../app/providers/AuthProvider";
 import { homePathForRole } from "../../app/roles";
 import { Header } from "../../Components/ui/header-2";
@@ -23,14 +23,15 @@ function HeroSkeleton() {
   return (
     <div className="w-full h-screen bg-black flex items-center justify-center animate-pulse">
       <div className="w-full max-w-xl px-8 space-y-6">
-        <div className="h-4 bg-white/[0.06] rounded-full w-2/3" />
-        <div className="h-12 bg-white/[0.06] rounded-xl w-full" />
-        <div className="h-12 bg-white/[0.06] rounded-xl w-3/4" />
-        <div className="h-4 bg-white/[0.06] rounded-full w-full mt-6" />
-        <div className="h-4 bg-white/[0.06] rounded-full w-4/5" />
+        {/* Tailwind classes with / — use template literals so the JSX lexer stays unambiguous */}
+        <div className={`h-4 bg-white/[0.06] rounded-full w-2/3`} />
+        <div className={`h-12 bg-white/[0.06] rounded-xl w-full`} />
+        <div className={`h-12 bg-white/[0.06] rounded-xl w-3/4`} />
+        <div className={`h-4 bg-white/[0.06] rounded-full w-full mt-6`} />
+        <div className={`h-4 bg-white/[0.06] rounded-full w-4/5`} />
         <div className="flex gap-4 mt-8">
-          <div className="h-12 bg-white/[0.06] rounded-full w-36" />
-          <div className="h-12 bg-white/[0.06] rounded-full w-28" />
+          <div className={`h-12 bg-white/[0.06] rounded-full w-36`} />
+          <div className={`h-12 bg-white/[0.06] rounded-full w-28`} />
         </div>
       </div>
     </div>
@@ -148,6 +149,35 @@ export default function AcademyPage() {
   const { token, role, status } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const heroSectionRef = useRef(null);
+  const reviewsSectionRef = useRef(null);
+  /** Unmount Spline when hero is off-screen — WebGL competes with scroll compositing. */
+  const [heroWebglVisible, setHeroWebglVisible] = useState(true);
+  /** Pause infinite marquees when reviews section is off-screen — constant animation = jank. */
+  const [reviewsMarqueeActive, setReviewsMarqueeActive] = useState(false);
+
+  useEffect(() => {
+    const el = heroSectionRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([e]) => setHeroWebglVisible(e.isIntersecting),
+      { root: null, rootMargin: "100px 0px 100px 0px", threshold: 0 }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const el = reviewsSectionRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([e]) => setReviewsMarqueeActive(e.isIntersecting),
+      { root: null, rootMargin: "150px 0px 150px 0px", threshold: 0 }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
   useEffect(() => {
     if (location.hash === "#courses") {
       const el = document.getElementById("courses");
@@ -174,13 +204,17 @@ export default function AcademyPage() {
 
       <div className="academy-scroll-content overflow-x-hidden">
         {/* Hero Section-Interactive 3D Robot (desktop) / Static bg (mobile) */}
-      <section className="relative w-full min-h-[100dvh] sm:min-h-screen h-screen overflow-hidden bg-black" style={{ backgroundColor: "#000000", maxWidth: "100vw" }}>
+      <section
+        ref={heroSectionRef}
+        className="relative w-full min-h-[100dvh] sm:min-h-screen h-screen overflow-hidden bg-black"
+        style={{ backgroundColor: "#000000", maxWidth: "100vw" }}
+      >
         {isMobile ? (
           <div
             className="absolute inset-0 z-0 bg-center bg-cover bg-no-repeat"
             style={{ backgroundImage: "url('/robot-hero-mobile.png')" }}
           />
-        ) : (
+        ) : heroWebglVisible ? (
           <LazyMount
             initialMount
             placeholderHeight="100vh"
@@ -195,6 +229,8 @@ export default function AcademyPage() {
               />
             </Suspense>
           </LazyMount>
+        ) : (
+          <div className="absolute inset-0 z-0 bg-black" aria-hidden />
         )}
         <div
           className="absolute bottom-4 right-4 sm:bottom-5 sm:right-5 z-20 flex items-center justify-center gap-2 min-w-[180px] min-h-[48px] px-6 py-3 bg-black backdrop-blur-sm border border-white/10 rounded-full text-white/70 text-sm font-medium pointer-events-none"
@@ -239,7 +275,7 @@ export default function AcademyPage() {
                 {status === "authed" ? "LMS Portal" : "Login"}
               </button>
               <button
-                onClick={() => document.getElementById("coursess")?.scrollIntoView({ behavior: "smooth" })}
+                onClick={() => document.getElementById("courses")?.scrollIntoView({ behavior: "smooth" })}
                 className="px-5 py-2.5 sm:px-6 sm:py-3 md:px-6 md:py-3 bg-white/10 text-white border border-white/20 rounded-full text-sm sm:text-sm md:text-base font-semibold cursor-pointer transition-all duration-300 hover:bg-white/20 hover:scale-105 hover:border-white/40"
                 style={{ fontFamily: "var(--font-dm)" }}
               >
@@ -303,7 +339,7 @@ export default function AcademyPage() {
       </section>
 
       {/* Course cards (packs & courses) */}
-      <section id="coursess">
+      <section id="courses">
         <AcademyCourseCardsSection />
       </section>
 
@@ -440,7 +476,7 @@ export default function AcademyPage() {
           </p>
         </div>
         <div className="relative rounded-2xl sm:rounded-3xl mx-auto max-w-6xl overflow-hidden academy-features-glow-host">
-          <GlowingEffect glow disabled={false} />
+          <GlowingEffect glow disabled={false} syncScroll={false} />
           <div className="relative z-10">
             {isMobile ? (
               <AcademyFeaturesGridLite />
@@ -603,6 +639,7 @@ export default function AcademyPage() {
 
       {/* User Reviews-Social Proof */}
       <section
+        ref={reviewsSectionRef}
         id="reviews"
         className="py-14 sm:py-16 md:py-20 lg:py-24 overflow-hidden academy-section-gpu heavy-section"
         style={{ backgroundColor: "#000000" }}
@@ -628,7 +665,15 @@ export default function AcademyPage() {
         <div className="relative mb-3 sm:mb-4">
           <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-24 bg-gradient-to-r from-black to-transparent z-10 pointer-events-none" />
           <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-24 bg-gradient-to-l from-black to-transparent z-10 pointer-events-none" />
-          <div className="flex gap-3 sm:gap-4 animate-[scrollLeft_60s_linear_infinite]" style={{ width: "max-content", willChange: "transform", transform: "translateZ(0)" }}>
+          <div
+            className="flex gap-3 sm:gap-4 animate-[scrollLeft_60s_linear_infinite]"
+            style={{
+              width: "max-content",
+              willChange: reviewsMarqueeActive ? "transform" : "auto",
+              transform: "translateZ(0)",
+              animationPlayState: reviewsMarqueeActive ? "running" : "paused",
+            }}
+          >
             {[...reviewsRow1, ...reviewsRow1].map((r, i) => (
               <ReviewCard key={`r1-${i}`} r={r} />
             ))}
@@ -639,7 +684,15 @@ export default function AcademyPage() {
         <div className="relative">
           <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-24 bg-gradient-to-r from-black to-transparent z-10 pointer-events-none" />
           <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-24 bg-gradient-to-l from-black to-transparent z-10 pointer-events-none" />
-          <div className="flex gap-3 sm:gap-4 animate-[scrollRight_65s_linear_infinite]" style={{ width: "max-content", willChange: "transform", transform: "translateZ(0)" }}>
+          <div
+            className="flex gap-3 sm:gap-4 animate-[scrollRight_65s_linear_infinite]"
+            style={{
+              width: "max-content",
+              willChange: reviewsMarqueeActive ? "transform" : "auto",
+              transform: "translateZ(0)",
+              animationPlayState: reviewsMarqueeActive ? "running" : "paused",
+            }}
+          >
             {[...reviewsRow2, ...reviewsRow2].map((r, i) => (
               <ReviewCard key={`r2-${i}`} r={r} />
             ))}

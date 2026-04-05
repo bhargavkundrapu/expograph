@@ -15,6 +15,8 @@ interface GlowingEffectProps {
   disabled?: boolean;
   movementDuration?: number;
   borderWidth?: number;
+  /** When false, scroll no longer triggers glow updates (reduces main-thread + scroll jank on long pages). Mouse/touch still updates. Default true. */
+  syncScroll?: boolean;
 }
 const GlowingEffect = memo(
   ({
@@ -28,6 +30,7 @@ const GlowingEffect = memo(
     movementDuration = 2,
     borderWidth = 1,
     disabled = true,
+    syncScroll = true,
   }: GlowingEffectProps) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const lastPosition = useRef({ x: 0, y: 0 });
@@ -120,6 +123,20 @@ const GlowingEffect = memo(
     useEffect(() => {
       if (disabled || !effectsActive) return;
 
+      const handlePointerMove = (e: PointerEvent) => handleMove(e);
+
+      if (!syncScroll) {
+        document.body.addEventListener("pointermove", handlePointerMove, {
+          passive: true,
+        });
+        return () => {
+          if (animationFrameRef.current) {
+            cancelAnimationFrame(animationFrameRef.current);
+          }
+          document.body.removeEventListener("pointermove", handlePointerMove);
+        };
+      }
+
       let scrollRaf = 0;
       const handleScroll = () => {
         if (scrollRaf) return;
@@ -128,7 +145,6 @@ const GlowingEffect = memo(
           handleMove();
         });
       };
-      const handlePointerMove = (e: PointerEvent) => handleMove(e);
 
       window.addEventListener("scroll", handleScroll, { passive: true });
       document.body.addEventListener("pointermove", handlePointerMove, {
@@ -143,7 +159,7 @@ const GlowingEffect = memo(
         window.removeEventListener("scroll", handleScroll);
         document.body.removeEventListener("pointermove", handlePointerMove);
       };
-    }, [handleMove, disabled, effectsActive]);
+    }, [handleMove, disabled, effectsActive, syncScroll]);
 
     return (
       <>
