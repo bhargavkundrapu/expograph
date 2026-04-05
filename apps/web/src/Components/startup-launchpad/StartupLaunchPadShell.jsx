@@ -1,5 +1,5 @@
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import { FiArrowLeft, FiGrid, FiHeart, FiLayout, FiMap, FiTool, FiShield, FiUser } from "react-icons/fi";
+import { NavLink, Outlet } from "react-router-dom";
+import { FiGrid, FiHeart, FiLayout, FiMap, FiTool, FiShield, FiUser } from "react-icons/fi";
 import { useState } from "react";
 import FounderGuideSheet from "./FounderGuideSheet";
 
@@ -14,24 +14,25 @@ const nav = [
 ];
 
 function ShellInner() {
-  const navigate = useNavigate();
   const [guideOpen, setGuideOpen] = useState(false);
 
   return (
     <div className="min-h-full flex flex-col text-slate-900">
       <header className="sticky top-0 z-30 border-b border-slate-200/90 bg-white/95 backdrop-blur-md shadow-sm">
-        <div className="max-w-6xl mx-auto px-3 sm:px-4 py-3 flex items-center gap-3">
-          
+        <div className="max-w-6xl mx-auto px-3 sm:px-4 py-2.5 sm:py-3 flex items-center gap-2 sm:gap-3">
           <div className="min-w-0 flex-1">
             <p className="text-[10px] sm:text-xs font-semibold tracking-widest text-violet-700 uppercase truncate">Startup LaunchPad</p>
-            <p className="text-sm sm:text-base font-semibold text-slate-900 truncate">Your startup path, in the right order</p>
+            <p className="text-xs sm:text-base font-semibold text-slate-900 truncate leading-tight sm:leading-normal">
+              Your startup path, in the right order
+            </p>
           </div>
           <button
             type="button"
             onClick={() => setGuideOpen(true)}
-            className="shrink-0 min-h-[44px] px-3 sm:px-4 rounded-xl border border-violet-300 bg-violet-50 text-sm font-medium text-violet-800 hover:bg-violet-100 shadow-sm"
+            className="shrink-0 min-h-[44px] px-2.5 sm:px-4 rounded-xl border border-violet-300 bg-violet-50 text-xs sm:text-sm font-medium text-violet-800 hover:bg-violet-100 shadow-sm"
           >
-            Ask Founder Guide
+            <span className="sm:hidden">Guide</span>
+            <span className="hidden sm:inline">Ask Founder Guide</span>
           </button>
         </div>
         <nav

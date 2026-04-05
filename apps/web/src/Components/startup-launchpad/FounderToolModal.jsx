@@ -4,7 +4,7 @@ import { FiCheck, FiX } from "react-icons/fi";
 import { TOOL_MODAL_CONTENT } from "./launchpadConfig";
 import ToolPromptPanel from "./ToolPromptPanel";
 
-export default function FounderToolModal({ toolId, open, onClose, onSaveToProfile, defaultExpandAi = false }) {
+export default function FounderToolModal({ toolId, open, onClose, onSaveToProfile }) {
   const content = toolId ? TOOL_MODAL_CONTENT[toolId] : null;
   const aiSectionRef = useRef(null);
 
@@ -18,12 +18,12 @@ export default function FounderToolModal({ toolId, open, onClose, onSaveToProfil
   }, [open, onClose]);
 
   useEffect(() => {
-    if (!open || !defaultExpandAi || !toolId) return;
+    if (!open || !toolId) return;
     const t = setTimeout(() => {
       aiSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
     }, 180);
     return () => clearTimeout(t);
-  }, [open, toolId, defaultExpandAi]);
+  }, [open, toolId]);
 
   return (
     <AnimatePresence>
@@ -42,7 +42,7 @@ export default function FounderToolModal({ toolId, open, onClose, onSaveToProfil
             role="dialog"
             aria-modal="true"
             aria-labelledby="founder-tool-title"
-            className="fixed z-[95] left-4 right-4 top-[8vh] max-h-[88vh] overflow-hidden flex flex-col rounded-2xl border border-slate-200 bg-white shadow-2xl md:left-1/2 md:-translate-x-1/2 md:w-full md:max-w-lg"
+            className="fixed z-[95] left-3 right-3 sm:left-4 sm:right-4 top-[max(0.75rem,env(safe-area-inset-top))] sm:top-[8vh] max-h-[min(88dvh,720px)] sm:max-h-[88vh] overflow-hidden flex flex-col rounded-2xl border border-slate-200 bg-white shadow-2xl w-auto max-w-[calc(100vw-1.5rem)] sm:max-w-none md:left-1/2 md:-translate-x-1/2 md:w-full md:max-w-lg touch-manipulation"
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 12 }}
@@ -55,7 +55,7 @@ export default function FounderToolModal({ toolId, open, onClose, onSaveToProfil
                 <FiX className="w-5 h-5" />
               </button>
             </div>
-            <div className="p-4 overflow-y-auto flex-1 space-y-4 min-h-0">
+            <div className="p-3 sm:p-4 overflow-y-auto flex-1 space-y-4 min-h-0 overscroll-y-contain [-webkit-overflow-scrolling:touch]">
               <div>
                 <p className="text-sm text-slate-600">{content.description}</p>
                 <ul className="mt-3 space-y-2">
@@ -73,7 +73,7 @@ export default function FounderToolModal({ toolId, open, onClose, onSaveToProfil
 
               <div ref={aiSectionRef} className="pt-1 border-t border-slate-100">
                 <p className="text-xs font-semibold uppercase tracking-wide text-violet-800 mb-2">AI review prompt</p>
-                <ToolPromptPanel toolId={toolId} defaultOpen={defaultExpandAi} />
+                <ToolPromptPanel toolId={toolId} defaultOpen />
               </div>
             </div>
             <div className="p-4 border-t border-slate-200 bg-white flex gap-2 shrink-0">
