@@ -24,7 +24,7 @@ function ShellInner() {
           <button
             type="button"
             onClick={() => navigate("/lms/student")}
-            className="flex items-center gap-2 text-sm text-slate-600 hover:text-slate-900 min-h-[44px] min-w-[44px] justify-center rounded-xl hover:bg-slate-100 -ml-1"
+            className="flex items-center gap-2 text-sm text-slate-600 hover:text-slate-900 min-h-[44px] min-w-[44px] justify-center rounded-xl hover:bg-slate-100 -ml-1 shrink-0"
             aria-label="Back to student home"
           >
             <FiArrowLeft className="w-5 h-5" />
@@ -42,7 +42,10 @@ function ShellInner() {
             Ask Founder Guide
           </button>
         </div>
-        <nav className="max-w-6xl mx-auto px-2 sm:px-4 pb-2 overflow-x-auto flex gap-1 scrollbar-none" aria-label="LaunchPad sections">
+        <nav
+          className="max-w-6xl mx-auto px-2 sm:px-4 mt-3 sm:mt-4 pt-0.5 pb-2 overflow-x-auto flex gap-1 scrollbar-none"
+          aria-label="LaunchPad sections"
+        >
           {nav.map(({ to, end, label, icon: Icon }) => (
             <NavLink
               key={to}

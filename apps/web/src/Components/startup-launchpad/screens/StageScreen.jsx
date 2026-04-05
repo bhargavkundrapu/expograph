@@ -11,6 +11,7 @@ import {
   MobileBottomActionBar,
   WarningBlock,
 } from "../LaunchPadBlocks";
+import ValidationPromptPanel from "../ValidationPromptPanel";
 
 function scrollStudentMainToTop() {
   const main = document.querySelector("main.flex-1.overflow-y-auto");
@@ -115,6 +116,8 @@ export default function StageScreen() {
       <WarningBlock>{meta.warning}</WarningBlock>
       <ExpectedOutputBlock items={meta.expected} />
 
+      <ValidationPromptPanel stageSlug={slug} />
+
       {meta.legalPanel && (
         <LegalReadinessCard
           highlighted
@@ -139,7 +142,9 @@ export default function StageScreen() {
 
       <div className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4 shadow-sm">
         <p className="text-sm font-medium text-slate-900">Founder Guide</p>
-        <p className="text-sm text-slate-600 mt-1">Use “Ask Founder Guide” in the header for guided prompts—answers appear in the panel.</p>
+        <p className="text-sm text-slate-600 mt-1">
+          Use “Ask Founder Guide” in the header for quick questions and answers. Use the stress-test prompt block above (fill the fields, then copy) to validate this stage in ChatGPT or another AI.
+        </p>
       </div>
 
       <div className="hidden md:block">

@@ -84,9 +84,9 @@ export default function StudentLayout() {
     { path: "/lms/student/bookmarks", label: "Bookmarks", icon: FiBookmark },
     { path: "/lms/student/certificates", label: "Certificates", icon: FiAward },
     { path: "/lms/student/client-lab", label: "Real Client Lab", icon: FiBriefcase },
+    { path: "/lms/startup-launchpad", label: "Startup LaunchPad", icon: FiZap },
     { path: "/lms/student/resume-builder", label: "Resume Builder", icon: FiFileText },
     { path: "/lms/jobs", label: "Jobs Hub", icon: FiTrendingUp },
-    { path: "/lms/startup-launchpad", label: "Startup LaunchPad", icon: FiZap },
     { path: "/lms/student/contact", label: "Support", icon: FiHelpCircle },
   ];
 
