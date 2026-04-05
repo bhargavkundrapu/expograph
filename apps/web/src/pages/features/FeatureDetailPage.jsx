@@ -1,7 +1,9 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate, useLocation } from "react-router-dom";
 import { Header } from "../../Components/ui/header-2";
 import { useAuth } from "../../app/providers/AuthProvider";
+import { apiFetch } from "../../services/api";
+import { hasLaunchPadAccess } from "../../utils/launchPadAccess";
 import { homePathForRole } from "../../app/roles";
 import { featureData } from "../../Components/ui/academy-features-grid";
 import { TubesBackground } from "../../Components/ui/neon-flow";
@@ -248,7 +250,7 @@ const featureDetails = {
       badge: "Founder Operating System",
       title: "Startup LaunchPad",
       subtitle:
-        "Your startup path, in the right order. A guided founder journey from idea to MVP, launch, legal setup, and growth—inside the student LMS as a premium product utility, not a course flow.",
+        "Your startup path, in the right order. Unlocks with the All Pack or all three main courses (Vibe Coding, Prompt Engineering, Prompt to Profit). A guided founder journey from idea to MVP, launch, legal setup, and growth—inside the student LMS, not a course flow.",
       gradient: "from-orange-600 to-amber-600",
       accentColor: "orange",
     },
@@ -265,7 +267,7 @@ const featureDetails = {
       {
         title: "How to use it",
         steps: [
-          { num: "01", title: "Open LaunchPad", desc: "From the LMS sidebar: Startup LaunchPad. Start with Readiness or jump into your path." },
+          { num: "01", title: "Open LaunchPad", desc: "Unlock with All Pack or all three main courses, then open Startup LaunchPad from the LMS sidebar. Start with Readiness or jump into your path." },
           { num: "02", title: "Run Readiness (optional)", desc: "Answer quick questions to see your stage and suggested focus." },
           { num: "03", title: "Work each stage", desc: "Use action cards, warnings, and expected outputs—then mark the step complete to unlock the next." },
           { num: "04", title: "Use tools & guide", desc: "Open Founder Tools for templates, and Ask Founder Guide for decision prompts (AI can plug in later)." },
@@ -361,6 +363,31 @@ export default function FeatureDetailPage() {
   const { slug } = useParams();
   const navigate = useNavigate();
   const { token, role } = useAuth();
+  const [studentMe, setStudentMe] = useState(null);
+  const [studentMeLoading, setStudentMeLoading] = useState(false);
+
+  useEffect(() => {
+    if (slug !== "startup-launchpad" || role !== "Student" || !token) {
+      setStudentMe(null);
+      setStudentMeLoading(false);
+      return;
+    }
+    let cancelled = false;
+    setStudentMeLoading(true);
+    (async () => {
+      try {
+        const res = await apiFetch("/api/v1/me", { token });
+        if (!cancelled && res?.ok) setStudentMe(res.data || null);
+      } catch {
+        if (!cancelled) setStudentMe(null);
+      } finally {
+        if (!cancelled) setStudentMeLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [slug, role, token]);
   const portalPath = token && role ? homePathForRole(role) : "/login";
   const portalLabel = token && role ? "LMS Portal" : "Login";
   const { pathname } = useLocation();
@@ -477,17 +504,31 @@ export default function FeatureDetailPage() {
           <section className="px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 -mt-4 mb-4">
             <div className="max-w-2xl mx-auto">
               <div className="rounded-2xl border border-orange-500/30 bg-orange-500/10 p-5 text-center">
-                <p className="text-orange-200/90 font-medium mb-2">Included with your student LMS</p>
-                <p className="text-sm text-white/70 mb-4">
-                  Startup LaunchPad lives in the student portal—a founder path, readiness check, dashboard, tools, and legal timing guidance. Not a course; a guided product experience.
+                <p className="text-orange-200/90 font-medium mb-2">
+                  {role === "Student" && token && studentMeLoading
+                    ? "Checking your access…"
+                    : token && role === "Student" && hasLaunchPadAccess(studentMe)
+                      ? "Included with your bundle"
+                      : "All Pack or all three main courses"}
                 </p>
-                <Link
-                  to={token && role === "Student" ? "/lms/startup-launchpad" : "/login"}
-                  className="inline-flex items-center gap-2 px-6 py-2.5 bg-orange-500/20 hover:bg-orange-500/30 border border-orange-500/40 rounded-xl text-orange-200 font-semibold transition-colors"
-                >
-                  {token && role === "Student" ? "Open Startup LaunchPad" : "Login to open LaunchPad"}
-                  <Rocket className="h-4 w-4" />
-                </Link>
+                <p className="text-sm text-white/70 mb-4">
+                  Startup LaunchPad lives in the student portal—a founder path, readiness check, dashboard, tools, and legal timing guidance. Same unlock rule as Real Client Lab and the AI Automations bonus: All Pack, or all three core courses (Vibe Coding, Prompt Engineering, Prompt to Profit).
+                </p>
+                <div className="flex flex-col sm:flex-row gap-2 justify-center items-stretch">
+                  <Link
+                    to={token && role === "Student" ? "/lms/startup-launchpad" : "/login"}
+                    className="inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-orange-500/20 hover:bg-orange-500/30 border border-orange-500/40 rounded-xl text-orange-200 font-semibold transition-colors"
+                  >
+                    {token && role === "Student" ? "Open Startup LaunchPad" : "Login to open LaunchPad"}
+                    <Rocket className="h-4 w-4" />
+                  </Link>
+                  <Link
+                    to="/courses#pricing"
+                    className="inline-flex items-center justify-center gap-2 px-6 py-2.5 border border-amber-500/35 rounded-xl text-amber-200/95 font-semibold hover:bg-amber-500/10 transition-colors text-sm"
+                  >
+                    View All Pack pricing
+                  </Link>
+                </div>
               </div>
             </div>
           </section>

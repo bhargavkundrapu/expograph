@@ -135,7 +135,8 @@ export const featureData = [
     tag: "Founder Path",
     description: (
       <>
-        A guided <strong className="text-orange-400">founder journey</strong> inside your LMS—idea to MVP, launch, legal setup, and growth with{" "}
+        <span className="text-amber-300/90 font-semibold">All Pack or all three main courses.</span> A guided{" "}
+        <strong className="text-orange-400">founder journey</strong> in your LMS—idea to MVP, launch, legal setup, and growth with{" "}
         <strong className="text-orange-400">readiness, actions, and progress</strong> (not a course flow).
       </>
     ),

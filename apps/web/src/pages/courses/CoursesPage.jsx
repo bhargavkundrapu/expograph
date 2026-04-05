@@ -1,16 +1,23 @@
 import { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { PricingWithChart } from "../../Components/ui/pricing-with-chart";
 import { Header } from "../../Components/ui/header-2";
 import { TubesBackground } from "../../Components/ui/neon-flow";
 import { cn } from "../../lib/utils";
 
 export default function CoursesPage() {
+  const location = useLocation();
   useEffect(() => {
+    if (location.hash === "#pricing") {
+      const t = setTimeout(() => {
+        document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 100);
+      return () => clearTimeout(t);
+    }
     window.scrollTo({ top: 0, left: 0, behavior: "auto" });
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
-  }, []);
+  }, [location.hash]);
 
   return (
     <div
@@ -24,6 +31,7 @@ export default function CoursesPage() {
       <Header />
 
       <div
+        id="pricing"
         className={cn(
           "relative flex min-h-screen w-full items-start justify-center pt-24 pb-16 sm:pt-28 sm:pb-20 md:pt-32 md:pb-24",
           "px-4 sm:px-6 lg:px-8",

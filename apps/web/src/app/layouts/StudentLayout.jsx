@@ -53,6 +53,7 @@ import {
   FiBookmark,
   FiTrendingUp,
   FiZap,
+  FiLock,
 } from "react-icons/fi";
 
 export default function StudentLayout() {
@@ -160,6 +161,7 @@ export default function StudentLayout() {
   const userEmail = user?.email || "";
   const userPhone = user?.phone || "";
   const userInitial = userName.charAt(0).toUpperCase();
+  const launchPadLocked = user?.client_lab_checklist?.hasAccess === false;
 
   return (
       <div className={`min-h-screen transition-colors duration-200 ${isDark ? "bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950" : "bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900"}`}>
@@ -344,6 +346,8 @@ export default function StudentLayout() {
               {allMenuItems.map((item) => {
                 const Icon = item.icon;
                 const active = isActive(item.path);
+                const isLaunchPad = item.path === "/lms/startup-launchpad";
+                const lockTitle = isLaunchPad && launchPadLocked ? "All Pack or all three main courses required" : "";
                 return (
                   <Link
                     key={item.path}
@@ -351,13 +355,19 @@ export default function StudentLayout() {
                     onMouseEnter={() => preloadMap[item.path]?.()}
                     className={`group relative flex items-center gap-3 px-3 py-2.5 rounded-md transition-all duration-200 ${active ? "text-white border-l-2" : "text-slate-300 hover:text-white hover:bg-slate-700/30"}`}
                     style={active ? { borderLeftColor: accent.value, background: `linear-gradient(to right, ${accent.value}20, ${accent.value}08)` } : undefined}
-                    title={sidebarCollapsed ? item.label : ""}
+                    title={sidebarCollapsed ? (lockTitle || item.label) : lockTitle || undefined}
                   >
                     <Icon className="w-5 h-5 flex-shrink-0" style={active ? { color: accent.value } : undefined} />
+                    {isLaunchPad && launchPadLocked && sidebarCollapsed && (
+                      <FiLock className="w-3.5 h-3.5 shrink-0 text-amber-400/85" aria-hidden />
+                    )}
                     <AnimatePresence>
                       {!sidebarCollapsed && (
-                        <motion.span initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }}>
-                          {item.label}
+                        <motion.span initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} className="flex flex-1 items-center gap-2 min-w-0">
+                          <span className="truncate">{item.label}</span>
+                          {isLaunchPad && launchPadLocked && (
+                            <FiLock className="w-3.5 h-3.5 shrink-0 text-amber-400/85" aria-hidden />
+                          )}
                         </motion.span>
                       )}
                     </AnimatePresence>
@@ -468,6 +478,11 @@ export default function StudentLayout() {
               >
                 <div className="relative">
                   <Icon className="w-5 h-5" />
+                  {item.path === "/lms/startup-launchpad" && launchPadLocked && (
+                    <span className="absolute -right-1 -top-0.5 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-slate-800 ring-1 ring-amber-500/50">
+                      <FiLock className="h-2 w-2 text-amber-400/90" aria-hidden />
+                    </span>
+                  )}
                   {active && <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full" style={{ backgroundColor: accent.value }} />}
                 </div>
                 <span className="text-[9px] sm:text-[10px] font-medium leading-tight text-center line-clamp-2">{item.label}</span>

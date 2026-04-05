@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { getStudentCourseLandingPath, getStudentLessonPath } from "../../../utils/studentCoursePaths";
 import { useAuth } from "../../../app/providers/AuthProvider";
 import { useTheme } from "../../../app/providers/ThemeProvider";
@@ -18,6 +18,7 @@ import {
   FiChevronDown,
   FiClock,
   FiLock,
+  FiZap,
 } from "react-icons/fi";
 import { AnimatePresence } from "framer-motion";
 import { BuyNowModal } from "../../../Components/payments/BuyNowModal";
@@ -71,6 +72,8 @@ export default function StudentCourses() {
   const [buyItem, setBuyItem] = useState(null);
   const openedFromUrlRef = useRef(false);
   const [fetchError, setFetchError] = useState("");
+  const [studentMe, setStudentMe] = useState(null);
+  const [allPackOffer, setAllPackOffer] = useState(null);
   const continueTargetsRef = useRef({});
   const continuePrefetchingRef = useRef(new Set());
 
@@ -80,6 +83,34 @@ export default function StudentCourses() {
   useEffect(() => {
     if (!token) return;
     fetchCourses();
+  }, [token]);
+
+  useEffect(() => {
+    if (!token) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const [meRes, packsRes] = await Promise.allSettled([
+          apiFetch("/api/v1/me", { token }),
+          apiFetch("/api/v1/packs").catch(() => ({ data: [] })),
+        ]);
+        if (cancelled) return;
+        if (meRes.status === "fulfilled" && meRes.value?.ok) setStudentMe(meRes.value.data || null);
+        const packData = packsRes.status === "fulfilled" ? packsRes.value?.data : null;
+        const list = Array.isArray(packData) ? packData : [];
+        const ap =
+          list.find((p) => (p.slug || "").toLowerCase().includes("all-pack")) ||
+          list.find((p) => (p.slug || "").toLowerCase().includes("pack")) ||
+          list[0] ||
+          null;
+        setAllPackOffer(ap);
+      } catch {
+        if (!cancelled) setStudentMe(null);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, [token]);
 
   // Warm a few "Continue Learning" targets in the background so click navigates immediately.
@@ -235,10 +266,27 @@ export default function StudentCourses() {
     setShowBuyModal(true);
   };
 
+  const openPackBuyModal = () => {
+    if (!allPackOffer?.id) {
+      navigate("/courses#pricing");
+      return;
+    }
+    setBuyItem({ type: "pack", id: allPackOffer.id, title: allPackOffer.title || "All Pack" });
+    setShowBuyModal(true);
+  };
+
   const handleBuySuccess = () => {
     setShowBuyModal(false);
     setBuyItem(null);
     fetchCourses();
+    (async () => {
+      try {
+        const res = await apiFetch("/api/v1/me", { token });
+        if (res?.ok) setStudentMe(res.data || null);
+      } catch {
+        /* ignore */
+      }
+    })();
     setTimeout(() => fetchCourses(), 1500);
   };
 
@@ -263,6 +311,17 @@ export default function StudentCourses() {
     const slug = (course.slug || "").toLowerCase().replace(/_/g, "-");
     const title = (course.title || "").toLowerCase();
     return slug.includes("ai-automations") || slug.includes("ai-automation") || slug.includes("ai-automat") || title.includes("ai automation");
+  };
+
+  /** Vibe Coding, Prompt Engineering, Prompt to Profit — not bonus / not other courses */
+  const isMainTrilogyCourse = (course) => {
+    if (!course || isBonusCourse(course)) return false;
+    const slug = (course.slug || "").toLowerCase().replace(/_/g, "-");
+    const title = (course.title || "").toLowerCase();
+    if (slug.includes("vibe") && (slug.includes("cod") || slug.includes("coad"))) return true;
+    if (slug.includes("prompt-engineering") || title.includes("prompt engineering")) return true;
+    if (slug.includes("prompt-to-profit") || title.includes("prompt to profit")) return true;
+    return false;
   };
 
   const formatDuration = (seconds) => {
@@ -305,6 +364,18 @@ export default function StudentCourses() {
     const duration = course.duration || course.estimated_duration || 0;
     return sum + (typeof duration === 'number' ? duration : 0);
   }, 0);
+
+  const enrolledMainTrilogyCount = courses.filter((c) => c.enrolled && isMainTrilogyCourse(c)).length;
+  const showAllPackUpsell =
+    !isBonusCoursesPage &&
+    !!studentMe &&
+    studentMe.pack_purchased !== true &&
+    studentMe.client_lab_checklist?.hasAccess !== true &&
+    enrolledMainTrilogyCount >= 1 &&
+    enrolledMainTrilogyCount <= 2;
+
+  const allPackPriceRupees =
+    allPackOffer?.price_in_paise != null ? Math.round(Number(allPackOffer.price_in_paise) / 100) : null;
 
   if (loading) {
     return <StudentCoursesSkeleton />;
@@ -441,6 +512,81 @@ export default function StudentCourses() {
             )}
           </div>
         </div>
+
+        {showAllPackUpsell && (
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            className={`mb-6 md:mb-8 rounded-2xl border-2 overflow-hidden shadow-lg ${
+              isDark
+                ? "border-purple-500/35 bg-gradient-to-br from-purple-950/80 via-slate-900 to-violet-950/50"
+                : "border-purple-200 bg-gradient-to-br from-purple-50 via-white to-violet-50"
+            }`}
+          >
+            <div className="p-4 sm:p-6 md:flex md:items-center md:gap-8 md:justify-between">
+              <div className="flex gap-4 min-w-0">
+                <div
+                  className={`flex h-12 w-12 sm:h-14 sm:w-14 shrink-0 items-center justify-center rounded-2xl ${
+                    isDark ? "bg-purple-500/20 text-purple-300" : "bg-purple-100 text-purple-600"
+                  }`}
+                >
+                  <FiZap className="h-6 w-6 sm:h-7 sm:w-7" aria-hidden />
+                </div>
+                <div className="min-w-0">
+                  <p
+                    className={`text-[10px] sm:text-xs font-bold uppercase tracking-widest mb-1 ${
+                      isDark ? "text-purple-300/90" : "text-purple-600"
+                    }`}
+                  >
+                    Upgrade · All Pack
+                  </p>
+                  <h2 className={`text-lg sm:text-xl font-bold leading-snug mb-2 ${isDark ? "text-white" : "text-slate-900"}`}>
+                    You have {enrolledMainTrilogyCount} of 3 core courses — finish the set for less
+                  </h2>
+                  <p className={`text-sm leading-relaxed ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+                    One checkout unlocks the full path,{" "}
+                    <span className={isDark ? "text-amber-300/95 font-medium" : "text-amber-700 font-medium"}>
+                      AI Automations (bonus)
+                    </span>
+                    ,{" "}
+                    <span className={isDark ? "font-medium text-orange-300/95" : "font-medium text-orange-700"}>
+                      Startup LaunchPad
+                    </span>
+                    ,{" "}
+                    <span className={isDark ? "font-medium text-purple-300/95" : "font-medium text-purple-800"}>
+                      Real Client Lab
+                    </span>
+                    , and MCA-recognised certificates — usually cheaper than buying the remaining courses separately.
+                  </p>
+                  {allPackPriceRupees != null && allPackPriceRupees >= 1 && (
+                    <p className={`mt-2 text-sm font-semibold ${isDark ? "text-emerald-300/90" : "text-emerald-700"}`}>
+                      All Pack from ₹{allPackPriceRupees.toLocaleString("en-IN")} · one-time
+                    </p>
+                  )}
+                </div>
+              </div>
+              <div className="mt-4 md:mt-0 flex flex-col sm:flex-row gap-2 md:shrink-0">
+                <Link
+                  to="/courses#pricing"
+                  className={`inline-flex min-h-[44px] items-center justify-center rounded-xl px-4 text-sm font-semibold border-2 transition ${
+                    isDark
+                      ? "border-slate-500 text-slate-200 hover:bg-slate-800/80"
+                      : "border-slate-300 text-slate-800 hover:bg-white"
+                  }`}
+                >
+                  Compare on Courses page
+                </Link>
+                <button
+                  type="button"
+                  onClick={openPackBuyModal}
+                  className="inline-flex min-h-[44px] items-center justify-center rounded-xl bg-gradient-to-r from-purple-600 to-violet-600 px-5 text-sm font-semibold text-white shadow-lg shadow-purple-500/25 hover:brightness-110 transition"
+                >
+                  Get All Pack
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
 
         {/* Courses Grid */}
         {filteredCourses.length === 0 ? (

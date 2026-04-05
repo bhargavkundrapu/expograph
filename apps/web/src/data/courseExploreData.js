@@ -112,7 +112,7 @@ export const COURSE_EXPLORE_DATA = {
       "From job seeker to someone with a portfolio that speaks",
     ],
     importance: "Companies pay for people who can ship. Vibe Coding gets you there without years of traditional coding-just clear thinking and the right prompts.",
-    tools: ["Antigravity", "Full-stack website","Neon PostgreSQL", "Prisma", "Git", "GitHub", "Vercel", "Render", "Cursor"],
+    tools: ["Antigravity", "Full-stack website","Neon PostgreSQL", "Git", "deploying", "Vercel", "Render", "Cursor"],
     bullets: ["Smart prompts included", "62+ structured lessons", "MCA-recognised certificate", "Portfolio projects"],
   },
   "prompt-to-profit": {

@@ -16,6 +16,7 @@ import StudentCourses from "../pages/lms/student/StudentCourses";
 import {
   CoursesPageSkeleton,
   GenericPageSkeleton,
+  LaunchPadLoadingSkeleton,
   RouteFallbackSkeleton,
   StudentCoursesSkeleton,
   StudentHomeSkeleton,
@@ -23,6 +24,7 @@ import {
   StudentCertificatesSkeleton,
 } from "../Components/common/SkeletonLoaders";
 import { LaunchPadProvider } from "../Components/startup-launchpad/LaunchPadContext";
+import LaunchPadAccessGate from "../Components/startup-launchpad/LaunchPadAccessGate";
 
 const SolutionsPage = lazy(() => import("../pages/solutions/SolutionsPage"));
 const CoursesPage = lazy(() => import("../pages/courses/CoursesPage"));
@@ -170,7 +172,7 @@ function RouteAwareFallback() {
   if (pathname.startsWith("/lms/student/courses")) return <StudentCoursesSkeleton />;
   if (pathname === "/lms/student") return <StudentHomeSkeleton />;
   if (pathname === "/lms/jobs") return <GenericPageSkeleton />;
-  if (pathname.startsWith("/lms/startup-launchpad")) return <GenericPageSkeleton />;
+  if (pathname.startsWith("/lms/startup-launchpad")) return <LaunchPadLoadingSkeleton />;
   if (pathname.startsWith("/lms/student")) return <GenericPageSkeleton />;
   if (pathname.startsWith("/lms/superadmin")) return <GenericPageSkeleton />;
   if (pathname.startsWith("/lms/mentor")) return <GenericPageSkeleton />;
@@ -418,11 +420,13 @@ export const router = createBrowserRouter([
         children: [
           {
             element: (
-              <LaunchPadProvider>
-                <L>
-                  <StartupLaunchPadShell />
-                </L>
-              </LaunchPadProvider>
+              <LaunchPadAccessGate>
+                <LaunchPadProvider>
+                  <L>
+                    <StartupLaunchPadShell />
+                  </L>
+                </LaunchPadProvider>
+              </LaunchPadAccessGate>
             ),
             children: [
               { index: true, element: <L><LaunchPadHomeScreen /></L> },

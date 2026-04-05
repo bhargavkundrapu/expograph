@@ -1,6 +1,7 @@
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { createElement, lazy, Suspense, useState, useCallback, useEffect, memo } from "react";
 import { useAuth } from "../../app/providers/AuthProvider";
+import { homePathForRole } from "../../app/roles";
 import { Header } from "../../Components/ui/header-2";
 import HeroSection from "../../Components/ui/hero-section-9";
 import CallToAction1 from "../../Components/ui/call-to-action-1";
@@ -144,7 +145,7 @@ const SimpleFAQ = memo(function SimpleFAQ() {
 });
 
 export default function AcademyPage() {
-  const { token, role } = useAuth();
+  const { token, role, status } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   useEffect(() => {
@@ -229,11 +230,13 @@ export default function AcademyPage() {
               className="flex justify-center md:justify-start gap-3 sm:gap-4 md:gap-4 flex-wrap pointer-events-auto mt-14 sm:mt-16 md:mt-0 animate-[fadeInUp_0.6s_0.15s_ease-out_both]"
             >
               <button
-                onClick={() => navigate("/login")}
+                onClick={() =>
+                  status === "authed" ? navigate(homePathForRole(role)) : navigate("/login")
+                }
                 className="px-5 py-2.5 sm:px-6 sm:py-3 md:px-6 md:py-3 text-white rounded-full text-sm sm:text-sm md:text-base font-semibold cursor-pointer transition-all duration-300 hover:brightness-110 hover:scale-105 hover:shadow-lg hover:shadow-violet-500/25"
                 style={{ fontFamily: "var(--font-dm)", background: "linear-gradient(135deg, #7c3aed, #6d28d9)" }}
               >
-                Login
+                {status === "authed" ? "LMS Portal" : "Login"}
               </button>
               <button
                 onClick={() => document.getElementById("coursess")?.scrollIntoView({ behavior: "smooth" })}
@@ -373,8 +376,14 @@ export default function AcademyPage() {
                 Startup LaunchPad
               </h2>
               <p className="mt-2 text-lg text-orange-200/90 font-medium">Your startup path, in the right order</p>
+              <p className="mt-3 inline-flex flex-wrap items-center gap-2 rounded-xl border border-amber-500/20 bg-amber-500/10 px-3 py-2 text-[11px] sm:text-xs font-semibold uppercase tracking-wide text-amber-200/95">
+                All Pack or all three main courses
+              </p>
               <p className="mt-4 text-sm sm:text-base text-white/65 leading-relaxed">
                 A guided founder journey from idea to MVP, launch, legal setup, and growth—inside the student portal. Progress, readiness, actions, and tools. Not a course flow; a startup control center.
+              </p>
+              <p className="mt-3 text-xs sm:text-sm text-white/50 leading-relaxed">
+                Unlocks with the <span className="text-amber-300/90 font-medium">All Pack</span> or when you own all three core courses (Vibe Coding, Prompt Engineering, Prompt to Profit)—same rule as Real Client Lab and the AI Automations bonus.
               </p>
               <ul className="mt-6 space-y-2 text-sm text-white/70">
                 <li className="flex gap-2"><span className="text-orange-400">→</span> 12-stage path with unlocks</li>
@@ -397,7 +406,14 @@ export default function AcademyPage() {
               >
                 See how it works
               </button>
-              <p className="text-xs text-white/45 text-center lg:text-left">Available to enrolled students in the LMS sidebar.</p>
+              <button
+                type="button"
+                onClick={() => navigate("/courses#pricing")}
+                className="w-full min-h-[44px] rounded-2xl border border-amber-500/30 text-amber-200/95 hover:bg-amber-500/10 transition text-sm font-medium"
+              >
+                View All Pack on Courses
+              </button>
+              <p className="text-xs text-white/45 text-center lg:text-left">Listed in the LMS sidebar; access follows your All Pack or three-course bundle.</p>
             </div>
           </div>
         </div>

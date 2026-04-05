@@ -1303,6 +1303,51 @@ export function GenericPageSkeleton() {
   );
 }
 
+/** Full LaunchPad-shaped skeleton — matches StartupLaunchPadShell (light gradient) so LMS main area doesn’t show dark chrome behind a loader. */
+export function LaunchPadLoadingSkeleton() {
+  return (
+    <div
+      className="min-h-screen rounded-t-3xl overflow-hidden md:rounded-none bg-gradient-to-b from-slate-50 via-white to-slate-100 animate-pulse"
+      role="status"
+      aria-busy="true"
+      aria-label="Loading"
+    >
+      <div className="sticky top-0 z-30 border-b border-slate-200/90 bg-white/95 backdrop-blur-md shadow-sm">
+        <div className="max-w-6xl mx-auto px-3 sm:px-4 py-2.5 sm:py-3 flex items-center gap-2 sm:gap-3">
+          <div className="min-w-0 flex-1 space-y-2">
+            <div className="h-2.5 w-24 rounded bg-slate-200" />
+            <div className="h-5 w-44 sm:w-56 max-w-full rounded bg-slate-200" />
+          </div>
+          <div className="h-10 w-24 sm:w-32 shrink-0 rounded-xl bg-slate-200" />
+        </div>
+        <div className="max-w-6xl mx-auto px-2 sm:px-4 mt-3 sm:mt-4 pt-0.5 pb-2 flex gap-1 overflow-hidden">
+          {[1, 2, 3, 4, 5, 6, 7].map((i) => (
+            <div key={i} className="h-9 w-[4.5rem] sm:w-20 shrink-0 rounded-xl bg-slate-200" />
+          ))}
+        </div>
+      </div>
+      <div className="max-w-6xl mx-auto px-3 sm:px-4 py-4 sm:py-6 md:py-8 pb-28 md:pb-10 space-y-4">
+        <div className="h-8 w-48 max-w-[80%] rounded-lg bg-slate-200" />
+        <div className="h-4 w-full max-w-2xl rounded bg-slate-200" />
+        <div className="h-4 w-[85%] max-w-xl rounded bg-slate-200" />
+        <div className="grid gap-4 sm:grid-cols-2 mt-6">
+          {[1, 2].map((i) => (
+            <div
+              key={i}
+              className="h-40 rounded-2xl border border-slate-200/80 bg-white/90 p-4 shadow-sm space-y-3"
+            >
+              <div className="h-5 w-3/4 rounded bg-slate-200" />
+              <div className="h-3 w-full rounded bg-slate-200" />
+              <div className="h-3 w-5/6 rounded bg-slate-200" />
+              <div className="h-8 w-24 rounded-lg bg-slate-200 mt-4" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // App route-level skeleton fallback (used by lazy-loaded routes)
 export function RouteFallbackSkeleton() {
   return (

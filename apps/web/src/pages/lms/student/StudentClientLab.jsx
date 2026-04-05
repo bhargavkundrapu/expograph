@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../../app/providers/AuthProvider";
 import { useTheme } from "../../../app/providers/ThemeProvider";
 import { apiFetch } from "../../../services/api";
@@ -34,9 +34,19 @@ function LockedClientLabContent({ isDark, checklist, onRetry }) {
       {!checklist && <p className="text-center text-slate-500 text-sm mb-4">Loading…</p>}
 
       {checklist && !hasAccess && (
-        <p className={`text-center mb-6 text-sm ${isDark ? "text-slate-400" : "text-slate-600"}`}>
-          Get the All Pack or all three courses (Vibe Coding, Prompt Engineering, Prompt to Profit) to unlock Real Client Lab.
-        </p>
+        <>
+          <p className={`text-center mb-6 text-sm ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+            Get the All Pack or all three courses (Vibe Coding, Prompt Engineering, Prompt to Profit) to unlock Real Client Lab.
+          </p>
+          <div className="flex flex-col gap-2 sm:flex-row sm:justify-center">
+            <Link
+              to="/courses#pricing"
+              className="inline-flex min-h-[44px] items-center justify-center rounded-xl bg-gradient-to-r from-purple-600 to-violet-600 px-5 text-sm font-semibold text-white shadow-lg shadow-purple-500/20 hover:brightness-110 transition"
+            >
+              View All Pack
+            </Link>
+          </div>
+        </>
       )}
 
       {checklist && hasAccess && (
