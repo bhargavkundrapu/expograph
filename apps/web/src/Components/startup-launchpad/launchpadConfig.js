@@ -228,7 +228,7 @@ export const FOUNDER_GUIDE_PROMPTS = [
 
 /** Shown in Legal, dashboard, and registration CTAs — package scope only */
 export const REGISTRATION_SUPPORT_OFFER = {
-  price: "₹14,999",
+  price: "",
   priceLabel: "Guided startup registration (this package only)",
   blurb:
     "It includes only the features listed below—other legal work, retainers, or add-ons are billed separately.",
