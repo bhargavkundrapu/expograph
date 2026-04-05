@@ -82,12 +82,12 @@ export default function StudentLayout() {
     { path: "/lms/student", label: "Home", icon: FiHome },
     { path: "/lms/student/courses", label: "Courses", icon: FiBookOpen },
     { path: "/lms/student/bonus-courses", label: "Bonus Courses", icon: FiFileText },
-    { path: "/lms/student/bookmarks", label: "Bookmarks", icon: FiBookmark },
-    { path: "/lms/student/certificates", label: "Certificates", icon: FiAward },
     { path: "/lms/student/client-lab", label: "Real Client Lab", icon: FiBriefcase },
     { path: "/lms/startup-launchpad", label: "Startup LaunchPad", icon: FiZap },
     { path: "/lms/student/resume-builder", label: "Resume Builder", icon: FiFileText },
     { path: "/lms/jobs", label: "Jobs Hub", icon: FiTrendingUp },
+    { path: "/lms/student/certificates", label: "Certificates", icon: FiAward },
+    { path: "/lms/student/bookmarks", label: "Bookmarks", icon: FiBookmark },
     { path: "/lms/student/contact", label: "Support", icon: FiHelpCircle },
   ];
 
@@ -228,6 +228,14 @@ export default function StudentLayout() {
                       <FiChevronRight className="w-4 h-4 ml-auto text-slate-500" />
                     </button>
                     <button
+                      onClick={() => { setProfileOpen(false); navigate("/lms/student/certificates"); }}
+                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-700/50 transition-colors text-sm"
+                    >
+                      <FiAward className="w-4 h-4" />
+                      <span>Certificates</span>
+                      <FiChevronRight className="w-4 h-4 ml-auto text-slate-500" />
+                    </button>
+                    <button
                       onClick={() => { setProfileOpen(false); navigate("/lms/student/bookmarks"); }}
                       className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-700/50 transition-colors text-sm"
                     >
@@ -247,14 +255,6 @@ export default function StudentLayout() {
                     >
                       <FiTrendingUp className="w-4 h-4" />
                       <span>Jobs Hub</span>
-                      <FiChevronRight className="w-4 h-4 ml-auto text-slate-500" />
-                    </button>
-                    <button
-                      onClick={() => { setProfileOpen(false); navigate("/lms/student/certificates"); }}
-                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-700/50 transition-colors text-sm"
-                    >
-                      <FiAward className="w-4 h-4" />
-                      <span>Certificates</span>
                       <FiChevronRight className="w-4 h-4 ml-auto text-slate-500" />
                     </button>
                     <button

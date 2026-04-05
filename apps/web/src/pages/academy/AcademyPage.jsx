@@ -406,7 +406,7 @@ export default function AcademyPage() {
             <div>
               <p className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold tracking-widest uppercase text-orange-300/90 mb-3">
                 <FiZap className="w-4 h-4 text-orange-400" aria-hidden />
-                New in your LMS
+                New
               </p>
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white leading-tight">
                 Startup LaunchPad
