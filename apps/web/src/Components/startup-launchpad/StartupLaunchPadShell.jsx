@@ -21,15 +21,7 @@ function ShellInner() {
     <div className="min-h-full flex flex-col text-slate-900">
       <header className="sticky top-0 z-30 border-b border-slate-200/90 bg-white/95 backdrop-blur-md shadow-sm">
         <div className="max-w-6xl mx-auto px-3 sm:px-4 py-3 flex items-center gap-3">
-          <button
-            type="button"
-            onClick={() => navigate("/lms/student")}
-            className="flex items-center gap-2 text-sm text-slate-600 hover:text-slate-900 min-h-[44px] min-w-[44px] justify-center rounded-xl hover:bg-slate-100 -ml-1 shrink-0"
-            aria-label="Back to student home"
-          >
-            <FiArrowLeft className="w-5 h-5" />
-            <span className="hidden sm:inline">LMS</span>
-          </button>
+          
           <div className="min-w-0 flex-1">
             <p className="text-[10px] sm:text-xs font-semibold tracking-widest text-violet-700 uppercase truncate">Startup LaunchPad</p>
             <p className="text-sm sm:text-base font-semibold text-slate-900 truncate">Your startup path, in the right order</p>
