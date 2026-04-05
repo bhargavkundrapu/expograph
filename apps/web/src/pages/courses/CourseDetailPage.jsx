@@ -7,6 +7,7 @@ import { BuyNowModal } from "../../Components/payments/BuyNowModal";
 import { cn } from "../../lib/utils";
 import { FiArrowLeft, FiBookOpen } from "react-icons/fi";
 import { RouteFallbackSkeleton } from "../../Components/common/SkeletonLoaders";
+import { applyCourseDetailSeo, sendGtagPageView } from "../../seo/applyDocumentSeo";
 
 function formatPrice(paise) {
   if (paise == null || paise === undefined) return "-";
@@ -52,6 +53,22 @@ export default function CourseDetailPage() {
     }
     if (slug) fetchData();
   }, [slug]);
+
+  /** API-driven SEO (title, meta, canonical, OG/Twitter, JSON-LD) — no UI change. */
+  useEffect(() => {
+    if (!slug || loading || error) return;
+    if (!course && !pack) return;
+    const itemTitle = course?.title ?? pack?.title;
+    if (!itemTitle) return;
+    const rawDesc = (course?.description || pack?.description || "").replace(/\s+/g, " ").trim();
+    applyCourseDetailSeo({
+      slug,
+      title: itemTitle,
+      description: rawDesc,
+      isCourse: !!course,
+    });
+    sendGtagPageView(`${window.location.pathname}${window.location.search}`);
+  }, [slug, loading, error, course, pack]);
 
   const item = course
     ? { type: "course", id: course.id, title: course.title, price: course.price_in_paise }

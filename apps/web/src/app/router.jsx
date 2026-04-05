@@ -8,6 +8,7 @@ import StudentLayout from "./layouts/StudentLayout";
 import PublicOnly from "./PublicOnly";
 
 import HomeOrRedirect from "./HomeOrRedirect";
+import { SeoManager } from "../seo/SeoManager";
 import LoginPage from "../pages/auth/LoginPage";
 import AdminLoginPage from "../pages/auth/AdminLoginPage";
 import NotFoundPageRoute from "../pages/NotFoundPage";
@@ -203,11 +204,24 @@ function PortalLayout() {
   return <Outlet />;
 }
 
+function RootWithSeo() {
+  return (
+    <>
+      <SeoManager />
+      <Outlet />
+    </>
+  );
+}
+
 export const router = createBrowserRouter([
   {
-    element: <SimpleLayout />,
+    element: <RootWithSeo />,
     errorElement: <RouteErrorFallback />,
     children: [
+      {
+        element: <SimpleLayout />,
+        errorElement: <RouteErrorFallback />,
+        children: [
       { path: "/", element: <HomeOrRedirect /> },
       { path: "/academy", element: <HomeOrRedirect /> },
       { path: "/solutions", element: <L><SolutionsPage /></L> },
@@ -225,12 +239,12 @@ export const router = createBrowserRouter([
       { path: "/payment-failure", element: <L><PaymentFailurePage /></L> },
       { path: "/not-found", element: <NotFoundPageRoute /> },
       { path: "*", element: <NotFoundPageRoute /> },
-    ],
-  },
-  {
-    element: <SimpleLayout />,
-    errorElement: <RouteErrorFallback />,
-    children: [
+        ],
+      },
+      {
+        element: <SimpleLayout />,
+        errorElement: <RouteErrorFallback />,
+        children: [
       {
         path: "/lms/superadmin",
         element: (
@@ -533,6 +547,8 @@ export const router = createBrowserRouter([
           { path: "referrals/:id", element: <L><StudentReferrals /></L> },
         ],
       },
+    ],
+  },
     ],
   },
 ]);

@@ -1,0 +1,12 @@
+# ExpoGraph — allow public marketing pages; block authenticated app areas.
+User-agent: *
+Allow: /
+
+Disallow: /lms/
+Disallow: /login
+Disallow: /adminlogin
+Disallow: /account-pending
+Disallow: /payment-failure
+Disallow: /demo/
+
+Sitemap: https://expograph.in/sitemap.xml
