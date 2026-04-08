@@ -2,6 +2,24 @@
  * India-first B.Tech role taxonomy: Category → SubRole → keyword bundles + platform hints.
  */
 
+/** Synthetic sub-role: user-defined keywords (see JobsFilters). */
+export const OTHERS_SUB_ROLE_ID = "other-custom";
+
+/**
+ * Parse a free-text role line into keyword chips (comma, semicolon, or newline separated).
+ * @param {string} text
+ * @param {number} max
+ * @returns {string[]}
+ */
+export function parseCustomRoleToKeywords(text, max = 12) {
+  if (!text || !String(text).trim()) return [];
+  const parts = String(text)
+    .split(/[,;\n]+/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+  return parts.slice(0, max);
+}
+
 /** @typedef {{ id: string; label: string; defaultKeywords: string[]; optionalKeywords: string[]; recommendedPlatforms: string[] }} SubRole */
 
 /** @typedef {{ id: string; label: string; subRoles: SubRole[] }} RoleCategory */
@@ -201,6 +219,15 @@ export const platformMeta = {
  * @returns {SubRole | null}
  */
 export function getSubRole(categoryId, subRoleId) {
+  if (subRoleId === OTHERS_SUB_ROLE_ID) {
+    return {
+      id: OTHERS_SUB_ROLE_ID,
+      label: "Others (custom)",
+      defaultKeywords: [],
+      optionalKeywords: [],
+      recommendedPlatforms: [],
+    };
+  }
   const cat = roleTaxonomy.find((c) => c.id === categoryId);
   if (!cat) return null;
   return cat.subRoles.find((s) => s.id === subRoleId) ?? null;
@@ -212,5 +239,15 @@ export function getSubRole(categoryId, subRoleId) {
  */
 export function getSubRolesForCategory(categoryId) {
   const cat = roleTaxonomy.find((c) => c.id === categoryId);
-  return cat ? cat.subRoles : [];
+  if (!cat) return [];
+  return [
+    ...cat.subRoles,
+    {
+      id: OTHERS_SUB_ROLE_ID,
+      label: "Others (custom)",
+      defaultKeywords: [],
+      optionalKeywords: [],
+      recommendedPlatforms: [],
+    },
+  ];
 }

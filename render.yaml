@@ -1,0 +1,12 @@
+# ExpoGraph Next.js deck — Web Service (not Static Site).
+# In Render: New → Blueprint → connect repo, or create Web Service manually with same settings.
+services:
+  - type: web
+    name: expograph-presentation
+    runtime: node
+    rootDir: apps/nextjs
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    envVars:
+      - key: NODE_VERSION
+        value: "20"

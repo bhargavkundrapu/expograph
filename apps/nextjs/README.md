@@ -1,94 +1,39 @@
-# Next.js Premium Setup
+# ExpoGraph presentation (Next.js)
 
-This is a Next.js application with TypeScript and Three.js pre-configured and ready to use.
+Single-purpose app: the **ExpoGraph product deck** at **`/presentation`**. Visiting **`/`** redirects to **`/presentation`**.
 
-## Features
-
-✅ **TypeScript** - Fully configured with strict mode  
-✅ **Three.js** - React Three Fiber + Drei helpers  
-✅ **App Router** - Next.js 14+ App Router  
-✅ **Path Aliases** - Clean imports with `@/` prefix  
-✅ **Examples** - Pre-built Three.js examples  
-
-## Getting Started
-
-### Installation
+## Local
 
 ```bash
 npm install
-```
-
-### Development
-
-```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+- Deck: [http://localhost:3000/presentation](http://localhost:3000/presentation) (or [http://localhost:3000](http://localhost:3000) → redirect)
 
-### Type Checking
+## Deploy
 
-```bash
-npm run type-check
-```
+| Platform | What to set |
+|----------|-------------|
+| **Vercel** | Root directory: **`apps/nextjs`**. Framework: Next.js (auto). Build: `npm run build`, Output: default. |
+| **Render** | **Web Service** (not Static Site). Root: **`apps/nextjs`**. Build: `npm install && npm run build`. Start: `npm run start`. No “Publish directory”. Or use repo-root **`render.yaml`**. |
 
-### Build
+Optional env: copy **`.env.example`** → **`.env.local`** and set `NEXT_PUBLIC_EXPOGRAPH_SITE_URL` for CTAs in the deck.
 
-```bash
-npm run build
-npm start
-```
+## Routes
 
-## Usage
+- **`/presentation`** — product deck (canonical)
+- **`/`** — redirects to `/presentation`
+- **`/deck`**, **`/product-story`** — permanent redirects to `/presentation`
 
-### Using Three.js
-
-```tsx
-import { BasicCubeExample } from '@/lib/threejs/examples/BasicCube';
-
-export default function Home() {
-  return <BasicCubeExample />;
-}
-```
-
-### Creating Pages
-
-Create files in `src/app/`:
-
-```tsx
-// src/app/about/page.tsx
-export default function About() {
-  return <h1>About Page</h1>;
-}
-```
-
-### Path Aliases
-
-Use `@/` prefix for clean imports:
-
-```tsx
-import { ThreeScene } from '@/lib/threejs/ThreeScene';
-import { Button } from '@/components/Button';
-```
-
-## Project Structure
+## Structure
 
 ```
-apps/nextjs/
-├── src/
-│   ├── app/              # Next.js App Router pages
-│   │   ├── layout.tsx
-│   │   ├── page.tsx
-│   │   └── globals.css
-│   └── lib/              # Shared libraries
-│       └── threejs/      # Three.js components
-├── next.config.js
-├── tsconfig.json
-└── package.json
+src/app/
+  layout.tsx, globals.css, page.tsx   # root → redirect
+  presentation/
+    layout.tsx                        # deck metadata
+    page.tsx                          # deck entry
+src/components/presentation/          # UI
+src/content/presentation/             # copy & structure (masterDeck.ts)
 ```
-
-## Learn More
-
-- [Next.js Documentation](https://nextjs.org/docs)
-- [React Three Fiber](https://docs.pmnd.rs/react-three-fiber)
-- [TypeScript Documentation](https://www.typescriptlang.org/docs/)

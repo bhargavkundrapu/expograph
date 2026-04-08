@@ -8,6 +8,9 @@ import { useScroll } from './use-scroll';
 import { useAuth } from '../../app/providers/AuthProvider';
 import { homePathForRole } from '../../app/roles';
 
+type NavLink =
+	{ label: string; href: string };
+
 export function Header() {
 	const [open, setOpen] = React.useState(false);
 	const scrolled = useScroll(10);
@@ -32,7 +35,7 @@ export function Header() {
 		setOpen(false);
 	};
 
-	const links = [
+	const links: NavLink[] = [
 		{
 			label: 'Home',
 			href: '/academy',
@@ -44,6 +47,10 @@ export function Header() {
 		{
 			label: 'Features',
 			href: '/academy#features',
+		},
+		{
+			label: 'Product story',
+			href: '/presentation',
 		},
 		{
 			label: 'Contact',

@@ -1,6 +1,11 @@
 import { useState } from "react";
 import { FiChevronDown, FiPlus, FiX } from "react-icons/fi";
-import { roleTaxonomy, getSubRolesForCategory } from "./roleTaxonomy.js";
+import {
+  roleTaxonomy,
+  getSubRolesForCategory,
+  OTHERS_SUB_ROLE_ID,
+  parseCustomRoleToKeywords,
+} from "./roleTaxonomy.js";
 
 const MAX_CHIPS = 12;
 
@@ -66,7 +71,7 @@ export default function JobsFilters({
 
   const onCategoryChange = (categoryId) => {
     if (!categoryId) {
-      setFilters((prev) => ({ ...prev, categoryId: "", subRoleId: "" }));
+      setFilters((prev) => ({ ...prev, categoryId: "", subRoleId: "", customSubRoleText: "" }));
       return;
     }
     const firstSub = getSubRolesForCategory(categoryId)[0];
@@ -74,6 +79,7 @@ export default function JobsFilters({
       ...prev,
       categoryId,
       subRoleId: firstSub?.id || "",
+      customSubRoleText: "",
       keywords: firstSub ? [...firstSub.defaultKeywords] : prev.keywords,
     }));
   };
@@ -84,8 +90,25 @@ export default function JobsFilters({
     setFilters((prev) => ({
       ...prev,
       subRoleId,
-      keywords: sr ? [...sr.defaultKeywords] : prev.keywords,
+      customSubRoleText: subRoleId === OTHERS_SUB_ROLE_ID ? prev.customSubRoleText : "",
+      keywords:
+        subRoleId === OTHERS_SUB_ROLE_ID
+          ? parseCustomRoleToKeywords(prev.customSubRoleText, MAX_CHIPS)
+          : sr
+            ? [...sr.defaultKeywords]
+            : prev.keywords,
     }));
+  };
+
+  const onCustomSubRoleTextChange = (value) => {
+    setFilters((prev) => {
+      if (prev.subRoleId !== OTHERS_SUB_ROLE_ID) return { ...prev, customSubRoleText: value };
+      return {
+        ...prev,
+        customSubRoleText: value,
+        keywords: parseCustomRoleToKeywords(value, MAX_CHIPS),
+      };
+    });
   };
 
   const filterBody = (
@@ -121,6 +144,22 @@ export default function JobsFilters({
           </select>
         </Field>
       </div>
+
+      {filters.categoryId && filters.subRoleId === OTHERS_SUB_ROLE_ID && (
+        <Field label="Custom role / keywords">
+          <textarea
+            className={`${inputClass} min-h-[88px] resize-y py-2.5`}
+            placeholder="e.g. Blockchain developer — or comma-separated: rust, backend engineer, systems"
+            value={filters.customSubRoleText ?? ""}
+            onChange={(e) => onCustomSubRoleTextChange(e.target.value)}
+            rows={3}
+            maxLength={800}
+          />
+          <p className="text-[11px] text-slate-500 mt-1">
+            We turn this into search chips (split by comma, semicolon, or new line). Up to {MAX_CHIPS} keywords.
+          </p>
+        </Field>
+      )}
 
       <Field label={`Keywords (${filters.keywords.length}/${MAX_CHIPS})`}>
         <div className="flex flex-wrap gap-2 mb-2">

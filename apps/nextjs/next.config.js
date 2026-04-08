@@ -2,16 +2,17 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-  experimental: {
-    appDir: true,
-  },
-  // Enable TypeScript
   typescript: {
     ignoreBuildErrors: false,
   },
-  // Enable ESLint
   eslint: {
     ignoreDuringBuilds: false,
+  },
+  async redirects() {
+    return [
+      { source: '/deck', destination: '/presentation', permanent: true },
+      { source: '/product-story', destination: '/presentation', permanent: true },
+    ];
   },
 };
 

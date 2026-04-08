@@ -6,7 +6,7 @@ import PlatformPicker from "./PlatformPicker.jsx";
 import SearchPreview from "./SearchPreview.jsx";
 import SavedSearches from "./SavedSearches.jsx";
 import { buildUrlForPlatform, buildCopyKeywordString } from "./platformUrls.js";
-import { getSubRole, ALL_PLATFORM_IDS, platformMeta } from "./roleTaxonomy.js";
+import { getSubRole, ALL_PLATFORM_IDS, platformMeta, OTHERS_SUB_ROLE_ID } from "./roleTaxonomy.js";
 import { STORAGE_SAVED, STORAGE_SKILL_HINTS, loadJson, saveJson } from "./jobsStorage.js";
 
 const DEFAULT_PLATFORM = ALL_PLATFORM_IDS[0] || "linkedin";
@@ -41,6 +41,7 @@ export default function JobsHub() {
     salaryKeyword: "",
     categoryId: "",
     subRoleId: "",
+    customSubRoleText: "",
   });
   const [chipInput, setChipInput] = useState("");
   const [selectedPlatform, setSelectedPlatform] = useState(DEFAULT_PLATFORM);
@@ -71,7 +72,13 @@ export default function JobsHub() {
       ...prev,
       categoryId,
       subRoleId,
-      keywords: sr ? [...sr.defaultKeywords] : prev.keywords,
+      customSubRoleText: subRoleId === OTHERS_SUB_ROLE_ID ? prev.customSubRoleText : "",
+      keywords:
+        subRoleId === OTHERS_SUB_ROLE_ID
+          ? prev.keywords
+          : sr
+            ? [...sr.defaultKeywords]
+            : prev.keywords,
     }));
   }, []);
 
@@ -82,13 +89,25 @@ export default function JobsHub() {
       if (prev.keywords.length >= MAX_CHIPS) return prev;
       const lower = new Set(prev.keywords.map((k) => k.toLowerCase()));
       if (lower.has(v.toLowerCase())) return prev;
-      return { ...prev, keywords: [...prev.keywords, v] };
+      const keywords = [...prev.keywords, v];
+      return {
+        ...prev,
+        keywords,
+        ...(prev.subRoleId === OTHERS_SUB_ROLE_ID ? { customSubRoleText: keywords.join(", ") } : {}),
+      };
     });
     setChipInput("");
   }, [chipInput]);
 
   const onRemoveChip = useCallback((kw) => {
-    setFilters((prev) => ({ ...prev, keywords: prev.keywords.filter((k) => k !== kw) }));
+    setFilters((prev) => {
+      const keywords = prev.keywords.filter((k) => k !== kw);
+      return {
+        ...prev,
+        keywords,
+        ...(prev.subRoleId === OTHERS_SUB_ROLE_ID ? { customSubRoleText: keywords.join(", ") } : {}),
+      };
+    });
   }, []);
 
   const onAddSuggested = useCallback(() => {
@@ -102,7 +121,11 @@ export default function JobsHub() {
           lower.add(s.toLowerCase());
         }
       }
-      return { ...prev, keywords: next };
+      return {
+        ...prev,
+        keywords: next,
+        ...(prev.subRoleId === OTHERS_SUB_ROLE_ID ? { customSubRoleText: next.join(", ") } : {}),
+      };
     });
   }, [suggestedToAdd]);
 
@@ -166,11 +189,20 @@ export default function JobsHub() {
 
   const runSaved = useCallback(
     (s) => {
-      setFilters(s.filters);
+      let nextFilters = s.filters;
+      if (
+        nextFilters?.subRoleId === OTHERS_SUB_ROLE_ID &&
+        !nextFilters.customSubRoleText &&
+        Array.isArray(nextFilters.keywords) &&
+        nextFilters.keywords.length > 0
+      ) {
+        nextFilters = { ...nextFilters, customSubRoleText: nextFilters.keywords.join(", ") };
+      }
+      setFilters(nextFilters);
       const plat = platformFromSaved(s);
       setSelectedPlatform(plat);
       setToast("Opening saved search…");
-      window.setTimeout(() => openUrls([plat], s.filters), 80);
+      window.setTimeout(() => openUrls([plat], nextFilters), 80);
     },
     [openUrls, setToast]
   );

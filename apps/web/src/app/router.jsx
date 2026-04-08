@@ -38,6 +38,7 @@ const PaymentFailurePage = lazy(() => import("../pages/payment/PaymentFailurePag
 const PrivacyPolicyPage = lazy(() => import("../pages/legal/PrivacyPolicyPage"));
 const TermsConditionsPage = lazy(() => import("../pages/legal/TermsConditionsPage"));
 const CourseContentsSidebarDemo = lazy(() => import("../pages/demo/CourseContentsSidebarDemo"));
+const PresentationPage = lazy(() => import("../pages/presentation/PresentationPage"));
 
 const SuperAdminHome = lazy(() => import("../pages/lms/superadmin/SuperAdminHome"));
 const SuperAdminCourses = lazy(() => import("../pages/lms/superadmin/SuperAdminCourses"));
@@ -231,6 +232,9 @@ export const router = createBrowserRouter([
       { path: "/features/:slug", element: <L><FeatureDetailPage /></L> },
       { path: "/contact", element: <L><ContactPage /></L> },
       { path: "/demo/course-sidebar", element: <L><CourseContentsSidebarDemo /></L> },
+      { path: "/presentation", element: <L><PresentationPage /></L> },
+      { path: "/deck", element: <Navigate to="/presentation" replace /> },
+      { path: "/product-story", element: <Navigate to="/presentation" replace /> },
       { path: "/login", element: <PublicOnly><LoginPage /></PublicOnly> },
       { path: "/adminlogin", element: <PublicOnly><AdminLoginPage /></PublicOnly> },
       { path: "/privacy-policy", element: <L><PrivacyPolicyPage /></L> },
