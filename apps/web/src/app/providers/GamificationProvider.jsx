@@ -179,6 +179,30 @@ export function GamificationProvider({ children }) {
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch {}
   }, [state]);
 
+  // Sync lesson bookmarks + notes from backend for cross-device persistence.
+  useEffect(() => {
+    if (!token) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await apiFetch("/api/v1/student/learning-state", { token });
+        if (!res?.ok || cancelled) return;
+        const serverNotes = res.data?.notes && typeof res.data.notes === "object" ? res.data.notes : {};
+        const serverBookmarks = Array.isArray(res.data?.bookmarks) ? res.data.bookmarks : [];
+        setState((prev) => ({
+          ...prev,
+          notes: serverNotes,
+          bookmarks: serverBookmarks,
+        }));
+      } catch {
+        // Keep local data if backend is unavailable.
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [token]);
+
   // Sync streak/best streak from backend so profile shows real values (no localStorage mock).
   useEffect(() => {
     if (!token) return;
@@ -348,13 +372,31 @@ export function GamificationProvider({ children }) {
   }, [addXP]);
 
   const toggleBookmark = useCallback((lessonPath, lessonTitle) => {
+    let removed = false;
     setState(prev => {
       const bm = prev.bookmarks || [];
       const exists = bm.find(b => b.path === lessonPath);
-      if (exists) return { ...prev, bookmarks: bm.filter(b => b.path !== lessonPath) };
+      if (exists) {
+        removed = true;
+        return { ...prev, bookmarks: bm.filter(b => b.path !== lessonPath) };
+      }
       return { ...prev, bookmarks: [...bm, { path: lessonPath, title: lessonTitle, date: new Date().toISOString() }] };
     });
-  }, []);
+
+    if (!token) return;
+    if (removed) {
+      apiFetch(`/api/v1/student/lesson-bookmarks?lessonPath=${encodeURIComponent(lessonPath)}`, {
+        method: "DELETE",
+        token,
+      }).catch(() => {});
+      return;
+    }
+    apiFetch("/api/v1/student/lesson-bookmarks", {
+      method: "PUT",
+      token,
+      body: { lessonPath, title: lessonTitle || lessonPath },
+    }).catch(() => {});
+  }, [token]);
 
   const isBookmarked = useCallback((lessonPath) => {
     return (state.bookmarks || []).some(b => b.path === lessonPath);
@@ -367,7 +409,20 @@ export function GamificationProvider({ children }) {
       else delete notes[lessonPath];
       return { ...prev, notes };
     });
-  }, []);
+    if (!token) return;
+    if (!String(text || "").trim()) {
+      apiFetch(`/api/v1/student/lesson-notes?lessonPath=${encodeURIComponent(lessonPath)}`, {
+        method: "DELETE",
+        token,
+      }).catch(() => {});
+      return;
+    }
+    apiFetch("/api/v1/student/lesson-notes", {
+      method: "PUT",
+      token,
+      body: { lessonPath, text },
+    }).catch(() => {});
+  }, [token]);
 
   const getNote = useCallback((lessonPath) => {
     return (state.notes || {})[lessonPath]?.text || "";

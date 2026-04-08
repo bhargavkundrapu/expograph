@@ -40,6 +40,13 @@ router.get("/bookmarks", ctrl.listBookmarks);
 router.post("/bookmarks", requirePermission("student:write"), ctrl.createBookmark);
 router.delete("/bookmarks/:bookmarkId", requirePermission("student:write"), ctrl.deleteBookmark);
 
+// Lesson-level synced learning state (cross-device)
+router.get("/learning-state", ctrl.getLearningState);
+router.put("/lesson-bookmarks", requirePermission("student:write"), ctrl.upsertLessonBookmark);
+router.delete("/lesson-bookmarks", requirePermission("student:write"), ctrl.deleteLessonBookmark);
+router.put("/lesson-notes", requirePermission("student:write"), ctrl.upsertLessonNote);
+router.delete("/lesson-notes", requirePermission("student:write"), ctrl.deleteLessonNote);
+
 // Profile
 router.get("/profile", ctrl.getProfile);
 router.patch("/profile", requirePermission("student:write"), ctrl.updateProfile);

@@ -1165,6 +1165,76 @@ async function getModuleLessons({ tenantId, moduleId }) {
   return result.rows;
 }
 
+async function getLearningState({ tenantId, userId }) {
+  const [notesRes, bookmarksRes] = await Promise.all([
+    query(
+      `SELECT lesson_path, note_text, updated_at
+       FROM student_lesson_notes
+       WHERE tenant_id = $1 AND user_id = $2`,
+      [tenantId, userId]
+    ).catch(() => ({ rows: [] })),
+    query(
+      `SELECT lesson_path, title, updated_at
+       FROM student_lesson_bookmarks
+       WHERE tenant_id = $1 AND user_id = $2
+       ORDER BY updated_at DESC`,
+      [tenantId, userId]
+    ).catch(() => ({ rows: [] })),
+  ]);
+
+  const notes = {};
+  for (const row of notesRes.rows || []) {
+    notes[row.lesson_path] = {
+      text: row.note_text || "",
+      updated: row.updated_at,
+    };
+  }
+
+  const bookmarks = (bookmarksRes.rows || []).map((row) => ({
+    path: row.lesson_path,
+    title: row.title || row.lesson_path,
+    date: row.updated_at,
+  }));
+
+  return { notes, bookmarks };
+}
+
+async function upsertLessonNote({ tenantId, userId, lessonPath, noteText }) {
+  await query(
+    `INSERT INTO student_lesson_notes (tenant_id, user_id, lesson_path, note_text, updated_at)
+     VALUES ($1, $2, $3, $4, now())
+     ON CONFLICT (tenant_id, user_id, lesson_path)
+     DO UPDATE SET note_text = EXCLUDED.note_text, updated_at = now()`,
+    [tenantId, userId, lessonPath, noteText]
+  );
+}
+
+async function deleteLessonNote({ tenantId, userId, lessonPath }) {
+  await query(
+    `DELETE FROM student_lesson_notes
+     WHERE tenant_id = $1 AND user_id = $2 AND lesson_path = $3`,
+    [tenantId, userId, lessonPath]
+  );
+}
+
+async function upsertLessonBookmark({ tenantId, userId, lessonPath, title }) {
+  await query(
+    `INSERT INTO student_lesson_bookmarks (tenant_id, user_id, lesson_path, title, updated_at)
+     VALUES ($1, $2, $3, $4, now())
+     ON CONFLICT (tenant_id, user_id, lesson_path)
+     DO UPDATE SET title = EXCLUDED.title, updated_at = now()`,
+    [tenantId, userId, lessonPath, title || null]
+  );
+}
+
+async function deleteLessonBookmark({ tenantId, userId, lessonPath }) {
+  await query(
+    `DELETE FROM student_lesson_bookmarks
+     WHERE tenant_id = $1 AND user_id = $2 AND lesson_path = $3`,
+    [tenantId, userId, lessonPath]
+  );
+}
+
 module.exports = {
   getSchedule,
   getCurrentCourse,
@@ -1188,5 +1258,10 @@ module.exports = {
   listBookmarks,
   createBookmark,
   deleteBookmark,
+  getLearningState,
+  upsertLessonNote,
+  deleteLessonNote,
+  upsertLessonBookmark,
+  deleteLessonBookmark,
   getModuleLessons,
 };

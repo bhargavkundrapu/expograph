@@ -203,7 +203,14 @@ export default function PDFPresentationViewer({ pdfUrl }) {
 
   // Keyboard navigation
   useEffect(() => {
+    const isTypingTarget = (target) => {
+      if (!target || !(target instanceof Element)) return false;
+      const editable = target.closest("input, textarea, [contenteditable='true'], [role='textbox']");
+      return !!editable;
+    };
+
     const handleKeyPress = (e) => {
+      if (isTypingTarget(e.target)) return;
       if (e.key === "ArrowRight" || e.key === " ") {
         e.preventDefault();
         nextPage();

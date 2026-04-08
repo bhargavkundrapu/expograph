@@ -30,6 +30,20 @@ const UpdateProfileSchema = z.object({
   phone: z.string().optional(),
 });
 
+const LessonPathSchema = z.object({
+  lessonPath: z.string().min(1),
+});
+
+const LessonBookmarkSchema = z.object({
+  lessonPath: z.string().min(1),
+  title: z.string().optional(),
+});
+
+const LessonNoteSchema = z.object({
+  lessonPath: z.string().min(1),
+  text: z.string().optional(),
+});
+
 function isTransientDbError(err) {
   const msg = String(err?.message || "").toLowerCase();
   const code = String(err?.code || "").toLowerCase();
@@ -314,6 +328,54 @@ const deleteBookmark = asyncHandler(async (req, res) => {
   res.json({ ok: true });
 });
 
+const getLearningState = asyncHandler(async (req, res) => {
+  const { tenantId, userId } = req.auth;
+  const data = await repo.getLearningState({ tenantId, userId });
+  res.json({ ok: true, data });
+});
+
+const upsertLessonBookmark = asyncHandler(async (req, res) => {
+  const { tenantId, userId } = req.auth;
+  const parsed = LessonBookmarkSchema.safeParse(req.body);
+  if (!parsed.success) throw new HttpError(400, "Invalid input", parsed.error.flatten());
+  await repo.upsertLessonBookmark({
+    tenantId,
+    userId,
+    lessonPath: parsed.data.lessonPath,
+    title: parsed.data.title,
+  });
+  res.json({ ok: true });
+});
+
+const deleteLessonBookmark = asyncHandler(async (req, res) => {
+  const { tenantId, userId } = req.auth;
+  const parsed = LessonPathSchema.safeParse({ lessonPath: req.query.lessonPath });
+  if (!parsed.success) throw new HttpError(400, "Invalid input", parsed.error.flatten());
+  await repo.deleteLessonBookmark({ tenantId, userId, lessonPath: parsed.data.lessonPath });
+  res.json({ ok: true });
+});
+
+const upsertLessonNote = asyncHandler(async (req, res) => {
+  const { tenantId, userId } = req.auth;
+  const parsed = LessonNoteSchema.safeParse(req.body);
+  if (!parsed.success) throw new HttpError(400, "Invalid input", parsed.error.flatten());
+  const text = String(parsed.data.text || "");
+  if (!text.trim()) {
+    await repo.deleteLessonNote({ tenantId, userId, lessonPath: parsed.data.lessonPath });
+  } else {
+    await repo.upsertLessonNote({ tenantId, userId, lessonPath: parsed.data.lessonPath, noteText: text });
+  }
+  res.json({ ok: true });
+});
+
+const deleteLessonNote = asyncHandler(async (req, res) => {
+  const { tenantId, userId } = req.auth;
+  const parsed = LessonPathSchema.safeParse({ lessonPath: req.query.lessonPath });
+  if (!parsed.success) throw new HttpError(400, "Invalid input", parsed.error.flatten());
+  await repo.deleteLessonNote({ tenantId, userId, lessonPath: parsed.data.lessonPath });
+  res.json({ ok: true });
+});
+
 // Profile
 const getProfile = asyncHandler(async (req, res) => {
   const { userId } = req.auth;
@@ -511,6 +573,11 @@ module.exports = {
   listBookmarks,
   createBookmark,
   deleteBookmark,
+  getLearningState,
+  upsertLessonBookmark,
+  deleteLessonBookmark,
+  upsertLessonNote,
+  deleteLessonNote,
   getProfile,
   updateProfile,
 };
