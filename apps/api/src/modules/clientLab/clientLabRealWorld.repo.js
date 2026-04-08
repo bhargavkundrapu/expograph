@@ -1,5 +1,9 @@
 const { query } = require("../../db/query");
 
+function isProjectAssignmentsTableMissing(error) {
+  return error?.code === "42P01" && String(error?.message || "").includes("client_lab_project_assignments");
+}
+
 function slugify(input) {
   return String(input)
     .trim()
@@ -48,9 +52,30 @@ async function listProjects({ tenantId, includeArchived }) {
   return rows;
 }
 
+async function listProjectsForEligibleStudent({ tenantId }) {
+  const { rows } = await query(
+    `SELECT *
+     FROM client_lab_projects
+     WHERE tenant_id = $1 AND archived_at IS NULL
+     ORDER BY created_at DESC`,
+    [tenantId]
+  );
+  return rows;
+}
+
 async function getProjectById({ tenantId, projectId }) {
   const { rows } = await query(
     `SELECT * FROM client_lab_projects WHERE tenant_id = $1 AND id = $2 LIMIT 1`,
+    [tenantId, projectId]
+  );
+  return rows[0] ?? null;
+}
+
+async function deleteProject({ tenantId, projectId }) {
+  const { rows } = await query(
+    `DELETE FROM client_lab_projects
+     WHERE tenant_id = $1 AND id = $2
+     RETURNING id, title`,
     [tenantId, projectId]
   );
   return rows[0] ?? null;
@@ -242,6 +267,72 @@ async function listAssignedProjectsForStudent({ tenantId, studentId }) {
   return rows;
 }
 
+async function upsertProjectAssignment({ tenantId, projectId, studentId, assignedBy }) {
+  try {
+    const { rows } = await query(
+      `INSERT INTO client_lab_project_assignments (tenant_id, project_id, student_id, assigned_by)
+       VALUES ($1,$2,$3,$4)
+       ON CONFLICT (tenant_id, project_id, student_id) DO UPDATE
+         SET assigned_by = EXCLUDED.assigned_by, assigned_at = now()
+       RETURNING *`,
+      [tenantId, projectId, studentId, assignedBy]
+    );
+    return rows[0] ?? null;
+  } catch (error) {
+    if (isProjectAssignmentsTableMissing(error)) return null;
+    throw error;
+  }
+}
+
+async function removeProjectAssignment({ tenantId, projectId, studentId }) {
+  try {
+    const { rows } = await query(
+      `DELETE FROM client_lab_project_assignments
+       WHERE tenant_id = $1 AND project_id = $2 AND student_id = $3
+       RETURNING id`,
+      [tenantId, projectId, studentId]
+    );
+    return rows.length > 0;
+  } catch (error) {
+    if (isProjectAssignmentsTableMissing(error)) return false;
+    throw error;
+  }
+}
+
+async function listProjectAssignmentsByProject({ tenantId, projectId }) {
+  try {
+    const { rows } = await query(
+      `SELECT a.*, u.full_name AS student_name, u.email AS student_email
+       FROM client_lab_project_assignments a
+       JOIN users u ON u.id = a.student_id
+       WHERE a.tenant_id = $1 AND a.project_id = $2
+       ORDER BY a.assigned_at DESC`,
+      [tenantId, projectId]
+    );
+    return rows;
+  } catch (error) {
+    if (isProjectAssignmentsTableMissing(error)) return [];
+    throw error;
+  }
+}
+
+async function listAssignedProjectsFromProjectAssignments({ tenantId, studentId }) {
+  try {
+    const { rows } = await query(
+      `SELECT p.id, p.title, p.slug, p.status, p.created_at, a.assigned_at
+       FROM client_lab_project_assignments a
+       JOIN client_lab_projects p ON p.id = a.project_id AND p.tenant_id = a.tenant_id
+       WHERE a.tenant_id = $1 AND a.student_id = $2 AND p.archived_at IS NULL
+       ORDER BY a.assigned_at DESC`,
+      [tenantId, studentId]
+    );
+    return rows;
+  } catch (error) {
+    if (isProjectAssignmentsTableMissing(error)) return [];
+    throw error;
+  }
+}
+
 async function listAssignedTasksForStudent({ tenantId, studentId }) {
   const { rows } = await query(
     `SELECT t.*, p.title AS project_title, a.assigned_at,
@@ -271,12 +362,30 @@ async function listAssignedTasksForStudentByProject({ tenantId, projectId, stude
   return rows;
 }
 
+async function listProjectTasksWithStudentMeta({ tenantId, projectId, studentId }) {
+  const { rows } = await query(
+    `SELECT t.*,
+       a.student_id AS assigned_student_id,
+       a.assigned_at,
+       (SELECT status FROM client_lab_submissions s WHERE s.task_id = t.id AND s.student_id = $3 ORDER BY s.submitted_at DESC LIMIT 1) AS submission_status,
+       (SELECT feedback FROM client_lab_submissions s WHERE s.task_id = t.id AND s.student_id = $3 ORDER BY s.submitted_at DESC LIMIT 1) AS submission_feedback
+     FROM client_lab_tasks t
+     LEFT JOIN client_lab_assignments a ON a.task_id = t.id AND a.tenant_id = t.tenant_id
+     WHERE t.tenant_id = $1 AND t.project_id = $2
+     ORDER BY t.updated_at DESC`,
+    [tenantId, projectId, studentId]
+  );
+  return rows;
+}
+
 module.exports = {
   slugify,
   createProject,
   updateProject,
   listProjects,
+  listProjectsForEligibleStudent,
   getProjectById,
+  deleteProject,
   createTask,
   updateTask,
   getTaskById,
@@ -293,6 +402,11 @@ module.exports = {
   listEligibleStudents,
   listAllStudentsForAssign,
   listAssignedProjectsForStudent,
+  upsertProjectAssignment,
+  removeProjectAssignment,
+  listProjectAssignmentsByProject,
+  listAssignedProjectsFromProjectAssignments,
   listAssignedTasksForStudent,
   listAssignedTasksForStudentByProject,
+  listProjectTasksWithStudentMeta,
 };

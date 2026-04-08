@@ -297,6 +297,7 @@ export default function StudentCourses() {
     openedFromUrlRef.current = false;
   };
 
+
   const toggleTopic = (topicId) => {
     const newExpanded = new Set(expandedTopics);
     if (newExpanded.has(topicId)) {

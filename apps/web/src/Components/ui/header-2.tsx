@@ -49,10 +49,6 @@ export function Header() {
 			href: '/academy#features',
 		},
 		{
-			label: 'Product story',
-			href: '/presentation',
-		},
-		{
 			label: 'Contact',
 			href: '/contact',
 		},

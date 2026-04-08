@@ -305,7 +305,6 @@ export const router = createBrowserRouter([
           { path: "client-lab/clients", element: <L><SuperAdminClientLab /></L> },
           { path: "client-lab/tasks", element: <L><SuperAdminClientLab /></L> },
           { path: "client-lab/real-world", element: <L><SuperAdminClientLabRealWorld /></L> },
-          { path: "client-lab/real-world/submissions", element: <L><SuperAdminClientLabRealWorld /></L> },
           { path: "client-lab/real-world/projects/:id", element: <L><SuperAdminClientLabRealWorld /></L> },
           
           // Students Management

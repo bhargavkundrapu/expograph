@@ -38,6 +38,10 @@ const AssignTaskSchema = z.object({
   student_id: z.string().uuid(),
 });
 
+const AssignProjectStudentsSchema = z.object({
+  student_ids: z.array(z.string().uuid()).default([]),
+});
+
 const SubmitTaskSchema = z.object({
   pr_link: z.union([z.string().url(), z.literal("")]).optional(),
   notes: z.string().max(2000).optional(),
@@ -54,6 +58,7 @@ module.exports = {
   CreateTaskSchema,
   UpdateTaskSchema,
   AssignTaskSchema,
+  AssignProjectStudentsSchema,
   SubmitTaskSchema,
   ReviewSubmissionSchema,
 };

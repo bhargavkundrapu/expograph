@@ -25,8 +25,9 @@ async function findByVerifyCode({ verifyCode }) {
 
 async function listMyCertificates({ tenantId, userId }) {
   const { rows } = await query(
-    `SELECT c.id, c.title, c.issued_at, c.verify_code, c.course_id, co.title AS course_title
+    `SELECT c.id, c.title, c.issued_at, c.verify_code, c.course_id, co.title AS course_title, u.full_name, u.email
      FROM certificates c
+     JOIN users u ON u.id = c.user_id
      LEFT JOIN courses co ON co.id = c.course_id AND co.tenant_id = c.tenant_id
      WHERE c.tenant_id = $1 AND c.user_id = $2
      ORDER BY c.issued_at DESC`,
@@ -92,10 +93,23 @@ async function getCertificate({ tenantId, id }) {
   return rows[0] ?? null;
 }
 
+async function findByUserAndCourse({ tenantId, userId, courseId }) {
+  const { rows } = await query(
+    `SELECT id, user_id, course_id, title, verify_code, issued_at
+     FROM certificates
+     WHERE tenant_id = $1 AND user_id = $2 AND course_id = $3
+     ORDER BY issued_at DESC
+     LIMIT 1`,
+    [tenantId, userId, courseId]
+  );
+  return rows[0] ?? null;
+}
+
 module.exports = { 
   issueCertificate, 
   findByVerifyCode, 
   listMyCertificates,
   listAllCertificates,
   getCertificate,
+  findByUserAndCourse,
 };

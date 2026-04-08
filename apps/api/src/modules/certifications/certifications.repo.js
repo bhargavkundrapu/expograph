@@ -23,6 +23,17 @@ async function findByUserAndCourse({ tenantId, userId, courseId }) {
   return rows[0] ?? null;
 }
 
+async function findApprovedByUserAndCourse({ tenantId, userId, courseId }) {
+  const { rows } = await query(
+    `SELECT id, tenant_id, user_id, course_id, progress_snapshot, status, requested_at, decided_at, decided_by, reject_reason
+     FROM certificate_requests
+     WHERE tenant_id = $1 AND user_id = $2 AND course_id = $3 AND status IN ('approved', 'issued')
+     LIMIT 1`,
+    [tenantId, userId, courseId]
+  );
+  return rows[0] ?? null;
+}
+
 async function findRequestsByUserAndCourses({ tenantId, userId, courseIds }) {
   if (!courseIds || courseIds.length === 0) return [];
   const { rows } = await query(
@@ -101,12 +112,25 @@ async function reject({ tenantId, id, decidedBy, reason }) {
   return rows[0] ?? null;
 }
 
+async function approveByUserAndCourse({ tenantId, userId, courseId, decidedBy = null }) {
+  const { rows } = await query(
+    `UPDATE certificate_requests
+     SET status = 'approved', decided_at = now(), decided_by = $4
+     WHERE tenant_id = $1 AND user_id = $2 AND course_id = $3
+     RETURNING id, tenant_id, user_id, course_id, progress_snapshot, status, requested_at, decided_at, decided_by, reject_reason`,
+    [tenantId, userId, courseId, decidedBy]
+  );
+  return rows[0] ?? null;
+}
+
 module.exports = {
   createRequest,
   findByUserAndCourse,
+  findApprovedByUserAndCourse,
   findRequestsByUserAndCourses,
   listForAdmin,
   getByIdForAdmin,
   approve,
   reject,
+  approveByUserAndCourse,
 };

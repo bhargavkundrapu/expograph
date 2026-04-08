@@ -2,6 +2,7 @@
 const { asyncHandler } = require("../../utils/asyncHandler");
 const { HttpError } = require("../../utils/httpError");
 const repo = require("./certificates.repo");
+const certificationsRepo = require("../certifications/certifications.repo");
 const { audit } = require("../audit/audit.service");
 
 function randomCode() {
@@ -75,6 +76,50 @@ const listMyCertificates = asyncHandler(async (req, res) => {
   res.json({ ok: true, data });
 });
 
+// STUDENT: POST /api/v1/lms/certificates/ensure-issued
+const ensureMyCertificateIssued = asyncHandler(async (req, res) => {
+  const tenantId = req.tenant.id;
+  const userId = req.auth.userId;
+  const courseId = req.body?.courseId;
+  if (!courseId) throw new HttpError(400, "courseId required");
+
+  const existing = await repo.findByUserAndCourse({ tenantId, userId, courseId });
+  if (existing) return res.json({ ok: true, data: existing });
+
+  const approvedRequest = await certificationsRepo.findApprovedByUserAndCourse({
+    tenantId,
+    userId,
+    courseId,
+  });
+  if (!approvedRequest) {
+    throw new HttpError(409, "Certificate request is not approved yet");
+  }
+
+  let issued = null;
+  for (let i = 0; i < 5; i++) {
+    try {
+      issued = await repo.issueCertificate({
+        tenantId,
+        userId,
+        courseId,
+        title: "Course Certificate",
+        verifyCode: randomCode(),
+        meta: {
+          source: "student_download_self_heal",
+          request_id: approvedRequest.id,
+        },
+        createdBy: userId,
+      });
+      break;
+    } catch (e) {
+      if (e.code === "23505") continue;
+      throw e;
+    }
+  }
+  if (!issued) throw new HttpError(500, "Could not issue certificate");
+  res.status(201).json({ ok: true, data: issued });
+});
+
 // ADMIN: GET /api/v1/admin/certificates
 const listAllCertificates = asyncHandler(async (req, res) => {
   const { userId, courseId } = req.query || {};
@@ -98,6 +143,7 @@ module.exports = {
   issueAdmin, 
   verifyPublic, 
   listMyCertificates,
+  ensureMyCertificateIssued,
   listAllCertificates,
   getCertificate,
 };

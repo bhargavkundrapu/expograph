@@ -13,8 +13,15 @@ const router = express.Router();
 router.get(
   "/certificates/mine",
   requireAuth,
-  requirePermission("certificates:read"),
+  // Students already carry student:read; certificates:read is not seeded for student roles.
+  requirePermission("student:read"),
   ctrl.listMyCertificates
+);
+router.post(
+  "/certificates/ensure-issued",
+  requireAuth,
+  requirePermission("student:read"),
+  ctrl.ensureMyCertificateIssued
 );
 
 module.exports = { router };

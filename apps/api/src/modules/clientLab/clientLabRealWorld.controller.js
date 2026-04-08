@@ -18,6 +18,11 @@ const updateProject = asyncHandler(async (req, res) => {
   res.json({ ok: true, data });
 });
 
+const deleteProject = asyncHandler(async (req, res) => {
+  const data = await svc.deleteProject(req, req.params.id);
+  res.json({ ok: true, data });
+});
+
 const listProjects = asyncHandler(async (req, res) => {
   const includeArchived = req.query.includeArchived === "true";
   const data = await svc.listProjects(req, includeArchived);
@@ -83,9 +88,21 @@ const listAllStudentsForAssign = asyncHandler(async (req, res) => {
   res.json({ ok: true, data });
 });
 
+const setProjectAssignments = asyncHandler(async (req, res) => {
+  const parsed = v.AssignProjectStudentsSchema.safeParse(req.body);
+  if (!parsed.success) throw new HttpError(400, "Invalid input", parsed.error.flatten());
+  const data = await svc.setProjectAssignments(req, req.params.id, parsed.data.student_ids);
+  res.json({ ok: true, data });
+});
+
 // --- Student
 const myAssignedProjects = asyncHandler(async (req, res) => {
   const data = await svc.listAssignedProjects(req);
+  res.json({ ok: true, data });
+});
+
+const myVisibleProjects = asyncHandler(async (req, res) => {
+  const data = await svc.listAllProjectsForEligibleStudent(req);
   res.json({ ok: true, data });
 });
 
@@ -123,6 +140,7 @@ const submitTask = asyncHandler(async (req, res) => {
 module.exports = {
   createProject,
   updateProject,
+  deleteProject,
   listProjects,
   getProjectWithTasks,
   createTask,
@@ -133,7 +151,9 @@ module.exports = {
   reviewSubmission,
   listEligibleStudents,
   listAllStudentsForAssign,
+  setProjectAssignments,
   myAssignedProjects,
+  myVisibleProjects,
   myAssignedTasks,
   getMyProjectWithTasks,
   getMyTask,

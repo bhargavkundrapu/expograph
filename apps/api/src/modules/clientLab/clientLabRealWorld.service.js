@@ -56,6 +56,15 @@ async function updateProject(req, projectId, data) {
   return updated;
 }
 
+async function deleteProject(req, projectId) {
+  const tenantId = req.tenant.id;
+  const existing = await repo.getProjectById({ tenantId, projectId });
+  if (!existing) throw new HttpError(404, "Project not found");
+  const deleted = await repo.deleteProject({ tenantId, projectId });
+  await audit(req, "project.delete", "client_lab_project", projectId, { title: existing.title });
+  return deleted;
+}
+
 async function listProjects(req, includeArchived) {
   return repo.listProjects({ tenantId: req.tenant.id, includeArchived: !!includeArchived });
 }
@@ -73,7 +82,8 @@ async function getProjectWithTasks(req, projectId) {
   );
   const assignmentByTaskId = Object.fromEntries(assignments.map(({ taskId, assignment }) => [taskId, assignment]));
   const tasksWithAssignment = tasks.map((t) => ({ ...t, assignment: assignmentByTaskId[t.id] ?? null }));
-  return { ...project, tasks: tasksWithAssignment };
+  const projectAssignments = await repo.listProjectAssignmentsByProject({ tenantId, projectId });
+  return { ...project, tasks: tasksWithAssignment, project_assignments: projectAssignments };
 }
 
 async function createTask(req, projectId, data) {
@@ -168,11 +178,54 @@ async function listAllStudentsForAssign(req) {
   return repo.listAllStudentsForAssign({ tenantId: req.tenant.id });
 }
 
+async function setProjectAssignments(req, projectId, studentIds) {
+  const tenantId = req.tenant.id;
+  const project = await repo.getProjectById({ tenantId, projectId });
+  if (!project) throw new HttpError(404, "Project not found");
+
+  const normalizedStudentIds = [...new Set((studentIds || []).filter(Boolean))];
+  const current = await repo.listProjectAssignmentsByProject({ tenantId, projectId });
+  const currentIds = new Set(current.map((r) => r.student_id));
+  const nextIds = new Set(normalizedStudentIds);
+
+  const toAdd = normalizedStudentIds.filter((id) => !currentIds.has(id));
+  const toRemove = [...currentIds].filter((id) => !nextIds.has(id));
+
+  await Promise.all(
+    toAdd.map((studentId) =>
+      repo.upsertProjectAssignment({
+        tenantId,
+        projectId,
+        studentId,
+        assignedBy: req.auth.userId,
+      })
+    )
+  );
+  await Promise.all(
+    toRemove.map((studentId) => repo.removeProjectAssignment({ tenantId, projectId, studentId }))
+  );
+
+  await audit(req, "project.assign_students", "client_lab_project", projectId, {
+    added: toAdd.length,
+    removed: toRemove.length,
+  });
+
+  return repo.listProjectAssignmentsByProject({ tenantId, projectId });
+}
+
 // --- Student: return assigned projects/tasks regardless of eligibility (so they see what's assigned)
 async function listAssignedProjects(req) {
   const tenantId = req.tenant.id;
   const userId = req.auth.userId;
-  return repo.listAssignedProjectsForStudent({ tenantId, studentId: userId });
+  return repo.listAssignedProjectsFromProjectAssignments({ tenantId, studentId: userId });
+}
+
+async function listAllProjectsForEligibleStudent(req) {
+  const tenantId = req.tenant.id;
+  const userId = req.auth.userId;
+  const eligibility = await require("./clientLabEligibility.repo").getEligibility({ userId });
+  if (!eligibility?.eligible_client_lab) return [];
+  return repo.listProjectsForEligibleStudent({ tenantId });
 }
 
 async function listAssignedTasks(req) {
@@ -205,10 +258,9 @@ async function getProjectWithTasksForStudent(req, projectId) {
   const userId = req.auth.userId;
   const project = await repo.getProjectById({ tenantId, projectId });
   if (!project) throw new HttpError(404, "Project not found");
-  const assignments = await repo.listAssignmentsByStudent({ tenantId, studentId: userId });
-  const assignedProjectIds = [...new Set(assignments.map((a) => a.project_id))];
-  if (!assignedProjectIds.includes(project.id)) throw new HttpError(403, "You are not assigned to this project");
-  const tasks = await repo.listAssignedTasksForStudentByProject({ tenantId, projectId, studentId: userId });
+  const eligibility = await require("./clientLabEligibility.repo").getEligibility({ userId });
+  if (!eligibility?.eligible_client_lab) throw new HttpError(403, "You are not eligible for Real Client Lab");
+  const tasks = await repo.listProjectTasksWithStudentMeta({ tenantId, projectId, studentId: userId });
   return { ...project, tasks };
 }
 
@@ -226,6 +278,7 @@ async function getTaskByIdForStudent(req, taskId) {
 module.exports = {
   createProject,
   updateProject,
+  deleteProject,
   listProjects,
   getProjectWithTasks,
   createTask,
@@ -236,7 +289,9 @@ module.exports = {
   reviewSubmission,
   listEligibleStudents,
   listAllStudentsForAssign,
+  setProjectAssignments,
   listAssignedProjects,
+  listAllProjectsForEligibleStudent,
   listAssignedTasks,
   submitTask,
   getProjectWithTasksForStudent,

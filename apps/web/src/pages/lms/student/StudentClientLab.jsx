@@ -112,12 +112,14 @@ export default function StudentClientLab() {
   const [loading, setLoading] = useState(true);
   const [me, setMe] = useState(null);
   const [projects, setProjects] = useState([]);
+  const [visibleProjects, setVisibleProjects] = useState([]);
   const [tasks, setTasks] = useState([]);
   const [projectDetail, setProjectDetail] = useState(null);
   const [taskDetail, setTaskDetail] = useState(null);
   const [submitForm, setSubmitForm] = useState({ pr_link: "", notes: "" });
   const [saving, setSaving] = useState(false);
   const [submitError, setSubmitError] = useState("");
+  const [activeTab, setActiveTab] = useState("all");
 
   const fetchMe = useCallback(async () => {
     if (!token) return;
@@ -136,6 +138,16 @@ export default function StudentClientLab() {
       if (res?.ok) setProjects(res.data || []);
     } catch (e) {
       setProjects([]);
+    }
+  }, [token]);
+
+  const fetchVisibleProjects = useCallback(async () => {
+    if (!token) return;
+    try {
+      const res = await apiFetch("/api/v1/client-lab/me/projects", { token });
+      if (res?.ok) setVisibleProjects(res.data || []);
+    } catch (e) {
+      setVisibleProjects([]);
     }
   }, [token]);
 
@@ -197,17 +209,23 @@ export default function StudentClientLab() {
 
     Promise.allSettled([
       hasClientLabState ? Promise.resolve() : fetchMe(),
+      fetchVisibleProjects(),
       // Fetch assigned items in parallel with me/checklist to reduce overall wait time.
       fetchAssignedProjects(),
       fetchAssignedTasks(),
     ]).finally(() => setLoading(false));
-  }, [token, user, fetchMe, fetchAssignedProjects, fetchAssignedTasks]);
+  }, [token, user, fetchMe, fetchVisibleProjects, fetchAssignedProjects, fetchAssignedTasks]);
 
   /* Always fetch assigned projects/tasks (for students).
    * They return [] when not eligible, so we don't rely on me.eligible_client_lab for the request. */
 
   const eligible = !!me?.eligible_client_lab;
-  const hasAssignments = projects.length > 0 || tasks.length > 0;
+  const hasAssignments = projects.length > 0;
+  const taskCountByProjectId = tasks.reduce((acc, task) => {
+    if (!task?.project_id) return acc;
+    acc[task.project_id] = (acc[task.project_id] || 0) + 1;
+    return acc;
+  }, {});
   const showLockedView = !eligible && !hasAssignments;
   // Checklist comes from /api/v1/me (client_lab_checklist); fallback so we never stick on "Loading your progress"
   const rawChecklist = me?.client_lab_checklist;
@@ -425,7 +443,26 @@ export default function StudentClientLab() {
           <p className="text-slate-600">Your assigned real-world projects and tasks</p>
         </motion.div>
 
-        {projects.length === 0 && tasks.length === 0 ? (
+        {eligible && (
+          <div className="mb-5 inline-flex rounded-xl border border-slate-200 bg-white p-1 shadow-sm">
+            <button
+              type="button"
+              onClick={() => setActiveTab("all")}
+              className={`px-3 py-1.5 text-sm rounded-lg transition ${activeTab === "all" ? "bg-indigo-600 text-white" : "text-slate-600 hover:bg-slate-100"}`}
+            >
+              All Projects
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("yours")}
+              className={`px-3 py-1.5 text-sm rounded-lg transition ${activeTab === "yours" ? "bg-indigo-600 text-white" : "text-slate-600 hover:bg-slate-100"}`}
+            >
+              Your Projects
+            </button>
+          </div>
+        )}
+
+        {(eligible ? (activeTab === "all" ? visibleProjects.length === 0 : projects.length === 0 && tasks.length === 0) : projects.length === 0 && tasks.length === 0) ? (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -437,59 +474,60 @@ export default function StudentClientLab() {
               Projects and tasks are assigned by your admin from the Real Client Lab. Once you have assignments, they will appear here.
             </p>
           </motion.div>
+        ) : eligible && activeTab === "all" ? (
+          <section>
+            <h2 className="text-lg font-semibold text-slate-900 mb-3">All Projects</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+              {visibleProjects.map((p) => (
+                <motion.div
+                  key={p.id}
+                  whileHover={{ y: -3 }}
+                  className="group bg-white rounded-2xl border border-slate-200 p-5 transition-all shadow-sm"
+                >
+                  <div className="w-11 h-11 rounded-xl bg-indigo-100 flex items-center justify-center mb-4">
+                    <FiFolder className="w-5 h-5 text-indigo-600" />
+                  </div>
+                  <div className="min-h-[3.5rem]">
+                    <h3 className="font-semibold text-slate-900 line-clamp-2">{p.title}</h3>
+                    <p className="text-sm text-slate-500 capitalize mt-1">{p.status}</p>
+                  </div>
+                  <div className="mt-4 flex items-center justify-between">
+                    <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-100">
+                      Client Lab
+                    </span>
+                    <span className="text-sm font-medium text-slate-500">View in Your Projects</span>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </section>
         ) : (
           <div className="space-y-8">
             {projects.length > 0 && (
               <section>
-                <h2 className="text-lg font-semibold text-slate-900 mb-3">Projects</h2>
-                <div className="grid gap-3">
+                <h2 className="text-lg font-semibold text-slate-900 mb-3">Your Projects</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
                   {projects.map((p) => (
-                    <div
+                    <motion.div
                       key={p.id}
                       onClick={() => navigate(`/lms/student/client-lab/projects/${p.id}`)}
-                      className="bg-white rounded-2xl border border-slate-200 p-4 flex items-center justify-between hover:border-indigo-300 cursor-pointer transition-colors shadow-sm"
+                      whileHover={{ y: -3 }}
+                      className="group bg-white rounded-2xl border border-slate-200 p-5 hover:border-indigo-300 cursor-pointer transition-all shadow-sm hover:shadow-md"
                     >
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-indigo-100 flex items-center justify-center">
-                          <FiFolder className="w-5 h-5 text-indigo-600" />
-                        </div>
-                        <div>
-                          <div className="font-medium text-slate-900">{p.title}</div>
-                          <div className="text-sm text-slate-500">{p.status}</div>
-                        </div>
+                      <div className="w-11 h-11 rounded-xl bg-indigo-100 flex items-center justify-center mb-4">
+                        <FiFolder className="w-5 h-5 text-indigo-600" />
                       </div>
-                      <FiArrowLeft className="w-5 h-5 rotate-180 text-slate-400" />
-                    </div>
-                  ))}
-                </div>
-              </section>
-            )}
-            {tasks.length > 0 && (
-              <section>
-                <h2 className="text-lg font-semibold text-slate-900 mb-3">Assigned tasks</h2>
-                <div className="grid gap-3">
-                  {tasks.map((t) => (
-                    <div
-                      key={t.id}
-                      onClick={() => navigate(`/lms/student/client-lab/projects/${t.project_id}/tasks/${t.id}`)}
-                      className="bg-white rounded-2xl border border-slate-200 p-4 flex items-center justify-between hover:border-indigo-300 cursor-pointer transition-colors shadow-sm"
-                    >
-                      <div className="flex items-center gap-3">
-                        {t.status === "done" ? (
-                          <FiCheckCircle className="w-5 h-5 text-emerald-600 shrink-0" />
-                        ) : (
-                          <FiClock className="w-5 h-5 text-slate-400 shrink-0" />
-                        )}
-                        <div>
-                          <div className="font-medium text-slate-900">{t.title}</div>
-                          <div className="text-sm text-slate-500">{t.project_title} · {t.status}</div>
-                          {t.submission_status && (
-                            <div className="text-xs text-slate-500 mt-1">Submission: {t.submission_status}</div>
-                          )}
-                        </div>
+                      <div className="min-h-[3.5rem]">
+                        <h3 className="font-semibold text-slate-900 line-clamp-2">{p.title}</h3>
+                        <p className="text-sm text-slate-500 capitalize mt-1">{p.status}</p>
                       </div>
-                      <FiArrowLeft className="w-5 h-5 rotate-180 text-slate-400" />
-                    </div>
+                      <div className="mt-4 flex items-center justify-between">
+                        <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100">
+                          {taskCountByProjectId[p.id] || 0} task{(taskCountByProjectId[p.id] || 0) === 1 ? "" : "s"}
+                        </span>
+                        <span className="text-sm font-medium text-indigo-600 group-hover:text-indigo-700">Open</span>
+                      </div>
+                    </motion.div>
                   ))}
                 </div>
               </section>

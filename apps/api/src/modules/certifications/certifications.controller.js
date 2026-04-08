@@ -3,6 +3,11 @@ const { asyncHandler } = require("../../utils/asyncHandler");
 const { HttpError } = require("../../utils/httpError");
 const certificationsService = require("./certifications.service");
 const certificationsRepo = require("./certifications.repo");
+const certificatesRepo = require("../certificates/certificates.repo");
+
+function randomCode() {
+  return "EXPO-" + Math.random().toString(16).slice(2, 6).toUpperCase() + "-" + Date.now().toString(36).toUpperCase();
+}
 
 // ----- Student (require Student role) -----
 
@@ -81,6 +86,40 @@ const postApprove = asyncHandler(async (req, res) => {
     id,
     decidedBy: userId,
   });
+
+  if (updated || row.status === "approved") {
+    const existingCertificate = await certificatesRepo.findByUserAndCourse({
+      tenantId,
+      userId: row.user_id,
+      courseId: row.course_id,
+    });
+
+    if (!existingCertificate) {
+      let issued = null;
+      for (let i = 0; i < 5; i++) {
+        try {
+          issued = await certificatesRepo.issueCertificate({
+            tenantId,
+            userId: row.user_id,
+            courseId: row.course_id,
+            title: `${row.course_title || "Course"} Certificate`,
+            verifyCode: randomCode(),
+            meta: {
+              source: "certificate_request_approval",
+              request_id: row.id,
+            },
+            createdBy: userId,
+          });
+          break;
+        } catch (e) {
+          if (e.code === "23505") continue;
+          throw e;
+        }
+      }
+      if (!issued) throw new HttpError(500, "Could not issue certificate");
+    }
+  }
+
   if (updated) {
     return res.json({ ok: true, data: { id: updated.id, status: updated.status } });
   }

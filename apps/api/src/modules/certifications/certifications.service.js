@@ -3,6 +3,11 @@ const { query } = require("../../db/query");
 const progressRepo = require("../progress/progress.repo");
 const certificationsRepo = require("./certifications.repo");
 const studentRepo = require("../student/student.repo");
+const certificatesRepo = require("../certificates/certificates.repo");
+
+function randomCode() {
+  return "EXPO-" + Math.random().toString(16).slice(2, 6).toUpperCase() + "-" + Date.now().toString(36).toUpperCase();
+}
 
 /**
  * Get enrolled course ids for user (same logic as student.repo getEnrolledCourseIds).
@@ -63,7 +68,33 @@ async function requestCertificate({ tenantId, userId, courseId }) {
   if (percent < 100) return { allowed: false, reason: "progress_under_100", progress_percent: percent };
 
   const existing = await certificationsRepo.findByUserAndCourse({ tenantId, userId, courseId });
-  if (existing) return { allowed: true, existing: true, request: existing };
+  if (existing) {
+    const approvedExisting =
+      existing.status === "approved" || existing.status === "issued"
+        ? existing
+        : await certificationsRepo.approveByUserAndCourse({ tenantId, userId, courseId, decidedBy: null });
+    let cert = await certificatesRepo.findByUserAndCourse({ tenantId, userId, courseId });
+    if (!cert) {
+      for (let i = 0; i < 5; i++) {
+        try {
+          cert = await certificatesRepo.issueCertificate({
+            tenantId,
+            userId,
+            courseId,
+            title: "Course Certificate",
+            verifyCode: randomCode(),
+            meta: { source: "auto_approved_on_request" },
+            createdBy: null,
+          });
+          break;
+        } catch (e) {
+          if (e.code === "23505") continue;
+          throw e;
+        }
+      }
+    }
+    return { allowed: true, existing: true, request: approvedExisting || existing, certificate: cert || null };
+  }
 
   const created = await certificationsRepo.createRequest({
     tenantId,
@@ -71,9 +102,30 @@ async function requestCertificate({ tenantId, userId, courseId }) {
     courseId,
     progressSnapshot: 100,
   });
-  if (created) return { allowed: true, existing: false, request: created };
+  if (created) {
+    const approved = await certificationsRepo.approveByUserAndCourse({ tenantId, userId, courseId, decidedBy: null });
+    let cert = null;
+    for (let i = 0; i < 5; i++) {
+      try {
+        cert = await certificatesRepo.issueCertificate({
+          tenantId,
+          userId,
+          courseId,
+          title: "Course Certificate",
+          verifyCode: randomCode(),
+          meta: { source: "auto_approved_on_request" },
+          createdBy: null,
+        });
+        break;
+      } catch (e) {
+        if (e.code === "23505") continue;
+        throw e;
+      }
+    }
+    return { allowed: true, existing: false, request: approved || created, certificate: cert || null };
+  }
   const again = await certificationsRepo.findByUserAndCourse({ tenantId, userId, courseId });
-  return { allowed: true, existing: true, request: again };
+  return { allowed: true, existing: true, request: again, certificate: null };
 }
 
 module.exports = {
