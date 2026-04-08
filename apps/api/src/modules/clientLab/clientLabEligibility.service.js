@@ -3,12 +3,40 @@ const eligibilityRepo = require("./clientLabEligibility.repo");
 const contentRepo = require("../content/content.repo");
 const studentRepo = require("../student/student.repo");
 
-const REQUIRED_COURSE_SLUGS = ["vibe-coding", "prompt-engineering", "prompt-to-profit", "ai-automations"];
+// Real Client Lab unlock rule:
+// - Student must have access via All Pack OR all three main courses
+// - Completion is checked only for the three main courses (AI Automations is bonus, excluded)
+const REQUIRED_COURSE_SLUGS = ["vibe-coding", "prompt-engineering", "prompt-to-profit"];
+
+function normalizeKey(v) {
+  return String(v || "")
+    .toLowerCase()
+    .replace(/_/g, "-")
+    .replace(/\s+/g, "-")
+    .trim();
+}
+
+function isVibeCodingCourse(course) {
+  const slug = normalizeKey(course?.slug);
+  const title = normalizeKey(course?.title);
+  return (slug.includes("vibe") && (slug.includes("cod") || slug.includes("coad"))) || title.includes("vibe-coding");
+}
+
+function isPromptEngineeringCourse(course) {
+  const slug = normalizeKey(course?.slug);
+  const title = normalizeKey(course?.title);
+  return slug.includes("prompt-engineering") || title.includes("prompt-engineering");
+}
+
+function isPromptToProfitCourse(course) {
+  const slug = normalizeKey(course?.slug);
+  const title = normalizeKey(course?.title);
+  return slug.includes("prompt-to-profit") || title.includes("prompt-to-profit");
+}
 
 /**
- * Get checklist for Real Client Lab unlock: each required course with purchased + completed %.
- * Uses all published courses; if none, falls back to required slugs so the list is never empty when courses exist.
- * Eligible when: all courses purchased AND each course at 100% completion.
+ * Get checklist for Real Client Lab unlock: required trilogy with purchased + completed %.
+ * Eligible when: all three main courses purchased/accessed AND each at 100% completion.
  */
 async function getClientLabChecklist({ tenantId, userId }) {
   if (!tenantId) return { courses: [], hasAccess: false, allPurchased: false, allCompleted: false, eligible: false };
@@ -18,10 +46,18 @@ async function getClientLabChecklist({ tenantId, userId }) {
     return { courses: [], hasAccess: false, allPurchased: false, allCompleted: false, eligible: false };
   }
 
-  let courses = await contentRepo.listCoursesPublic({ tenantId });
-  if (!courses || courses.length === 0) {
+  // Evaluate only the three main courses for completion gating, but match robustly
+  // so legacy slugs / typos (e.g., "vibe-coading") still appear in checklist.
+  const allCourses = await contentRepo.listCoursesPublic({ tenantId });
+  let courses = (allCourses || []).filter(
+    (c) => isVibeCodingCourse(c) || isPromptEngineeringCourse(c) || isPromptToProfitCourse(c)
+  );
+
+  // Fallback to canonical slug lookup if matching by title/slug variants found none.
+  if (!courses.length) {
     courses = await contentRepo.listCoursesPublicBySlugs({ tenantId, slugs: REQUIRED_COURSE_SLUGS });
   }
+
   if (!courses || courses.length === 0) {
     return { courses: [], hasAccess: true, allPurchased: true, allCompleted: true, eligible: true };
   }

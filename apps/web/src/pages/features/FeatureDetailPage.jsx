@@ -107,7 +107,7 @@ const featureDetails = {
           { icon: <Target className="h-5 w-5" />, title: "Real Client Projects", desc: "Companies submit actual project briefs-landing pages, dashboards, APIs, mobile designs. You pick up tasks just like in a real job." },
           { icon: <Users className="h-5 w-5" />, title: "Mentor-Reviewed Work", desc: "Every submission is reviewed by an experienced mentor. You get real feedback-what's great, what needs improvement, and how to fix it." },
           { icon: <Award className="h-5 w-5" />, title: "Portfolio-Ready Output", desc: "Every completed project becomes a portfolio piece. Show employers you've built real things for real people, not just tutorials." },
-          { icon: <TrendingUp className="h-5 w-5" />, title: "Unlock with All Pack", desc: "Real Client Lab unlocks when you have access to all required courses and complete each course at 100%. Get the All Pack to unlock." },
+          { icon: <TrendingUp className="h-5 w-5" />, title: "Unlock with Core Trilogy", desc: "Real Client Lab unlocks when Vibe Coding, Prompt Engineering, and Prompt to Profit are each completed at 100%. AI Automations is bonus and not required." },
         ],
       },
       {
@@ -121,7 +121,7 @@ const featureDetails = {
       },
     ],
     stats: [
-      { value: "75%", label: "Course progress to unlock" },
+      { value: "100%", label: "Each core course required" },
       { value: "Real", label: "Client briefs" },
       { value: "1-on-1", label: "Mentor feedback" },
     ],
