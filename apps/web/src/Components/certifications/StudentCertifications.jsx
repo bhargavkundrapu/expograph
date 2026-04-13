@@ -389,7 +389,7 @@ export default function StudentCertifications() {
         brandLogo.src = CERTIFICATE_LOGO_URL;
         await logoLoaded;
         // Increased height with extra top breathing space.
-        doc.addImage(brandLogo, "PNG", margin + 16, margin + 14, 110, 60);
+        doc.addImage(brandLogo, "PNG", margin + 16, margin + 14, 110, 70);
       } catch {
         // Keep PDF generation resilient if remote image load fails.
       }

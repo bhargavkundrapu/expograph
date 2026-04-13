@@ -50,6 +50,10 @@ import LessonFeedbackCard from "../../../Components/student/LessonFeedbackCard";
 import ShareProgressModal from "../../../Components/student/gamification/ShareProgressModal";
 import KeyboardShortcutsModal from "../../../Components/student/KeyboardShortcutsModal";
 import { useKeyboardShortcuts } from "../../../hooks/useKeyboardShortcuts";
+import {
+  getVibeSetupFullstackAlternateVideos,
+  VIBE_SETUP_FULLSTACK_VIDEO_LANG_KEY,
+} from "../../../utils/vibeCodingLessonAlternateVideos";
 
 const NATIVE_SEEK_BACK_SEC = 20;
 const NATIVE_SEEK_FWD_SEC = 10;
@@ -105,7 +109,7 @@ function NativeLessonVideoPlayer({
     <div className="relative bg-black overflow-hidden shadow-xl rounded-b-lg">
       <div className="aspect-video bg-black relative md:max-h-[450px]">
         <video
-          key={`vid-${lessonKey}-${captionsBlobUrl ? "cc" : "nocc"}`}
+          key={`vid-${lessonKey}-${videoSrc}-${captionsBlobUrl ? "cc" : "nocc"}`}
           ref={videoRef}
           src={videoSrc}
           controls
@@ -223,6 +227,11 @@ export default function StudentLesson() {
   const [selectedSuccessImageIndex, setSelectedSuccessImageIndex] = useState(0);
   const [selectedLearnStepIndex, setSelectedLearnStepIndex] = useState(0);
   const [captionsEnabled, setCaptionsEnabled] = useState(true);
+  /** en | te — only used when alternate native URLs exist for a lesson (e.g. Vibe Coding setup fullstack). */
+  const [lessonAlternateVideoLang, setLessonAlternateVideoLang] = useState(() => {
+    if (typeof window === "undefined") return "en";
+    return window.localStorage.getItem(VIBE_SETUP_FULLSTACK_VIDEO_LANG_KEY) === "te" ? "te" : "en";
+  });
   const [searchModalOpen, setSearchModalOpen] = useState(false);
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
   const [shareModalOpen, setShareModalOpen] = useState(false);
@@ -359,17 +368,6 @@ export default function StudentLesson() {
     fetchLessonData(courseSlug, moduleSlug, lessonSlug, courseDataLoadedRef.current, ac.signal);
     return () => ac.abort();
   }, [token, courseSlug, moduleSlug, lessonSlug]);
-
-  // Fetch video token if needed for Cloudflare Stream
-  useEffect(() => {
-    if (lesson?.video_provider === "cloudflare_stream" && lesson?.video_id && lesson?.id && token) {
-      fetchVideoToken(lesson.id);
-    } else if (lesson?.video_provider === "cloudflare_stream" && lesson?.video_id) {
-      // Reset token if lesson changes
-      setVideoToken(null);
-      setVideoError(null);
-    }
-  }, [lesson?.id, lesson?.video_provider, lesson?.video_id, token]);
 
   const fetchCourseData = async (signal) => {
     if (courseDataLoadedRef.current) return;
@@ -671,6 +669,44 @@ export default function StudentLesson() {
     [allModules, moduleSlug]
   );
   const moduleTitle = currentModule?.title || "";
+
+  // Vibe Coding: dual-language MP4 for one lesson (see utils/vibeCodingLessonAlternateVideos.js)
+  const alternateNativeVideos = useMemo(() => {
+    if (!lesson) return null;
+    return getVibeSetupFullstackAlternateVideos({
+      courseSlug,
+      moduleSlug,
+      lessonSlug,
+      moduleTitle,
+      lessonTitle: lesson.title,
+    });
+  }, [lesson, courseSlug, moduleSlug, lessonSlug, moduleTitle]);
+
+  const activeAlternateVideoSrc = useMemo(() => {
+    if (!alternateNativeVideos) return null;
+    return lessonAlternateVideoLang === "te" ? alternateNativeVideos.telugu : alternateNativeVideos.english;
+  }, [alternateNativeVideos, lessonAlternateVideoLang]);
+
+  // Fetch Cloudflare token only when not using alternate native URLs for this lesson
+  useEffect(() => {
+    if (alternateNativeVideos) {
+      setVideoToken(null);
+      setVideoError(null);
+      return;
+    }
+    if (lesson?.video_provider === "cloudflare_stream" && lesson?.video_id && lesson?.id && token) {
+      fetchVideoToken(lesson.id);
+    } else if (lesson?.video_provider === "cloudflare_stream" && lesson?.video_id) {
+      setVideoToken(null);
+      setVideoError(null);
+    }
+  }, [alternateNativeVideos, lesson?.id, lesson?.video_provider, lesson?.video_id, token]);
+
+  useEffect(() => {
+    if (!alternateNativeVideos) return;
+    const saved = window.localStorage.getItem(VIBE_SETUP_FULLSTACK_VIDEO_LANG_KEY);
+    if (saved === "te" || saved === "en") setLessonAlternateVideoLang(saved);
+  }, [alternateNativeVideos, lesson?.id]);
 
   const handleSearchLessonSelect = useCallback((item) => {
     if (item.locked) return;
@@ -1074,15 +1110,73 @@ export default function StudentLesson() {
             )}
 
             {/* Video Player Section - only show if video exists */}
-            {(lesson.video_provider === "cloudflare_stream" && lesson.video_id) ||
-            (lesson.video_provider === "youtube" && lesson.video_id) ||
-            (lesson.video_provider === "vimeo" && lesson.video_id) ||
-            lesson.video_url ||
-            (lesson.video_id && lesson.video_id.startsWith("http")) ? (
+            {lesson &&
+            (alternateNativeVideos ||
+              (lesson.video_provider === "cloudflare_stream" && lesson.video_id) ||
+              (lesson.video_provider === "youtube" && lesson.video_id) ||
+              (lesson.video_provider === "vimeo" && lesson.video_id) ||
+              lesson.video_url ||
+              (lesson.video_id && String(lesson.video_id).startsWith("http"))) ? (
               <div className="px-4 md:px-8 pb-4 md:pb-8">
                 <div className="max-w-3xl mx-auto">
-                {/* Cloudflare Stream Video Player */}
-                {lesson.video_provider === "cloudflare_stream" && lesson.video_id ? (
+                {alternateNativeVideos && activeAlternateVideoSrc ? (
+                  <div className="space-y-2">
+                    <div className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-slate-200 bg-slate-50/90 px-3 py-2">
+                      <span className="text-xs font-semibold text-slate-700">Video language</span>
+                      <div
+                        className="inline-flex rounded-md border border-slate-200 bg-white p-0.5 shadow-sm"
+                        role="group"
+                        aria-label="Lesson video language"
+                      >
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setLessonAlternateVideoLang("en");
+                            try {
+                              window.localStorage.setItem(VIBE_SETUP_FULLSTACK_VIDEO_LANG_KEY, "en");
+                            } catch {
+                              /* ignore */
+                            }
+                          }}
+                          className={`px-3 py-1.5 text-xs font-semibold rounded transition-colors ${
+                            lessonAlternateVideoLang === "en"
+                              ? "bg-slate-900 text-white shadow"
+                              : "text-slate-600 hover:bg-slate-100"
+                          }`}
+                        >
+                          English
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setLessonAlternateVideoLang("te");
+                            try {
+                              window.localStorage.setItem(VIBE_SETUP_FULLSTACK_VIDEO_LANG_KEY, "te");
+                            } catch {
+                              /* ignore */
+                            }
+                          }}
+                          className={`px-3 py-1.5 text-xs font-semibold rounded transition-colors ${
+                            lessonAlternateVideoLang === "te"
+                              ? "bg-slate-900 text-white shadow"
+                              : "text-slate-600 hover:bg-slate-100"
+                          }`}
+                        >
+                          తెలుగు
+                        </button>
+                      </div>
+                    </div>
+                    <NativeLessonVideoPlayer
+                      lessonKey={lesson.id}
+                      videoSrc={activeAlternateVideoSrc}
+                      videoRef={videoRef}
+                      captionsBlobUrl={captionsBlobUrl}
+                      captionsEnabled={captionsEnabled}
+                      setCaptionsEnabled={setCaptionsEnabled}
+                      setVideoReady={setVideoReady}
+                    />
+                  </div>
+                ) : lesson.video_provider === "cloudflare_stream" && lesson.video_id ? (
                   <div className="bg-black overflow-hidden shadow-xl relative">
                     <div className="aspect-video bg-black relative md:max-h-[450px]">
                       {videoTokenLoading ? (
@@ -1210,7 +1304,7 @@ export default function StudentLesson() {
                             content={lesson.prompts.prompts}
                             promptPrefix=">"
                             variant="blue"
-                            defaultTheme="light"
+                            defaultTheme="dark"
                             onCopy={() => handleCopy(lesson.prompts.prompts, "prompts")}
                             copied={copiedIndex === "prompts"}
                             className="max-w-full"
@@ -1226,7 +1320,7 @@ export default function StudentLesson() {
                             content={lesson.prompts.commands}
                             promptPrefix="$"
                             variant="purple"
-                            defaultTheme="light"
+                            defaultTheme="dark"
                             onCopy={() => handleCopy(lesson.prompts.commands, "commands")}
                             copied={copiedIndex === "commands"}
                             className="max-w-full"
@@ -1242,7 +1336,7 @@ export default function StudentLesson() {
                             content={lesson.prompts.error_resolve}
                             promptPrefix="!"
                             variant="red"
-                            defaultTheme="light"
+                            defaultTheme="dark"
                             onCopy={() => handleCopy(lesson.prompts.error_resolve, "error_resolve")}
                             copied={copiedIndex === "error_resolve"}
                             className="max-w-full"

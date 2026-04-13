@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../../app/providers/AuthProvider";
 import { apiFetch } from "../../../services/api";
 import { GenericPageSkeleton } from "../../../Components/common/SkeletonLoaders";
-import { FiBriefcase, FiPlus, FiX, FiArrowLeft, FiSearch, FiTrash2, FiEdit3 } from "react-icons/fi";
+import { FiBriefcase, FiPlus, FiX, FiArrowLeft, FiSearch, FiTrash2, FiEdit3, FiCheckCircle, FiClock } from "react-icons/fi";
 
 const BASE = "/lms/superadmin/client-lab/real-world";
 const emptyProjectForm = { title: "", slug: "", scope: "", status: "active", startDate: "", endDate: "" };
@@ -25,8 +25,12 @@ export default function SuperAdminClientLabRealWorld() {
 
   const [showCreateProject, setShowCreateProject] = useState(false);
   const [showEditProject, setShowEditProject] = useState(false);
+  const [showCreateTask, setShowCreateTask] = useState(false);
+  const [showEditTask, setShowEditTask] = useState(false);
   const [createProjectForm, setCreateProjectForm] = useState(emptyProjectForm);
   const [editProjectForm, setEditProjectForm] = useState(emptyProjectForm);
+  const [createTaskForm, setCreateTaskForm] = useState({ title: "", description: "", status: "todo", priority: 2, dueAt: "" });
+  const [editTaskForm, setEditTaskForm] = useState({ id: "", title: "", description: "", status: "todo", priority: 2, dueAt: "" });
 
   const [selectedProjectStudents, setSelectedProjectStudents] = useState([]);
   const [studentSearch, setStudentSearch] = useState("");
@@ -199,6 +203,71 @@ export default function SuperAdminClientLabRealWorld() {
     }
   };
 
+  const handleCreateTask = async () => {
+    if (!projectDetail?.id || !createTaskForm.title?.trim()) return;
+    setSaving(true);
+    try {
+      const res = await apiFetch(`/api/v1/client-lab/projects/${projectDetail.id}/tasks`, {
+        method: "POST",
+        token,
+        body: {
+          title: createTaskForm.title.trim(),
+          description: createTaskForm.description?.trim() || undefined,
+          status: createTaskForm.status,
+          priority: Number(createTaskForm.priority) || 2,
+          dueAt: createTaskForm.dueAt || undefined,
+        },
+      });
+      if (res?.ok) {
+        setShowCreateTask(false);
+        setCreateTaskForm({ title: "", description: "", status: "todo", priority: 2, dueAt: "" });
+        await fetchProjectDetail(projectDetail.id);
+      }
+    } catch (e) {
+      alert(e?.message || "Failed to create task");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const openEditTask = (task) => {
+    setEditTaskForm({
+      id: task.id,
+      title: task.title || "",
+      description: task.description || "",
+      status: task.status || "todo",
+      priority: Number(task.priority) || 2,
+      dueAt: task.due_at ? String(task.due_at).slice(0, 10) : "",
+    });
+    setShowEditTask(true);
+  };
+
+  const handleUpdateTask = async () => {
+    if (!editTaskForm.id || !editTaskForm.title?.trim()) return;
+    setSaving(true);
+    try {
+      const res = await apiFetch(`/api/v1/client-lab/tasks/${editTaskForm.id}`, {
+        method: "PATCH",
+        token,
+        body: {
+          title: editTaskForm.title.trim(),
+          description: editTaskForm.description?.trim() || "",
+          status: editTaskForm.status,
+          priority: Number(editTaskForm.priority) || 2,
+          dueAt: editTaskForm.dueAt || null,
+        },
+      });
+      if (res?.ok) {
+        setShowEditTask(false);
+        if (projectDetail?.id) await fetchProjectDetail(projectDetail.id);
+      }
+    } catch (e) {
+      alert(e?.message || "Failed to update task");
+    } finally {
+      setSaving(false);
+    }
+  };
+
   const filteredStudents = useMemo(() => {
     const q = studentSearch.trim().toLowerCase();
     if (!q) return eligibleStudents;
@@ -359,6 +428,60 @@ export default function SuperAdminClientLabRealWorld() {
               </div>
               {filteredStudents.length === 0 && <p className="text-sm text-slate-500 py-4 text-center">No eligible students match your search.</p>}
             </div>
+
+            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+                <h3 className="font-semibold text-slate-900">Project Tasks</h3>
+                <button
+                  type="button"
+                  onClick={() => setShowCreateTask(true)}
+                  className="inline-flex items-center gap-2 px-3.5 py-2 text-sm bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+                >
+                  <FiPlus className="w-4 h-4" /> Create Task
+                </button>
+              </div>
+              {(projectDetail.tasks || []).length === 0 ? (
+                <div className="rounded-xl border border-dashed border-slate-300 p-6 text-center text-slate-500 text-sm">
+                  No tasks created yet for this project.
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {(projectDetail.tasks || []).map((t) => (
+                    <div key={t.id} className="border border-slate-200 rounded-xl p-3.5 flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <p className="font-medium text-slate-900">{t.title}</p>
+                        {t.description && <p className="text-sm text-slate-600 mt-1 whitespace-pre-wrap">{t.description}</p>}
+                        <div className="text-xs text-slate-500 mt-2">
+                          {t.due_at ? `Due: ${String(t.due_at).slice(0, 10)} · ` : ""}
+                          Priority: {t.priority ?? 2}
+                        </div>
+                      </div>
+                      <div className="shrink-0 flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => openEditTask(t)}
+                          className="text-xs px-2.5 py-1 rounded-md border border-slate-300 bg-white hover:bg-slate-50 text-slate-700"
+                        >
+                          Edit
+                        </button>
+                        <span className={`inline-flex items-center gap-1 text-xs px-2 py-1 rounded-md ${
+                          t.status === "done"
+                            ? "bg-emerald-100 text-emerald-700"
+                            : t.status === "doing"
+                              ? "bg-blue-100 text-blue-700"
+                              : t.status === "review"
+                                ? "bg-amber-100 text-amber-700"
+                                : "bg-slate-100 text-slate-700"
+                        }`}>
+                          {t.status === "done" ? <FiCheckCircle className="w-3.5 h-3.5" /> : <FiClock className="w-3.5 h-3.5" />}
+                          {t.status}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         ) : null}
       </div>
@@ -396,6 +519,131 @@ export default function SuperAdminClientLabRealWorld() {
                 <button onClick={() => setShowEditProject(false)} className="px-4 py-2 border border-slate-300 rounded-lg">Cancel</button>
                 <button onClick={handleUpdateProject} disabled={saving || !editProjectForm.title?.trim()} className="px-4 py-2 bg-indigo-600 text-white rounded-lg disabled:opacity-50">
                   {saving ? "Saving..." : "Save Changes"}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showCreateTask && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setShowCreateTask(false)}>
+            <motion.div initial={{ scale: 0.95 }} animate={{ scale: 1 }} exit={{ scale: 0.95 }} onClick={(e) => e.stopPropagation()} className="bg-white rounded-2xl shadow-xl max-w-2xl w-full p-6">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-semibold">Create Task</h3>
+                <button onClick={() => setShowCreateTask(false)} className="p-1"><FiX className="w-5 h-5" /></button>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-slate-700 mb-1">Task Title *</label>
+                  <input
+                    type="text"
+                    value={createTaskForm.title}
+                    onChange={(e) => setCreateTaskForm((f) => ({ ...f, title: e.target.value }))}
+                    className="w-full border border-slate-300 rounded-lg px-3 py-2"
+                    placeholder="Create social media strategy deck"
+                  />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-slate-700 mb-1">Description</label>
+                  <textarea
+                    value={createTaskForm.description}
+                    onChange={(e) => setCreateTaskForm((f) => ({ ...f, description: e.target.value }))}
+                    className="w-full border border-slate-300 rounded-lg px-3 py-2"
+                    rows={3}
+                    placeholder="Task details, deliverables, acceptance criteria."
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">Status</label>
+                  <select
+                    value={createTaskForm.status}
+                    onChange={(e) => setCreateTaskForm((f) => ({ ...f, status: e.target.value }))}
+                    className="w-full border border-slate-300 rounded-lg px-3 py-2"
+                  >
+                    <option value="todo">To Do</option>
+                    <option value="doing">Doing</option>
+                    <option value="review">Review</option>
+                    <option value="done">Done</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">Priority</label>
+                  <select
+                    value={createTaskForm.priority}
+                    onChange={(e) => setCreateTaskForm((f) => ({ ...f, priority: Number(e.target.value) }))}
+                    className="w-full border border-slate-300 rounded-lg px-3 py-2"
+                  >
+                    <option value={1}>High</option>
+                    <option value={2}>Medium</option>
+                    <option value={3}>Low</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">Due Date</label>
+                  <input
+                    type="date"
+                    value={createTaskForm.dueAt}
+                    onChange={(e) => setCreateTaskForm((f) => ({ ...f, dueAt: e.target.value }))}
+                    className="w-full border border-slate-300 rounded-lg px-3 py-2"
+                  />
+                </div>
+              </div>
+              <div className="mt-6 flex justify-end gap-2">
+                <button onClick={() => setShowCreateTask(false)} className="px-4 py-2 border border-slate-300 rounded-lg">Cancel</button>
+                <button onClick={handleCreateTask} disabled={saving || !createTaskForm.title?.trim()} className="px-4 py-2 bg-indigo-600 text-white rounded-lg disabled:opacity-50">
+                  {saving ? "Creating..." : "Create Task"}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showEditTask && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setShowEditTask(false)}>
+            <motion.div initial={{ scale: 0.95 }} animate={{ scale: 1 }} exit={{ scale: 0.95 }} onClick={(e) => e.stopPropagation()} className="bg-white rounded-2xl shadow-xl max-w-2xl w-full p-6">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-semibold">Edit Task</h3>
+                <button onClick={() => setShowEditTask(false)} className="p-1"><FiX className="w-5 h-5" /></button>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-slate-700 mb-1">Task Title *</label>
+                  <input type="text" value={editTaskForm.title} onChange={(e) => setEditTaskForm((f) => ({ ...f, title: e.target.value }))} className="w-full border border-slate-300 rounded-lg px-3 py-2" />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-slate-700 mb-1">Description</label>
+                  <textarea value={editTaskForm.description} onChange={(e) => setEditTaskForm((f) => ({ ...f, description: e.target.value }))} className="w-full border border-slate-300 rounded-lg px-3 py-2" rows={3} />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">Status</label>
+                  <select value={editTaskForm.status} onChange={(e) => setEditTaskForm((f) => ({ ...f, status: e.target.value }))} className="w-full border border-slate-300 rounded-lg px-3 py-2">
+                    <option value="todo">To Do</option>
+                    <option value="doing">Doing</option>
+                    <option value="review">Review</option>
+                    <option value="done">Done</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">Priority</label>
+                  <select value={editTaskForm.priority} onChange={(e) => setEditTaskForm((f) => ({ ...f, priority: Number(e.target.value) }))} className="w-full border border-slate-300 rounded-lg px-3 py-2">
+                    <option value={1}>High</option>
+                    <option value={2}>Medium</option>
+                    <option value={3}>Low</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">Due Date</label>
+                  <input type="date" value={editTaskForm.dueAt} onChange={(e) => setEditTaskForm((f) => ({ ...f, dueAt: e.target.value }))} className="w-full border border-slate-300 rounded-lg px-3 py-2" />
+                </div>
+              </div>
+              <div className="mt-6 flex justify-end gap-2">
+                <button onClick={() => setShowEditTask(false)} className="px-4 py-2 border border-slate-300 rounded-lg">Cancel</button>
+                <button onClick={handleUpdateTask} disabled={saving || !editTaskForm.title?.trim()} className="px-4 py-2 bg-indigo-600 text-white rounded-lg disabled:opacity-50">
+                  {saving ? "Saving..." : "Save Task"}
                 </button>
               </div>
             </motion.div>

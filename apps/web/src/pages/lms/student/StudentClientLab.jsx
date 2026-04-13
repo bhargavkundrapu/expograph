@@ -4,7 +4,6 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../../app/providers/AuthProvider";
 import { useTheme } from "../../../app/providers/ThemeProvider";
 import { apiFetch } from "../../../services/api";
-import { GenericPageSkeleton } from "../../../Components/common/SkeletonLoaders";
 import {
   FiFolder,
   FiCheckCircle,
@@ -14,6 +13,36 @@ import {
   FiSend,
   FiMessageSquare,
 } from "react-icons/fi";
+
+function ClientLabProjectsSkeleton() {
+  return (
+    <div className="min-h-screen rounded-t-3xl md:rounded-none p-4 md:p-8 lg:rounded-tl-lg overflow-hidden bg-gradient-to-br from-slate-50 via-white to-slate-50">
+      <div className="max-w-4xl mx-auto animate-pulse">
+        <div className="mb-8">
+          <div className="h-9 w-64 rounded bg-slate-200 mb-3" />
+          <div className="h-4 w-80 rounded bg-slate-200" />
+        </div>
+        <div className="mb-5 inline-flex rounded-xl border border-slate-200 bg-white p-1 shadow-sm">
+          <div className="h-8 w-28 rounded-lg bg-slate-200 mr-1" />
+          <div className="h-8 w-32 rounded-lg bg-slate-200" />
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
+              <div className="w-11 h-11 rounded-xl bg-slate-200 mb-4" />
+              <div className="h-5 w-4/5 rounded bg-slate-200 mb-2" />
+              <div className="h-4 w-2/5 rounded bg-slate-200 mb-4" />
+              <div className="flex items-center justify-between mt-4">
+                <div className="h-6 w-24 rounded-full bg-slate-200" />
+                <div className="h-4 w-10 rounded bg-slate-200" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function LockedClientLabContent({ isDark, checklist, onRetry }) {
   const hasAccess = checklist?.hasAccess === true;
@@ -271,9 +300,7 @@ export default function StudentClientLab() {
     }
   };
 
-  if (loading) {
-    return <GenericPageSkeleton />;
-  }
+  if (loading) return <ClientLabProjectsSkeleton />;
 
   // Not eligible and no assignments: full locked screen with checklist (from /api/v1/me)
   if (showLockedView) {
@@ -462,16 +489,20 @@ export default function StudentClientLab() {
           </div>
         )}
 
-        {(eligible ? (activeTab === "all" ? visibleProjects.length === 0 : projects.length === 0 && tasks.length === 0) : projects.length === 0 && tasks.length === 0) ? (
+        {(eligible ? (activeTab === "all" ? visibleProjects.length === 0 : projects.length === 0) : projects.length === 0) ? (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             className="bg-white rounded-2xl border border-slate-200 shadow-sm p-12 text-center"
           >
             <FiFolder className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-slate-700 mb-2">No assignments yet</h3>
+            <h3 className="text-lg font-semibold text-slate-700 mb-2">
+              {eligible && activeTab === "yours" ? "You are not assigned any project yet" : "No assignments yet"}
+            </h3>
             <p className="text-slate-500 max-w-md mx-auto">
-              Projects and tasks are assigned by your admin from the Real Client Lab. Once you have assignments, they will appear here.
+              {eligible && activeTab === "yours"
+                ? "Your admin has not assigned a Real Client Lab project to you yet. Once assigned, your projects will appear here as cards."
+                : "Projects are assigned by your admin from the Real Client Lab. Once assigned, they will appear here."}
             </p>
           </motion.div>
         ) : eligible && activeTab === "all" ? (
