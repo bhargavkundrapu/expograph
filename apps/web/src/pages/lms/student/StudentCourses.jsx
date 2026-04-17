@@ -23,6 +23,7 @@ import {
 import { AnimatePresence } from "framer-motion";
 import { BuyNowModal } from "../../../Components/payments/BuyNowModal";
 import { COURSE_EXPLORE_DATA, COURSE_DURATION_HOURS } from "../../../data/courseExploreData";
+import { getCourseCardCover } from "../../../data/courseCardMedia";
 
 // Display order on student LMS courses route: Vibe Coding → Prompt Engineering → Prompt to Profit → others
 // Include "vibe coading" (common typo in DB/seeds) so it still sorts first
@@ -128,24 +129,12 @@ export default function StudentCourses() {
         if (continueTargetsRef.current[slug] || continuePrefetchingRef.current.has(slug)) return;
         continuePrefetchingRef.current.add(slug);
         try {
-          const res = await apiFetch(`/api/v1/student/courses/${slug}`, { token }).catch(() => null);
-          const courseData = res?.data?.course ?? res?.data ?? null;
-          const mods = courseData?.modules || [];
-          const allLessons = mods.flatMap((m) => m.lessons || []);
-          const continueLesson =
-            allLessons.find((l) => l && !l.completed) || allLessons[0] || mods?.[0]?.lessons?.[0];
-          if (!continueLesson) return;
-
-          const modForLesson =
-            mods.find((m) =>
-              (m.lessons || []).some((l) => l?.id === continueLesson.id || l?.slug === continueLesson.slug)
-            ) || mods[0];
-
-          if (!modForLesson?.slug || !continueLesson?.slug) return;
-
+          const res = await apiFetch(`/api/v1/student/courses/${slug}/continue-target`, { token }).catch(() => null);
+          const target = res?.data ?? null;
+          if (!target?.moduleSlug || !target?.lessonSlug) return;
           continueTargetsRef.current[slug] = {
-            moduleSlug: modForLesson.slug,
-            lessonSlug: continueLesson.slug,
+            moduleSlug: target.moduleSlug,
+            lessonSlug: target.lessonSlug,
           };
         } finally {
           continuePrefetchingRef.current.delete(slug);
@@ -230,32 +219,15 @@ export default function StudentCourses() {
 
       // Redirect directly to the first incomplete lesson for this course.
       // This avoids the extra `/courses/:slug?continue=1` roundtrip.
-      const res = await apiFetch(`/api/v1/student/courses/${course.slug}`, { token }).catch(() => null);
+      const res = await apiFetch(`/api/v1/student/courses/${course.slug}/continue-target`, { token }).catch(() => null);
+      const target = res?.data ?? null;
 
-      const courseData = res?.data?.course ?? res?.data ?? null;
-      const mods = courseData?.modules || [];
-
-      const allLessons = mods.flatMap((m) => m.lessons || []);
-      const continueLesson =
-        allLessons.find((l) => l && !l.completed) ||
-        allLessons[0] ||
-        mods?.[0]?.lessons?.[0];
-
-      if (!continueLesson) {
+      if (!target?.moduleSlug || !target?.lessonSlug) {
         navigate(`${getStudentCourseLandingPath(course.slug)}?continue=1`);
         return;
       }
 
-      const modForLesson =
-        mods.find((m) => (m.lessons || []).some((l) => l?.id === continueLesson.id || l?.slug === continueLesson.slug)) ||
-        mods[0];
-
-      if (modForLesson?.slug && continueLesson?.slug) {
-        navigate(getStudentLessonPath(course.slug, modForLesson.slug, continueLesson.slug));
-        return;
-      }
-
-      navigate(`${getStudentCourseLandingPath(course.slug)}?continue=1`);
+      navigate(getStudentLessonPath(course.slug, target.moduleSlug, target.lessonSlug));
     } catch {
       navigate(`${getStudentCourseLandingPath(course.slug)}?continue=1`);
     }
@@ -612,6 +584,7 @@ export default function StudentCourses() {
               const priceRupees = course.price_in_paise ? Math.round(course.price_in_paise / 100) : 0;
               const canBuy = priceRupees >= 1;
               const durationHours = getCourseDurationHours(course);
+              const coverSrc = getCourseCardCover(course.slug, course.title);
 
               return (
                 <motion.div
@@ -626,7 +599,23 @@ export default function StudentCourses() {
                       : locked ? "bg-white border-slate-300 cursor-pointer hover:shadow-md" : "bg-white border-slate-200 hover:shadow-md cursor-pointer"
                   } ${isPinned(course.slug) ? "ring-2 ring-amber-400/60" : ""}`}
                 >
-                  
+                  <div className="relative aspect-[16/9] w-full overflow-hidden bg-slate-200 dark:bg-slate-900">
+                    <img
+                      src={coverSrc}
+                      alt=""
+                      className="h-full w-full object-cover"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                    <div
+                      className={`pointer-events-none absolute inset-0 bg-gradient-to-t ${
+                        isDark
+                          ? "from-slate-900/55 via-slate-900/10 to-transparent"
+                          : "from-white/25 via-transparent to-transparent"
+                      }`}
+                      aria-hidden
+                    />
+                  </div>
                   <div className="p-4 md:p-6">
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-center gap-3">

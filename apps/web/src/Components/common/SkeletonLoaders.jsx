@@ -1348,6 +1348,202 @@ export function LaunchPadLoadingSkeleton() {
   );
 }
 
+/** `/presentation` — white deck, chapter strip + stacked slide frames (matches PresentationPage). */
+export function PresentationPageSkeleton() {
+  return (
+    <div
+      className="presentation-page min-h-screen w-full bg-white animate-pulse"
+      role="status"
+      aria-busy="true"
+      aria-label="Loading presentation"
+    >
+      <div className="sticky top-0 z-20 border-b border-slate-200/90 bg-white/95 px-4 py-3 backdrop-blur-sm">
+        <div className="mx-auto flex max-w-5xl flex-wrap items-center gap-1.5 sm:gap-2">
+          {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+            <div key={i} className="h-7 w-14 shrink-0 rounded-lg bg-slate-200 sm:w-16" />
+          ))}
+        </div>
+        <div className="mx-auto mt-3 h-1 max-w-5xl overflow-hidden rounded-full bg-slate-100">
+          <div className="h-full w-1/3 rounded-full bg-violet-200/80" />
+        </div>
+      </div>
+      <main className="mx-auto max-w-5xl space-y-8 px-4 py-10 sm:py-14">
+        {[1, 2, 3, 4].map((i) => (
+          <div
+            key={i}
+            className="overflow-hidden rounded-2xl border border-slate-200/90 bg-slate-50 shadow-sm ring-1 ring-slate-100/80"
+          >
+            <div className="aspect-[16/10] w-full bg-gradient-to-br from-slate-100 via-slate-50 to-slate-100" />
+            <div className="space-y-3 p-5 sm:p-6">
+              <div className="h-6 w-2/3 max-w-md rounded-lg bg-slate-200" />
+              <div className="h-4 w-full max-w-xl rounded bg-slate-200" />
+              <div className="h-4 w-4/5 max-w-lg rounded bg-slate-200" />
+            </div>
+          </div>
+        ))}
+      </main>
+    </div>
+  );
+}
+
+/** `/solutions` homepage — hero split + services-style sections. */
+export function SolutionsHomePageSkeleton() {
+  return (
+    <div
+      className="relative min-h-screen w-full bg-white animate-pulse"
+      role="status"
+      aria-busy="true"
+      aria-label="Loading solutions"
+    >
+      <div className="h-16 w-full border-b border-slate-200/90 bg-white sm:h-[4.25rem]" />
+      <div className="mx-auto max-w-7xl border-b border-slate-200/90 px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:items-start lg:gap-16">
+          <div className="space-y-4 pt-1">
+            <div className="mx-auto h-4 w-40 rounded bg-violet-100 sm:mx-0" />
+            <div className="mx-auto h-10 w-full max-w-lg rounded-lg bg-slate-200 sm:mx-0" />
+            <div className="mx-auto h-4 w-full max-w-md rounded bg-slate-200 sm:mx-0" />
+            <div className="mx-auto h-20 w-full max-w-xl rounded-xl bg-slate-100 sm:mx-0" />
+            <div className="mx-auto flex flex-wrap justify-center gap-3 pt-2 sm:justify-start">
+              <div className="h-11 w-36 rounded-xl bg-violet-200" />
+              <div className="h-11 w-40 rounded-xl border border-slate-200 bg-slate-50" />
+            </div>
+          </div>
+          <div className="aspect-[16/11] w-full rounded-2xl bg-slate-100 ring-1 ring-slate-100/90 sm:aspect-[16/10] lg:aspect-[5/4]" />
+        </div>
+      </div>
+      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+        <div className="mx-auto mb-10 max-w-3xl space-y-3 text-center">
+          <div className="mx-auto h-3 w-28 rounded bg-violet-100" />
+          <div className="mx-auto h-9 w-full max-w-md rounded-lg bg-slate-200" />
+          <div className="mx-auto h-4 w-full max-w-2xl rounded bg-slate-200" />
+        </div>
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <div key={i} className="h-52 rounded-2xl border border-slate-200/90 bg-slate-50/80 p-5 shadow-sm ring-1 ring-slate-100/80">
+              <div className="mb-4 h-5 w-3/4 rounded bg-slate-200" />
+              <div className="h-3 w-full rounded bg-slate-200" />
+              <div className="mt-2 h-3 w-5/6 rounded bg-slate-200" />
+              <div className="mt-6 h-9 w-24 rounded-lg bg-slate-200" />
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="h-24 w-full border-t border-slate-200/90 bg-slate-50" />
+    </div>
+  );
+}
+
+/** `/solutions/book-a-meet`, `/pricing`, `/process`, `/faq`, `/thank-you` — hero + content column. */
+export function SolutionsSubPageSkeleton() {
+  return (
+    <div
+      className="relative min-h-screen w-full bg-white animate-pulse"
+      role="status"
+      aria-busy="true"
+      aria-label="Loading page"
+    >
+      <div className="h-16 w-full border-b border-slate-200/90 bg-white sm:h-[4.25rem]" />
+      <section className="border-b border-slate-200/90">
+        <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-12 sm:gap-12 sm:px-6 sm:py-16 lg:grid-cols-2 lg:px-8">
+          <div className="space-y-4">
+            <div className="h-3 w-24 rounded bg-violet-100" />
+            <div className="h-9 w-full max-w-md rounded-lg bg-slate-200" />
+            <div className="h-4 w-full max-w-lg rounded bg-slate-200" />
+            <div className="h-4 w-11/12 max-w-md rounded bg-slate-200" />
+            <div className="h-11 w-44 rounded-xl bg-violet-200" />
+          </div>
+          <div className="aspect-[4/3] w-full rounded-2xl bg-slate-100 ring-1 ring-slate-100/90" />
+        </div>
+      </section>
+      <section className="mx-auto max-w-6xl space-y-5 px-4 py-12 sm:px-6 sm:py-14 lg:px-8">
+        <div className="grid gap-5 md:grid-cols-2">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="min-h-[180px] rounded-2xl border border-slate-200/90 bg-slate-50/80 p-6 shadow-sm">
+              <div className="mb-3 h-5 w-40 rounded bg-slate-200" />
+              <div className="h-3 w-full rounded bg-slate-200" />
+              <div className="mt-2 h-3 w-11/12 rounded bg-slate-200" />
+              <div className="mt-2 h-3 w-4/5 rounded bg-slate-200" />
+            </div>
+          ))}
+        </div>
+      </section>
+      <div className="h-20 w-full border-t border-slate-200/90 bg-slate-50" />
+    </div>
+  );
+}
+
+/** `/solutions/:serviceSlug` service detail — matches ServicePageTemplate sections. */
+export function SolutionsServiceDetailSkeleton() {
+  return (
+    <div
+      className="relative min-h-screen w-full bg-white animate-pulse"
+      role="status"
+      aria-busy="true"
+      aria-label="Loading service"
+    >
+      <div className="h-16 w-full border-b border-slate-200/90 bg-white sm:h-[4.25rem]" />
+      <section className="border-b border-slate-200/90">
+        <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-12 sm:gap-12 sm:px-6 sm:py-16 lg:grid-cols-2 lg:gap-14 lg:px-8 lg:py-20">
+          <div className="space-y-4">
+            <div className="h-3 w-36 rounded bg-violet-100" />
+            <div className="h-10 w-full max-w-xl rounded-lg bg-slate-200" />
+            <div className="h-4 w-full rounded bg-slate-200" />
+            <div className="h-4 w-5/6 rounded bg-slate-200" />
+            <div className="h-11 w-52 rounded-xl bg-violet-200" />
+          </div>
+          <div className="aspect-[4/3] w-full rounded-2xl bg-slate-100 ring-1 ring-slate-100/90 sm:aspect-[5/4]" />
+        </div>
+      </section>
+      <section className="border-b border-slate-200/80">
+        <div className="mx-auto grid max-w-6xl gap-8 px-4 py-12 sm:px-6 sm:py-14 lg:grid-cols-2 lg:px-8">
+          {[1, 2].map((i) => (
+            <div key={i} className="min-h-[200px] rounded-2xl border border-slate-200/90 bg-slate-50/80 p-6 shadow-sm">
+              <div className="mb-4 h-6 w-48 rounded bg-slate-200" />
+              {[1, 2, 3, 4, 5].map((j) => (
+                <div key={j} className="mb-2 flex gap-2">
+                  <div className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-violet-200" />
+                  <div className="h-3 flex-1 rounded bg-slate-200" />
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+      </section>
+      <section className="border-b border-slate-200/80">
+        <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-14 lg:px-8">
+          <div className="grid gap-10 lg:grid-cols-2 lg:items-start">
+            <div>
+              <div className="mb-2 h-7 w-56 rounded-lg bg-slate-200" />
+              <div className="mb-6 h-4 w-full max-w-xl rounded bg-slate-200" />
+              <div className="grid gap-4 sm:grid-cols-2">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="h-28 rounded-2xl border border-slate-200/90 bg-slate-50 p-4" />
+                ))}
+              </div>
+            </div>
+            <div className="aspect-[4/3] w-full rounded-2xl bg-slate-100 ring-1 ring-slate-100/90 lg:mt-0" />
+          </div>
+        </div>
+      </section>
+      <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-14 lg:px-8">
+        <div className="mb-6 h-7 w-64 rounded-lg bg-slate-200" />
+        <div className="space-y-4">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="flex gap-4 border-b border-slate-100 pb-4">
+              <div className="h-10 w-10 shrink-0 rounded-full bg-slate-200" />
+              <div className="flex-1 space-y-2">
+                <div className="h-4 w-3/4 rounded bg-slate-200" />
+                <div className="h-3 w-full rounded bg-slate-200" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+      <div className="h-20 w-full border-t border-slate-200/90 bg-slate-50" />
+    </div>
+  );
+}
+
 // App route-level skeleton fallback (used by lazy-loaded routes)
 export function RouteFallbackSkeleton() {
   return (

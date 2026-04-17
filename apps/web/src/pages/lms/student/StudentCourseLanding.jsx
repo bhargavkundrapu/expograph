@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useNavigate, useParams, useSearchParams, useLocation } from "react-router-dom";
 import { isAiAutomationsSlug, getStudentCourseBasePath, getStudentLessonPath } from "../../../utils/studentCoursePaths";
+import { recoverStudentCourseRoute } from "../../../utils/recoverStudentCourseRoute";
 import { useAuth } from "../../../app/providers/AuthProvider";
 import { useTheme } from "../../../app/providers/ThemeProvider";
 import { apiFetch } from "../../../services/api";
@@ -26,6 +27,7 @@ import {
 } from "react-icons/fi";
 import LearningPath from "../../../Components/student/gamification/LearningPath";
 import CourseFeedbackCard from "../../../Components/student/CourseFeedbackCard";
+import { getCourseCardCover } from "../../../data/courseCardMedia";
 
 const COURSE_HIGHLIGHTS = [
   { icon: "🛠️", title: "Real-World Projects", desc: "Build portfolio-worthy projects with hands-on guidance" },
@@ -140,6 +142,7 @@ export default function StudentCourseLanding() {
   const [modules, setModules] = useState([]);
   const [showBuyModal, setShowBuyModal] = useState(false);
   const [isEnrolled, setIsEnrolled] = useState(false);
+  const [courseMissing, setCourseMissing] = useState(false);
 
   // Redirect: old bonus-courses/ai-automations → courses/ai-automations; deprecated ai-agents → courses/ai-automations
   useEffect(() => {
@@ -160,6 +163,7 @@ export default function StudentCourseLanding() {
     if (!token || !courseSlug) return;
     const normalized = (courseSlug || "").toLowerCase().replace(/_/g, "-");
     if (DEPRECATED_SLUG_REDIRECT[normalized] || DEPRECATED_SLUG_REDIRECT[courseSlug]) return;
+    setCourseMissing(false);
     fetchCourseData();
   }, [token, courseSlug]);
 
@@ -180,6 +184,7 @@ export default function StudentCourseLanding() {
   const fetchCourseData = async () => {
     try {
       setLoading(true);
+      setCourseMissing(false);
       const normSlug = (s) => (s || "").toLowerCase().replace(/_/g, "-");
       const courseSlugNorm = normSlug(courseSlug);
       // Fetch list and course detail in parallel so page loads faster
@@ -216,7 +221,21 @@ export default function StudentCourseLanding() {
         }
       }
       if (!cData) {
-        cData = { title: courseSlug.replace(/-/g, " ").replace(/\b\w/g, l => l.toUpperCase()), slug: courseSlug };
+        const recovered = await recoverStudentCourseRoute({ token, courseSlug });
+        if (recovered?.courseSlug) {
+          if (normSlug(recovered.courseSlug) !== courseSlugNorm) {
+            navigate(`${getStudentCourseBasePath(recovered.courseSlug)}/${normSlug(recovered.courseSlug)}${location.search ? location.search : ""}`, { replace: true });
+            return;
+          }
+          cData = recovered.course || null;
+          setIsEnrolled(recovered.enrolled || isAiAutomationsSlug(recovered.courseSlug));
+        }
+      }
+      if (!cData) {
+        setCourse(null);
+        setModules([]);
+        setCourseMissing(true);
+        return;
       }
 
       setCourse(cData);
@@ -230,6 +249,28 @@ export default function StudentCourseLanding() {
   };
 
   if (loading) return <GenericPageSkeleton />;
+
+  if (courseMissing || !course) {
+    return (
+      <PageTransition>
+        <div className={`min-h-screen flex items-center justify-center p-6 ${isDark ? "bg-slate-900" : "bg-slate-50"}`}>
+          <div className={`max-w-md w-full rounded-2xl border p-8 text-center shadow-sm ${isDark ? "bg-slate-800 border-slate-700" : "bg-white border-slate-200"}`}>
+            <FiBookOpen className={`w-14 h-14 mx-auto mb-4 ${isDark ? "text-slate-500" : "text-slate-300"}`} />
+            <h2 className={`text-xl font-bold mb-2 ${isDark ? "text-white" : "text-slate-900"}`}>Course not found</h2>
+            <p className={`text-sm mb-6 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+              The course URL looks outdated or no longer matches the published course slug.
+            </p>
+            <button
+              onClick={() => navigate(basePath)}
+              className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-colors"
+            >
+              Back to Courses
+            </button>
+          </div>
+        </div>
+      </PageTransition>
+    );
+  }
 
   const isLocked = !isEnrolled;
   const courseTitle = course?.title || course?.name || courseSlug;
@@ -258,6 +299,7 @@ export default function StudentCourseLanding() {
   };
 
   const priceRupees = course?.price_in_paise ? Math.round(course.price_in_paise / 100) : 0;
+  const heroCoverSrc = getCourseCardCover(pathSlug || courseSlug, courseTitle);
 
   return (
     <PageTransition>
@@ -301,6 +343,22 @@ export default function StudentCourseLanding() {
               <p className={`text-sm sm:text-base lg:text-lg max-w-2xl mb-6 leading-relaxed ${isDark ? "text-slate-300" : "text-slate-600"}`}>
                 {course?.description || "Master the concepts and build real-world skills with hands-on projects and expert guidance from ExpoGraph."}
               </p>
+
+              <div className="relative mb-8 max-w-3xl overflow-hidden rounded-2xl border border-white/10 shadow-lg aspect-[21/9] sm:aspect-[2.4/1]">
+                <img
+                  src={heroCoverSrc}
+                  alt=""
+                  className="h-full w-full object-cover"
+                  loading="eager"
+                  decoding="async"
+                />
+                <div
+                  className={`pointer-events-none absolute inset-0 bg-gradient-to-t ${
+                    isDark ? "from-slate-900/90 via-slate-900/15" : "from-white/95 via-white/10"
+                  } to-transparent`}
+                  aria-hidden
+                />
+              </div>
 
               <div className="flex flex-wrap items-center gap-4 sm:gap-6 mb-6">
                 {totalLessons > 0 && (

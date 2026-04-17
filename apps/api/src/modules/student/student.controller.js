@@ -5,6 +5,8 @@ const repo = require("./student.repo");
 const contentRepo = require("../content/content.repo");
 const progressRepo = require("../progress/progress.repo");
 const usersRepo = require("../users/users.repo");
+const mediaRepo = require("../media/media.repo");
+const mediaService = require("../media/media.service");
 const { query } = require("../../db/query");
 const { ensureStudentIdSchema } = require("./ensureStudentIdSchema");
 const z = require("zod");
@@ -111,6 +113,30 @@ const search = asyncHandler(async (req, res) => {
   res.json({ ok: true, data: results });
 });
 
+const getContinueTarget = asyncHandler(async (req, res) => {
+  const { tenantId, userId } = req.auth;
+  const { courseSlug } = req.params;
+
+  const course = await contentRepo.findPublishedCourseRowBySlug({ tenantId, courseSlug });
+  if (!course?.id) {
+    throw new HttpError(404, "Course not found");
+  }
+
+  const hasAccess = await repo.hasCourseAccess({ tenantId, userId, courseId: course.id });
+  if (!hasAccess) {
+    throw new HttpError(403, "You don't have access to this course. Purchase it to unlock.");
+  }
+
+  const target = await repo.getContinueTargetByCourseSlug({
+    tenantId,
+    userId,
+    courseSlug: course.slug,
+  });
+
+  res.setHeader("Cache-Control", "no-store, max-age=0");
+  res.json({ ok: true, data: target });
+});
+
 const getCourseTree = asyncHandler(async (req, res) => {
   const { tenantId, userId } = req.auth;
   const { courseSlug } = req.params;
@@ -191,6 +217,30 @@ const getLesson = asyncHandler(async (req, res) => {
     lesson: lessonData,
     moduleLessons,
   });
+
+  if (
+    enhancedLesson?.lesson?.video_provider === "cloudflare_stream" &&
+    enhancedLesson?.lesson?.id
+  ) {
+    try {
+      const videoRow = await mediaRepo.getVideoByLessonId({
+        tenantId,
+        lessonId: enhancedLesson.lesson.id,
+      });
+      if (videoRow?.uid && (!videoRow.videoStatus || videoRow.videoStatus === "ready")) {
+        const token = await mediaService.createCloudflarePlaybackToken({ videoUid: videoRow.uid });
+        const urls = mediaService.buildPlaybackUrls({ token });
+        enhancedLesson.videoToken = {
+          ...urls,
+          lessonId: enhancedLesson.lesson.id,
+          provider: "cloudflare_stream",
+          expiresInSeconds: 3600,
+        };
+      }
+    } catch (error) {
+      console.warn("Lesson playback prefetch failed:", error?.message || error);
+    }
+  }
 
   res.json({ ok: true, data: enhancedLesson });
 });
@@ -562,6 +612,7 @@ module.exports = {
   getEvents,
   listCourses,
   search,
+  getContinueTarget,
   getCourseTree,
   getLesson,
   completeLesson,

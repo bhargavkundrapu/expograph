@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { Header } from "../../Components/ui/header-2";
 import { TubesBackground } from "../../Components/ui/neon-flow";
 import { COURSE_EXPLORE_DATA } from "../../data/courseExploreData";
+import { COURSE_CARD_COVER, COURSE_CARD_FALLBACK } from "../../data/courseCardMedia";
 import { FiCheck, FiArrowLeft, FiBookOpen, FiZap, FiTarget, FiTool, FiAward, FiHeart, FiCompass } from "react-icons/fi";
 import { cn } from "../../lib/utils";
 import { getToolIcon, getToolIconColor } from "../../lib/toolIcons";
@@ -71,6 +72,16 @@ export default function CourseExplorePage() {
                 ★ RECOMMENDED
               </span>
             )}
+          </div>
+          <div className="relative mb-8 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] aspect-[21/9] sm:aspect-[2/1]">
+            <img
+              src={COURSE_CARD_COVER[slug] ?? COURSE_CARD_FALLBACK}
+              alt=""
+              className="h-full w-full object-cover"
+              loading="eager"
+              decoding="async"
+            />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/30" aria-hidden />
           </div>
           <h1
             className={cn(

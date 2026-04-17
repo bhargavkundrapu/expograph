@@ -723,6 +723,62 @@ async function hasCourseAccess({ tenantId, userId, courseId }) {
   return hasEnrollmentForCourse({ tenantId, userId, courseId });
 }
 
+async function getContinueTargetByCourseSlug({ tenantId, userId, courseSlug }) {
+  const courseRow = await query(
+    `SELECT id, slug
+     FROM courses
+     WHERE tenant_id = $1
+       AND status = 'published'
+       AND (slug = $2 OR REPLACE(slug, '_', '-') = $2)
+     LIMIT 1`,
+    [tenantId, courseSlug]
+  ).catch(() => ({ rows: [] }));
+
+  const course = courseRow.rows[0];
+  if (!course?.id) return null;
+
+  const { rows } = await query(
+    `SELECT
+       c.slug AS course_slug,
+       m.slug AS module_slug,
+       l.slug AS lesson_slug,
+       lp.completed_at
+     FROM courses c
+     JOIN course_modules m
+       ON m.course_id = c.id
+      AND m.tenant_id = c.tenant_id
+      AND m.status = 'published'
+     JOIN lessons l
+       ON l.module_id = m.id
+      AND l.tenant_id = m.tenant_id
+      AND l.status = 'published'
+     LEFT JOIN lesson_progress lp
+       ON lp.lesson_id = l.id
+      AND lp.tenant_id = c.tenant_id
+      AND lp.user_id = $2
+     WHERE c.tenant_id = $1
+       AND c.id = $3
+       AND c.status = 'published'
+     ORDER BY
+       CASE WHEN lp.completed_at IS NULL THEN 0 ELSE 1 END,
+       m.position ASC NULLS LAST,
+       m.created_at ASC,
+       l.position ASC NULLS LAST,
+       l.created_at ASC
+     LIMIT 1`,
+    [tenantId, userId, course.id]
+  ).catch(() => ({ rows: [] }));
+
+  const row = rows[0];
+  if (!row?.module_slug || !row?.lesson_slug) return null;
+
+  return {
+    courseSlug: row.course_slug || course.slug,
+    moduleSlug: row.module_slug,
+    lessonSlug: row.lesson_slug,
+  };
+}
+
 async function enhanceCourseWithProgress({ tenantId, userId, course }) {
   try {
     // Enhance modules and lessons with progress data
@@ -1249,6 +1305,7 @@ module.exports = {
   hasAllPackOrAllThreeCourses,
   enhanceCourseWithProgress,
   enhanceLessonWithData,
+  getContinueTargetByCourseSlug,
   searchContent,
   listDiscussions,
   createDiscussion,

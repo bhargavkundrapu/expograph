@@ -8,6 +8,7 @@ import { cn } from "../../lib/utils";
 import { FiArrowLeft, FiBookOpen } from "react-icons/fi";
 import { RouteFallbackSkeleton } from "../../Components/common/SkeletonLoaders";
 import { applyCourseDetailSeo, sendGtagPageView } from "../../seo/applyDocumentSeo";
+import { getCourseCardCover } from "../../data/courseCardMedia";
 
 function formatPrice(paise) {
   if (paise == null || paise === undefined) return "-";
@@ -115,6 +116,10 @@ export default function CourseDetailPage() {
   const modules = course?.modules || [];
   const pricePaise = item.price || 0;
   const canBuy = pricePaise >= 100;
+  const coverSrc = getCourseCardCover(
+    course?.slug || pack?.slug || slug,
+    course?.title || pack?.title
+  );
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -132,10 +137,15 @@ export default function CourseDetailPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className={cn(
-            "rounded-2xl border border-white/10 p-6 md:p-8",
+            "overflow-hidden rounded-2xl border border-white/10",
             "bg-gradient-to-b from-white/5 to-transparent"
           )}
         >
+          <div className="relative aspect-[21/9] w-full overflow-hidden bg-white/5 sm:aspect-[3/1]">
+            <img src={coverSrc} alt="" className="h-full w-full object-cover" loading="lazy" decoding="async" />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent" aria-hidden />
+          </div>
+          <div className="p-6 md:p-8">
           <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
             <div>
               <h1 className="text-2xl md:text-3xl font-bold mb-2">{item.title}</h1>
@@ -180,6 +190,7 @@ export default function CourseDetailPage() {
               </ul>
             </div>
           )}
+          </div>
         </motion.div>
       </div>
 

@@ -1,0 +1,113 @@
+export const SOLUTIONS_PRICING = [
+  {
+    slug: "ai-automation-smbs",
+    title: "AI Automation for SMBs",
+    setupRange: "₹15,000 to ₹50,000",
+    supportRange: "₹5,000 to ₹20,000 / month",
+    summary: "Automation setup based on workflow count, system complexity, and integrations.",
+    image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1200&q=80&auto=format&fit=crop",
+    imageAlt: "Abstract visualization suggesting AI and intelligent automation",
+  },
+  {
+    slug: "lead-generation-websites",
+    title: "Lead-Generation Websites",
+    setupRange: "₹10,000 to ₹75,000",
+    supportRange: "₹5,000 to ₹15,000 / month",
+    summary: "From focused landing pages to full service websites with conversion setup.",
+    image: "https://images.unsplash.com/photo-1547658719-da2b51169166?w=1200&q=80&auto=format&fit=crop",
+    imageAlt: "Designer working on website layout and lead capture on a screen",
+  },
+  {
+    slug: "whatsapp-sales-support-systems",
+    title: "WhatsApp Sales + Support Systems",
+    setupRange: "₹12,000 to ₹40,000",
+    supportRange: "₹5,000 to ₹15,000 / month",
+    summary: "Flow architecture, handoff design, and inquiry/support lifecycle setup.",
+    image: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=1200&q=80&auto=format&fit=crop",
+    imageAlt: "Smartphone showing messaging and business communication",
+  },
+  {
+    slug: "ai-customer-support-assistants",
+    title: "AI Customer Support Assistants",
+    setupRange: "₹20,000 to ₹75,000",
+    supportRange: "₹8,000 to ₹30,000 / month",
+    summary: "Assistant design, response logic, tuning, and support system integration.",
+    image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=1200&q=80&auto=format&fit=crop",
+    imageAlt: "Customer support professional with headset at a laptop",
+  },
+  {
+    slug: "crm-sales-workflow-setup",
+    title: "CRM + Sales Workflow Setup",
+    setupRange: "₹15,000 to ₹60,000",
+    supportRange: "₹7,000 to ₹20,000 / month",
+    summary: "Pipeline setup, workflow automation, and reporting visibility for sales teams.",
+    image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=1200&q=80&auto=format&fit=crop",
+    imageAlt: "Sales team collaborating around a laptop and notes",
+  },
+  {
+    slug: "internal-dashboards-admin-portals",
+    title: "Internal Dashboards + Admin Portals",
+    setupRange: "₹25,000 to ₹1,00,000+",
+    supportRange: "Based on support scope",
+    summary: "Internal systems priced by module depth, access roles, and data sources.",
+    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&q=80&auto=format&fit=crop",
+    imageAlt: "Analytics dashboard with charts on a monitor",
+  },
+  {
+    slug: "mvp-build-sprints",
+    title: "MVP Build Sprints for Founders",
+    setupRange: "₹50,000 to ₹2,50,000+",
+    supportRange: "Optional post-sprint support",
+    summary: "Sprint pricing based on product scope, timeline, and technical complexity.",
+    image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1200&q=80&auto=format&fit=crop",
+    imageAlt: "Founders and developers planning a product sprint together",
+  },
+];
+
+export const SOLUTIONS_BUNDLE_PRICING = [
+  {
+    slug: "local-business-growth-pack",
+    title: "Local Business Growth Pack",
+    range: "Starting from ₹35,000",
+    includes: [
+      "Lead-gen website",
+      "WhatsApp inquiry flow",
+      "Basic CRM capture",
+      "Call/booking forms",
+      "Lead tracking setup",
+    ],
+    image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1200&q=80&auto=format&fit=crop",
+    imageAlt: "Local retail storefront suggesting neighbourhood business growth",
+  },
+  {
+    slug: "ai-operations-pack",
+    title: "AI Operations Pack",
+    range: "Starting from ₹45,000",
+    includes: [
+      "Workflow audit",
+      "Task automation setup",
+      "Approvals and reminders",
+      "Support automation layer",
+      "Monthly optimization support",
+    ],
+    image: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200&q=80&auto=format&fit=crop",
+    imageAlt: "Circuit board and technology representing streamlined operations",
+  },
+  {
+    slug: "founder-launch-pack",
+    title: "Founder Launch Pack",
+    range: "Starting from ₹75,000",
+    includes: [
+      "Landing page",
+      "MVP planning",
+      "First build sprint",
+      "Core dashboard/workflow setup",
+      "Startup setup handoff support",
+    ],
+    image: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1200&q=80&auto=format&fit=crop",
+    imageAlt: "Startup team collaborating over laptops at a shared table",
+  },
+];
+
+export const SOLUTIONS_PRICING_NOTE =
+  "Final pricing depends on scope, integrations, delivery complexity, and support requirements.";

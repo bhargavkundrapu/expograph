@@ -6,6 +6,7 @@ import { apiFetch } from "../../services/api";
 import { hasLaunchPadAccess } from "../../utils/launchPadAccess";
 import { homePathForRole } from "../../app/roles";
 import { featureData } from "../../Components/ui/academy-features-grid";
+import { getFeatureCardCover } from "../../data/courseCardMedia";
 import { TubesBackground } from "../../Components/ui/neon-flow";
 import {
   Copy, FileText, FlaskConical, LayoutDashboard, Layers,
@@ -445,6 +446,17 @@ export default function FeatureDetailPage() {
             <p className="text-base sm:text-lg md:text-xl text-white/55 max-w-2xl mx-auto leading-relaxed">
               {detail.hero.subtitle}
             </p>
+
+            <div className="relative mx-auto mt-10 max-w-3xl overflow-hidden rounded-2xl border border-white/10 aspect-[2/1] sm:aspect-[21/9]">
+              <img
+                src={getFeatureCardCover(slug)}
+                alt=""
+                className="h-full w-full object-cover"
+                loading="lazy"
+                decoding="async"
+              />
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/40" aria-hidden />
+            </div>
 
             {/* Stats row */}
             <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-10 mt-10">

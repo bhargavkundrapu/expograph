@@ -11,9 +11,13 @@ function escapeRegExp(input) {
   return String(input).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
-// Initialize Sentry as early as possible. Set VITE_SENTRY_DISABLE=true if the DSN returns 403 (blocked/invalid project).
+// Initialize Sentry only in production. Local dev should stay quiet even if a DSN is present.
 const SENTRY_DSN = import.meta.env.VITE_SENTRY_DSN;
-const SENTRY_DISABLED = import.meta.env.VITE_SENTRY_DISABLE === "true";
+const isLocalHost =
+  typeof window !== "undefined" &&
+  ["localhost", "127.0.0.1", "::1"].includes(window.location.hostname);
+const SENTRY_DISABLED =
+  import.meta.env.VITE_SENTRY_DISABLE === "true" || !import.meta.env.PROD || isLocalHost;
 const API_URL = import.meta.env.VITE_API_URL;
 const apiOrigin = API_URL?.replace(/\/+$/, "");
 const tracePropagationTargets = [

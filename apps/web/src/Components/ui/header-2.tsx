@@ -11,7 +11,32 @@ import { homePathForRole } from '../../app/roles';
 type NavLink =
 	{ label: string; href: string };
 
-export function Header() {
+export type HeaderVariant = 'academy' | 'solutions';
+
+type HeaderProps = {
+	variant?: HeaderVariant;
+};
+
+const ACADEMY_LINKS: NavLink[] = [
+	{ label: 'Home', href: '/academy' },
+	{ label: 'Courses', href: '/courses' },
+	{ label: 'Features', href: '/academy#features' },
+	{ label: 'Contact', href: '/contact' },
+	{ label: 'Solutions', href: '/solutions' },
+];
+
+const SOLUTIONS_LINKS: NavLink[] = [
+	{ label: 'Services', href: '/solutions#services' },
+	{ label: 'Pricing', href: '/solutions/pricing' },
+	{ label: 'Process', href: '/solutions/process' },
+	{ label: 'Academy', href: '/academy' },
+];
+
+/** Brand mark for Solutions public pages (navbar home link). */
+const SOLUTIONS_BRAND_LOGO_URL =
+	'https://res.cloudinary.com/da2wrgabu/image/upload/v1776428629/Screenshot_2026-04-08_205030_r0cq4r.png';
+
+export function Header({ variant = 'academy' }: HeaderProps) {
 	const [open, setOpen] = React.useState(false);
 	const scrolled = useScroll(10);
 	const navigate = useNavigate();
@@ -21,6 +46,13 @@ export function Header() {
 	const isLoginPage = location.pathname === '/login' || location.pathname === '/adminlogin';
 	const portalPath = isLoggedIn ? homePathForRole(role) : '/login';
 	const portalLabel = isLoggedIn ? 'LMS Portal' : 'Login';
+	const isSolutions = variant === 'solutions';
+	const links: NavLink[] = isSolutions ? SOLUTIONS_LINKS : ACADEMY_LINKS;
+	const brandHref = isSolutions ? '/solutions' : '/academy';
+	const navGhostClass = isSolutions
+		? 'text-slate-800 hover:bg-slate-100 hover:text-slate-900'
+		: undefined;
+	const brandClass = isSolutions ? 'text-slate-900' : undefined;
 
 	const handleHashLink = (href: string) => {
 		const [path, hash] = href.split('#');
@@ -34,25 +66,6 @@ export function Header() {
 		}
 		setOpen(false);
 	};
-
-	const links: NavLink[] = [
-		{
-			label: 'Home',
-			href: '/academy',
-		},
-		{
-			label: 'Courses',
-			href: '/courses',
-		},
-		{
-			label: 'Features',
-			href: '/academy#features',
-		},
-		{
-			label: 'Contact',
-			href: '/contact',
-		},
-	];
 
 	React.useEffect(() => {
 		if (open) {
@@ -71,7 +84,10 @@ export function Header() {
 
 	return (
 		<header
-			className="academy-header fixed top-0 left-0 right-0 z-[9999] w-full px-4 pt-4 pb-0 md:px-6 pointer-events-none"
+			className={cn(
+				'academy-header fixed top-0 left-0 right-0 z-[9999] w-full px-4 pt-4 pb-0 md:px-6 pointer-events-none',
+				isSolutions && 'solutions-header-light',
+			)}
 		>
 			{/* Nav bar wrapper - only this gets background/blur; header stays fully transparent */}
 			<div
@@ -91,26 +107,57 @@ export function Header() {
 						},
 					)}
 				>
-					<Link to="/academy" className="text-lg font-semibold tracking-tight hover:opacity-90">
-						ΣxpoGraph
+					<Link
+						to={brandHref}
+						className={cn(
+							'flex shrink-0 items-center hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-600 rounded-sm',
+							isSolutions ? '' : 'text-lg font-semibold tracking-tight',
+							brandClass,
+						)}
+					>
+						{isSolutions ? (
+							<img
+								src={SOLUTIONS_BRAND_LOGO_URL}
+								alt="ExpoGraph"
+								width={180}
+								height={48}
+								className="h-9 w-auto max-h-9 max-w-[10.5rem] object-contain object-left sm:max-w-[12rem] md:h-8 md:max-h-8"
+								decoding="async"
+								fetchPriority="high"
+							/>
+						) : (
+							<span className="text-lg font-semibold tracking-tight">ΣxpoGraph</span>
+						)}
 					</Link>
-					<div className="hidden items-center gap-2 md:flex">
+					<div className="hidden items-center gap-1 md:flex md:flex-wrap md:justify-end">
 						{links.map((link, i) => (
 							link.href.includes('#') ? (
-								<button key={i} type="button" className={buttonVariants({ variant: 'ghost' })} onClick={() => handleHashLink(link.href)}>
+								<button
+									key={i}
+									type="button"
+									className={buttonVariants({ variant: 'ghost', className: navGhostClass })}
+									onClick={() => handleHashLink(link.href)}
+								>
 									{link.label}
 								</button>
 							) : link.href.startsWith('/') ? (
-								<Link key={i} to={link.href} className={buttonVariants({ variant: 'ghost' })}>
+								<Link key={i} to={link.href} className={buttonVariants({ variant: 'ghost', className: navGhostClass })}>
 									{link.label}
 								</Link>
 							) : (
-								<a key={i} className={buttonVariants({ variant: 'ghost' })} href={link.href}>
+								<a key={i} className={buttonVariants({ variant: 'ghost', className: navGhostClass })} href={link.href}>
 									{link.label}
 								</a>
 							)
 						))}
-						{!isLoginPage && (
+						{isSolutions && !isLoginPage && (
+							<Link to="/solutions/book-a-meet">
+								<Button variant="default" className="ml-1 bg-violet-600 text-white hover:bg-violet-700">
+									Book a Meet
+								</Button>
+							</Link>
+						)}
+						{!isLoginPage && !isSolutions && (
 							<Link to={portalPath}>
 								<Button>{portalLabel}</Button>
 							</Link>
@@ -121,7 +168,10 @@ export function Header() {
 						size="icon"
 						variant="outline"
 						onClick={() => setOpen(!open)}
-						className="md:hidden pointer-events-auto min-w-[44px] min-h-[44px] touch-manipulation"
+						className={cn(
+							'md:hidden pointer-events-auto min-w-[44px] min-h-[44px] touch-manipulation',
+							isSolutions && 'border-slate-300 bg-white/90 text-slate-800 hover:bg-slate-50',
+						)}
 						aria-expanded={open}
 						aria-label={open ? 'Close menu' : 'Open menu'}
 					>
@@ -133,7 +183,10 @@ export function Header() {
 			{/* Mobile menu panel: outside nav-bar so position:fixed is relative to viewport (nav-bar has transform) */}
 			<div
 				className={cn(
-					'bg-black pointer-events-auto fixed top-[4.5rem] right-0 bottom-0 left-0 z-50 flex flex-col overflow-hidden border-y border-white/10 md:hidden',
+					'pointer-events-auto fixed top-[4.5rem] right-0 bottom-0 left-0 z-50 flex flex-col overflow-hidden border-y md:hidden',
+					isSolutions
+						? 'border-slate-200 bg-white text-slate-900'
+						: 'border-white/10 bg-black text-white',
 					open ? 'flex' : 'hidden',
 				)}
 			>
@@ -141,7 +194,8 @@ export function Header() {
 					data-slot={open ? 'open' : 'closed'}
 					className={cn(
 						'data-[slot=open]:animate-in data-[slot=open]:zoom-in-95 data-[slot=closed]:animate-out data-[slot=closed]:zoom-out-95 ease-out',
-						'flex h-full w-full flex-col justify-between gap-y-2 p-4 text-white',
+						'flex h-full w-full flex-col justify-between gap-y-2 p-4',
+						!isSolutions && 'text-white',
 					)}
 				>
 					<div className="grid gap-y-2">
@@ -152,7 +206,9 @@ export function Header() {
 									type="button"
 									className={buttonVariants({
 										variant: 'ghost',
-										className: 'justify-start text-white hover:text-white/90 hover:bg-white/10',
+										className: isSolutions
+											? 'justify-start text-slate-800 hover:bg-slate-100'
+											: 'justify-start text-white hover:text-white/90 hover:bg-white/10',
 									})}
 									onClick={() => handleHashLink(link.href)}
 								>
@@ -164,7 +220,9 @@ export function Header() {
 									to={link.href}
 									className={buttonVariants({
 										variant: 'ghost',
-										className: 'justify-start text-white hover:text-white/90 hover:bg-white/10',
+										className: isSolutions
+											? 'justify-start text-slate-800 hover:bg-slate-100'
+											: 'justify-start text-white hover:text-white/90 hover:bg-white/10',
 									})}
 									onClick={() => setOpen(false)}
 								>
@@ -175,7 +233,9 @@ export function Header() {
 									key={link.label}
 									className={buttonVariants({
 										variant: 'ghost',
-										className: 'justify-start text-white hover:text-white/90 hover:bg-white/10',
+										className: isSolutions
+											? 'justify-start text-slate-800 hover:bg-slate-100'
+											: 'justify-start text-white hover:text-white/90 hover:bg-white/10',
 									})}
 									href={link.href}
 								>
@@ -186,9 +246,16 @@ export function Header() {
 					</div>
 					{!isLoginPage && (
 						<div className="flex flex-col gap-2">
-							<Link to={portalPath} onClick={() => setOpen(false)}>
-								<Button className="w-full">{portalLabel}</Button>
-							</Link>
+							{isSolutions && (
+								<Link to="/solutions/book-a-meet" onClick={() => setOpen(false)}>
+									<Button className="w-full bg-violet-600 text-white hover:bg-violet-700">Book a Meet</Button>
+								</Link>
+							)}
+							{!isSolutions && (
+								<Link to={portalPath} onClick={() => setOpen(false)}>
+									<Button className="w-full">{portalLabel}</Button>
+								</Link>
+							)}
 						</div>
 					)}
 				</div>

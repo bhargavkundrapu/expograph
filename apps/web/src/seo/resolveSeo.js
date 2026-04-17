@@ -108,9 +108,69 @@ export function resolveSeo(pathname) {
 
   if (path === "/solutions") {
     return {
-      title: "Solutions | ExpoGraph",
+      title: "ExpoGraph Solutions — AI Automation, Lead Systems, and Business Software",
       description:
-        "Explore how ExpoGraph helps learners and teams build real skills with AI-powered courses, structured lessons, and hands-on projects.",
+        "ExpoGraph Solutions helps businesses grow with AI automation, lead-generation websites, WhatsApp systems, CRM workflows, internal dashboards, and MVP build sprints.",
+      robots,
+      canonicalPath: path,
+      jsonLd: null,
+    };
+  }
+
+  const SOLUTIONS_META = {
+    "/solutions/book-a-meet": {
+      title: "Book a Meet | ExpoGraph Solutions",
+      description:
+        "Tell us your business goals and get a practical solution path for AI automation, lead systems, support workflows, or MVP builds.",
+    },
+    "/solutions/pricing": {
+      title: "Pricing | ExpoGraph Solutions",
+      description:
+        "View transparent starter pricing ranges for AI automation, lead-generation websites, WhatsApp systems, CRM setup, dashboards, and MVP sprints.",
+    },
+    "/solutions/process": {
+      title: "Process | ExpoGraph Solutions",
+      description:
+        "Understand how ExpoGraph Solutions delivers projects from discovery and solution mapping to launch and optimization support.",
+    },
+    "/solutions/faq": {
+      title: "FAQ | ExpoGraph Solutions",
+      description:
+        "Answers to common questions about scope, pricing, timelines, support retainers, custom builds, and founder launch workflows.",
+    },
+    "/solutions/ai-automation-smbs": {
+      title: "AI Automation for SMBs | ExpoGraph Solutions",
+      description: "Automate repetitive business workflows with practical AI-ready systems for routing, reminders, approvals, and reporting.",
+    },
+    "/solutions/lead-generation-websites": {
+      title: "Lead-Generation Websites | ExpoGraph Solutions",
+      description: "Conversion-focused websites for businesses that need more qualified inquiries, better structure, and stronger trust signals.",
+    },
+    "/solutions/whatsapp-sales-support-systems": {
+      title: "WhatsApp Sales + Support Systems | ExpoGraph Solutions",
+      description: "Turn WhatsApp into a structured sales and support channel with automation, qualification, handoff, and follow-up workflows.",
+    },
+    "/solutions/ai-customer-support-assistants": {
+      title: "AI Customer Support Assistants | ExpoGraph Solutions",
+      description: "Deploy AI support assistants that reduce repetitive workload, improve response speed, and enable clean human escalation.",
+    },
+    "/solutions/crm-sales-workflow-setup": {
+      title: "CRM + Sales Workflow Setup | ExpoGraph Solutions",
+      description: "Build organized sales movement with CRM setup, lead tracking, follow-up structure, stage automation, and reporting visibility.",
+    },
+    "/solutions/internal-dashboards-admin-portals": {
+      title: "Internal Dashboards + Admin Portals | ExpoGraph Solutions",
+      description: "Build internal systems that give teams better visibility, approval control, and reliable execution tracking.",
+    },
+    "/solutions/mvp-build-sprints": {
+      title: "MVP Build Sprints for Founders | ExpoGraph Solutions",
+      description: "Go from startup idea to working MVP with focused sprint planning, build execution, and practical launch support.",
+    },
+  };
+  if (SOLUTIONS_META[path]) {
+    return {
+      title: SOLUTIONS_META[path].title,
+      description: SOLUTIONS_META[path].description,
       robots,
       canonicalPath: path,
       jsonLd: null,

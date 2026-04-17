@@ -1,5 +1,5 @@
 import { createBrowserRouter, Outlet, Navigate, useLocation } from "react-router-dom";
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import RequireRole from "./RequireRole";
 import RouteErrorFallback from "./RouteErrorFallback";
 import SuperAdminLayout from "./layouts/SuperAdminLayout";
@@ -18,7 +18,11 @@ import {
   CoursesPageSkeleton,
   GenericPageSkeleton,
   LaunchPadLoadingSkeleton,
+  PresentationPageSkeleton,
   RouteFallbackSkeleton,
+  SolutionsHomePageSkeleton,
+  SolutionsServiceDetailSkeleton,
+  SolutionsSubPageSkeleton,
   StudentCoursesSkeleton,
   StudentHomeSkeleton,
   StudentBookmarksSkeleton,
@@ -28,6 +32,18 @@ import { LaunchPadProvider } from "../Components/startup-launchpad/LaunchPadCont
 import LaunchPadAccessGate from "../Components/startup-launchpad/LaunchPadAccessGate";
 
 const SolutionsPage = lazy(() => import("../pages/solutions/SolutionsPage"));
+const SolutionsBookMeetPage = lazy(() => import("../pages/solutions/SolutionsBookMeetPage"));
+const SolutionsPricingPage = lazy(() => import("../pages/solutions/SolutionsPricingPage"));
+const SolutionsProcessPage = lazy(() => import("../pages/solutions/SolutionsProcessPage"));
+const SolutionsFaqPage = lazy(() => import("../pages/solutions/SolutionsFaqPage"));
+const SolutionsThankYouPage = lazy(() => import("../pages/solutions/SolutionsThankYouPage"));
+const AiAutomationSmbsPage = lazy(() => import("../pages/solutions/services/AiAutomationSmbsPage"));
+const LeadGenerationWebsitesPage = lazy(() => import("../pages/solutions/services/LeadGenerationWebsitesPage"));
+const WhatsappSalesSupportSystemsPage = lazy(() => import("../pages/solutions/services/WhatsappSalesSupportSystemsPage"));
+const AiCustomerSupportAssistantsPage = lazy(() => import("../pages/solutions/services/AiCustomerSupportAssistantsPage"));
+const CrmSalesWorkflowSetupPage = lazy(() => import("../pages/solutions/services/CrmSalesWorkflowSetupPage"));
+const InternalDashboardsAdminPortalsPage = lazy(() => import("../pages/solutions/services/InternalDashboardsAdminPortalsPage"));
+const MvpBuildSprintsPage = lazy(() => import("../pages/solutions/services/MvpBuildSprintsPage"));
 const CoursesPage = lazy(() => import("../pages/courses/CoursesPage"));
 const CourseDetailPage = lazy(() => import("../pages/courses/CourseDetailPage"));
 const CourseExplorePage = lazy(() => import("../pages/courses/CourseExplorePage"));
@@ -160,8 +176,23 @@ function LegalRouteSkeleton() {
   );
 }
 
+const SOLUTIONS_AUX_PATHS = new Set([
+  "/solutions/book-a-meet",
+  "/solutions/pricing",
+  "/solutions/process",
+  "/solutions/faq",
+  "/solutions/thank-you",
+]);
+
 function RouteAwareFallback() {
   const { pathname } = useLocation();
+
+  if (pathname === "/presentation") return <PresentationPageSkeleton />;
+  if (pathname.startsWith("/solutions")) {
+    if (pathname === "/solutions") return <SolutionsHomePageSkeleton />;
+    if (SOLUTIONS_AUX_PATHS.has(pathname)) return <SolutionsSubPageSkeleton />;
+    return <SolutionsServiceDetailSkeleton />;
+  }
 
   if (pathname === "/login" || pathname === "/adminlogin") return <AuthRouteSkeleton />;
   if (pathname === "/courses") return <CoursesPageSkeleton />;
@@ -205,10 +236,22 @@ function PortalLayout() {
   return <Outlet />;
 }
 
+/** Scroll to top on every route change (pathname + search) so new pages start at the top. */
+function ScrollToTop() {
+  const { pathname, search } = useLocation();
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  }, [pathname, search]);
+  return null;
+}
+
 function RootWithSeo() {
   return (
     <>
       <SeoManager />
+      <ScrollToTop />
       <Outlet />
     </>
   );
@@ -226,6 +269,18 @@ export const router = createBrowserRouter([
       { path: "/", element: <HomeOrRedirect /> },
       { path: "/academy", element: <HomeOrRedirect /> },
       { path: "/solutions", element: <L><SolutionsPage /></L> },
+      { path: "/solutions/book-a-meet", element: <L><SolutionsBookMeetPage /></L> },
+      { path: "/solutions/pricing", element: <L><SolutionsPricingPage /></L> },
+      { path: "/solutions/process", element: <L><SolutionsProcessPage /></L> },
+      { path: "/solutions/faq", element: <L><SolutionsFaqPage /></L> },
+      { path: "/solutions/thank-you", element: <L><SolutionsThankYouPage /></L> },
+      { path: "/solutions/ai-automation-smbs", element: <L><AiAutomationSmbsPage /></L> },
+      { path: "/solutions/lead-generation-websites", element: <L><LeadGenerationWebsitesPage /></L> },
+      { path: "/solutions/whatsapp-sales-support-systems", element: <L><WhatsappSalesSupportSystemsPage /></L> },
+      { path: "/solutions/ai-customer-support-assistants", element: <L><AiCustomerSupportAssistantsPage /></L> },
+      { path: "/solutions/crm-sales-workflow-setup", element: <L><CrmSalesWorkflowSetupPage /></L> },
+      { path: "/solutions/internal-dashboards-admin-portals", element: <L><InternalDashboardsAdminPortalsPage /></L> },
+      { path: "/solutions/mvp-build-sprints", element: <L><MvpBuildSprintsPage /></L> },
       { path: "/courses", element: <L><CoursesPage /></L> },
       { path: "/courses/explore/:slug", element: <L><CourseExplorePage /></L> },
       { path: "/courses/:slug", element: <L><CourseDetailPage /></L> },

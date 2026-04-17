@@ -140,6 +140,21 @@ html:has(.academy-page) {
   border: 1px solid transparent !important;
 }
 
+/* Solutions (public): solid white nav bar */
+.academy-header.solutions-header-light .academy-nav-bar.academy-nav-default {
+  background: #ffffff !important;
+  border: 1px solid rgb(226 232 240) !important;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06) !important;
+}
+.academy-header.solutions-header-light .academy-nav-bar.academy-nav-scrolled {
+  background: #ffffff !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 1px solid rgb(226 232 240) !important;
+  border-radius: 0.5rem !important;
+  box-shadow: 0 4px 24px rgba(15, 23, 42, 0.08) !important;
+}
+
 /* shadcn/ui theme tokens for Tailwind v4 (Components/ui) */
 @theme {
   --color-background: var(--background);

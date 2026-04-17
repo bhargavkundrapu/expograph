@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils';
+import { LightboxZoomHint, usePresentationLightbox } from './PresentationLightbox';
 
 type BrowserFrameProps = {
   src: string;
@@ -10,6 +11,8 @@ type BrowserFrameProps = {
 };
 
 export function BrowserFrame({ src, alt, caption, className, slotLabel }: BrowserFrameProps) {
+  const lightbox = usePresentationLightbox();
+
   return (
     <figure className={cn('relative', className)}>
       <div className="rounded-xl border border-slate-200 bg-white p-2 shadow-[0_24px_80px_-30px_rgba(59,130,246,0.25)] ring-1 ring-slate-100">
@@ -24,7 +27,19 @@ export function BrowserFrame({ src, alt, caption, className, slotLabel }: Browse
           </div>
         </div>
         <div className="relative overflow-hidden rounded-b-lg bg-slate-50">
-          <img src={src} alt={alt} className="h-auto w-full object-cover object-top" loading="lazy" />
+          {lightbox ? (
+            <button
+              type="button"
+              onClick={() => lightbox.openLightbox(src, alt)}
+              className="group relative block w-full cursor-zoom-in text-left outline-none transition focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2"
+              aria-label={`View full size: ${alt}`}
+            >
+              <img src={src} alt="" className="h-auto w-full object-cover object-top" loading="lazy" aria-hidden />
+              <LightboxZoomHint />
+            </button>
+          ) : (
+            <img src={src} alt={alt} className="h-auto w-full object-cover object-top" loading="lazy" />
+          )}
           {slotLabel && (
             <div className="pointer-events-none absolute bottom-4 left-4 right-4 rounded-lg bg-white/90 px-4 py-2 text-center text-xs font-medium text-slate-700 backdrop-blur-sm">
               {slotLabel}

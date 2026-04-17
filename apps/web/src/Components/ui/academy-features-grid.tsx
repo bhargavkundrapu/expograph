@@ -4,6 +4,7 @@ import { Copy, FileText, FlaskConical, LayoutDashboard, Layers, ArrowRight, Tren
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
 import React from "react";
+import { getFeatureCardCover } from "../../data/courseCardMedia";
 
 export const featureData = [
   {
@@ -155,7 +156,7 @@ export function AcademyFeaturesGrid() {
     <ul className="grid grid-cols-1 auto-rows-auto gap-3 sm:gap-4 md:grid-cols-12 lg:gap-4">
       {featureData.map((item) => (
         <li key={item.title} className={cn("list-none", item.area)}>
-          <Link to={`/features/${item.slug}`} className="block h-full">
+          <Link to={`/features/${item.slug}`} className="group block h-full">
             <div
               className={cn(
                 "h-full rounded-[1.25rem] border border-white/10 p-2 md:rounded-[1.5rem] md:p-3",
@@ -164,10 +165,20 @@ export function AcademyFeaturesGrid() {
             >
               <div
                 className={cn(
-                  "flex h-full flex-col gap-4 rounded-xl border border-white/10 bg-black/70 p-5 sm:p-6",
+                  "flex h-full flex-col gap-4 overflow-hidden rounded-xl border border-white/10 bg-black/70 p-5 sm:p-6",
                   "border-b-0"
                 )}
               >
+                <div className="-mx-5 -mt-5 sm:-mx-6 sm:-mt-6 relative aspect-[2/1] w-[calc(100%+2.5rem)] shrink-0 overflow-hidden sm:aspect-[21/9] sm:w-[calc(100%+3rem)]">
+                  <img
+                    src={getFeatureCardCover(item.slug)}
+                    alt=""
+                    className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/90 via-black/25 to-transparent" aria-hidden />
+                </div>
                 <div className="flex flex-col gap-3">
                   <div className="flex items-center justify-between">
                     <div className={cn("w-fit rounded-lg border-[0.75px] p-2.5", item.accent.iconBg, item.accent.iconColor)}>

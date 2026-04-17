@@ -21,6 +21,7 @@ router.get("/events", ctrl.getEvents);
 // Courses
 router.get("/courses", ctrl.listCourses);
 router.get("/search", ctrl.search);
+router.get("/courses/:courseSlug/continue-target", ctrl.getContinueTarget);
 router.get("/courses/:courseSlug", ctrl.getCourseTree);
 router.post("/courses/:courseSlug/feedback", requirePermission("student:write"), feedbackCtrl.submitCourseFeedback);
 // POST lesson routes (literal /complete and /feedback) before GET lesson so they match correctly

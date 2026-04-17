@@ -4,6 +4,7 @@ import { Copy, FileText, FlaskConical, LayoutDashboard, Layers, ArrowRight, Tren
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
 import React from "react";
+import { getFeatureCardCover } from "../../data/courseCardMedia";
 
 const featureDataLite = [
   {
@@ -104,8 +105,19 @@ export function AcademyFeaturesGridLite() {
     <ul className="grid grid-cols-1 gap-3">
       {featureDataLite.map((item) => (
         <li key={item.title} className="list-none">
-          <Link to={`/features/${item.slug}`} className="block">
-            <div className={cn("rounded-2xl border border-white/10 p-5 bg-black/70", item.accent.borderBottom)}>
+          <Link to={`/features/${item.slug}`} className="group block">
+            <div className={cn("overflow-hidden rounded-2xl border border-white/10 bg-black/70", item.accent.borderBottom)}>
+              <div className="relative aspect-[2/1] w-full overflow-hidden">
+                <img
+                  src={getFeatureCardCover(item.slug)}
+                  alt=""
+                  className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" aria-hidden />
+              </div>
+              <div className="p-5 pt-4">
               <div className="flex items-center justify-between mb-3">
                 <div className={cn("w-fit rounded-lg border-[0.75px] p-2", item.accent.iconBg, item.accent.iconColor)}>
                   {item.icon}
@@ -119,6 +131,7 @@ export function AcademyFeaturesGridLite() {
               <div className="flex items-center gap-1.5 text-xs text-white/50">
                 <span>Explore</span>
                 <ArrowRight className="h-3.5 w-3.5" />
+              </div>
               </div>
             </div>
           </Link>

@@ -4,6 +4,7 @@
  */
 
 import type { ScreenshotMap } from './screenshotMap';
+import type { TrackDeckIllustrationId } from './presentationIllustrations';
 
 export type ActId = 1 | 2 | 3 | 4 | 5 | 6;
 
@@ -179,7 +180,7 @@ export const MASTER_DECK: DeckSection[] = [
     ],
     navLabel: 'Smart Prompts',
     screenshotKey: 'smartPrompts',
-    galleryKeys: ['promptDrawer', 'lessonView'],
+    galleryKeys: ['lessonView', 'lessonErrorsTab'],
   },
   {
     id: 'client-lab',
@@ -277,7 +278,7 @@ export const MASTER_DECK: DeckSection[] = [
       'A structured system the institution can monitor, not a one-time workshop.',
     ],
     navLabel: 'Principal view',
-    galleryKeys: ['studentDashboard', 'projectSubmission', 'resumeBuilder'],
+    galleryKeys: ['studentDashboard', 'projectSubmission', 'bookmarksNotes'],
   },
   {
     id: 'pilot-plan',
@@ -367,30 +368,39 @@ export const MASTER_DECK: DeckSection[] = [
     lines: ['Start building with ExpoGraph.'],
     navLabel: 'Close',
     screenshotKey: 'academyHero',
-    galleryKeys: ['jobsHub', 'resumeBuilder', 'projectSubmission'],
+    galleryKeys: ['jobsHub', 'resumeBuilder', 'bookmarksNotes'],
   },
 ];
 
-export const TRACK_CARDS = [
+export const TRACK_CARDS: ReadonlyArray<{
+  title: string;
+  description: string;
+  accent: string;
+  illustrationId: TrackDeckIllustrationId;
+}> = [
   {
     title: 'Vibe Coding',
     description: 'Build with AI-assisted workflows — ship, don’t only study.',
     accent: 'from-violet-500/30 to-fuchsia-500/20',
+    illustrationId: 'trackVibeCoding',
   },
   {
     title: 'Prompt Engineering',
     description: 'Think in prompts — clarity, structure, and iteration.',
     accent: 'from-indigo-500/30 to-blue-500/20',
+    illustrationId: 'trackPromptEngineering',
   },
   {
     title: 'Prompt to Profit',
     description: 'Connect prompting to practical value and outcomes.',
     accent: 'from-amber-500/25 to-orange-500/15',
+    illustrationId: 'trackPromptToProfit',
   },
   {
     title: 'AI Automations',
     description: 'Automate workflows with intelligence — bonus depth with the pack.',
     accent: 'from-emerald-500/25 to-teal-500/15',
+    illustrationId: 'trackAiAutomations',
   },
-] as const;
+];
 

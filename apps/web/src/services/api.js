@@ -30,12 +30,13 @@ function shouldReportApiError(err) {
   // Reduce noise: 404 and known dev-only "missing table" errors are usually handled by UI fallback.
   if (err.isNotFound) return false;
   if (err.isMissingTableError) return false;
+  if (err.status === 403) return false;
 
   // Report network errors (status=0) and auth/permission/server errors.
   if (typeof err.status === "number") {
     if (err.status === 0) return true;
     if (err.status >= 500) return true;
-    if (err.status === 401 || err.status === 403) return true;
+    if (err.status === 401) return true;
   }
   // Default: capture anything else that reaches here.
   return true;

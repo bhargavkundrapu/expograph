@@ -11,6 +11,7 @@ import { apiFetch } from "../../services/api";
 import { BuyNowModal } from "../payments/BuyNowModal";
 import { CoursesPageSkeleton } from "../common/SkeletonLoaders";
 import { COURSE_EXPLORE_DATA, COURSE_DURATION_HOURS } from "../../data/courseExploreData";
+import { COURSE_CARD_COVER, COURSE_CARD_FALLBACK, getFeatureCardCover } from "../../data/courseCardMedia";
 import { PriceCountdown, getOfferEndsAt24h } from "./price-countdown";
 
 function formatPrice(paise: number | null | undefined) {
@@ -120,88 +121,96 @@ export function PricingWithChart() {
     const features = isBonus
       ? ["Free when you buy All Pack", "12 modules • 62 lessons", "MCA-recognised certificate"]
       : ["Self-paced learning", "MCA-recognised certificate on completion"];
+    const coverSrc =
+      COURSE_CARD_COVER[orderSlug as keyof typeof COURSE_CARD_COVER] ?? COURSE_CARD_FALLBACK;
     return (
       <div
         className={cn(
-          "relative h-full flex flex-col rounded-xl border border-white/10 bg-white/[0.03] p-5 transition-all duration-200 hover:border-white/20 hover:bg-white/[0.06]",
+          "relative flex h-full flex-col overflow-hidden rounded-xl border border-white/10 bg-white/[0.03] transition-all duration-200 hover:border-white/20 hover:bg-white/[0.06]",
           colSpan
         )}
       >
-        <div className="flex items-center gap-3 mb-3">
-          <Badge variant={isBonus ? "outline" : "secondary"} className={isBonus ? "border-amber-500/30 text-amber-400 bg-amber-500/10" : "border-purple-500/30 text-purple-400 bg-purple-500/10"}>
-            {isBonus ? "BONUS" : "INDIVIDUAL"}
-          </Badge>
-          <div className="ml-auto">
-            <Link to={`/courses/explore/${orderSlug}`} className="inline-flex h-9 items-center justify-center gap-2 rounded-lg border border-white/20 px-3 text-sm text-white/90 hover:bg-white/10 transition-colors">
-              <BookOpen className="h-4 w-4" />
-              Explore
-            </Link>
-          </div>
+        <div className="relative aspect-[2/1] w-full shrink-0 overflow-hidden bg-white/5">
+          <img src={coverSrc} alt="" className="h-full w-full object-cover" loading="lazy" decoding="async" />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/15 to-transparent" aria-hidden />
         </div>
-        <div className="flex items-end gap-2 mb-3">
-          <span className="font-mono text-3xl font-semibold tracking-tight text-white">
-            {isBonus ? "Free" : formatPrice(course?.price_in_paise)}
-          </span>
-          {!isBonus && course?.price_in_paise != null && <span className="text-white/50 text-sm">one-time</span>}
-        </div>
-        {COURSE_DURATION_HOURS[orderSlug as keyof typeof COURSE_DURATION_HOURS] != null && (
-          <p className="text-xs text-white/55 mb-2">
-            <span className="text-white/70 font-medium">{COURSE_DURATION_HOURS[orderSlug as keyof typeof COURSE_DURATION_HOURS]} hrs</span> to complete
-          </p>
-        )}
-        <h3 className="text-base font-bold text-white leading-tight mb-2">{displayTitle}</h3>
-        <p className="text-sm text-white/55 line-clamp-2 mb-4">{course?.description || "Self-paced learning"}</p>
-        <ul className="text-white/60 space-y-2 text-sm mb-4 flex-1">
-          {features.map((f, i) => (
-            <li key={i} className="flex items-center gap-3">
-              <FilledCheck />
-              <span>{f}</span>
-            </li>
-          ))}
-        </ul>
-        {COURSE_EXPLORE_DATA[orderSlug as keyof typeof COURSE_EXPLORE_DATA]?.tools?.length > 0 && (
-          <div className="mb-4">
-            <p className="text-[10px] font-semibold uppercase tracking-wider text-white/40 mb-2">You&apos;ll work with</p>
-            <div className="flex flex-wrap gap-2">
-              {(COURSE_EXPLORE_DATA[orderSlug as keyof typeof COURSE_EXPLORE_DATA].tools || []).slice(0, orderSlug === "prompt-to-profit" ? 12 : 6).map((toolName, i) => {
-                const Icon = getToolIcon(toolName);
-                const iconColor = getToolIconColor(toolName);
-                return (
-                  <span
-                    key={i}
-                    className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5 text-[11px] text-white/85"
-                  >
-                    <Icon className={cn("size-3.5 shrink-0", iconColor)} aria-hidden />
-                    <span>{toolName}</span>
-                  </span>
-                );
-              })}
+        <div className="flex flex-1 flex-col p-5">
+          <div className="flex items-center gap-3 mb-3">
+            <Badge variant={isBonus ? "outline" : "secondary"} className={isBonus ? "border-amber-500/30 text-amber-400 bg-amber-500/10" : "border-purple-500/30 text-purple-400 bg-purple-500/10"}>
+              {isBonus ? "BONUS" : "INDIVIDUAL"}
+            </Badge>
+            <div className="ml-auto">
+              <Link to={`/courses/explore/${orderSlug}`} className="inline-flex h-9 items-center justify-center gap-2 rounded-lg border border-white/20 px-3 text-sm text-white/90 hover:bg-white/10 transition-colors">
+                <BookOpen className="h-4 w-4" />
+                Explore
+              </Link>
             </div>
           </div>
-        )}
-        {isBonus ? (
-          <p className="text-center text-xs text-amber-400/90 py-1">Buy All Pack to get this course free</p>
-        ) : (
-          <>
-            {canBuy && (
-              <div className="mb-2.5 min-h-[1.5rem] flex items-center justify-center">
-                <PriceCountdown endsAt={offerEndsAt} className="text-center" />
+          <div className="flex items-end gap-2 mb-3">
+            <span className="font-mono text-3xl font-semibold tracking-tight text-white">
+              {isBonus ? "Free" : formatPrice(course?.price_in_paise)}
+            </span>
+            {!isBonus && course?.price_in_paise != null && <span className="text-white/50 text-sm">one-time</span>}
+          </div>
+          {COURSE_DURATION_HOURS[orderSlug as keyof typeof COURSE_DURATION_HOURS] != null && (
+            <p className="text-xs text-white/55 mb-2">
+              <span className="text-white/70 font-medium">{COURSE_DURATION_HOURS[orderSlug as keyof typeof COURSE_DURATION_HOURS]} hrs</span> to complete
+            </p>
+          )}
+          <h3 className="text-base font-bold text-white leading-tight mb-2">{displayTitle}</h3>
+          <p className="text-sm text-white/55 line-clamp-2 mb-4">{course?.description || "Self-paced learning"}</p>
+          <ul className="text-white/60 space-y-2 text-sm mb-4 flex-1">
+            {features.map((f, i) => (
+              <li key={i} className="flex items-center gap-3">
+                <FilledCheck />
+                <span>{f}</span>
+              </li>
+            ))}
+          </ul>
+          {COURSE_EXPLORE_DATA[orderSlug as keyof typeof COURSE_EXPLORE_DATA]?.tools?.length > 0 && (
+            <div className="mb-4">
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-white/40 mb-2">You&apos;ll work with</p>
+              <div className="flex flex-wrap gap-2">
+                {(COURSE_EXPLORE_DATA[orderSlug as keyof typeof COURSE_EXPLORE_DATA].tools || []).slice(0, orderSlug === "prompt-to-profit" ? 12 : 6).map((toolName, i) => {
+                  const Icon = getToolIcon(toolName);
+                  const iconColor = getToolIconColor(toolName);
+                  return (
+                    <span
+                      key={i}
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5 text-[11px] text-white/85"
+                    >
+                      <Icon className={cn("size-3.5 shrink-0", iconColor)} aria-hidden />
+                      <span>{toolName}</span>
+                    </span>
+                  );
+                })}
               </div>
-            )}
-            <Button
-              type="button"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                if (course) handleGetCourse({ type: "course", id: course.id, title: displayTitle });
-              }}
-              disabled={!canBuy}
-              className="w-full h-10 bg-purple-600 hover:bg-purple-500 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Get Course
-            </Button>
-          </>
-        )}
+            </div>
+          )}
+          {isBonus ? (
+            <p className="text-center text-xs text-amber-400/90 py-1">Buy All Pack to get this course free</p>
+          ) : (
+            <>
+              {canBuy && (
+                <div className="mb-2.5 min-h-[1.5rem] flex items-center justify-center">
+                  <PriceCountdown endsAt={offerEndsAt} className="text-center" />
+                </div>
+              )}
+              <Button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  if (course) handleGetCourse({ type: "course", id: course.id, title: displayTitle });
+                }}
+                disabled={!canBuy}
+                className="w-full h-10 bg-purple-600 hover:bg-purple-500 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Get Course
+              </Button>
+            </>
+          )}
+        </div>
       </div>
     );
   }
@@ -228,13 +237,19 @@ export function PricingWithChart() {
         ? "border-orange-500/35 text-orange-300 bg-orange-500/10"
         : "border-emerald-500/35 text-emerald-300 bg-emerald-500/10";
     const Icon = accent === "orange" ? Rocket : TrendingUp;
+    const featureCover = getFeatureCardCover(slug);
     return (
       <div
         className={cn(
-          "relative h-full flex flex-col rounded-xl border border-white/10 bg-white/[0.03] p-5 transition-all duration-200 hover:border-white/20 hover:bg-white/[0.06]",
+          "relative flex h-full flex-col overflow-hidden rounded-xl border border-white/10 bg-white/[0.03] transition-all duration-200 hover:border-white/20 hover:bg-white/[0.06]",
           colSpan
         )}
       >
+        <div className="relative aspect-[2/1] w-full shrink-0 overflow-hidden bg-white/5">
+          <img src={featureCover} alt="" className="h-full w-full object-cover" loading="lazy" decoding="async" />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/15 to-transparent" aria-hidden />
+        </div>
+        <div className="flex flex-1 flex-col p-5">
         <div className="flex items-center gap-3 mb-3">
           <Badge variant="outline" className={cn("border-white/20 text-white/80 bg-white/5", badgeClass)}>
             LMS
@@ -279,6 +294,7 @@ export function PricingWithChart() {
         >
           <Link to={`/features/${slug}`}>Learn more</Link>
         </Button>
+        </div>
       </div>
     );
   }
@@ -303,6 +319,16 @@ export function PricingWithChart() {
             "lg:col-span-5"
           )}
         >
+          <div className="relative z-[2] aspect-[2.2/1] w-full max-h-44 overflow-hidden border-b border-white/10 sm:max-h-52">
+            <img
+              src={COURSE_CARD_COVER["all-pack"]}
+              alt=""
+              className="h-full w-full object-cover"
+              loading="lazy"
+              decoding="async"
+            />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-black/35 to-black/85" aria-hidden />
+          </div>
           <div className="pointer-events-none absolute top-0 left-1/2 -mt-2 -ml-20 h-full w-full [mask-image:linear-gradient(white,transparent)]">
             <div className="from-foreground/5 to-foreground/2 absolute inset-0 bg-gradient-to-r [mask-image:radial-gradient(farthest-side_at_top,white,transparent)]">
               <div

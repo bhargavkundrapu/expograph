@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, Clock } from "lucide-react";
 import { COURSE_EXPLORE_DATA } from "../../data/courseExploreData";
+import { COURSE_CARD_COVER } from "../../data/courseCardMedia";
 import { cn } from "../../lib/utils";
 
 // Order: All Pack first, then Vibe Coding, Prompt Engineering, Prompt to Profit, AI Automations
@@ -49,10 +50,24 @@ export function AcademyCourseCardsSection() {
               <div
                 key={slug}
                 className={cn(
-                  "group flex flex-col rounded-xl border border-white/10 bg-white/[0.03] p-6 sm:p-7 min-h-[190px]",
-                  "hover:border-white/20 hover:bg-white/[0.06] transition-all duration-200"
+                  "group flex flex-col overflow-hidden rounded-xl border border-white/10 bg-black min-h-[190px]",
+                  "hover:border-white/20 transition-all duration-200"
                 )}
               >
+                <div className="relative aspect-[16/10] w-full shrink-0 overflow-hidden bg-black">
+                  <img
+                    src={COURSE_CARD_COVER[slug]}
+                    alt=""
+                    className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.04]"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <div
+                    className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent"
+                    aria-hidden
+                  />
+                </div>
+                <div className="flex flex-1 flex-col p-6 sm:p-7">
                 <div className="flex items-start justify-between gap-3 mb-4">
                   <div
                     className={cn(
@@ -91,6 +106,7 @@ export function AcademyCourseCardsSection() {
                     <ArrowRight className="w-4 h-4" />
                     Explore
                   </Link>
+                </div>
                 </div>
               </div>
             );

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { ChevronUp } from 'lucide-react';
 import { ChapterProgress } from '@/Components/expographDeck/ChapterProgress';
+import { PresentationLightboxProvider } from '@/Components/expographDeck/PresentationLightbox';
 import { PresentationSection } from '@/Components/expographDeck/PresentationSection';
 import { MASTER_DECK } from '@/content/presentation/masterDeck';
 
@@ -73,35 +74,37 @@ export default function PresentationPage() {
   }, [activeId, scrollToSection]);
 
   return (
-    <div className="presentation-page min-h-screen bg-white text-slate-900 selection:bg-violet-200/70">
-      <ChapterProgress activeId={activeId} progress={progress} />
+    <PresentationLightboxProvider>
+      <div className="presentation-page min-h-screen bg-white text-slate-900 selection:bg-violet-200/70">
+        <ChapterProgress activeId={activeId} progress={progress} />
 
-      <main className="relative">
-        {MASTER_DECK.map((section) => (
-          <PresentationSection key={section.id} section={section} />
-        ))}
-      </main>
+        <main className="relative">
+          {MASTER_DECK.map((section) => (
+            <PresentationSection key={section.id} section={section} />
+          ))}
+        </main>
 
-      <div className="pointer-events-none fixed bottom-6 left-4 z-[58] hidden text-[11px] text-slate-500 lg:block">
-        <kbd className="rounded border border-slate-300 bg-white px-1.5 py-0.5">↑</kbd>{' '}
-        <kbd className="rounded border border-slate-300 bg-white px-1.5 py-0.5">↓</kbd> sections ·{' '}
-        <kbd className="rounded border border-slate-300 bg-white px-1.5 py-0.5">Home</kbd>{' '}
-        <kbd className="rounded border border-slate-300 bg-white px-1.5 py-0.5">End</kbd>
+        <div className="pointer-events-none fixed bottom-6 left-4 z-[58] hidden text-[11px] text-slate-500 lg:block">
+          <kbd className="rounded border border-slate-300 bg-white px-1.5 py-0.5">↑</kbd>{' '}
+          <kbd className="rounded border border-slate-300 bg-white px-1.5 py-0.5">↓</kbd> sections ·{' '}
+          <kbd className="rounded border border-slate-300 bg-white px-1.5 py-0.5">Home</kbd>{' '}
+          <kbd className="rounded border border-slate-300 bg-white px-1.5 py-0.5">End</kbd>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          className="fixed bottom-24 right-6 z-[56] flex h-12 w-12 items-center justify-center rounded-full border border-slate-300 bg-white text-slate-700 shadow-lg backdrop-blur transition hover:bg-slate-100 lg:bottom-8"
+          aria-label="Back to top"
+        >
+          <ChevronUp className="h-5 w-5" />
+        </button>
+
+        <footer className="border-t border-slate-200 px-4 py-12 text-center text-xs text-slate-500 sm:px-6">
+          <p>ExpoGraph · Product presentation · Content reflects the live product direction.</p>
+        </footer>
       </div>
-
-      <button
-        type="button"
-        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-        className="fixed bottom-24 right-6 z-[56] flex h-12 w-12 items-center justify-center rounded-full border border-slate-300 bg-white text-slate-700 shadow-lg backdrop-blur transition hover:bg-slate-100 lg:bottom-8"
-        aria-label="Back to top"
-      >
-        <ChevronUp className="h-5 w-5" />
-      </button>
-
-      <footer className="border-t border-slate-200 px-4 py-12 text-center text-xs text-slate-500 sm:px-6">
-        <p>ExpoGraph · Product presentation · Content reflects the live product direction.</p>
-      </footer>
-    </div>
+    </PresentationLightboxProvider>
   );
 }
 

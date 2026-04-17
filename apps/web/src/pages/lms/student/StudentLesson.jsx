@@ -57,6 +57,43 @@ import {
 
 const NATIVE_SEEK_BACK_SEC = 20;
 const NATIVE_SEEK_FWD_SEC = 10;
+const VIDEO_TOKEN_CACHE_PREFIX = "student-lesson-video-token:";
+
+function getVideoTokenCacheKey(lessonId) {
+  return `${VIDEO_TOKEN_CACHE_PREFIX}${lessonId}`;
+}
+
+function readCachedVideoToken(lessonId) {
+  if (typeof window === "undefined" || !lessonId) return null;
+  try {
+    const raw = window.sessionStorage.getItem(getVideoTokenCacheKey(lessonId));
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (!parsed?.value?.iframeUrl || !parsed?.expiresAt || Date.now() >= parsed.expiresAt) {
+      window.sessionStorage.removeItem(getVideoTokenCacheKey(lessonId));
+      return null;
+    }
+    return parsed.value || null;
+  } catch {
+    return null;
+  }
+}
+
+function writeCachedVideoToken(lessonId, value, expiresInSeconds) {
+  if (typeof window === "undefined" || !lessonId || !value?.iframeUrl) return;
+  const ttlMs = Math.max(30_000, ((Number(expiresInSeconds) || 3600) - 60) * 1000);
+  try {
+    window.sessionStorage.setItem(
+      getVideoTokenCacheKey(lessonId),
+      JSON.stringify({
+        expiresAt: Date.now() + ttlMs,
+        value,
+      })
+    );
+  } catch {
+    // Ignore cache write failures.
+  }
+}
 
 /** Direct URL / progressive video only-skip controls + synced play/pause (native controls stay for scrubber/volume/fullscreen). */
 function NativeLessonVideoPlayer({
@@ -112,12 +149,12 @@ function NativeLessonVideoPlayer({
           key={`vid-${lessonKey}-${videoSrc}-${captionsBlobUrl ? "cc" : "nocc"}`}
           ref={videoRef}
           src={videoSrc}
+          preload="metadata"
           controls
           controlsList="nodownload noremoteplayback"
           disablePictureInPicture
           className="w-full h-full"
           onPlay={() => setVideoReady(true)}
-          crossOrigin="anonymous"
         >
           {captionsBlobUrl && (
             <track kind="captions" srcLang="en" src={captionsBlobUrl} label="English" default />
@@ -420,6 +457,7 @@ export default function StudentLesson() {
       const res = await apiFetch(`/api/v1/student/courses/${courseSlugParam}/modules/${moduleSlugParam}/lessons/${lessonSlugParam}`, { token, signal });
       if (res?.data) {
         const lessonData = res.data.lesson || res.data;
+        const prefetchedVideoToken = res.data.videoToken || null;
         // Ensure prompts is parsed if it's a string
         if (lessonData?.prompts && typeof lessonData.prompts === 'string') {
           try {
@@ -447,9 +485,12 @@ export default function StudentLesson() {
         }
         
         // Reset video state
-        setVideoToken(null);
+        setVideoToken(prefetchedVideoToken);
         setVideoError(null);
         setVideoReady(false);
+        if (prefetchedVideoToken?.iframeUrl) {
+          writeCachedVideoToken(lessonData?.id, prefetchedVideoToken, prefetchedVideoToken.expiresInSeconds);
+        }
       }
     } catch (error) {
       if (isAbortError(error)) return;
@@ -472,11 +513,12 @@ export default function StudentLesson() {
         console.error("Failed to fetch lesson data:", error);
       }
     } finally {
-      if (signal?.aborted) return;
-      if (isContentUpdate) {
-        setContentLoading(false);
-      } else {
-        setLoading(false);
+      if (!signal?.aborted) {
+        if (isContentUpdate) {
+          setContentLoading(false);
+        } else {
+          setLoading(false);
+        }
       }
     }
   };
@@ -486,7 +528,15 @@ export default function StudentLesson() {
       console.warn("Cannot fetch video token: missing lessonId or token", { lessonId, hasToken: !!token });
       return;
     }
-    
+
+    const cached = readCachedVideoToken(lessonId);
+    if (cached?.iframeUrl) {
+      setVideoToken(cached);
+      setVideoError(null);
+      setVideoTokenLoading(false);
+      return;
+    }
+
     try {
       setVideoError(null);
       setVideoTokenLoading(true);
@@ -501,16 +551,17 @@ export default function StudentLesson() {
       // Handle both response structures: res.data.iframeUrl or res.iframeUrl
       const iframeUrl = res?.data?.iframeUrl || res?.iframeUrl;
       const hlsUrl = res?.data?.hlsUrl || res?.hlsUrl;
-      
+
       if (iframeUrl) {
-        // If we get an iframe URL, use it
-        setVideoToken({
+        const nextToken = {
           iframeUrl,
           hlsUrl,
           lessonId: res?.data?.lessonId || res?.lessonId,
           provider: res?.data?.provider || res?.provider,
           expiresInSeconds: res?.data?.expiresInSeconds || res?.expiresInSeconds,
-        });
+        };
+        setVideoToken(nextToken);
+        writeCachedVideoToken(lessonId, nextToken, nextToken.expiresInSeconds);
         setVideoError(null);
       } else {
         const errorMsg = res?.data?.message || res?.message || "Failed to get video access token. Please try again.";
@@ -695,12 +746,13 @@ export default function StudentLesson() {
       return;
     }
     if (lesson?.video_provider === "cloudflare_stream" && lesson?.video_id && lesson?.id && token) {
+      if (videoToken?.lessonId === lesson.id && videoToken?.iframeUrl) return;
       fetchVideoToken(lesson.id);
     } else if (lesson?.video_provider === "cloudflare_stream" && lesson?.video_id) {
       setVideoToken(null);
       setVideoError(null);
     }
-  }, [alternateNativeVideos, lesson?.id, lesson?.video_provider, lesson?.video_id, token]);
+  }, [alternateNativeVideos, lesson?.id, lesson?.video_provider, lesson?.video_id, token, videoToken?.lessonId, videoToken?.iframeUrl]);
 
   useEffect(() => {
     if (!alternateNativeVideos) return;

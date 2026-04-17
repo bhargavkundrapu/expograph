@@ -5,8 +5,10 @@ import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import type { DeckSection } from '@/content/presentation/masterDeck';
 import { TRACK_CARDS } from '@/content/presentation/masterDeck';
+import { DECK_ILLUSTRATIONS, type DeckIllustration } from '@/content/presentation/presentationIllustrations';
 import { SCREENSHOTS, SCREENSHOT_ALT } from '@/content/presentation/screenshotMap';
 import { BrowserFrame } from './BrowserFrame';
+import { LightboxZoomHint, usePresentationLightbox } from './PresentationLightbox';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 28 },
@@ -53,13 +55,7 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
   );
 }
 
-function ReplaceImageGrid({
-  keys,
-  labels,
-}: {
-  keys?: (keyof typeof SCREENSHOTS)[];
-  labels?: string[];
-}) {
+function ReplaceImageGrid({ keys }: { keys?: (keyof typeof SCREENSHOTS)[] }) {
   if (!keys?.length) return null;
   return (
     <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -68,10 +64,55 @@ function ReplaceImageGrid({
           key={`${String(key)}-${i}`}
           src={SCREENSHOTS[key]}
           alt={SCREENSHOT_ALT[key]}
-          slotLabel={labels?.[i] ?? `Replace image ${i + 1}`}
           className="h-full"
         />
       ))}
+    </div>
+  );
+}
+
+const PROMISE_JOURNEY_STEPS: { label: string; illustration: DeckIllustration }[] = [
+  { label: 'Learn', illustration: DECK_ILLUSTRATIONS.journeyLearn },
+  { label: 'Build', illustration: DECK_ILLUSTRATIONS.journeyBuild },
+  { label: 'Prove', illustration: DECK_ILLUSTRATIONS.journeyProve },
+];
+
+function DeckShotThumb({
+  illustration,
+  className,
+  imgClassName,
+}: {
+  illustration: DeckIllustration;
+  className?: string;
+  imgClassName?: string;
+}) {
+  const lightbox = usePresentationLightbox();
+  const { src, alt } = illustration;
+  const img = (
+    <img
+      src={src}
+      alt={lightbox ? '' : alt}
+      className={cn('h-full w-full object-cover object-top', imgClassName)}
+      loading="lazy"
+      {...(lightbox ? { 'aria-hidden': true as const } : {})}
+    />
+  );
+
+  return (
+    <div className={cn('relative bg-slate-100', className)}>
+      {lightbox ? (
+        <button
+          type="button"
+          onClick={() => lightbox.openLightbox(src, alt)}
+          className="group relative block h-full w-full cursor-zoom-in outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2"
+          aria-label={`View full size: ${alt}`}
+        >
+          {img}
+          <LightboxZoomHint className="right-2 top-2" />
+        </button>
+      ) : (
+        img
+      )}
     </div>
   );
 }
@@ -155,18 +196,10 @@ export function PresentationSection({ section }: { section: DeckSection }) {
               transition={{ delay: 0.35 }}
               className="mt-16 md:mt-20"
             >
-              <BrowserFrame
-                src={shot}
-                alt={shotAlt}
-                slotLabel="Replace with Academy hero or LMS capture"
-                className="mx-auto max-w-5xl"
-              />
+              <BrowserFrame src={shot} alt={shotAlt} className="mx-auto max-w-5xl" />
             </motion.div>
           )}
-          <ReplaceImageGrid
-            keys={section.galleryKeys as (keyof typeof SCREENSHOTS)[] | undefined}
-            labels={['Replace with courses page', 'Replace with student dashboard', 'Replace with pricing snapshot']}
-          />
+          <ReplaceImageGrid keys={section.galleryKeys as (keyof typeof SCREENSHOTS)[] | undefined} />
         </div>
       </section>
     );
@@ -202,29 +235,47 @@ export function PresentationSection({ section }: { section: DeckSection }) {
               ))}
             </ul>
           </div>
-          <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-slate-200 bg-gradient-to-br from-white via-violet-50 to-slate-100 shadow-xl">
-            <div className="absolute inset-0 bg-[length:48px_48px] bg-grid-fade opacity-40" aria-hidden />
-            <div className="absolute left-8 top-8 rounded-xl border border-slate-300 bg-white/90 px-4 py-3 text-xs text-slate-500 backdrop-blur">
-              Passive
-            </div>
-            <div className="absolute bottom-8 right-8 rounded-xl border border-emerald-300 bg-emerald-50 px-4 py-3 text-xs font-medium text-emerald-700 backdrop-blur">
-              Proof &amp; output
-            </div>
-            <p className="absolute inset-0 flex items-center justify-center p-8 text-center text-sm text-slate-500">
+          <div className="space-y-3">
+            <p className="text-center text-sm font-semibold text-slate-700">
               Contrast: consumption vs. what you can show
             </p>
+            <div className="grid gap-6 sm:grid-cols-2">
+              <div>
+                <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">
+                  Consumption
+                </p>
+                <DeckShotThumb
+                  illustration={DECK_ILLUSTRATIONS.problemConsumption}
+                  className="aspect-[4/3] overflow-hidden rounded-2xl border border-slate-200 shadow-lg"
+                />
+                <p className="mt-2 text-xs leading-relaxed text-slate-600">
+                  Catalogs and passive progress without tangible proof.
+                </p>
+              </div>
+              <div>
+                <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-emerald-700">
+                  What you can show
+                </p>
+                <DeckShotThumb
+                  illustration={DECK_ILLUSTRATIONS.problemProof}
+                  className="aspect-[4/3] overflow-hidden rounded-2xl border border-emerald-200/80 shadow-lg ring-1 ring-emerald-100"
+                />
+                <p className="mt-2 text-xs leading-relaxed text-slate-600">
+                  Real Client Lab output you can point to in interviews and portfolios.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
-        <ReplaceImageGrid
-          keys={section.galleryKeys as (keyof typeof SCREENSHOTS)[] | undefined}
-          labels={['Replace with before-state screenshot', 'Replace with after-state screenshot']}
-        />
+        <ReplaceImageGrid keys={section.galleryKeys as (keyof typeof SCREENSHOTS)[] | undefined} />
       </SectionShell>
     );
   }
 
   if (section.variant === 'statement' || section.variant === 'split') {
     const isSplitPromise = section.id === 'promise';
+    const isSplitWhyNow = section.id === 'why-now';
+    const isStatementSplit = isSplitPromise || isSplitWhyNow;
     return (
       <SectionShell
         id={section.id}
@@ -236,7 +287,7 @@ export function PresentationSection({ section }: { section: DeckSection }) {
               : 'bg-white'
         }
       >
-        <div className={cn(isSplitPromise && 'grid gap-12 lg:grid-cols-2 lg:items-center')}>
+        <div className={cn(isStatementSplit && 'grid gap-12 lg:grid-cols-2 lg:items-center')}>
           <div>
             {section.eyebrow && <Eyebrow>{section.eyebrow}</Eyebrow>}
             <h2 className="font-display text-3xl font-bold text-slate-900 md:text-4xl lg:text-[2.75rem] lg:leading-tight">
@@ -261,30 +312,39 @@ export function PresentationSection({ section }: { section: DeckSection }) {
               ))}
             </ul>
           </div>
+          {isSplitWhyNow && (
+            <div className="relative lg:ml-auto lg:max-w-xl">
+              <DeckShotThumb
+                illustration={DECK_ILLUSTRATIONS.whyNowAiEra}
+                className="aspect-[4/3] overflow-hidden rounded-2xl border border-violet-200/80 bg-white shadow-xl ring-1 ring-violet-100"
+              />
+            </div>
+          )}
           {isSplitPromise && (
-            <div className="relative">
-              <div className="aspect-square max-w-md rounded-3xl border border-violet-200 bg-gradient-to-tr from-violet-100 via-white to-indigo-100 p-8 shadow-xl lg:ml-auto">
-                <div className="flex h-full flex-col justify-between">
-                  <p className="text-sm font-medium text-slate-500">Journey</p>
-                  <div className="space-y-4">
-                    {['Learn', 'Build', 'Prove'].map((step, i) => (
-                      <div key={step} className="flex items-center gap-3">
-                        <span className="flex h-9 w-9 items-center justify-center rounded-full bg-violet-600 text-sm font-bold text-white">
+            <div className="relative lg:ml-auto lg:max-w-md">
+              <div className="rounded-3xl border border-violet-200 bg-white p-6 shadow-xl">
+                <p className="text-sm font-medium text-slate-500">Journey</p>
+                <div className="mt-5 space-y-5">
+                  {PROMISE_JOURNEY_STEPS.map((step, i) => (
+                    <div key={step.label} className="flex flex-col gap-3 sm:flex-row sm:items-stretch">
+                      <DeckShotThumb
+                        illustration={step.illustration}
+                        className="aspect-[16/10] w-full shrink-0 overflow-hidden rounded-xl border border-slate-200 shadow-md sm:aspect-auto sm:h-[5.5rem] sm:w-[7.5rem]"
+                      />
+                      <div className="flex min-w-0 flex-1 items-center gap-3 rounded-xl border border-violet-100 bg-violet-50/40 px-4 py-3">
+                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-violet-600 text-sm font-bold text-white">
                           {i + 1}
                         </span>
-                        <span className="text-lg text-slate-800">{step}</span>
+                        <span className="text-lg font-semibold text-slate-800">{step.label}</span>
                       </div>
-                    ))}
-                  </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
           )}
         </div>
-        <ReplaceImageGrid
-          keys={section.galleryKeys as (keyof typeof SCREENSHOTS)[] | undefined}
-          labels={['Replace with key feature screenshot', 'Replace with workflow screenshot', 'Replace with outcomes screenshot']}
-        />
+        <ReplaceImageGrid keys={section.galleryKeys as (keyof typeof SCREENSHOTS)[] | undefined} />
       </SectionShell>
     );
   }
@@ -309,10 +369,7 @@ export function PresentationSection({ section }: { section: DeckSection }) {
             </motion.div>
           ))}
         </div>
-        <ReplaceImageGrid
-          keys={section.galleryKeys as (keyof typeof SCREENSHOTS)[] | undefined}
-          labels={['Replace with roadmap graphic', 'Replace with platform overview']}
-        />
+        <ReplaceImageGrid keys={section.galleryKeys as (keyof typeof SCREENSHOTS)[] | undefined} />
       </SectionShell>
     );
   }
@@ -342,20 +399,23 @@ export function PresentationSection({ section }: { section: DeckSection }) {
               viewport={{ once: true }}
               variants={listVariants}
               className={cn(
-                'rounded-2xl border border-violet-100 bg-gradient-to-br p-6',
+                'overflow-hidden rounded-2xl border border-violet-100 bg-gradient-to-br',
                 c.accent,
                 'from-0% to-100%'
               )}
             >
-              <h3 className="text-lg font-bold text-slate-900">{c.title}</h3>
-              <p className="mt-3 text-sm leading-relaxed text-slate-700">{c.description}</p>
+              <DeckShotThumb
+                illustration={DECK_ILLUSTRATIONS[c.illustrationId]}
+                className="aspect-[16/10] w-full overflow-hidden border-b border-white/30"
+              />
+              <div className="p-6 pt-5">
+                <h3 className="text-lg font-bold text-slate-900">{c.title}</h3>
+                <p className="mt-3 text-sm leading-relaxed text-slate-700">{c.description}</p>
+              </div>
             </motion.div>
           ))}
         </div>
-        <ReplaceImageGrid
-          keys={section.galleryKeys as (keyof typeof SCREENSHOTS)[] | undefined}
-          labels={['Replace with track sample 1', 'Replace with track sample 2', 'Replace with track sample 3']}
-        />
+        <ReplaceImageGrid keys={section.galleryKeys as (keyof typeof SCREENSHOTS)[] | undefined} />
       </SectionShell>
     );
   }
@@ -389,12 +449,9 @@ export function PresentationSection({ section }: { section: DeckSection }) {
               ))}
             </ul>
           </div>
-          <BrowserFrame src={shot} alt={shotAlt} slotLabel="Replace with hero feature screenshot" className="lg:ml-auto" />
+          <BrowserFrame src={shot} alt={shotAlt} className="lg:ml-auto" />
         </div>
-        <ReplaceImageGrid
-          keys={section.galleryKeys as (keyof typeof SCREENSHOTS)[] | undefined}
-          labels={['Replace with detail screenshot A', 'Replace with detail screenshot B']}
-        />
+        <ReplaceImageGrid keys={section.galleryKeys as (keyof typeof SCREENSHOTS)[] | undefined} />
       </SectionShell>
     );
   }
@@ -422,13 +479,10 @@ export function PresentationSection({ section }: { section: DeckSection }) {
         </div>
         {shot && (
           <div className="mt-12">
-            <BrowserFrame src={shot} alt={shotAlt} slotLabel="Replace with Jobs Hub / Resume / Certificate capture" />
+            <BrowserFrame src={shot} alt={shotAlt} />
           </div>
         )}
-        <ReplaceImageGrid
-          keys={section.galleryKeys as (keyof typeof SCREENSHOTS)[] | undefined}
-          labels={['Replace with resume builder', 'Replace with jobs hub', 'Replace with certificate flow']}
-        />
+        <ReplaceImageGrid keys={section.galleryKeys as (keyof typeof SCREENSHOTS)[] | undefined} />
       </SectionShell>
     );
   }
@@ -453,10 +507,7 @@ export function PresentationSection({ section }: { section: DeckSection }) {
             </motion.div>
           ))}
         </div>
-        <ReplaceImageGrid
-          keys={section.galleryKeys as (keyof typeof SCREENSHOTS)[] | undefined}
-          labels={['Replace with certificate', 'Replace with testimonial quote', 'Replace with proof dashboard']}
-        />
+        <ReplaceImageGrid keys={section.galleryKeys as (keyof typeof SCREENSHOTS)[] | undefined} />
       </SectionShell>
     );
   }
@@ -485,10 +536,7 @@ export function PresentationSection({ section }: { section: DeckSection }) {
             Browse courses
           </Link>
         </div>
-        <ReplaceImageGrid
-          keys={section.galleryKeys as (keyof typeof SCREENSHOTS)[] | undefined}
-          labels={['Replace with pricing card', 'Replace with offer comparison']}
-        />
+        <ReplaceImageGrid keys={section.galleryKeys as (keyof typeof SCREENSHOTS)[] | undefined} />
       </SectionShell>
     );
   }
@@ -515,13 +563,10 @@ export function PresentationSection({ section }: { section: DeckSection }) {
         </div>
         {shot && (
           <div className="mt-14">
-            <BrowserFrame src={shot} alt={shotAlt} slotLabel="Replace with final product collage" />
+            <BrowserFrame src={shot} alt={shotAlt} />
           </div>
         )}
-        <ReplaceImageGrid
-          keys={section.galleryKeys as (keyof typeof SCREENSHOTS)[] | undefined}
-          labels={['Replace with jobs success screenshot', 'Replace with portfolio proof', 'Replace with final CTA visual']}
-        />
+        <ReplaceImageGrid keys={section.galleryKeys as (keyof typeof SCREENSHOTS)[] | undefined} />
       </SectionShell>
     );
   }
