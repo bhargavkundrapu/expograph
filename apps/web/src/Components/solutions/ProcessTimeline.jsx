@@ -1,27 +1,35 @@
 /**
- * Step cards use container queries so columns follow the *timeline* width,
- * not the viewport — avoids five squeezed columns inside a half-width layout.
+ * Process steps — `lean` for service pages (less copy), default for homepage-style grids.
  */
-export default function ProcessTimeline({ steps }) {
+export default function ProcessTimeline({ steps, lean = false }) {
   return (
     <div className="@container w-full min-w-0">
-      <div className="grid grid-cols-1 gap-4 @min-[30rem]:grid-cols-2 @min-[45rem]:grid-cols-3 @min-[62rem]:grid-cols-5">
+      <div
+        className={
+          lean
+            ? "flex flex-col gap-3"
+            : "grid grid-cols-1 gap-4 @min-[36rem]:grid-cols-2 @min-[52rem]:grid-cols-3 @min-[72rem]:grid-cols-5"
+        }
+      >
         {steps.map((step) => (
           <article
             key={step.step}
-            className="flex min-h-0 min-w-0 flex-col rounded-2xl border border-slate-200/90 bg-white p-4 shadow-sm sm:p-5"
+            className="flex min-h-0 min-w-0 flex-col rounded-2xl border border-violet-200/70 bg-white px-4 py-4 shadow-md ring-1 ring-violet-100 sm:px-5 sm:py-5"
           >
-            <p className="text-[0.65rem] font-bold uppercase leading-tight tracking-wide text-violet-600 sm:text-xs">{step.step}</p>
-            <h3 className="mt-2 text-sm font-bold leading-snug text-slate-900 sm:text-base">{step.title}</h3>
-            <p className="mt-3 text-xs leading-relaxed text-slate-700 sm:text-sm">
-              <span className="font-semibold text-slate-900">You get:</span> {step.whatYouGet}
-            </p>
-            <p className="mt-2 text-xs leading-relaxed text-slate-600 sm:text-sm">
-              <span className="font-semibold text-slate-800">We handle:</span> {step.whatWeHandle}
-            </p>
-            <p className="mt-2 text-xs leading-relaxed text-slate-600 sm:text-sm">
-              <span className="font-semibold text-slate-800">Why it works:</span> {step.whyItWorks}
-            </p>
+            <p className="text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-violet-700 sm:text-xs">{step.step}</p>
+            <h3 className="sol-display mt-2 text-base leading-snug text-slate-900 sm:text-lg">{step.title}</h3>
+            {lean ? (
+              <p className="mt-2 text-xs leading-relaxed text-slate-600 sm:text-sm">{step.whatYouGet}</p>
+            ) : (
+              <>
+                <p className="mt-2 text-xs leading-relaxed text-slate-700 sm:text-sm">
+                  <span className="font-medium text-slate-800">You:</span> {step.whatYouGet}
+                </p>
+                <p className="mt-2 text-xs leading-relaxed text-slate-600 sm:text-sm">
+                  <span className="font-medium text-slate-700">We:</span> {step.whatWeHandle}
+                </p>
+              </>
+            )}
           </article>
         ))}
       </div>

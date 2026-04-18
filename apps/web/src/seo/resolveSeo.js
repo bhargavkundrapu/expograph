@@ -108,9 +108,9 @@ export function resolveSeo(pathname) {
 
   if (path === "/solutions") {
     return {
-      title: "ExpoGraph Solutions — AI Automation, Lead Systems, and Business Software",
+      title: "ExpoGraph Solutions — Software, AI Automation & Growth Systems",
       description:
-        "ExpoGraph Solutions helps businesses grow with AI automation, lead-generation websites, WhatsApp systems, CRM workflows, internal dashboards, and MVP build sprints.",
+        "Lead-focused websites, WhatsApp sales and support flows, AI automation, CRM setup, internal dashboards, and MVP sprints — built for businesses that need clarity and speed.",
       robots,
       canonicalPath: path,
       jsonLd: null,
@@ -121,22 +121,26 @@ export function resolveSeo(pathname) {
     "/solutions/book-a-meet": {
       title: "Book a Meet | ExpoGraph Solutions",
       description:
-        "Tell us your business goals and get a practical solution path for AI automation, lead systems, support workflows, or MVP builds.",
+        "Request a short call. We confirm fit, outline scope options, and suggest a sensible starting point for your automation or software build.",
     },
     "/solutions/pricing": {
       title: "Pricing | ExpoGraph Solutions",
       description:
-        "View transparent starter pricing ranges for AI automation, lead-generation websites, WhatsApp systems, CRM setup, dashboards, and MVP sprints.",
+        "Starter pricing bands for automation, websites, WhatsApp systems, AI support, CRM workflows, internal tools, and MVP sprints — final quotes follow scope.",
     },
     "/solutions/process": {
       title: "Process | ExpoGraph Solutions",
       description:
-        "Understand how ExpoGraph Solutions delivers projects from discovery and solution mapping to launch and optimization support.",
+        "Discovery, solution mapping, scope and plan, build and test, then support and improve — the same five-step delivery model on every engagement.",
     },
     "/solutions/faq": {
       title: "FAQ | ExpoGraph Solutions",
       description:
-        "Answers to common questions about scope, pricing, timelines, support retainers, custom builds, and founder launch workflows.",
+        "Practical answers on how we work together, pricing and timelines, and what happens after launch.",
+    },
+    "/solutions/thank-you": {
+      title: "Thank You | ExpoGraph Solutions",
+      description: "Your meeting request was received. We will follow up with next steps shortly.",
     },
     "/solutions/ai-automation-smbs": {
       title: "AI Automation for SMBs | ExpoGraph Solutions",

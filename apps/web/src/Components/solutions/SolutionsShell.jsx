@@ -1,30 +1,26 @@
 import { Link } from "react-router-dom";
-import { Header } from "../ui/header-2";
-import SolutionsFooter from "./SolutionsFooter";
+import "../../styles/solutions-presentation.css";
+import AcademyPageFooter from "./AcademyPageFooter";
+import SolutionsNavbar from "./SolutionsNavbar";
 
-/**
- * Academy-style top nav + footer; main content uses a calm, LMS-inspired light theme.
- */
+/** Solutions layout — presentation-style shell + Academy home footer (tubes). */
 export default function SolutionsShell({ children }) {
   return (
     <div
-      className="solutions-public-page relative min-h-screen w-full bg-white"
-      style={{
-        fontFamily: "var(--font-dm)",
-        backgroundColor: "#ffffff",
-        color: "#334155",
-      }}
+      className="solutions-public-page min-h-screen w-full bg-white text-slate-900 selection:bg-violet-200/70"
+      style={{ fontFamily: "var(--font-dm)" }}
     >
-      <Header variant="solutions" />
-      <div className="solutions-scroll-content overflow-x-hidden pb-24 pt-20 sm:pb-8 md:pt-24">{children}</div>
-      <SolutionsFooter />
-      {/* Mobile: quick path to talk to us — matches LMS “always reachable” feel */}
-      <div className="fixed bottom-0 left-0 right-0 z-[5000] border-t border-slate-200 bg-white p-3 shadow-[0_-8px_30px_rgba(15,23,42,0.06)] sm:hidden">
+      <SolutionsNavbar />
+      {/* Spacer for fixed navbar: gradient strip (h-0.5) + bar row (h-14) */}
+      <div className="h-[calc(0.125rem+3.5rem)] shrink-0" aria-hidden />
+      <div className="solutions-scroll-content overflow-x-clip">{children}</div>
+      <AcademyPageFooter />
+      <div className="fixed bottom-0 left-0 right-0 z-[5000] border-t border-slate-200/90 bg-white/95 p-3 shadow-[0_-4px_24px_rgba(15,23,42,0.06)] backdrop-blur-sm sm:hidden">
         <Link
           to="/solutions/book-a-meet"
-          className="flex w-full items-center justify-center rounded-xl bg-violet-600 px-4 py-3.5 text-sm font-semibold text-white transition hover:bg-violet-700 active:scale-[0.99]"
+          className="flex w-full min-h-[48px] items-center justify-center rounded-full bg-violet-600 px-4 py-3.5 text-sm font-semibold text-white shadow-xl transition hover:bg-violet-700 active:scale-[0.99]"
         >
-          Book a meet — we are here to help
+          Book a meet
         </Link>
       </div>
     </div>

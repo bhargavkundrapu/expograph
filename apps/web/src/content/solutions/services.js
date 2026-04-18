@@ -1,17 +1,17 @@
 export const SOLUTIONS_SERVICES = [
   {
     slug: "ai-automation-smbs",
+    category: "Automation",
     image: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=1600&q=80&auto=format&fit=crop",
     imageAlt: "Team collaborating with laptops in a bright workspace",
     title: "AI Automation for SMBs",
-    shortValue: "Automate repetitive work so your team can focus on growth.",
+    shortValue: "Automate repeat work your team should not be doing by hand.",
     outcomes: [
       "Reduce manual follow-up and repetitive admin work",
       "Improve response speed across leads and operations",
       "Create automation flows your team can actually use",
     ],
-    heroDescription:
-      "Automate repetitive work and save time with AI-ready systems built for growing teams.",
+    heroDescription: "AI-ready automation for SMB operations — routing, reminders, and visibility.",
     problem:
       "Many teams run critical workflows across spreadsheets, WhatsApp chats, and manual reminders. Work gets delayed, follow-up slips, and management has low visibility.",
     includes: [
@@ -52,17 +52,17 @@ export const SOLUTIONS_SERVICES = [
   },
   {
     slug: "lead-generation-websites",
+    category: "Growth",
     image: "https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=1600&q=80&auto=format&fit=crop",
     imageAlt: "Laptop on a desk showing a modern website layout",
     title: "Lead-Generation Websites",
-    shortValue: "Websites designed to generate qualified inquiries, not just impressions.",
+    shortValue: "Sites built to turn visits into conversations — not vanity traffic.",
     outcomes: [
       "Increase inquiry quality with clearer offer pages",
       "Capture and route leads with minimal drop-off",
       "Improve conversion with focused, trust-led UX",
     ],
-    heroDescription:
-      "Websites built to generate inquiries, not just sit online.",
+    heroDescription: "Lead-generation websites with structure, proof, and clear CTAs.",
     problem:
       "Most business websites look presentable but fail to convert visitors into conversations. Weak messaging, unclear structure, and poor lead capture reduce revenue potential.",
     includes: [
@@ -103,17 +103,17 @@ export const SOLUTIONS_SERVICES = [
   },
   {
     slug: "whatsapp-sales-support-systems",
+    category: "Growth",
     image: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=1600&q=80&auto=format&fit=crop",
     imageAlt: "Smartphone on a desk — messaging and business communication",
     title: "WhatsApp Sales + Support Systems",
-    shortValue: "Turn WhatsApp into a structured sales and support channel.",
+    shortValue: "Treat WhatsApp like a channel — qualify, route, and follow up.",
     outcomes: [
       "Respond faster with structured chat flows",
       "Reduce missed inquiries and manual follow-up",
       "Improve handoff between automation and team members",
     ],
-    heroDescription:
-      "Turn WhatsApp into a real sales and support channel.",
+    heroDescription: "WhatsApp systems for sales and support with clean handoff to people.",
     problem:
       "Teams often rely on ad-hoc WhatsApp replies, resulting in missed leads, inconsistent customer communication, and zero reporting visibility.",
     includes: [
@@ -154,17 +154,17 @@ export const SOLUTIONS_SERVICES = [
   },
   {
     slug: "ai-customer-support-assistants",
+    category: "Automation",
     image: "https://images.unsplash.com/photo-1556740758-90de374c12ad?w=1600&q=80&auto=format&fit=crop",
     imageAlt: "Customer and staff at a service counter — helpful support",
     title: "AI Customer Support Assistants",
-    shortValue: "Reduce routine support workload with AI-first assistance.",
+    shortValue: "Deflect repeat questions; keep humans for what needs judgment.",
     outcomes: [
       "Handle repetitive FAQs faster",
       "Improve support consistency and response quality",
       "Free support teams for high-context conversations",
     ],
-    heroDescription:
-      "AI support assistants that reduce routine workload.",
+    heroDescription: "AI support assistants with guardrails and escalation you control.",
     problem:
       "Support teams spend too much time answering repeated questions. This causes delayed response times and limits focus on complex customer issues.",
     includes: [
@@ -205,17 +205,17 @@ export const SOLUTIONS_SERVICES = [
   },
   {
     slug: "crm-sales-workflow-setup",
+    category: "Growth",
     image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=1600&q=80&auto=format&fit=crop",
     imageAlt: "Team reviewing charts and sales metrics together",
     title: "CRM + Sales Workflow Setup",
-    shortValue: "Bring structure, visibility, and speed to your sales pipeline.",
+    shortValue: "Pipeline stages, follow-up, and reporting your team will actually use.",
     outcomes: [
       "Track leads and stages clearly",
       "Standardize follow-up and deal movement",
       "Improve sales visibility for founders and managers",
     ],
-    heroDescription:
-      "Organize leads, follow-up, and sales movement properly.",
+    heroDescription: "CRM and sales workflow setup — visibility from lead to close.",
     problem:
       "When sales operations run in scattered sheets and chats, pipeline visibility is weak, follow-up gets missed, and conversions become unpredictable.",
     includes: [
@@ -256,17 +256,17 @@ export const SOLUTIONS_SERVICES = [
   },
   {
     slug: "internal-dashboards-admin-portals",
+    category: "Software",
     image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1600&q=80&auto=format&fit=crop",
     imageAlt: "Analytics dashboard on a monitor with business metrics",
     title: "Internal Dashboards + Admin Portals",
-    shortValue: "Build internal systems that reduce chaos and improve control.",
+    shortValue: "Dashboards and admin tools that cut confusion and approval drag.",
     outcomes: [
       "Centralize operations visibility",
       "Improve approval and execution control",
       "Reduce dependence on fragmented manual tracking",
     ],
-    heroDescription:
-      "Build internal systems that reduce chaos and improve control.",
+    heroDescription: "Internal dashboards and portals for operations you can see and govern.",
     problem:
       "Teams handling operations in disconnected tools struggle with approvals, reporting, and ownership. Internal systems are often delayed or poorly scoped.",
     includes: [
@@ -307,17 +307,17 @@ export const SOLUTIONS_SERVICES = [
   },
   {
     slug: "mvp-build-sprints",
+    category: "Software",
     image: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1600&q=80&auto=format&fit=crop",
     imageAlt: "Founders discussing product ideas around a table",
     title: "MVP Build Sprints for Founders",
-    shortValue: "Move from startup idea to usable MVP with execution clarity.",
+    shortValue: "From idea to working MVP — tight scope, visible milestones.",
     outcomes: [
       "Launch faster with clear MVP scope",
       "Avoid overbuilding early product versions",
       "Create a usable foundation for growth and fundraising",
     ],
-    heroDescription:
-      "Go from startup idea to working MVP faster.",
+    heroDescription: "MVP build sprints for founders — ship, learn, then extend.",
     problem:
       "Founders often get stuck between idea and execution due to unclear scope, tech uncertainty, and lack of practical build support.",
     includes: [

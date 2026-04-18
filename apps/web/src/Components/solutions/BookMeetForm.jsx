@@ -1,11 +1,7 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SITE_CONTACT } from "../../config/siteContact";
-import {
-  SOLUTIONS_BUDGET_RANGES,
-  SOLUTIONS_CONTACT_INTENTS,
-  SOLUTIONS_TIMELINES,
-} from "../../content/solutions/contact";
+import { SOLUTIONS_BUDGET_RANGES, SOLUTIONS_CONTACT_INTENTS, SOLUTIONS_TIMELINES } from "../../content/solutions/contact";
 
 function validate(values) {
   const errors = {};
@@ -37,7 +33,7 @@ function buildWhatsappMessage(values) {
 }
 
 const inputClass =
-  "w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-violet-400 focus:ring-2 focus:ring-violet-100";
+  "w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-violet-500 focus:ring-2 focus:ring-violet-100";
 
 export default function BookMeetForm({ showProposalButton = true, redirectOnSuccess = false }) {
   const navigate = useNavigate();
@@ -91,20 +87,18 @@ export default function BookMeetForm({ showProposalButton = true, redirectOnSucc
 
   if (submitted) {
     return (
-      <div className="rounded-2xl border border-emerald-200 bg-white p-8 text-center shadow-sm sm:text-left">
-        <h3 className="text-lg font-bold text-emerald-900">Thank you — we have received your request.</h3>
-        <p className="mt-3 text-sm leading-relaxed text-emerald-800 sm:text-base">
-          We opened WhatsApp with your details so our team can see your message. We will follow up shortly with clear next steps.
+      <div className="rounded-2xl border border-violet-200 bg-white p-8 text-center shadow-lg ring-1 ring-violet-100 sm:text-left">
+        <h3 className="sol-display text-lg text-slate-900 sm:text-xl">Request received</h3>
+        <p className="mt-3 text-sm leading-relaxed text-slate-600 sm:text-base">
+          We opened WhatsApp with your details. We will follow up with clear next steps shortly.
         </p>
       </div>
     );
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-      <p className="text-sm leading-relaxed text-slate-600">
-        Take your time filling this in — there are no wrong answers. We read every submission with care.
-      </p>
+    <form onSubmit={onSubmit} className="space-y-4 rounded-2xl border border-slate-200/90 bg-white p-6 shadow-lg ring-1 ring-slate-900/[0.04] sm:p-8">
+      <p className="text-sm leading-relaxed text-slate-600">A few fields help us prepare. Everything you share stays with our team.</p>
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label="Your name" error={errors.name}>
           <input value={values.name} onChange={update("name")} autoComplete="name" className={inputClass} placeholder="How should we address you?" />
@@ -170,14 +164,14 @@ export default function BookMeetForm({ showProposalButton = true, redirectOnSucc
         <button
           type="submit"
           disabled={loading}
-          className="inline-flex items-center justify-center rounded-xl bg-violet-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-violet-700 disabled:opacity-60"
+          className="inline-flex min-h-[48px] flex-1 items-center justify-center rounded-full bg-violet-600 px-6 py-3 text-sm font-semibold text-white shadow-xl transition hover:bg-violet-700 disabled:opacity-60 sm:flex-none"
         >
           {loading ? "Sending…" : "Book a meet via WhatsApp"}
         </button>
         {showProposalButton ? (
           <a
             href={mailtoHref}
-            className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-800 transition hover:border-violet-200 hover:bg-violet-50/50"
+            className="inline-flex min-h-[48px] flex-1 items-center justify-center rounded-full border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-800 transition hover:bg-slate-50 sm:flex-none"
           >
             Request a proposal by email
           </a>
@@ -190,7 +184,7 @@ export default function BookMeetForm({ showProposalButton = true, redirectOnSucc
 function Field({ label, error, children }) {
   return (
     <label className="block">
-      <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500">{label}</span>
+      <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wide text-slate-500">{label}</span>
       {children}
       {error ? <span className="mt-1.5 block text-xs font-medium text-rose-600">{error}</span> : null}
     </label>

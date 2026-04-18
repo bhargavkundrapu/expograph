@@ -15,7 +15,7 @@ export default function SectionImage({
   return (
     <figure
       className={cn(
-        "w-full min-w-0 self-start overflow-hidden rounded-2xl border border-slate-200/90 bg-white shadow-sm",
+        "w-full min-w-0 self-start overflow-hidden rounded-2xl border border-violet-200/80 bg-white shadow-xl ring-1 ring-violet-100",
         className,
       )}
     >

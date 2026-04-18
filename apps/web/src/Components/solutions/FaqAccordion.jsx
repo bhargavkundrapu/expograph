@@ -4,11 +4,11 @@ export default function FaqAccordion({ groups }) {
   const [openKey, setOpenKey] = useState(null);
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-12">
       {groups.map((group) => (
         <section key={group.group}>
-          <h3 className="text-base font-bold text-slate-900 sm:text-lg">{group.group}</h3>
-          <div className="mt-4 divide-y divide-slate-200 rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <h3 className="sol-display text-xl text-slate-900 sm:text-2xl">{group.group}</h3>
+          <div className="mt-5 divide-y divide-slate-200 rounded-2xl border border-slate-200/90 bg-white shadow-lg ring-1 ring-slate-900/[0.04]">
             {group.items.map((item, index) => {
               const key = `${group.group}-${index}`;
               const open = openKey === key;
@@ -19,7 +19,7 @@ export default function FaqAccordion({ groups }) {
                   <button
                     id={buttonId}
                     type="button"
-                    className="flex w-full items-center justify-between gap-4 px-4 py-4 text-left text-sm text-slate-900 transition hover:bg-violet-50/40 sm:px-5 sm:py-4 sm:text-base"
+                    className="flex w-full items-center justify-between gap-4 px-4 py-4 text-left text-sm text-slate-900 transition hover:bg-violet-50/80 sm:px-5 sm:py-4 sm:text-base"
                     onClick={() => setOpenKey(open ? null : key)}
                     aria-expanded={open}
                     aria-controls={panelId}

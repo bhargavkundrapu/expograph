@@ -1,32 +1,32 @@
-import SectionImage from "../../Components/solutions/SectionImage";
+import { Link } from "react-router-dom";
 import SolutionsShell from "../../Components/solutions/SolutionsShell";
 import ProcessTimeline from "../../Components/solutions/ProcessTimeline";
-import { SOLUTIONS_AUX_BANNERS } from "../../content/solutions/sectionImages";
 import { SOLUTIONS_PROCESS_STEPS } from "../../content/solutions/process";
+
+const shell = "mx-auto max-w-6xl px-4 sm:px-6 lg:px-8";
 
 export default function SolutionsProcessPage() {
   return (
     <SolutionsShell>
-      <section className="border-b border-slate-200/90 bg-white">
-        <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-12 sm:gap-12 sm:px-6 sm:py-16 lg:grid-cols-2 lg:px-8">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-violet-600">Our process</p>
-            <h1 className="mt-3 text-3xl font-bold leading-tight text-slate-900 sm:text-4xl">How we work with you</h1>
-            <p className="mt-4 text-base leading-relaxed text-slate-600 sm:text-lg">
-              No mystery phases. You always know what we are doing, why we are doing it, and what we need from you. The
-              steps below are the same caring rhythm we bring to every engagement.
-            </p>
-          </div>
-          <SectionImage
-            src={SOLUTIONS_AUX_BANNERS.process}
-            alt={SOLUTIONS_AUX_BANNERS.processAlt}
-            aspectClass="aspect-[4/3]"
-            className="shadow-md"
-          />
+      <section className="relative overflow-hidden border-b border-slate-200/80 bg-white">
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-violet-50/80 via-white to-white" aria-hidden />
+        <div className={`relative ${shell} py-16 sm:py-20`}>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-violet-700">Process</p>
+          <h1 className="sol-display mt-3 max-w-3xl text-3xl leading-tight text-slate-900 sm:text-4xl md:text-5xl">Five steps. Same rhythm.</h1>
+          <p className="mt-5 max-w-2xl text-lg leading-relaxed text-slate-600">
+            You always know what we are doing, what we need from you, and what happens next. No mystery phases.
+          </p>
         </div>
       </section>
-      <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-14 lg:px-8">
-        <ProcessTimeline steps={SOLUTIONS_PROCESS_STEPS} />
+      <section className="bg-slate-50 py-14 sm:py-20">
+        <div className={shell}>
+          <ProcessTimeline steps={SOLUTIONS_PROCESS_STEPS} />
+          <div className="mt-12 text-center">
+            <Link to="/solutions/book-a-meet" className="text-sm font-semibold text-violet-700 transition hover:text-violet-900">
+              Discuss your scope →
+            </Link>
+          </div>
+        </div>
       </section>
     </SolutionsShell>
   );

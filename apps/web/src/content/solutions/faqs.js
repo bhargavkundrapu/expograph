@@ -1,82 +1,75 @@
+export const SOLUTIONS_FAQ_PREVIEW = [
+  {
+    q: "How do we choose where to start?",
+    a: "We start where the pain costs you revenue or hours. If you are unsure, we map it on a short call.",
+  },
+  {
+    q: "Is pricing fixed before we talk?",
+    a: "We publish starting bands for planning. Your quote reflects real scope after discovery — never the reverse.",
+  },
+  {
+    q: "Can you work with our existing tools?",
+    a: "Usually yes. We prefer improving what you already use before suggesting a rip-and-replace.",
+  },
+];
+
 export const SOLUTIONS_FAQ_GROUPS = [
   {
-    group: "General",
+    group: "Working together",
     items: [
       {
-        q: "Which service should I start with?",
-        a: "Start with the bottleneck that is directly affecting revenue or operations today. If unsure, begin with a discovery call and we map the right starting point.",
+        q: "Which service should we start with?",
+        a: "The one tied to your biggest leak: lost leads, slow follow-up, support load, or missing internal visibility.",
       },
       {
-        q: "What if I don’t know my exact requirements?",
-        a: "That is common. We help define scope during discovery and convert business goals into practical implementation steps.",
+        q: "What if our requirements are not fully defined?",
+        a: "That is normal. Discovery turns goals into a concrete scope you can approve.",
       },
       {
-        q: "Do you handle design and development both?",
-        a: "Yes. We handle UX structure, visual design direction, development, and delivery support.",
+        q: "Do you handle both design and build?",
+        a: "Yes — structure, UI, implementation, and launch support as one delivery.",
       },
       {
-        q: "Can you improve an existing website or system?",
-        a: "Yes. We can optimize existing systems and workflows instead of forcing a full rebuild.",
+        q: "Can you improve what we already have?",
+        a: "Yes. We often tighten websites, WhatsApp flows, CRMs, and internal tools instead of rebuilding.",
       },
     ],
   },
   {
-    group: "Pricing",
+    group: "Pricing & timing",
     items: [
       {
-        q: "Do you offer fixed packages or custom pricing?",
-        a: "Both. We have starter ranges and bundles, then finalize based on scope, integrations, and timeline.",
+        q: "How does pricing work?",
+        a: "Starter bands are on the pricing page. Final pricing matches integrations, depth, and timeline.",
       },
       {
-        q: "Do you offer monthly support retainers?",
-        a: "Yes. Most solutions can continue with structured monthly support and optimization.",
+        q: "Do you offer ongoing support?",
+        a: "Yes. Most teams keep a light retainer for fixes, tuning, and small improvements.",
+      },
+      {
+        q: "How long does delivery take?",
+        a: "Simple flows can ship quickly. Deeper systems take longer; we give a range after scope.",
+      },
+      {
+        q: "Can we ship in phases?",
+        a: "Yes. Phased delivery is often the lowest-risk way to get value early.",
       },
     ],
   },
   {
-    group: "Timelines",
+    group: "After launch",
     items: [
       {
-        q: "How long does delivery usually take?",
-        a: "Simple builds can launch quickly. Complex systems take longer based on modules, integrations, and testing depth.",
+        q: "What happens after go-live?",
+        a: "We hand over clearly, then stay available for optimization, fixes, and measured iteration.",
       },
       {
-        q: "Can we launch in phases?",
-        a: "Yes. We often deliver in phases so teams get value early and expand with confidence.",
-      },
-    ],
-  },
-  {
-    group: "Support",
-    items: [
-      {
-        q: "What happens after launch?",
-        a: "We can provide optimization, bug fixes, workflow improvements, and feature expansion support.",
+        q: "Will our team get a proper handover?",
+        a: "Yes — practical notes and walkthroughs so day-to-day operations do not depend on tribal knowledge.",
       },
       {
-        q: "Will my team receive handover support?",
-        a: "Yes. We provide practical handover guidance so your team can run day-to-day operations smoothly.",
-      },
-    ],
-  },
-  {
-    group: "Founders & Custom Builds",
-    items: [
-      {
-        q: "Can you build custom software for my business model?",
-        a: "Yes. We design and build custom systems aligned to your workflows and goals.",
-      },
-      {
-        q: "Can I start small and expand later?",
-        a: "Yes. We recommend phased build strategy to reduce risk and validate outcomes early.",
-      },
-      {
-        q: "Which package is best for founders?",
-        a: "Founder Launch Pack is usually the right starting point for MVP planning and first release execution.",
-      },
-      {
-        q: "Which package is best for local businesses?",
-        a: "Local Business Growth Pack is designed for lead capture, WhatsApp conversion, and basic sales flow structure.",
+        q: "Can we start small and expand?",
+        a: "Yes. We recommend proving value on a narrow slice before widening scope.",
       },
     ],
   },

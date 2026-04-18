@@ -1,0 +1,19 @@
+/**
+ * Solutions-only visual baseline aligned with `/presentation`:
+ * DM Sans body, display-weight headlines, violet selection.
+ */
+.solutions-public-page {
+  font-family: var(--font-dm), "DM Sans", ui-sans-serif, system-ui, sans-serif;
+}
+
+.solutions-public-page ::selection {
+  background-color: rgb(196 181 254 / 0.7);
+  color: rgb(15 23 42);
+}
+
+/* Headline rhythm — same family as deck, tighter tracking (presentation uses font-display on DM Sans) */
+.sol-display {
+  font-family: var(--font-dm), "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
