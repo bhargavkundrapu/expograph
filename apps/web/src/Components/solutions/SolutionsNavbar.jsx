@@ -8,7 +8,7 @@ const NAV = [
   { label: "Services", to: "/solutions", hash: "services" },
   { label: "Process", to: "/solutions/process", hash: null },
   { label: "Pricing", to: "/solutions/pricing", hash: null },
-  { label: "FAQ", to: "/solutions/faq", hash: null },
+  { label: "Acadamey", to: "/", hash: null },
   { label: "Contact", to: "/solutions/book-a-meet", hash: null },
 ];
 

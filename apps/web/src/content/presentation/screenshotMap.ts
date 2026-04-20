@@ -52,6 +52,8 @@ const U = {
     `https://res.cloudinary.com/da2wrgabu/image/upload/v1776428868/Screenshot_2026-04-08_140906_vv8zqp.png?${Q}`,
   profile:
     `https://res.cloudinary.com/da2wrgabu/image/upload/v1776428866/Screenshot_2026-04-08_212736_udbeu6.png?${Q}`,
+  videoLesson:
+    `https://res.cloudinary.com/da2wrgabu/image/upload/v1776666196/Screenshot_2026-04-20_115230_sxb8z1.png?${Q}`,
 } as const;
 
 export const SCREENSHOTS: ScreenshotMap = {
@@ -61,7 +63,8 @@ export const SCREENSHOTS: ScreenshotMap = {
   clientLab: U.realClientLab,
   careerTools: U.jobsHub,
   launchpad: U.launchpad,
-  coursesCatalog: U.myLearning,
+  coursesCatalog: U.videoLesson
+  ,
   studentDashboard: U.studentDashboard,
   lessonView: U.commandsTab,
   promptDrawer: U.promptsTab,
