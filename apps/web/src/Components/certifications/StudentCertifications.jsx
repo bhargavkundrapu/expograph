@@ -367,16 +367,79 @@ export default function StudentCertifications() {
       const pageHeight = doc.internal.pageSize.getHeight();
       const margin = 30;
 
-      doc.setFillColor(248, 250, 252);
+      const drawHexagon = ({
+        centerX,
+        centerY,
+        radius,
+        stroke = [180, 200, 220],
+        fill = null,
+        lineWidth = 1.2,
+      }) => {
+        const points = Array.from({ length: 6 }, (_, idx) => {
+          const angle = (Math.PI / 3) * idx - Math.PI / 6;
+          return {
+            x: centerX + radius * Math.cos(angle),
+            y: centerY + radius * Math.sin(angle),
+          };
+        });
+        const deltas = [];
+        for (let i = 1; i < points.length; i += 1) {
+          deltas.push([points[i].x - points[i - 1].x, points[i].y - points[i - 1].y]);
+        }
+        deltas.push([points[0].x - points[5].x, points[0].y - points[5].y]);
+
+        if (fill) {
+          doc.setFillColor(fill[0], fill[1], fill[2]);
+          doc.setDrawColor(stroke[0], stroke[1], stroke[2]);
+          doc.setLineWidth(lineWidth);
+          doc.lines(deltas, points[0].x, points[0].y, [1, 1], "FD", true);
+          return;
+        }
+
+        doc.setDrawColor(stroke[0], stroke[1], stroke[2]);
+        doc.setLineWidth(lineWidth);
+        doc.lines(deltas, points[0].x, points[0].y, [1, 1], "S", true);
+      };
+
+      doc.setFillColor(255, 255, 255);
       doc.rect(0, 0, pageWidth, pageHeight, "F");
 
-      doc.setDrawColor(15, 23, 42);
-      doc.setLineWidth(1.5);
-      doc.rect(margin, margin, pageWidth - margin * 2, pageHeight - margin * 2);
+      // Purple accents on top and side rails.
+      doc.setFillColor(96, 53, 149);
+      doc.rect(0, 0, pageWidth, 14, "F");
+      doc.rect(0, 0, 18, pageHeight, "F");
+      doc.rect(pageWidth - 18, 0, 18, pageHeight, "F");
 
-      doc.setDrawColor(14, 165, 233);
-      doc.setLineWidth(0.8);
-      doc.rect(margin + 10, margin + 10, pageWidth - (margin + 10) * 2, pageHeight - (margin + 10) * 2);
+      // Top-right layered geometric marks (closer to sample angle and overlap).
+      doc.setFillColor(26, 72, 143);
+      doc.triangle(pageWidth - 292, 0, pageWidth - 16, 0, pageWidth - 16, 138, "F");
+      doc.setFillColor(49, 114, 186);
+      doc.triangle(pageWidth - 250, 0, pageWidth - 9, 0, pageWidth - 9, 114, "F");
+      doc.setFillColor(84, 149, 214);
+      doc.triangle(pageWidth - 214, 0, pageWidth - 4, 0, pageWidth - 4, 90, "F");
+      doc.setFillColor(167, 208, 241);
+      doc.triangle(pageWidth - 182, 0, pageWidth - 2, 0, pageWidth - 2, 70, "F");
+
+      // Bottom-left layered wedges and base strip.
+      doc.setFillColor(28, 54, 112);
+      doc.rect(0, pageHeight - 34, 274, 34, "F");
+      doc.setFillColor(41, 76, 142);
+      doc.triangle(0, pageHeight, 246, pageHeight, 0, pageHeight - 138, "F");
+      doc.setFillColor(77, 134, 202);
+      doc.triangle(0, pageHeight - 8, 194, pageHeight - 8, 0, pageHeight - 96, "F");
+      doc.setFillColor(168, 212, 242);
+      doc.triangle(0, pageHeight - 10, 140, pageHeight - 10, 0, pageHeight - 67, "F");
+
+      // Hexagon motifs positioned and toned to match the visual rhythm.
+      drawHexagon({ centerX: 96, centerY: 132, radius: 23, stroke: [182, 208, 231], lineWidth: 2 });
+      drawHexagon({ centerX: 140, centerY: 136, radius: 16, fill: [114, 146, 160], stroke: [114, 146, 160], lineWidth: 1 });
+      drawHexagon({ centerX: 170, centerY: 186, radius: 22, fill: [188, 217, 240], stroke: [188, 217, 240], lineWidth: 1 });
+      drawHexagon({ centerX: 62, centerY: 186, radius: 12, fill: [241, 243, 247], stroke: [241, 243, 247], lineWidth: 1 });
+
+      drawHexagon({ centerX: pageWidth - 106, centerY: pageHeight - 118, radius: 22, fill: [167, 206, 238], stroke: [167, 206, 238], lineWidth: 1 });
+      drawHexagon({ centerX: pageWidth - 70, centerY: pageHeight - 114, radius: 13, fill: [234, 238, 245], stroke: [234, 238, 245], lineWidth: 1 });
+      drawHexagon({ centerX: pageWidth - 136, centerY: pageHeight - 74, radius: 15, fill: [120, 156, 170], stroke: [120, 156, 170], lineWidth: 1 });
+      drawHexagon({ centerX: pageWidth - 72, centerY: pageHeight - 67, radius: 19, stroke: [188, 214, 235], lineWidth: 2 });
 
       // Top-left brand logo (same as login page).
       try {
@@ -389,7 +452,7 @@ export default function StudentCertifications() {
         brandLogo.src = CERTIFICATE_LOGO_URL;
         await logoLoaded;
         // Increased height with extra top breathing space.
-        doc.addImage(brandLogo, "PNG", margin + 16, margin + 14, 110, 70);
+        doc.addImage(brandLogo, "PNG", margin + 16, margin + 8, 110, 70);
       } catch {
         // Keep PDF generation resilient if remote image load fails.
       }
