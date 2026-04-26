@@ -41,6 +41,11 @@ export default function CourseExplorePage() {
 
   const hasWhatYouCanDo = Array.isArray(data.whatYouCanDo) && data.whatYouCanDo.length > 0;
   const hasRealWorldScenarios = Array.isArray(data.realWorldScenarios) && data.realWorldScenarios.length > 0;
+  const topCtaLabel = data.isPack
+    ? "Explore All Courses"
+    : data.isBonus
+      ? "Get This via All Pack"
+      : "Browse Courses";
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -82,6 +87,18 @@ export default function CourseExplorePage() {
               decoding="async"
             />
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/30" aria-hidden />
+          </div>
+          <div className="mb-7">
+            <button
+              onClick={() => navigate(COURSE_ROUTE_BASE)}
+              className={cn(
+                "inline-flex items-center justify-center rounded-full px-6 py-2.5 text-sm font-semibold text-white transition-all",
+                "shadow-lg shadow-violet-500/20 hover:scale-[1.02] hover:opacity-95",
+                `bg-gradient-to-r ${data.gradient}`
+              )}
+            >
+              {topCtaLabel}
+            </button>
           </div>
           <h1
             className={cn(
