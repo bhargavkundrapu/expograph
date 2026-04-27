@@ -16,7 +16,7 @@ const syne = Syne({
 
 export const metadata: Metadata = {
   title: 'ExpoGraph',
-  description: 'ExpoGraph — student-first AI build platform and product presentation.',
+  description: 'ExpoGraph - student-first AI build platform and product presentation.',
 };
 
 export default function RootLayout({

@@ -1,5 +1,5 @@
 /**
- * Master product presentation — ExpoGraph Academy.
+ * Master product presentation - ExpoGraph Academy.
  * Copy is aligned with the live product; no invented metrics or outcomes.
  */
 
@@ -68,7 +68,7 @@ export const MASTER_DECK: DeckSection[] = [
     eyebrow: 'ExpoGraph Academy',
     title: 'Stop learning to code. Start building with AI.',
     subtitle:
-      'ExpoGraph is built for students who want real skills, real projects, real proof, and real momentum — not passive watching.',
+      'ExpoGraph is built for students who want real skills, real projects, real proof, and real momentum - not passive watching.',
     navLabel: 'Cover',
     screenshotKey: 'hero',
   },
@@ -82,7 +82,7 @@ export const MASTER_DECK: DeckSection[] = [
     lines: [
       'Tutorials are everywhere.',
       'Certificates are easy to list.',
-      'What still cuts through is proof — what you shipped, and can show.',
+      'What still cuts through is proof - what you shipped, and can show.',
       'Many students still struggle to demonstrate real output.',
     ],
     navLabel: 'Problem',
@@ -110,7 +110,7 @@ export const MASTER_DECK: DeckSection[] = [
     eyebrow: 'What ExpoGraph is',
     title: 'A student-first AI build platform',
     lines: [
-      'Structured AI skill tracks — not random playlists.',
+      'Structured AI skill tracks - not random playlists.',
       'A real student LMS with progress and momentum.',
       'Smart prompts that reduce blank-page friction.',
       'Pathways into real work, career tools, and founder support.',
@@ -128,7 +128,7 @@ export const MASTER_DECK: DeckSection[] = [
     lines: [
       'Watch less. Build more.',
       'Move from concepts to output you can show.',
-      'Pair completion with proof — projects, portfolio, and certificates.',
+      'Pair completion with proof - projects, portfolio, and certificates.',
     ],
     navLabel: 'Promise',
   },
@@ -148,7 +148,7 @@ export const MASTER_DECK: DeckSection[] = [
     actLabel: ACT_LABELS[4],
     variant: 'screenshot',
     eyebrow: 'Product depth',
-    title: 'A real LMS — not just a content list',
+    title: 'A real LMS - not just a content list',
     lines: [
       'Dashboard with your next steps front and center.',
       'Progress, streaks, XP, and levels to sustain momentum.',
@@ -165,7 +165,7 @@ export const MASTER_DECK: DeckSection[] = [
     eyebrow: 'Differentiation',
     title: 'Build faster with Smart Prompts',
     lines: [
-      'Less blank-page fear — prompts live next to lessons.',
+      'Less blank-page fear - prompts live next to lessons.',
       'Faster practical output with copy-ready snippets.',
       'Support for real AI-assisted workflows as you learn.',
     ],
@@ -180,7 +180,7 @@ export const MASTER_DECK: DeckSection[] = [
     eyebrow: 'Proof',
     title: 'Where learning becomes real work',
     lines: [
-      'Real tasks and project-style work — not toy exercises alone.',
+      'Real tasks and project-style work - not toy exercises alone.',
       'Mentor review for quality feedback.',
       'Portfolio-grade output you can stand behind.',
     ],
@@ -194,11 +194,11 @@ export const MASTER_DECK: DeckSection[] = [
     variant: 'triple',
     eyebrow: 'Opportunity',
     title: 'Learning connected to opportunity',
-    subtitle: 'India-first career command center — job search helpers that open the portals you already use.',
+    subtitle: 'India-first career command center - job search helpers that open the portals you already use.',
     lines: [
-      'Resume Builder — structured, export-ready.',
-      'Certificates — completion and verification flow in the product.',
-      'Jobs Search Hub — presets, keyword control, and redirects (you apply on the original site).',
+      'Resume Builder - structured, export-ready.',
+      'Certificates - completion and verification flow in the product.',
+      'Jobs Search Hub - presets, keyword control, and redirects (you apply on the original site).',
     ],
     navLabel: 'Career',
     screenshotKey: 'jobsHub',
@@ -212,7 +212,7 @@ export const MASTER_DECK: DeckSection[] = [
     title: 'For students who want to build beyond jobs',
     subtitle: 'Your startup path, in the right order.',
     lines: [
-      'Startup LaunchPad — readiness, staged path, and founder-oriented tools.',
+      'Startup LaunchPad - readiness, staged path, and founder-oriented tools.',
       'Legal timing guidance appears when it makes sense in the journey.',
       'Access is tied to your course pack rules in the LMS.',
     ],
@@ -259,7 +259,7 @@ export const MASTER_DECK: DeckSection[] = [
     lines: [
       'Build-first AI learning with a real LMS layer.',
       'Smart Prompts, Real Client Lab, Resume Builder, Jobs Hub, Startup LaunchPad.',
-      'Affordable entry — strength, not compromise.',
+      'Affordable entry - strength, not compromise.',
     ],
     navLabel: 'Stand out',
   },
@@ -280,12 +280,12 @@ export const MASTER_DECK: DeckSection[] = [
 export const TRACK_CARDS = [
   {
     title: 'Vibe Coding',
-    description: 'Build with AI-assisted workflows — ship, don’t only study.',
+    description: 'Build with AI-assisted workflows - ship, don’t only study.',
     accent: 'from-violet-500/30 to-fuchsia-500/20',
   },
   {
     title: 'Prompt Engineering',
-    description: 'Think in prompts — clarity, structure, and iteration.',
+    description: 'Think in prompts - clarity, structure, and iteration.',
     accent: 'from-indigo-500/30 to-blue-500/20',
   },
   {
@@ -295,7 +295,7 @@ export const TRACK_CARDS = [
   },
   {
     title: 'AI Automations',
-    description: 'Automate workflows with intelligence — bonus depth with the pack.',
+    description: 'Automate workflows with intelligence - bonus depth with the pack.',
     accent: 'from-emerald-500/25 to-teal-500/15',
   },
 ] as const;

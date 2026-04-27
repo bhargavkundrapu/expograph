@@ -23,7 +23,7 @@ function HeroSkeleton() {
   return (
     <div className="w-full h-screen bg-black flex items-center justify-center animate-pulse">
       <div className="w-full max-w-xl px-8 space-y-6">
-        {/* Tailwind classes with / — use template literals so the JSX lexer stays unambiguous */}
+        {/* Tailwind classes with / - use template literals so the JSX lexer stays unambiguous */}
         <div className={`h-4 bg-white/[0.06] rounded-full w-2/3`} />
         <div className={`h-12 bg-white/[0.06] rounded-xl w-full`} />
         <div className={`h-12 bg-white/[0.06] rounded-xl w-3/4`} />
@@ -151,9 +151,9 @@ export default function AcademyPage() {
   const location = useLocation();
   const heroSectionRef = useRef(null);
   const reviewsSectionRef = useRef(null);
-  /** Unmount Spline when hero is off-screen — WebGL competes with scroll compositing. */
+  /** Unmount Spline when hero is off-screen - WebGL competes with scroll compositing. */
   const [heroWebglVisible, setHeroWebglVisible] = useState(true);
-  /** Pause infinite marquees when reviews section is off-screen — constant animation = jank. */
+  /** Pause infinite marquees when reviews section is off-screen - constant animation = jank. */
   const [reviewsMarqueeActive, setReviewsMarqueeActive] = useState(false);
 
   useEffect(() => {
@@ -395,7 +395,7 @@ export default function AcademyPage() {
         <CallToAction1 />
       </section>
 
-      {/* Startup LaunchPad — founder product inside LMS */}
+      {/* Startup LaunchPad - founder product inside LMS */}
       <section
         id="startup-launchpad"
         className="py-14 sm:py-16 md:py-20 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 academy-section-gpu heavy-section"
@@ -416,10 +416,10 @@ export default function AcademyPage() {
                 All Pack or all three main courses
               </p>
               <p className="mt-4 text-sm sm:text-base text-white/65 leading-relaxed">
-                A guided founder journey from idea to MVP, launch, legal setup, and growth—inside the student portal. Progress, readiness, actions, and tools. Not a course flow; a startup control center.
+                A guided founder journey from idea to MVP, launch, legal setup, and growth-inside the student portal. Progress, readiness, actions, and tools. Not a course flow; a startup control center.
               </p>
               <p className="mt-3 text-xs sm:text-sm text-white/50 leading-relaxed">
-                Unlocks with the <span className="text-amber-300/90 font-medium">All Pack</span> or when you own all three core courses (Vibe Coding, Prompt Engineering, Prompt to Profit)—same rule as Real Client Lab and the AI Automations bonus.
+                Unlocks with the <span className="text-amber-300/90 font-medium">All Pack</span> or when you own all three core courses (Vibe Coding, Prompt Engineering, Prompt to Profit)-same rule as Real Client Lab and the AI Automations bonus.
               </p>
               <ul className="mt-6 space-y-2 text-sm text-white/70">
                 <li className="flex gap-2"><span className="text-orange-400">→</span> 12-stage path with unlocks</li>
@@ -711,7 +711,7 @@ export default function AcademyPage() {
         </div>
       </section>
 
-      {/* Jobs Search Hub — before Join the vibe; borders match other academy sections */}
+      {/* Jobs Search Hub - before Join the vibe; borders match other academy sections */}
       <section
         id="jobs-hub"
         className="py-10 sm:py-12 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 academy-section-gpu heavy-section"
@@ -721,10 +721,10 @@ export default function AcademyPage() {
           <div className="space-y-3 min-w-0">
             <p className="text-xs font-semibold uppercase tracking-widest text-white/50">New in LMS</p>
             <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white leading-tight">
-              Jobs Search Hub — your India-first career command center
+              Jobs Search Hub - your India-first career command center
             </h2>
             <p className="text-sm sm:text-base text-white/60 max-w-xl">
-              B.Tech role presets, editable keyword chips, and one-tap searches on LinkedIn, Naukri, Indeed, Internshala & more. Saved searches and apply tracking stay on your device — no scraping, no extra server cost.
+              B.Tech role presets, editable keyword chips, and one-tap searches on LinkedIn, Naukri, Indeed, Internshala & more. Saved searches and apply tracking stay on your device - no scraping, no extra server cost.
             </p>
             <Link to="/features/jobs-search-hub" className="inline-flex text-sm text-violet-400/90 hover:text-violet-300 font-medium">
               Full feature tour →
@@ -889,7 +889,7 @@ export default function AcademyPage() {
         </div>
       </section>
 
-      {/* Footer WebGL deferred until near viewport — avoids GPU contention while scrolling the long page */}
+      {/* Footer WebGL deferred until near viewport - avoids GPU contention while scrolling the long page */}
       <footer className="w-full min-h-[560px] sm:min-h-[70vh] border-t border-black">
         <LazyMount
           placeholderHeight="min(560px, 70vh)"

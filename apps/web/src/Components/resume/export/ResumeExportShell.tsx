@@ -1,7 +1,7 @@
 import React from "react";
 
 /**
- * Letter-sized (8.5Ã—11) fixed-width container for PDF export.
+ * Letter-sized (8.5Ã-11) fixed-width container for PDF export.
  * Width 816px at 96dpi. Reduced margins (~30% tighter). Page-break rules only.
  */
 export const LETTER_WIDTH_PX = 816;

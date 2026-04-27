@@ -172,7 +172,7 @@ export default function JobsHub() {
   const saveCurrent = useCallback(() => {
     const name = savedName.trim() || `Search ${savedList.length + 1}`;
     if (!canSearch) {
-      setToast("Nothing to save — add keywords");
+      setToast("Nothing to save - add keywords");
       return;
     }
     const entry = {
@@ -226,8 +226,8 @@ export default function JobsHub() {
         <p className="text-xs font-semibold uppercase tracking-widest text-violet-600">Career command center</p>
         <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Jobs Search Hub</h1>
         <p className="text-sm text-slate-600 max-w-2xl line-clamp-3">
-          India-first presets, smart keyword chips, and one-click redirects to LinkedIn, Naukri, Indeed, Internshala & more — pick{" "}
-          <strong className="font-semibold text-slate-800">one platform</strong> at a time. No scraping — you apply on the original site.
+          India-first presets, smart keyword chips, and one-click redirects to LinkedIn, Naukri, Indeed, Internshala & more - pick{" "}
+          <strong className="font-semibold text-slate-800">one platform</strong> at a time. No scraping - you apply on the original site.
         </p>
       </header>
 

@@ -31,7 +31,7 @@ export function ChapterProgress({ activeId, progress }: ChapterProgressProps) {
           <a
             key={s.id}
             href={`#section-${s.id}`}
-            title={`${s.navLabel} — ${s.actLabel}`}
+            title={`${s.navLabel} - ${s.actLabel}`}
             className={cn(
               'group relative flex h-8 w-8 items-center justify-center rounded-full border transition',
               activeId === s.id

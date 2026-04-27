@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { LazyMount } from "../LazyMount";
 import { TubesBackground } from "../ui/neon-flow";
 
-/** Same footer block as `AcademyPage` — WebGL tubes, deferred mount, legal links. */
+/** Same footer block as `AcademyPage` - WebGL tubes, deferred mount, legal links. */
 export default function AcademyPageFooter() {
   const year = new Date().getFullYear();
 

@@ -33,7 +33,7 @@ export default function SearchPreview({ filters, selectedPlatformIds }) {
             <li key={id} className="truncate" title={url}>
               <span className="text-violet-700 font-medium">{label}:</span>{" "}
               <span className="text-slate-500">
-                {url ? (url.length > 72 ? `${url.slice(0, 72)}…` : url) : "—"}
+                {url ? (url.length > 72 ? `${url.slice(0, 72)}…` : url) : "-"}
               </span>
             </li>
           ))}

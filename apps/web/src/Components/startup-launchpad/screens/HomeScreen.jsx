@@ -93,7 +93,7 @@ export default function HomeScreen() {
         <p className="text-xs font-semibold uppercase tracking-wide text-emerald-800">Optional registration package (LMS)</p>
         <p className="mt-2 text-sm text-slate-800 leading-relaxed">
           When you are ready to incorporate, guided registration support is available at{" "}
-          <span className="font-semibold tabular-nums text-emerald-900">{REGISTRATION_SUPPORT_OFFER.price}</span>—positioned as best for{" "}
+          <span className="font-semibold tabular-nums text-emerald-900">{REGISTRATION_SUPPORT_OFFER.price}</span>-positioned as best for{" "}
           <span className="font-medium">{REGISTRATION_SUPPORT_OFFER.priceLabel.toLowerCase()}</span> (features in that bundle only; see Legal).
         </p>
         <div className="mt-3 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
@@ -125,7 +125,7 @@ export default function HomeScreen() {
           ))}
           <span className="shrink-0 px-3 py-1.5 rounded-full bg-violet-100 border border-violet-200 text-xs text-violet-800">+6 more</span>
         </div>
-        <p className="mt-4 text-sm text-slate-600">Legal setup appears at the right time—after clarity, not before.</p>
+        <p className="mt-4 text-sm text-slate-600">Legal setup appears at the right time-after clarity, not before.</p>
       </section>
     </div>
   );

@@ -5,7 +5,7 @@ export const SOLUTIONS_FAQ_PREVIEW = [
   },
   {
     q: "Is pricing fixed before we talk?",
-    a: "We publish starting bands for planning. Your quote reflects real scope after discovery — never the reverse.",
+    a: "We publish starting bands for planning. Your quote reflects real scope after discovery - never the reverse.",
   },
   {
     q: "Can you work with our existing tools?",
@@ -27,7 +27,7 @@ export const SOLUTIONS_FAQ_GROUPS = [
       },
       {
         q: "Do you handle both design and build?",
-        a: "Yes — structure, UI, implementation, and launch support as one delivery.",
+        a: "Yes - structure, UI, implementation, and launch support as one delivery.",
       },
       {
         q: "Can you improve what we already have?",
@@ -65,7 +65,7 @@ export const SOLUTIONS_FAQ_GROUPS = [
       },
       {
         q: "Will our team get a proper handover?",
-        a: "Yes — practical notes and walkthroughs so day-to-day operations do not depend on tribal knowledge.",
+        a: "Yes - practical notes and walkthroughs so day-to-day operations do not depend on tribal knowledge.",
       },
       {
         q: "Can we start small and expand?",

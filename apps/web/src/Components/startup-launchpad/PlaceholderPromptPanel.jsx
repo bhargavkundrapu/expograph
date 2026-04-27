@@ -10,7 +10,7 @@ export default function PlaceholderPromptPanel({
   definition,
   defaultOpen = true,
   compact = false,
-  subtitle = "Placeholder prompt — customize with your startup, then copy",
+  subtitle = "Placeholder prompt - customize with your startup, then copy",
 }) {
   const [open, setOpen] = useState(defaultOpen);
   const [vals, setVals] = useState({});

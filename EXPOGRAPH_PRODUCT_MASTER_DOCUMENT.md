@@ -1,4 +1,4 @@
-# ExpoGraph — Product & Website Master Document
+# ExpoGraph - Product & Website Master Document
 
 *Generated from repository inspection (`apps/web` primary customer-facing app, `apps/api` backend references). No code was modified. Where the UI or routing is ambiguous or inconsistent, this is called out explicitly.*
 
@@ -20,7 +20,7 @@
 
 | Dimension | Detail |
 |-----------|--------|
-| **Product name** | ExpoGraph; Academy positioning as **ExpoGraph Academy**; wordmark **ΣxpoGraph** (sigma suggests math/exponential “e^x” motif — logo assets include `e^x.png`). |
+| **Product name** | ExpoGraph; Academy positioning as **ExpoGraph Academy**; wordmark **ΣxpoGraph** (sigma suggests math/exponential “e^x” motif - logo assets include `e^x.png`). |
 | **Category** | EdTech / LMS + AI skills + career tools; adjacent **enterprise IT solutions** page (`/solutions`) presents a separate B2B services narrative. |
 | **Problem framed** | Generic courses are expensive or passive; learners need **build-first**, **AI-native** skills, **affordable** access, **proof** (certificates, real work). |
 | **Differentiation (as stated in code)** | **Vibe coding** + **smart prompts**, **Real Client Lab**, **MCA recognition**, **extreme price** (₹99 / ₹199), **Resume Builder**, **Jobs Hub**, **Startup LaunchPad** for founders. |
@@ -34,14 +34,14 @@
 |----------|----------------|-----------------|-----------------------------------|
 | **Students (B.Tech, BCA, MCA, CS, etc.)** | Affordable, job-relevant AI/build skills; certificates; portfolio | High cost elsewhere; passive video courses | ₹99 courses, structured lessons, smart prompts, resume builder, certs |
 | **Career switchers / professionals** | Practical skills without long theory | Time | “No filler” narrative in testimonials; short lesson structure |
-| **Job seekers (India)** | Faster applications across portals | Repetitive keyword entry | Jobs Search Hub — presets, chips, multi-platform links, local tracking |
-| **Aspiring founders** | Ordered steps from idea to launch | Overwhelming generic advice | Startup LaunchPad — stages, readiness, tools (gated) |
+| **Job seekers (India)** | Faster applications across portals | Repetitive keyword entry | Jobs Search Hub - presets, chips, multi-platform links, local tracking |
+| **Aspiring founders** | Ordered steps from idea to launch | Overwhelming generic advice | Startup LaunchPad - stages, readiness, tools (gated) |
 | **Colleges / institutions** | Cohort management (implied) | Unclear from student-facing UI | **Super Admin → Colleges** route exists; B2B story not developed on the public academy page |
 | **Mentors** | Review work, manage mentees | Tooling | Mentor portal: submissions, client lab, internships, analytics |
-| **Admins** | Operate courses, users, events | — | Super Admin: courses, packs, workshops, certificates, client lab, students, mentors |
-| **Tenant admins** | Manage their tenant | — | `/lms/admin` — **minimal placeholder copy** (“Tenant Admin Dashboard”) |
-| **Enterprise buyers (services)** | Custom software | — | `/solutions` — enterprise IT services narrative (separate from Academy) |
-| **Guests** | Explore before buying | — | Academy + courses pricing; login OTP |
+| **Admins** | Operate courses, users, events | - | Super Admin: courses, packs, workshops, certificates, client lab, students, mentors |
+| **Tenant admins** | Manage their tenant | - | `/lms/admin` - **minimal placeholder copy** (“Tenant Admin Dashboard”) |
+| **Enterprise buyers (services)** | Custom software | - | `/solutions` - enterprise IT services narrative (separate from Academy) |
+| **Guests** | Explore before buying | - | Academy + courses pricing; login OTP |
 
 ---
 
@@ -54,22 +54,22 @@
 | Route | Page name (source) | Purpose | Audience | Main sections / notes | Key CTAs | Public? |
 |-------|-------------------|---------|----------|------------------------|----------|---------|
 | `/`, `/academy` | `HomeOrRedirect` → `AcademyPage` | Marketing homepage | All | Hero → learn block → courses → trust → MCA → CTA → LaunchPad → features grid → certification → pricing banner → reviews → Jobs Hub → connect → FAQ → footer | Login / LMS Portal, Explore, Join family, course pricing, social | **Public** |
-| `/solutions` | `SolutionsPage` | Enterprise IT services marketing | B2B | Hero, solutions grid, services, stats, FAQ, CTA | Get a Quote (non-linked flow in code — button), Explore Academy | **Public** |
+| `/solutions` | `SolutionsPage` | Enterprise IT services marketing | B2B | Hero, solutions grid, services, stats, FAQ, CTA | Get a Quote (non-linked flow in code - button), Explore Academy | **Public** |
 | `/courses` | `CoursesPage` | Pricing & catalog | Buyers | Bento pricing (`PricingWithChart`), footer | Buy / Explore per card, footer legal | **Public** |
 | `/courses/explore/:slug` | `CourseExplorePage` | Course exploration | Prospects | (lazy-loaded) | Explore CTAs from pricing | **Public** |
 | `/courses/:slug` | `CourseDetailPage` | Course or pack detail | Prospects | API-driven title/description; buy | Buy (modal) | **Public** |
 | `/features/:slug` | `FeatureDetailPage` | Feature deep-dives | All | Hero + sections per slug | Login / LMS, related features | **Public** (slug must exist in `featureData`) |
 | `/contact` | `ContactPage` | Contact | All | Hero, form → WhatsApp handoff | Submit → WhatsApp | **Public** |
-| `/demo/course-sidebar` | `CourseContentsSidebarDemo` | Demo / dev | — | — | — | **Public** |
-| `/login` | `LoginPage` | OTP login | Users | Email → OTP | Request OTP, verify | **Public** (wrapped in `PublicOnly` — logged-in users redirected) |
-| `/adminlogin` | `AdminLoginPage` | Admin login | Staff | — | — | **Public** |
-| `/privacy-policy` | `PrivacyPolicyPage` | Legal | All | — | — | **Public** |
-| `/terms-and-conditions` | `TermsConditionsPage` | Legal | All | — | — | **Public** |
+| `/demo/course-sidebar` | `CourseContentsSidebarDemo` | Demo / dev | - | - | - | **Public** |
+| `/login` | `LoginPage` | OTP login | Users | Email → OTP | Request OTP, verify | **Public** (wrapped in `PublicOnly` - logged-in users redirected) |
+| `/adminlogin` | `AdminLoginPage` | Admin login | Staff | - | - | **Public** |
+| `/privacy-policy` | `PrivacyPolicyPage` | Legal | All | - | - | **Public** |
+| `/terms-and-conditions` | `TermsConditionsPage` | Legal | All | - | - | **Public** |
 | `/account-pending` | `AccountPendingPage` | Post-payment onboarding | Paying users | Success, timing, WhatsApp, login | Go to Login | **Public** |
-| `/payment-failure` | `PaymentFailurePage` | Payment error | Users | — | — | **Public** |
-| `/not-found`, `*` | `NotFoundPage` | 404 | — | — | — | **Public** |
+| `/payment-failure` | `PaymentFailurePage` | Payment error | Users | - | - | **Public** |
+| `/not-found`, `*` | `NotFoundPage` | 404 | - | - | - | **Public** |
 
-## Super Admin (`/lms/superadmin/*`) — **Protected: role `SuperAdmin`**
+## Super Admin (`/lms/superadmin/*`) - **Protected: role `SuperAdmin`**
 
 | Route pattern | Purpose (from labels) |
 |---------------|----------------------|
@@ -83,9 +83,9 @@
 | `client-lab/*`, `client-lab/real-world/*` | Real Client Lab admin |
 | `mentors`, `mentors/*` | Mentor management |
 
-*Many path variants point to the **same lazy components** (e.g. multiple workshop paths → `SuperAdminWorkshops`) — likely in-app tab/state routing.*
+*Many path variants point to the **same lazy components** (e.g. multiple workshop paths → `SuperAdminWorkshops`) - likely in-app tab/state routing.*
 
-## Tenant Admin (`/lms/admin/*`) — **Protected: role `TenantAdmin`**
+## Tenant Admin (`/lms/admin/*`) - **Protected: role `TenantAdmin`**
 
 | Route | Component | Notes |
 |-------|-----------|-------|
@@ -93,7 +93,7 @@
 | `/lms/admin/settings` | `TenantAdminSettings` | Exists |
 | `/lms/admin/users` | `TenantAdminUsers` | Exists |
 
-## Mentor (`/lms/mentor/*`) — **Protected: role `Mentor`**
+## Mentor (`/lms/mentor/*`) - **Protected: role `Mentor`**
 
 | Route pattern | Label (sidebar) |
 |---------------|-----------------|
@@ -108,11 +108,11 @@
 | `resources/*` | Resources |
 | `settings/*` | Settings |
 
-## Student (`/lms/student/*`) — **Protected: role `Student`**
+## Student (`/lms/student/*`) - **Protected: role `Student`**
 
 | Area | Routes (summary) |
 |------|-------------------|
-| Home | `index` — `StudentHome` |
+| Home | `index` - `StudentHome` |
 | Progress | `progress`, `progress/*` |
 | Courses | `courses`, `courses/list`, `courses/:courseSlug`, `courses/.../lessons/:lessonSlug` |
 | Bonus courses | `bonus-courses/*` (parallel structure) |
@@ -129,46 +129,46 @@
 | Contact | `contact` |
 | Referrals | `referrals/*` |
 
-*Note: `StudentLearningPaths` appears as a file in the codebase but **is not registered** in `router.jsx` — treat as **not a live route** unless wired elsewhere.*
+*Note: `StudentLearningPaths` appears as a file in the codebase but **is not registered** in `router.jsx` - treat as **not a live route** unless wired elsewhere.*
 
-## Student — Jobs Hub
+## Student - Jobs Hub
 
 | Route | Purpose |
 |-------|---------|
 | `/lms/jobs` | `StudentJobsPage` → `JobsHub` (light theme shell) |
 
-## Student — Startup LaunchPad
+## Student - Startup LaunchPad
 
 | Route | Screen |
 |-------|--------|
 | `/lms/startup-launchpad` | `LaunchPadHomeScreen` |
 | `readiness`, `dashboard`, `path`, `stage/:stageSlug`, `tools`, `legal`, `profile` | Nested screens under `StartupLaunchPadShell` |
-| Access | `LaunchPadAccessGate` — locked until All Pack or all three main courses |
+| Access | `LaunchPadAccessGate` - locked until All Pack or all three main courses |
 
 ---
 
-# 5. Homepage Deep Breakdown (`/` and `/academy` — `AcademyPage`)
+# 5. Homepage Deep Breakdown (`/` and `/academy` - `AcademyPage`)
 
 Order is **exact** as rendered.
 
 | # | Section | Purpose | Headline / key copy | CTAs | Communication | Emotional effect | Business purpose |
 |---|---------|---------|---------------------|------|----------------|------------------|------------------|
-| 1 | **Header** (`Header`) | Global nav | Brand: ΣxpoGraph | Home, Courses, Features (hash), Contact, Login / LMS Portal | Wayfinding | — | Conversion to login or LMS |
-| 2 | **Hero** | First impression | Eyebrow: “Prompt Smart. Vibe Code. Grow Your Career.” **H1:** “Stop learning to code.” / “Start building with AI.” Body: master vibe coding, Real Client Lab. Stats in next section not hero — | **Login** or **LMS Portal**, **Explore** (scroll), **Starting at just ₹99** (→ `/courses`) | Build-first AI identity | Empowerment, urgency | Lead to login / pricing |
-| 3 | **Learn — HeroSection** (`id="learn"`) | Value prop | “Where learning meets real-world doing” | **Join the Family** → `/courses`, **Connect with us** → `#connect` | Three courses + Real Client Lab + ₹99 | Aspirational | Conversion |
-| 4 | **Course cards** (`id="courses"`) | Product SKUs | From `AcademyCourseCardsSection` | — | Catalog | — | Sales |
-| 5 | **Built for the real world** | Trust | “Designed by top techies and IITians” | — | Quality signal | Credibility | Justify quality at low price |
-| 6 | **Officially Recognised** | Trust | “Officially Recognised” + MCA logo | — | Government/regulatory credibility | Safety | Reduce payment anxiety |
-| 7 | **CTA — CallToAction1** (`id="cta"`) | Mid-page conversion | “Join 2K+ users who are Vibing”; “Unlock your next big opportunity.”; ₹99 / ₹199 pills | Primary visible button: **Real Client Lab** → `/features/real-client-lab` | Social proof (2K+) | Belonging | Feature education |
+| 1 | **Header** (`Header`) | Global nav | Brand: ΣxpoGraph | Home, Courses, Features (hash), Contact, Login / LMS Portal | Wayfinding | - | Conversion to login or LMS |
+| 2 | **Hero** | First impression | Eyebrow: “Prompt Smart. Vibe Code. Grow Your Career.” **H1:** “Stop learning to code.” / “Start building with AI.” Body: master vibe coding, Real Client Lab. Stats in next section not hero - | **Login** or **LMS Portal**, **Explore** (scroll), **Starting at just ₹99** (→ `/courses`) | Build-first AI identity | Empowerment, urgency | Lead to login / pricing |
+| 3 | **Learn - HeroSection** (`id="learn"`) | Value prop | “Where learning meets real-world doing” | **Join the Family** → `/courses`, **Connect with us** → `#connect` | Three courses + Real Client Lab + ₹99 | Aspirational | Conversion |
+| 4 | **Course cards** (`id="courses"`) | Product SKUs | From `AcademyCourseCardsSection` | - | Catalog | - | Sales |
+| 5 | **Built for the real world** | Trust | “Designed by top techies and IITians” | - | Quality signal | Credibility | Justify quality at low price |
+| 6 | **Officially Recognised** | Trust | “Officially Recognised” + MCA logo | - | Government/regulatory credibility | Safety | Reduce payment anxiety |
+| 7 | **CTA - CallToAction1** (`id="cta"`) | Mid-page conversion | “Join 2K+ users who are Vibing”; “Unlock your next big opportunity.”; ₹99 / ₹199 pills | Primary visible button: **Real Client Lab** → `/features/real-client-lab` | Social proof (2K+) | Belonging | Feature education |
 | 8 | **Startup LaunchPad** (`id="startup-launchpad"`) | Founder product | “Startup LaunchPad”; “Your startup path, in the right order”; badge **All Pack or all three main courses** | Open LaunchPad / Login; See how it works; View All Pack | Founder journey + gating | Ambition | Upsell pack |
 | 9 | **Features grid** (`id="features"`) | Capability overview | “Everything you need to succeed” | Links to `/features/{slug}` | Full toolkit | Confidence | Education + SEO |
-| 10 | **Certification** (`id="certification"`) | Certificates | “Earn certificates that matter” | — | MCA + PDF + LinkedIn | Pride | Trust + completion |
+| 10 | **Certification** (`id="certification"`) | Certificates | “Earn certificates that matter” | - | MCA + PDF + LinkedIn | Pride | Trust + completion |
 | 11 | **Pricing advantage** | Price comparison | “Premium learning. Unbeatable price.”; compares to ₹5k–₹50k platforms | ₹99 / ₹199 tiles → `/courses` | Value framing | Relief | Conversion |
 | 12 | **Reviews** (`id="reviews"`) | Social proof | “2,000+ users are already building with us” | **Start Learning for ₹99** | Marquee testimonials | FOMO + trust | Conversion |
-| 13 | **Jobs Search Hub** (`id="jobs-hub"`) | LMS feature promo | “Jobs Search Hub — your India-first career command center” | Open Jobs Hub / Login / Get a course | Practical job search | Control | LMS adoption |
-| 14 | **Connect** (`id="connect"`) | Community | “Join the vibe”; Instagram, YouTube, LinkedIn | Social links | Belonging | — | Audience building |
+| 13 | **Jobs Search Hub** (`id="jobs-hub"`) | LMS feature promo | “Jobs Search Hub - your India-first career command center” | Open Jobs Hub / Login / Get a course | Practical job search | Control | LMS adoption |
+| 14 | **Connect** (`id="connect"`) | Community | “Join the vibe”; Instagram, YouTube, LinkedIn | Social links | Belonging | - | Audience building |
 | 15 | **FAQ** (`id="faqs"`) | Objection handling | “We've got answers” | Accordion | Explains product, pricing, MCA, community | Reassurance | Reduce support load |
-| 16 | **Footer** | Brand + legal | “ExpoGraph flow”; interactive WebGL | Privacy, Terms | Playful tech brand | — | Legal compliance |
+| 16 | **Footer** | Brand + legal | “ExpoGraph flow”; interactive WebGL | Privacy, Terms | Playful tech brand | - | Legal compliance |
 
 ---
 
@@ -178,13 +178,13 @@ Order is **exact** as rendered.
 
 - “Prompt Smart. Vibe Code. Grow Your Career.”
 - “Stop learning to code. Start building with AI.”
-- “Master vibe coding with smart prompts, structured lessons, and build for real clients in our Real Client Lab—the fastest way to grow your career.”
+- “Master vibe coding with smart prompts, structured lessons, and build for real clients in our Real Client Lab-the fastest way to grow your career.”
 
 **Courses & skills**
 
 - Vibe Coding, Prompt Engineering, Prompt to Profit, AI Automations (bonus with All Pack in multiple places)
-- “Smart Prompts” — structured, copy-ready prompts
-- “You don't just watch—you build.”
+- “Smart Prompts” - structured, copy-ready prompts
+- “You don't just watch-you build.”
 
 **Pricing**
 
@@ -202,12 +202,12 @@ Order is **exact** as rendered.
 
 - “India-first career command center”
 - “B.Tech role presets, editable keyword chips, one-tap searches on LinkedIn, Naukri, Indeed, Internshala & more”
-- “Saved searches and apply tracking stay on your device — no scraping, no extra server cost.”
+- “Saved searches and apply tracking stay on your device - no scraping, no extra server cost.”
 
 **Startup LaunchPad**
 
 - “Your startup path, in the right order”
-- “A guided founder journey from idea to MVP, launch, legal setup, and growth—inside the student portal.”
+- “A guided founder journey from idea to MVP, launch, legal setup, and growth-inside the student portal.”
 - “12-stage path with unlocks”; “Startup Readiness Check”; “Founder tools & legal timing guidance”
 
 **Feature grid (short labels)**
@@ -218,7 +218,7 @@ Order is **exact** as rendered.
 
 - “Enterprise IT Solutions That Drive Business Growth”
 - “Trusted by 500+ Companies”
-- Stats: 500+ projects, 98% satisfaction, 50+ enterprise, 15+ years — *presentational only in static copy*
+- Stats: 500+ projects, 98% satisfaction, 50+ enterprise, 15+ years - *presentational only in static copy*
 
 ---
 
@@ -243,7 +243,7 @@ Order is **exact** as rendered.
 
 **Top bar (mobile):** Logo, search, theme toggle, profile menu (My Profile, Certificates, Bookmarks, Jobs Hub, Bonus Courses, Support, Logout).
 
-**Lesson pages:** Full layout **without** sidebar/bottom nav — immersive experience.
+**Lesson pages:** Full layout **without** sidebar/bottom nav - immersive experience.
 
 ## Learning flow
 
@@ -253,19 +253,19 @@ Order is **exact** as rendered.
 
 ## Project / client flow
 
-- **Real Client Lab** (`/lms/student/client-lab/...`): projects and tasks — aligns with mentor review narrative on marketing pages.
+- **Real Client Lab** (`/lms/student/client-lab/...`): projects and tasks - aligns with mentor review narrative on marketing pages.
 - Gating: **All Pack** or **three main courses** + completion rules (see `LaunchPadAccessGate` and feature copy).
 
 ## Tool flow
 
 - **Resume Builder** (`/lms/student/resume-builder`)
-- **Jobs Hub** (`/lms/jobs`) — client-side filters, external URLs
-- **Question Bank** — practice routes
-- **Startup LaunchPad** — nested screens
+- **Jobs Hub** (`/lms/jobs`) - client-side filters, external URLs
+- **Question Bank** - practice routes
+- **Startup LaunchPad** - nested screens
 
 ## Completion / certification
 
-- **Certificates** (`/lms/student/certificates`) — completion and download narrative on marketing + carousel pack slides.
+- **Certificates** (`/lms/student/certificates`) - completion and download narrative on marketing + carousel pack slides.
 
 ## Account / profile
 
@@ -275,7 +275,7 @@ Order is **exact** as rendered.
 
 ## Other student-facing areas (routes exist; not all in primary sidebar)
 
-- **Submissions**, **Internships**, **Events**, **Workshops** — accessible via dashboard/widgets and direct URLs.
+- **Submissions**, **Internships**, **Events**, **Workshops** - accessible via dashboard/widgets and direct URLs.
 
 ---
 
@@ -285,12 +285,12 @@ Order is **exact** as rendered.
 |----------------|-------|---------|--------|-------------|------------|
 | Academy, Courses, Features, Contact | ✓ | ✓ | ✓ | ✓ | ✓ |
 | Login | ✓ | ✓ | ✓ | ✓ | ✓ |
-| Student LMS | — | ✓ | — | — | — |
-| Jobs Hub | — | ✓ | — | — | — |
-| Startup LaunchPad | — | ✓ (gated) | — | — | — |
-| Mentor portal | — | — | ✓ | — | — |
-| Tenant admin | — | — | — | ✓ | — |
-| Super admin | — | — | — | — | ✓ |
+| Student LMS | - | ✓ | - | - | - |
+| Jobs Hub | - | ✓ | - | - | - |
+| Startup LaunchPad | - | ✓ (gated) | - | - | - |
+| Mentor portal | - | - | ✓ | - | - |
+| Tenant admin | - | - | - | ✓ | - |
+| Super admin | - | - | - | - | ✓ |
 | Admin login page | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 
 *Exact API permissions are server-side; matrix reflects **route guards** (`RequireRole`) in the SPA.*
@@ -320,7 +320,7 @@ Order is **exact** as rendered.
 | **Referrals** | Routes | Referral program | Students | Growth | Rewards | Secondary |
 | **Mentor analytics** | Mentor routes | Performance views | Mentors | Oversight | Coaching | Secondary |
 | **Super Admin OS** | Many routes | Full platform ops | Staff | Operations | Scale | Core (internal) |
-| **Tenant Admin** | `/lms/admin` | Tenant users/settings | B2B tenants | **Unclear — UI placeholder** | **Unclear** | Supporting |
+| **Tenant Admin** | `/lms/admin` | Tenant users/settings | B2B tenants | **Unclear - UI placeholder** | **Unclear** | Supporting |
 
 ---
 
@@ -348,7 +348,7 @@ Order is **exact** as rendered.
    - Jobs Hub → pick preset/chips → open external platforms → track locally.
 
 8. **Institution / college**  
-   - **Super Admin** → Colleges — **workflow not detailed in student-facing copy.**
+   - **Super Admin** → Colleges - **workflow not detailed in student-facing copy.**
 
 ---
 
@@ -362,9 +362,9 @@ Order is **exact** as rendered.
 
 **Dynamic pricing (`PricingWithChart`):**
 
-- Fetches `/api/v1/courses` and `/api/v1/packs` — **actual prices shown in paise** from API.
-- **AI Automations** as **BONUS** with All Pack — “Free when you buy All Pack”; “12 modules • 62 lessons” in card copy.
-- **PriceCountdown** — 24h-style offer timer (`getOfferEndsAt24h`) on purchasable cards.
+- Fetches `/api/v1/courses` and `/api/v1/packs` - **actual prices shown in paise** from API.
+- **AI Automations** as **BONUS** with All Pack - “Free when you buy All Pack”; “12 modules • 62 lessons” in card copy.
+- **PriceCountdown** - 24h-style offer timer (`getOfferEndsAt24h`) on purchasable cards.
 
 **Course slugs (code):** `vibe-coding`, `prompt-engineering`, `prompt-to-profit`, `ai-automations`.
 
@@ -379,11 +379,11 @@ Order is **exact** as rendered.
 
 - **MCA** logo and “Ministry of Corporate Affairs · Government of India”
 - **Stats:** 2K users, 100+ tutors (hero secondary section), 2,000+ in reviews (marquee)
-- **Testimonials** (named personas — **marketing copy** in code, not verified third-party reviews)
+- **Testimonials** (named personas - **marketing copy** in code, not verified third-party reviews)
 - **IITians / top techies** curriculum line
 - **Certificate**: unique ID, LinkedIn, PDF, 100% completion
-- **Real Client Lab** — “real clients”, mentor review
-- **Solutions page** enterprise stats (500+ companies, etc.) — **separate narrative** from Academy
+- **Real Client Lab** - “real clients”, mentor review
+- **Solutions page** enterprise stats (500+ companies, etc.) - **separate narrative** from Academy
 
 ---
 
@@ -391,7 +391,7 @@ Order is **exact** as rendered.
 
 - **Voice:** Direct, energetic, Hinglish-adjacent idiom (“vibe”, “vibing”), **price-aggressive**, **student-first**.
 - **Warmth:** High in community section (“Join the vibe”, “family of builders”).
-- **Seriousness:** Mixed — playful “vibe” + serious MCA/legal trust.
+- **Seriousness:** Mixed - playful “vibe” + serious MCA/legal trust.
 - **Students:** Peer + coach; **institutions:** barely addressed on Academy (colleges exist in admin only).
 - **Overall:** **Product-led** edtech with **startup energy** (LaunchPad, build-first) and **premium visual treatment** (dark, gradients, 3D hero).
 
@@ -419,7 +419,7 @@ Order is **exact** as rendered.
 
 **Institution-facing**
 
-- Colleges module in Super Admin — **needs explicit institutional story** (not on Academy page).
+- Colleges module in Super Admin - **needs explicit institutional story** (not on Academy page).
 
 **Founder-facing**
 
@@ -437,14 +437,14 @@ Order is **exact** as rendered.
 
 # 16. Weak / Unclear Messaging Areas
 
-- **Two brands in one repo:** **Academy** (dark, ₹99) vs **Solutions** (enterprise, 500+ companies) — **unclear how they connect** in customer mind.
-- **Course naming:** FAQ and some copy use **“AI Automations”** as third pillar; **pricing code** uses **Prompt to Profit** as third course — **consistent strategically but easy to confuse** in pitch.
-- **Tenant Admin** is **placeholder** — B2B2C story incomplete.
-- **Super Admin home** banners reference **`/lms/superadmin/analytics`** — **route not defined** in `router.jsx` (likely broken CTA).
-- **“Get a Quote”** on Solutions hero — **no visible handler** wired to form or mail.
-- **Testimonials** are **hardcoded** — not marked as verified reviews.
+- **Two brands in one repo:** **Academy** (dark, ₹99) vs **Solutions** (enterprise, 500+ companies) - **unclear how they connect** in customer mind.
+- **Course naming:** FAQ and some copy use **“AI Automations”** as third pillar; **pricing code** uses **Prompt to Profit** as third course - **consistent strategically but easy to confuse** in pitch.
+- **Tenant Admin** is **placeholder** - B2B2C story incomplete.
+- **Super Admin home** banners reference **`/lms/superadmin/analytics`** - **route not defined** in `router.jsx` (likely broken CTA).
+- **“Get a Quote”** on Solutions hero - **no visible handler** wired to form or mail.
+- **Testimonials** are **hardcoded** - not marked as verified reviews.
 - **StudentLearningPaths** page exists but **not routed**.
-- **Footer** `© 2025` while user date is **2026** — minor consistency.
+- **Footer** `© 2025` while user date is **2026** - minor consistency.
 - **CallToAction1** defines `handleJoin` but **does not render** a button that calls it (only **Real Client Lab** CTA visible).
 
 ---
@@ -463,7 +463,7 @@ Order is **exact** as rendered.
 
 **Institution value**
 
-- *Sparse in code — use Super Admin “Colleges” + MCA as a starting point only.*
+- *Sparse in code - use Super Admin “Colleges” + MCA as a starting point only.*
 
 **Feature explanation**
 
@@ -484,7 +484,7 @@ Order is **exact** as rendered.
 
 **Founder**
 
-- “Startup control center—not another list of videos to watch.” (feature testimonial line)
+- “Startup control center-not another list of videos to watch.” (feature testimonial line)
 
 ---
 
@@ -508,10 +508,10 @@ Order is **exact** as rendered.
 # 19. Missing Information Needed For a Great Presentation
 
 - **Verified** enrollment, completion, and NPS **metrics** (not in repo as truth)
-- **Real** graduate outcomes (salary, placements) — testimonials are **static**
-- **Founder story** and **team** — not in code
+- **Real** graduate outcomes (salary, placements) - testimonials are **static**
+- **Founder story** and **team** - not in code
 - **Partnership** details (colleges, employers)
-- **Legal** precision of “MCA recognition” (what exactly is recognised — company vs certificate — **seek legal confirmation** before investor deck)
+- **Legal** precision of “MCA recognition” (what exactly is recognised - company vs certificate - **seek legal confirmation** before investor deck)
 - **Live** screenshots of production vs staging
 - **Alignment** narrative between **Solutions** business and **Academy**
 
@@ -526,7 +526,7 @@ Order is **exact** as rendered.
 
 - **Students:** Hero + price + outcomes + Real Client Lab + Jobs Hub
 - **Investors:** Market, differentiation, unit economics (to be collected), **roadmap**, team
-- **Colleges:** **Needs new narrative** — admin only hints
+- **Colleges:** **Needs new narrative** - admin only hints
 - **Founders:** LaunchPad + gating + pack
 
 **Raw content available**
@@ -547,7 +547,7 @@ Order is **exact** as rendered.
 ExpoGraph Academy is an affordable AI-skills learning platform (₹99/₹199 positioning) with courses in Vibe Coding, Prompt Engineering, Prompt to Profit, and AI Automations. It includes an LMS with smart prompts, gamification, certificates (MCA trust narrative), Real Client Lab, Resume Builder, Jobs Search Hub (India), and Startup LaunchPad (gated). OTP login. Separate `/solutions` page sells enterprise IT services.
 
 **Audience summary**  
-Primary: Indian students and job seekers. Secondary: mentors, founders (LaunchPad), internal admins. Institutions: admin “Colleges” only — weak public story.
+Primary: Indian students and job seekers. Secondary: mentors, founders (LaunchPad), internal admins. Institutions: admin “Colleges” only - weak public story.
 
 **Key selling points**  
 Build-first AI; low price; MCA recognition; real client projects; resume + jobs tools; founder path in-product.

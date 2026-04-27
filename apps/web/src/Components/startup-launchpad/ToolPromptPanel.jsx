@@ -10,7 +10,7 @@ export default function ToolPromptPanel({ toolId, defaultOpen = true }) {
       definition={def}
       defaultOpen={defaultOpen}
       compact
-      subtitle="Matches this tool’s checklist—fill fields, copy into ChatGPT"
+      subtitle="Matches this tool’s checklist-fill fields, copy into ChatGPT"
     />
   );
 }

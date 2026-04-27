@@ -271,7 +271,7 @@ export function PricingWithChart() {
         {exclusiveBundle && (
           <div className="mb-3 rounded-lg border border-orange-500/30 bg-orange-500/[0.07] px-3 py-2 text-[11px] leading-snug text-orange-100/90">
             <span className="font-semibold text-orange-200">All Pack / three-course bundle: </span>
-            Included when you buy All Pack or own all three main courses—not with a single course alone.
+            Included when you buy All Pack or own all three main courses-not with a single course alone.
           </div>
         )}
         <div className="flex items-end gap-2 mb-3">
@@ -436,15 +436,15 @@ export function PricingWithChart() {
                   <ul className="space-y-1 text-xs text-white/88">
                     <li>
                       <span className="font-semibold text-orange-300/95">Startup LaunchPad</span>
-                      <span className="text-white/45"> — founder path &amp; dashboard</span>
+                      <span className="text-white/45"> - founder path &amp; dashboard</span>
                     </li>
                     <li>
                       <span className="font-semibold text-purple-300/95">Real Client Lab</span>
-                      <span className="text-white/45"> — real client projects</span>
+                      <span className="text-white/45"> - real client projects</span>
                     </li>
                     <li>
                       <span className="font-semibold text-amber-400/95">AI Automations (Bonus)</span>
-                      <span className="text-white/45"> — bonus course</span>
+                      <span className="text-white/45"> - bonus course</span>
                     </li>
                   </ul>
                 </div>
@@ -504,7 +504,7 @@ export function PricingWithChart() {
         <LmsFeatureBentoCard
           slug="startup-launchpad"
           title="Startup LaunchPad"
-          subtitle="A guided founder path inside the student portal—readiness, stages, tools, and legal timing (not a course flow)."
+          subtitle="A guided founder path inside the student portal-readiness, stages, tools, and legal timing (not a course flow)."
           features={["12-stage startup path", "Readiness & dashboard", "Founder tools & AI prompts"]}
           colSpan="lg:col-span-4"
           accent="orange"
@@ -513,7 +513,7 @@ export function PricingWithChart() {
         <LmsFeatureBentoCard
           slug="jobs-search-hub"
           title="Jobs Search Hub"
-          subtitle="Role presets, keyword chips, and one-tap searches across LinkedIn, Naukri, Internshala & more—your career command center."
+          subtitle="Role presets, keyword chips, and one-tap searches across LinkedIn, Naukri, Internshala & more-your career command center."
           features={["India role presets", "Platform-aware search URLs", "Saved searches & apply tracker"]}
           colSpan="lg:col-span-4"
           accent="emerald"

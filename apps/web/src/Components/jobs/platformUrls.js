@@ -101,7 +101,7 @@ export function buildLinkedInUrl(f) {
   const caps = platformCapabilities.linkedin;
   const q = buildKeywordQuery(f, "linkedin");
   const loc = caps.location && f.location ? f.location : "";
-  // Minimal, stable query — extra params (e.g. unsupported company=) can break or cache badly in LI SPA.
+  // Minimal, stable query - extra params (e.g. unsupported company=) can break or cache badly in LI SPA.
   let url = `https://www.linkedin.com/jobs/search/?keywords=${encodeQ(q)}`;
   if (loc) url += `&location=${encodeQ(loc)}`;
   url += linkedInTimeParam(caps.datePosted ? f.datePosted : "");

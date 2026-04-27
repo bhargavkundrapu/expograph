@@ -286,7 +286,7 @@ export default function StudentCourses() {
     return slug.includes("ai-automations") || slug.includes("ai-automation") || slug.includes("ai-automat") || title.includes("ai automation");
   };
 
-  /** Vibe Coding, Prompt Engineering, Prompt to Profit — not bonus / not other courses */
+  /** Vibe Coding, Prompt Engineering, Prompt to Profit - not bonus / not other courses */
   const isMainTrilogyCourse = (course) => {
     if (!course || isBonusCourse(course)) return false;
     const slug = (course.slug || "").toLowerCase().replace(/_/g, "-");
@@ -514,7 +514,7 @@ export default function StudentCourses() {
                     Upgrade · All Pack
                   </p>
                   <h2 className={`text-lg sm:text-xl font-bold leading-snug mb-2 ${isDark ? "text-white" : "text-slate-900"}`}>
-                    You have {enrolledMainTrilogyCount} of 3 core courses — finish the set for less
+                    You have {enrolledMainTrilogyCount} of 3 core courses - finish the set for less
                   </h2>
                   <p className={`text-sm leading-relaxed ${isDark ? "text-slate-400" : "text-slate-600"}`}>
                     One checkout unlocks the full path,{" "}
@@ -529,7 +529,7 @@ export default function StudentCourses() {
                     <span className={isDark ? "font-medium text-purple-300/95" : "font-medium text-purple-800"}>
                       Real Client Lab
                     </span>
-                    , and MCA-recognised certificates — usually cheaper than buying the remaining courses separately.
+                    , and MCA-recognised certificates - usually cheaper than buying the remaining courses separately.
                   </p>
                   {allPackPriceRupees != null && allPackPriceRupees >= 1 && (
                     <p className={`mt-2 text-sm font-semibold ${isDark ? "text-emerald-300/90" : "text-emerald-700"}`}>

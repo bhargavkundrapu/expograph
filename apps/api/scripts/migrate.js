@@ -7,7 +7,7 @@ const result = require('dotenv').config({ path: envPath });
 if (result.error && process.env.DATABASE_URL) {
   // .env might be loaded by parent; continue
 } else if (result.error) {
-  console.error('\nâœ— Could not load .env from:', envPath);
+  console.error('\nâœ- Could not load .env from:', envPath);
   console.error('  Create apps/api/.env with DATABASE_URL=postgresql://user:pass@localhost:5432/yourdb\n');
   process.exit(1);
 }
@@ -15,7 +15,7 @@ if (result.error && process.env.DATABASE_URL) {
 // Clean up DATABASE_URL - remove channel_binding which can cause issues
 let dbUrl = process.env.DATABASE_URL || '';
 if (!dbUrl || dbUrl.includes('your_database') || dbUrl.includes('username:password')) {
-  console.error('\nâœ— DATABASE_URL is missing or still a placeholder in apps/api/.env');
+  console.error('\nâœ- DATABASE_URL is missing or still a placeholder in apps/api/.env');
   console.error('  Example: DATABASE_URL=postgresql://postgres:password@localhost:5432/expograph\n');
   process.exit(1);
 }
@@ -121,7 +121,7 @@ async function runMigrations() {
           appliedCount++;
           console.log(`âœ“ ${migrationFile} completed successfully\n`);
         } catch (error) {
-          console.error(`âœ— Error in ${migrationFile}:`, error.message);
+          console.error(`âœ- Error in ${migrationFile}:`, error.message);
           throw error;
         }
       }
@@ -135,7 +135,7 @@ async function runMigrations() {
 
     process.exit(0);
   } catch (error) {
-    console.error('\nâœ— Fatal migration error:', error.message);
+    console.error('\nâœ- Fatal migration error:', error.message);
     if (error.code === 'ECONNREFUSED') {
       console.error('\n  â†’ PostgreSQL is not running or DATABASE_URL host/port is wrong.');
       console.error('  â†’ For localhost: start PostgreSQL and use postgresql://user:pass@localhost:5432/yourdb in apps/api/.env\n');

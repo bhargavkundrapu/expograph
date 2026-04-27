@@ -1,4 +1,4 @@
-# ExpoGraph — allow public marketing pages; block authenticated app areas.
+# ExpoGraph - allow public marketing pages; block authenticated app areas.
 User-agent: *
 Allow: /
 

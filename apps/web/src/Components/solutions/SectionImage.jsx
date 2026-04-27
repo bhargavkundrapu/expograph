@@ -1,7 +1,7 @@
 import { cn } from "../../lib/utils";
 
 /**
- * Decorative section imagery — responsive, lazy-loaded, with readable alt text.
+ * Decorative section imagery - responsive, lazy-loaded, with readable alt text.
  * Uses intrinsic ratio + explicit dimensions so layout is stable in CSS grid/flex.
  */
 export default function SectionImage({

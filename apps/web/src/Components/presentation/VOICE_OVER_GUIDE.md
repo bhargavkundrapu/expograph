@@ -276,6 +276,6 @@ You can easily switch between methods:
 
 ---
 
-**Total Voice-Over Options: 3 Methods Ã— Multiple Settings = Comprehensive Voice Control**
+**Total Voice-Over Options: 3 Methods Ã- Multiple Settings = Comprehensive Voice Control**
 
 Choose the method that best fits your needs, or mix and match for different slides!

@@ -45,7 +45,7 @@ const ACHIEVEMENT_DEFS = [
   { id: "xp_5000", title: "XP Master", desc: "Earn 5,000 XP", icon: "💎", rarity: "epic", check: (s) => s.totalXP >= 5000 },
   { id: "early_bird", title: "Early Bird", desc: "Login before 8 AM", icon: "🌅", rarity: "common", check: (s) => s.earlyBirdLogins >= 1 },
   { id: "night_owl", title: "Night Owl", desc: "Study after 10 PM", icon: "🦉", rarity: "common", check: (s) => s.nightOwlSessions >= 1 },
-  { id: "weekend_warrior", title: "Weekend Warrior", desc: "Study on a weekend", icon: "🗓️", rarity: "common", check: (s) => s.weekendSessions >= 1 },
+  { id: "weekend_warrior", title: "Weekend Warrior", desc: "Study on a weekend", icon: "�-�️", rarity: "common", check: (s) => s.weekendSessions >= 1 },
   { id: "bookworm", title: "Bookworm", desc: "Bookmark 5 lessons", icon: "📖", rarity: "common", check: (s) => s.bookmarksCount >= 5 },
   { id: "daily_challenger", title: "Challenge Accepted", desc: "Answer 5 daily challenges", icon: "🎲", rarity: "rare", check: (s) => s.dailyChallengesCompleted >= 5 },
   { id: "note_taker", title: "Note Taker", desc: "Write 10 notes", icon: "📝", rarity: "common", check: (s) => s.notesCount >= 10 },

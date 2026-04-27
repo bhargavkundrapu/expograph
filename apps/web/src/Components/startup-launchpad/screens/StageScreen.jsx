@@ -51,7 +51,7 @@ export default function StageScreen() {
       showToast("Progress saved. Opening the next stage.");
       navigate(`/lms/startup-launchpad/stage/${next}`);
     } else {
-      showToast("Progress saved. You're at the final stage—back to your dashboard.");
+      showToast("Progress saved. You're at the final stage-back to your dashboard.");
       navigate("/lms/startup-launchpad/dashboard");
       requestAnimationFrame(() => scrollStudentMainToTop());
     }

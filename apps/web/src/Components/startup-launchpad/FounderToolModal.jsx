@@ -67,7 +67,7 @@ export default function FounderToolModal({ toolId, open, onClose, onSaveToProfil
                   ))}
                 </ul>
                 <p className="mt-3 text-xs text-slate-500">
-                  Work through the checklist in your doc or notes—saving marks this tool as used on your startup profile.
+                  Work through the checklist in your doc or notes-saving marks this tool as used on your startup profile.
                 </p>
               </div>
 

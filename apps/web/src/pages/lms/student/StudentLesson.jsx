@@ -264,7 +264,7 @@ export default function StudentLesson() {
   const [selectedSuccessImageIndex, setSelectedSuccessImageIndex] = useState(0);
   const [selectedLearnStepIndex, setSelectedLearnStepIndex] = useState(0);
   const [captionsEnabled, setCaptionsEnabled] = useState(true);
-  /** en | te — only used when alternate native URLs exist for a lesson (e.g. Vibe Coding setup fullstack). */
+  /** en | te - only used when alternate native URLs exist for a lesson (e.g. Vibe Coding setup fullstack). */
   const [lessonAlternateVideoLang, setLessonAlternateVideoLang] = useState(() => {
     if (typeof window === "undefined") return "en";
     return window.localStorage.getItem(VIBE_SETUP_FULLSTACK_VIDEO_LANG_KEY) === "te" ? "te" : "en";
@@ -1214,7 +1214,7 @@ export default function StudentLesson() {
                               : "text-slate-600 hover:bg-slate-100"
                           }`}
                         >
-                          తెలుగు
+                          తెలు�-ు
                         </button>
                       </div>
                     </div>

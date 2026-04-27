@@ -77,7 +77,7 @@ const featureDataLite = [
     icon: <TrendingUp className="h-4 w-4" />,
     title: "Jobs Search Hub",
     tag: "Careers",
-    description: "India-first job search: role presets, smart keywords & redirects to top portals — in your LMS.",
+    description: "India-first job search: role presets, smart keywords & redirects to top portals - in your LMS.",
     accent: {
       borderBottom: "border-b-2 border-b-emerald-500/40",
       iconBg: "bg-emerald-500/10 border-emerald-500/30",
@@ -90,7 +90,7 @@ const featureDataLite = [
     icon: <Rocket className="h-4 w-4" />,
     title: "Startup LaunchPad",
     tag: "Founder Path",
-    description: "All Pack or all three main courses. Guided founder path in your LMS—readiness, tools, and legal timing (not a course flow).",
+    description: "All Pack or all three main courses. Guided founder path in your LMS-readiness, tools, and legal timing (not a course flow).",
     accent: {
       borderBottom: "border-b-2 border-b-orange-500/40",
       iconBg: "bg-orange-500/10 border-orange-500/30",

@@ -11,7 +11,7 @@
   color: rgb(15 23 42);
 }
 
-/* Headline rhythm — same family as deck, tighter tracking (presentation uses font-display on DM Sans) */
+/* Headline rhythm - same family as deck, tighter tracking (presentation uses font-display on DM Sans) */
 .sol-display {
   font-family: var(--font-dm), "DM Sans", ui-sans-serif, system-ui, sans-serif;
   font-weight: 700;

@@ -9,16 +9,16 @@ function validate(values) {
   if (!values.businessName.trim()) errors.businessName = "Please add your business or team name";
   if (!values.phone.trim()) errors.phone = "Please add a phone number we can reach you on";
   if (!values.email.trim() || !/^\S+@\S+\.\S+$/.test(values.email)) errors.email = "Please add a valid email";
-  if (!values.service) errors.service = "Choose the area closest to what you need — we can refine together";
+  if (!values.service) errors.service = "Choose the area closest to what you need - we can refine together";
   if (!values.requirement.trim() || values.requirement.trim().length < 12) {
-    errors.requirement = "A few more words help us prepare — share what you are hoping for (at least 12 characters)";
+    errors.requirement = "A few more words help us prepare - share what you are hoping for (at least 12 characters)";
   }
   return errors;
 }
 
 function buildWhatsappMessage(values) {
   const lines = [
-    "ExpoGraph Solutions — Book a Meet",
+    "ExpoGraph Solutions - Book a Meet",
     `Name: ${values.name}`,
     `Business: ${values.businessName}`,
     `Phone: ${values.phone}`,
@@ -52,7 +52,7 @@ export default function BookMeetForm({ showProposalButton = true, redirectOnSucc
   const [errors, setErrors] = useState({});
 
   const mailtoHref = useMemo(() => {
-    const subject = "ExpoGraph Solutions — Proposal request";
+    const subject = "ExpoGraph Solutions - Proposal request";
     const body = [
       `Name: ${values.name}`,
       `Business: ${values.businessName}`,
@@ -157,7 +157,7 @@ export default function BookMeetForm({ showProposalButton = true, redirectOnSucc
           value={values.requirement}
           onChange={update("requirement")}
           className={`${inputClass} min-h-[120px] resize-y`}
-          placeholder="Goals, current tools, pain points — anything that helps us understand you better."
+          placeholder="Goals, current tools, pain points - anything that helps us understand you better."
         />
       </Field>
       <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:items-center">

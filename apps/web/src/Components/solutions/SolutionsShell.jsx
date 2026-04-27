@@ -3,7 +3,7 @@ import "../../styles/solutions-presentation.css";
 import AcademyPageFooter from "./AcademyPageFooter";
 import SolutionsNavbar from "./SolutionsNavbar";
 
-/** Solutions layout — presentation-style shell + Academy home footer (tubes). */
+/** Solutions layout - presentation-style shell + Academy home footer (tubes). */
 export default function SolutionsShell({ children }) {
   return (
     <div

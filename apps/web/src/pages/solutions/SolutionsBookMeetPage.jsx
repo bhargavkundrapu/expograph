@@ -14,7 +14,7 @@ export default function SolutionsBookMeetPage() {
           <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-violet-700">Contact</p>
           <h1 className="sol-display mt-3 text-3xl leading-tight text-slate-900 sm:text-4xl md:text-5xl">Book a meet</h1>
           <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-slate-600">
-            Tell us what you are trying to fix. We reply with honest fit and next steps — not a generic pitch deck.
+            Tell us what you are trying to fix. We reply with honest fit and next steps - not a generic pitch deck.
           </p>
         </div>
       </section>
@@ -25,7 +25,7 @@ export default function SolutionsBookMeetPage() {
             <h2 className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">What happens after you reach out</h2>
             <ol className="mt-4 list-decimal space-y-2 pl-5 text-base leading-relaxed text-slate-600">
               <li>We read your note and any context you shared.</li>
-              <li>We suggest a sensible starting point — sometimes smaller than you expected.</li>
+              <li>We suggest a sensible starting point - sometimes smaller than you expected.</li>
               <li>We follow up with options, timing, and pricing direction. No pressure.</li>
             </ol>
             <div className="mt-10">

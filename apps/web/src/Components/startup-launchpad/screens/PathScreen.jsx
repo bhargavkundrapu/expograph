@@ -12,7 +12,7 @@ export default function PathScreen() {
       <div>
         <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Your founder path</h1>
         <p className="mt-2 text-sm sm:text-base text-slate-600 max-w-xl">
-          Twelve stages in the right order. Complete each step to unlock the next—this is your startup operating system, not a content library.
+          Twelve stages in the right order. Complete each step to unlock the next-this is your startup operating system, not a content library.
         </p>
       </div>
       <ol className="space-y-3">

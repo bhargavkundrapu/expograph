@@ -1,4 +1,4 @@
-# 🗺️ COURSE MAP-Intermediate Prompt Engineering
+# �-�️ COURSE MAP-Intermediate Prompt Engineering
 
 > 10 Modules · 50 Lessons · Skills that get you hired
 

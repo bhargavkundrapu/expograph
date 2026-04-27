@@ -21,7 +21,7 @@ function Toast({ message, type, onDismiss }) {
     >
       {message}
       <button type="button" onClick={onDismiss} className="ml-2 opacity-80 hover:opacity-100" aria-label="Dismiss">
-        Ã—
+        Ã-
       </button>
     </motion.div>
   );

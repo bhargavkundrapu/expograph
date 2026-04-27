@@ -46,7 +46,7 @@ const NOT_PACK_SLIDES: Slide[] = [
   },
   {
     id: "s3",
-    title: "Finish faster (3×)",
+    title: "Finish faster (3�-)",
     subtitle: "Pack path is structured: Vibe Coding → Prompt Engg → Prompt-to-Profit.",
     ctaLabel: "Upgrade Now",
     route: "/courses",

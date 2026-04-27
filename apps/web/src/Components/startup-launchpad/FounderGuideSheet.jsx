@@ -40,7 +40,7 @@ export default function FounderGuideSheet({ open, onClose }) {
   const onPickPrompt = (p) => {
     const reply =
       GUIDE_RESPONSES[p] ||
-      "Thanks for your question. Narrow it to one decision this week—then take one small action to reduce uncertainty.";
+      "Thanks for your question. Narrow it to one decision this week-then take one small action to reduce uncertainty.";
     setMessages((prev) => [...prev, { role: "user", text: p }, { role: "assistant", text: reply }]);
     updateProfile({ lastGuidePrompt: p });
   };
@@ -94,7 +94,7 @@ export default function FounderGuideSheet({ open, onClose }) {
               className="p-3 sm:p-4 overflow-y-auto flex-1 min-h-0 space-y-3 overscroll-y-contain [-webkit-overflow-scrolling:touch]"
             >
               {messages.length === 0 && (
-                <p className="text-sm text-slate-600 leading-relaxed">Tap a prompt below to see guidance here—no page reload needed.</p>
+                <p className="text-sm text-slate-600 leading-relaxed">Tap a prompt below to see guidance here-no page reload needed.</p>
               )}
               {messages.map((m, i) => (
                 <div

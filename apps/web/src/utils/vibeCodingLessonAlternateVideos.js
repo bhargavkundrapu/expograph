@@ -1,6 +1,6 @@
 /**
  * Alternate-language MP4 sources for specific Vibe Coding lessons (no DB change).
- * Module: Setup & Accounts — Lesson: Setup Fullstack environment
+ * Module: Setup & Accounts - Lesson: Setup Fullstack environment
  */
 
 const VIBE_SETUP_FULLSTACK_VIDEOS = {

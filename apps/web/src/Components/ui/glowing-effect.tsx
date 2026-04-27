@@ -35,7 +35,7 @@ const GlowingEffect = memo(
     const containerRef = useRef<HTMLDivElement>(null);
     const lastPosition = useRef({ x: 0, y: 0 });
     const animationFrameRef = useRef<number>(0);
-    /** Only run pointer/scroll sync while near viewport — avoids global scroll work across the whole page */
+    /** Only run pointer/scroll sync while near viewport - avoids global scroll work across the whole page */
     const [effectsActive, setEffectsActive] = useState(false);
 
     const handleMove = useCallback(

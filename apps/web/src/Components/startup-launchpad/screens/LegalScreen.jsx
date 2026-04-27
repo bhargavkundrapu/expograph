@@ -9,23 +9,23 @@ import {
 const blocks = [
   {
     title: "Do I need registration now?",
-    body: "If you do not have repeatable clarity on problem, customer, and model, wait. Registration is a milestone—not a starting gun.",
+    body: "If you do not have repeatable clarity on problem, customer, and model, wait. Registration is a milestone-not a starting gun.",
   },
   {
     title: "Compare common startup structures",
-    body: "Sole prop, partnership, Pvt Ltd, LLP—each fits different risk, funding, and compliance profiles. Decide with a checklist, not vibes.",
+    body: "Sole prop, partnership, Pvt Ltd, LLP-each fits different risk, funding, and compliance profiles. Decide with a checklist, not vibes.",
   },
   {
     title: "Legal basics checklist",
-    body: "Bank account, PAN, agreements, IP assignment—capture only what matters for your stage.",
+    body: "Bank account, PAN, agreements, IP assignment-capture only what matters for your stage.",
   },
   {
     title: "Document prep checklist",
-    body: "Founder IDs, address proof, NOB, DSC—keep a small folder before you engage a partner.",
+    body: "Founder IDs, address proof, NOB, DSC-keep a small folder before you engage a partner.",
   },
   {
     title: "Registration support handoff",
-    body: "When you are ready, route to a guided partner for filing—not a wall of statutes.",
+    body: "When you are ready, route to a guided partner for filing-not a wall of statutes.",
   },
 ];
 
@@ -77,7 +77,7 @@ export default function LegalScreen() {
           rel="noopener noreferrer"
           className="mt-3 inline-flex min-h-[44px] items-center justify-center rounded-xl bg-emerald-700 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-emerald-600 transition-colors"
         >
-          Register your startup — {STARTUP_REGISTRATION_PARTNER_NAME}
+          Register your startup - {STARTUP_REGISTRATION_PARTNER_NAME}
         </a>
       </div>
 
@@ -94,11 +94,11 @@ export default function LegalScreen() {
         <p className="font-semibold text-slate-900">FAQ</p>
         <details className="group border-b border-slate-200 pb-3">
           <summary className="cursor-pointer text-sm text-slate-800">When should I incorporate?</summary>
-          <p className="mt-2 text-sm text-slate-600">When liability, contracts, or revenue make informal structure risky—usually after validation signals.</p>
+          <p className="mt-2 text-sm text-slate-600">When liability, contracts, or revenue make informal structure risky-usually after validation signals.</p>
         </details>
         <details className="group">
           <summary className="cursor-pointer text-sm text-slate-800">Is this legal advice?</summary>
-          <p className="mt-2 text-sm text-slate-600">No—this is structured orientation. Consult a qualified professional for your jurisdiction.</p>
+          <p className="mt-2 text-sm text-slate-600">No-this is structured orientation. Consult a qualified professional for your jurisdiction.</p>
         </details>
       </div>
 

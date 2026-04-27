@@ -117,7 +117,7 @@ export const featureData = [
     description: (
       <>
         <strong className="text-emerald-400">Role presets</strong>, keyword chips & one-tap redirects to{" "}
-        <strong className="text-emerald-400">LinkedIn, Naukri, Internshala</strong> & more — your daily career command center.
+        <strong className="text-emerald-400">LinkedIn, Naukri, Internshala</strong> & more - your daily career command center.
       </>
     ),
     bullets: ["B.Tech role taxonomy", "Platform-aware search URLs", "Saved searches & apply tracker"],
@@ -137,7 +137,7 @@ export const featureData = [
     description: (
       <>
         <span className="text-amber-300/90 font-semibold">All Pack or all three main courses.</span> A guided{" "}
-        <strong className="text-orange-400">founder journey</strong> in your LMS—idea to MVP, launch, legal setup, and growth with{" "}
+        <strong className="text-orange-400">founder journey</strong> in your LMS-idea to MVP, launch, legal setup, and growth with{" "}
         <strong className="text-orange-400">readiness, actions, and progress</strong> (not a course flow).
       </>
     ),

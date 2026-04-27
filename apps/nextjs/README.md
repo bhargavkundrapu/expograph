@@ -22,9 +22,9 @@ Optional env: copy **`.env.example`** → **`.env.local`** and set `NEXT_PUBLIC_
 
 ## Routes
 
-- **`/presentation`** — product deck (canonical)
-- **`/`** — redirects to `/presentation`
-- **`/deck`**, **`/product-story`** — permanent redirects to `/presentation`
+- **`/presentation`** - product deck (canonical)
+- **`/`** - redirects to `/presentation`
+- **`/deck`**, **`/product-story`** - permanent redirects to `/presentation`
 
 ## Structure
 

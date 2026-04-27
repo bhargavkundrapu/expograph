@@ -1,4 +1,4 @@
-/** Homepage and auxiliary page imagery (Unsplash — `w` + `q` params match other working assets in the app). */
+/** Homepage and auxiliary page imagery (Unsplash - `w` + `q` params match other working assets in the app). */
 export const SOLUTIONS_HOME_IMAGES = {
   heroSide: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1600&q=80&auto=format&fit=crop",
   heroSideAlt: "Team workshop with laptops and collaboration",
@@ -42,7 +42,7 @@ export const SERVICE_PAGE_SECTION_IMAGES = {
 
 export const SOLUTIONS_AUX_BANNERS = {
   bookMeet: "https://images.unsplash.com/photo-1506784983877-45594efa4cbe?w=1920&q=80&auto=format&fit=crop",
-  bookMeetAlt: "Planning notes and calendar — scheduling a conversation",
+  bookMeetAlt: "Planning notes and calendar - scheduling a conversation",
   pricing: "https://images.unsplash.com/photo-1554224154-22dec7ec8818?w=1920&q=80&auto=format&fit=crop",
   pricingAlt: "Business consultation at a laptop",
   process: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=1920&q=80&auto=format&fit=crop",

@@ -200,7 +200,7 @@ export function computeReadinessResult(answers) {
     stageLabel,
     stageIndexHint,
     headline: "You are Registration-Ready",
-    subheadline: "Formalize when your model and traction are clear—use guidance, not guesswork.",
+    subheadline: "Formalize when your model and traction are clear-use guidance, not guesswork.",
     nextActions: ["Compare structures", "Prepare documents", "Get registration help"],
   };
 }
@@ -226,12 +226,12 @@ export const FOUNDER_GUIDE_PROMPTS = [
   "What is my next best step?",
 ];
 
-/** Shown in Legal, dashboard, and registration CTAs — package scope only */
+/** Shown in Legal, dashboard, and registration CTAs - package scope only */
 export const REGISTRATION_SUPPORT_OFFER = {
   price: "",
   priceLabel: "Guided startup registration (this package only)",
   blurb:
-    "It includes only the features listed below—other legal work, retainers, or add-ons are billed separately.",
+    "It includes only the features listed below-other legal work, retainers, or add-ons are billed separately.",
   includes: [
     "Structure comparison call",
     "Document checklist and filing prep",
@@ -249,15 +249,15 @@ export const GUIDE_RESPONSES = {
   "Should I register now?":
     "Usually after you have clarity on the problem, a simple business model, and validation or revenue signals. If you are still exploring, prioritize learning from users first; incorporate when contracts, liability, or investors require it.",
   "What should my MVP include?":
-    "Only what proves your riskiest assumption: one core user outcome, one main flow, and one metric. Ship the smallest version that gives a real yes or no—then iterate.",
+    "Only what proves your riskiest assumption: one core user outcome, one main flow, and one metric. Ship the smallest version that gives a real yes or no-then iterate.",
   "How do I choose between SaaS and service?":
     "SaaS fits repeatable software value at scale; services fit hands-on delivery and cash flow early. Many founders start with a service or concierge MVP, then productize what repeats.",
   "What should I charge first?":
-    "Anchor on value delivered, not hours. Start with a simple paid pilot or deposit so you learn who pays and why—then adjust after a few conversations.",
+    "Anchor on value delivered, not hours. Start with a simple paid pilot or deposit so you learn who pays and why-then adjust after a few conversations.",
   "What do I do after validation?":
     "Narrow the promise, simplify the offer, and get a small paid commitment or repeat usage. Then tighten onboarding and measure one north-star metric weekly.",
   "Do I need a co-founder?":
-    "You need the skills you lack—sometimes as a co-founder, sometimes as an advisor or hire. Split equity only when someone is committed long-term with aligned incentives.",
+    "You need the skills you lack-sometimes as a co-founder, sometimes as an advisor or hire. Split equity only when someone is committed long-term with aligned incentives.",
   "What is my next best step?":
     "One concrete action that reduces uncertainty: e.g. five targeted conversations, a one-page offer, or a tiny experiment. Pick one and finish it this week.",
 };
@@ -317,7 +317,7 @@ export const TOOL_MODAL_CONTENT = {
 
 /**
  * Per–founder-tool AI review prompts (placeholders). Matches TOOL_CARDS ids.
- * Each template references that tool’s job—not a generic startup chat.
+ * Each template references that tool’s job-not a generic startup chat.
  */
 export const TOOL_AI_PROMPTS = {
   "idea-validator": {
@@ -347,7 +347,7 @@ End with: "Ready to test further if…"`,
   "interview-script": {
     title: "AI review for this template",
     intro:
-      "Tuned for customer discovery—not sales. The AI will critique your script for bias and leading questions. Copy into ChatGPT.",
+      "Tuned for customer discovery-not sales. The AI will critique your script for bias and leading questions. Copy into ChatGPT.",
     placeholders: [
       { key: "product_context", label: "What you’re exploring (no pitch)", hint: "Topic area, not your solution" },
       { key: "user_type", label: "Who you’ll interview", hint: "Role or situation" },
@@ -388,7 +388,7 @@ Tasks:
 1) Is my evidence too thin to conclude anything? Say so bluntly.
 2) Separate signal vs noise: what might be selection bias?
 3) What ONE follow-up question should I ask next time?
-4) Go / pivot / more learning — what would change my mind?
+4) Go / pivot / more learning - what would change my mind?
 
 Keep feedback practical.`,
   },
@@ -467,7 +467,7 @@ Short go / adjust verdict.`,
   "cofounder-checklist": {
     title: "AI review for this template",
     intro:
-      "Structured alignment prompts—still not legal advice. Use with a lawyer for agreements. Copy into ChatGPT.",
+      "Structured alignment prompts-still not legal advice. Use with a lawyer for agreements. Copy into ChatGPT.",
     placeholders: [
       { key: "roles", label: "Roles & time commitment", hint: "Who does what, hours/week" },
       { key: "equity", label: "Equity split (intended)", hint: "Rough %" },
@@ -483,7 +483,7 @@ CONTEXT:
 Tasks:
 1) List 5 misalignment risks for this setup.
 2) What must be in writing before serious build (bullet list)?
-3) Vesting / cliff — flag if we ignored incentives (high-level only).
+3) Vesting / cliff - flag if we ignored incentives (high-level only).
 4) 5 questions we should answer in a founder session this week.
 
 Recommend a lawyer for binding agreements.`,
@@ -491,13 +491,13 @@ Recommend a lawyer for binding agreements.`,
   "registration-prep": {
     title: "AI review for this template",
     intro:
-      "Orientation only—confirm everything with a CA/CS. Copy into ChatGPT.",
+      "Orientation only-confirm everything with a CA/CS. Copy into ChatGPT.",
     placeholders: [
       { key: "structure", label: "Structure you lean toward", hint: "OPC, LLP, Pvt Ltd…" },
       { key: "activity", label: "Business activity (plain language)", hint: "What you sell or build" },
       { key: "team", label: "Founders / team", hint: "Solo or co-founders" },
     ],
-    template: `You are a structured prep assistant for India startup registration—not a lawyer or CA.
+    template: `You are a structured prep assistant for India startup registration-not a lawyer or CA.
 
 USING REGISTRATION PREP CHECKLIST:
 • Structure leaning: {{structure}}
@@ -605,7 +605,7 @@ export const STAGES = {
     actions: [
       { title: "Choose your must-have feature", description: "One core promise, delivered." },
       { title: "Remove extra features", description: "Cut ruthlessly for v1." },
-      { title: "Choose how you will build", description: "No-code, low-code, or code—pick speed." },
+      { title: "Choose how you will build", description: "No-code, low-code, or code-pick speed." },
       { title: "Define your first version clearly", description: "What ships in week one?" },
     ],
   },
@@ -710,13 +710,13 @@ export const STAGES = {
 
 /**
  * Generic ChatGPT-style stress-test prompts per stage. Uses {{key}} placeholders;
- * users fill custom values in the UI—templates are not tied to any one startup idea.
+ * users fill custom values in the UI-templates are not tied to any one startup idea.
  */
 export const STAGE_VALIDATION_PROMPTS = {
   idea: {
     title: "Stress-test this stage (ChatGPT)",
     intro:
-      "Fill in your details. The prompt stays generic; only your answers change. Copy into ChatGPT (or any AI). This is a thinking review—not legal, tax, or investment advice.",
+      "Fill in your details. The prompt stays generic; only your answers change. Copy into ChatGPT (or any AI). This is a thinking review-not legal, tax, or investment advice.",
     placeholders: [
       { key: "one_liner", label: "Your one-line idea", hint: "What you might build, in one sentence" },
       { key: "problem_hint", label: "Problem you think exists", hint: "Who hurts and why" },
@@ -872,13 +872,13 @@ Be direct.`,
   branding: {
     title: "Stress-test this stage (ChatGPT)",
     intro:
-      "Your name and pitch—generic prompt shell. Copy into ChatGPT.",
+      "Your name and pitch-generic prompt shell. Copy into ChatGPT.",
     placeholders: [
       { key: "name_direction", label: "Name or direction", hint: "Working name or 2 options" },
       { key: "pitch_line", label: "One-line pitch", hint: "Who it's for + what it does" },
       { key: "differentiator", label: "Why you vs alternatives", hint: "One differentiator" },
     ],
-    template: `Act as a skeptical messaging reviewer (not a lawyer—no trademark clearance).
+    template: `Act as a skeptical messaging reviewer (not a lawyer-no trademark clearance).
 
 I am at the BRANDING stage.
 
@@ -950,7 +950,7 @@ Be specific.`,
   revenue: {
     title: "Stress-test this stage (ChatGPT)",
     intro:
-      "Your offer and pricing—generic shell. Copy into ChatGPT. Not tax advice.",
+      "Your offer and pricing-generic shell. Copy into ChatGPT. Not tax advice.",
     placeholders: [
       { key: "offer", label: "What you sell (exactly)", hint: "Package or SKU" },
       { key: "price", label: "Price or range", hint: "INR or model" },
@@ -976,13 +976,13 @@ Not legal or accounting advice.`,
   "legal-setup": {
     title: "Stress-test this stage (ChatGPT)",
     intro:
-      "Your situation fills the blanks. Use for orientation only—verify with a CA/CS. Copy into ChatGPT.",
+      "Your situation fills the blanks. Use for orientation only-verify with a CA/CS. Copy into ChatGPT.",
     placeholders: [
       { key: "structure_lean", label: "Structure you consider", hint: "Sole prop, LLP, Pvt Ltd…" },
       { key: "team_reality", label: "Team & equity (roughly)", hint: "Solo or co-founders" },
       { key: "revenue_stage", label: "Revenue / contracts status", hint: "Pre-revenue, pilots, paying…" },
     ],
-    template: `Act as a structured checklist assistant—not a lawyer or CA. Flag when professional advice is required.
+    template: `Act as a structured checklist assistant-not a lawyer or CA. Flag when professional advice is required.
 
 I am at the LEGAL SETUP stage (India context, general).
 
@@ -1002,7 +1002,7 @@ If anything is unclear, say what I must clarify with a professional.`,
   growth: {
     title: "Stress-test this stage (ChatGPT)",
     intro:
-      "Your metrics and bottleneck—generic template. Copy into ChatGPT.",
+      "Your metrics and bottleneck-generic template. Copy into ChatGPT.",
     placeholders: [
       { key: "north_star", label: "North-star metric", hint: "One number you track" },
       { key: "bottleneck", label: "Biggest bottleneck", hint: "Acquisition, retention, ops…" },

@@ -24,7 +24,7 @@ export default function ToolsScreen() {
         <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Founder Tools</h1>
         <p className="mt-2 text-sm sm:text-base text-slate-600 max-w-2xl leading-relaxed">
           Each tool opens a checklist plus a <span className="font-medium text-slate-800">custom AI review prompt</span> (with placeholders) matched to
-          that template—so ChatGPT critiques <em>your</em> inputs, not a generic chat. Tap <span className="font-medium text-slate-800">Open template</span>{" "}
+          that template-so ChatGPT critiques <em>your</em> inputs, not a generic chat. Tap <span className="font-medium text-slate-800">Open template</span>{" "}
           to use it.
         </p>
       </div>

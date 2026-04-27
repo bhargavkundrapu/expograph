@@ -24,7 +24,7 @@ export default function DashboardScreen() {
   } = lp;
 
   const nextLine = currentStageMeta
-    ? `Next step: focus on ${currentStageMeta.shortLabel} — ${currentStageMeta.subtitle}`
+    ? `Next step: focus on ${currentStageMeta.shortLabel} - ${currentStageMeta.subtitle}`
     : "Next step: define your idea in one line.";
 
   const stages = STAGE_SLUGS.map((slug) => ({ ...STAGES[slug], slug }));
@@ -73,10 +73,10 @@ export default function DashboardScreen() {
 
         <FounderProfileCard
           profile={{
-            stage: readinessResult?.stageLabel || currentStageMeta?.shortLabel || "—",
-            startupType: startupType || "—",
-            team: teamSize || founderType || "—",
-            market: market || "—",
+            stage: readinessResult?.stageLabel || currentStageMeta?.shortLabel || "-",
+            startupType: startupType || "-",
+            team: teamSize || founderType || "-",
+            market: market || "-",
             revenue: revenueStatus,
             registration: registrationStatus,
           }}

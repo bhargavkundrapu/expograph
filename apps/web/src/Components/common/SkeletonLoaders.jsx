@@ -1303,7 +1303,7 @@ export function GenericPageSkeleton() {
   );
 }
 
-/** Full LaunchPad-shaped skeleton — matches StartupLaunchPadShell (light gradient) so LMS main area doesn’t show dark chrome behind a loader. */
+/** Full LaunchPad-shaped skeleton - matches StartupLaunchPadShell (light gradient) so LMS main area doesn’t show dark chrome behind a loader. */
 export function LaunchPadLoadingSkeleton() {
   return (
     <div
@@ -1348,7 +1348,7 @@ export function LaunchPadLoadingSkeleton() {
   );
 }
 
-/** `/presentation` — white deck, chapter strip + stacked slide frames (matches PresentationPage). */
+/** `/presentation` - white deck, chapter strip + stacked slide frames (matches PresentationPage). */
 export function PresentationPageSkeleton() {
   return (
     <div
@@ -1386,7 +1386,7 @@ export function PresentationPageSkeleton() {
   );
 }
 
-/** `/solutions` homepage — hero split + services-style sections. */
+/** `/solutions` homepage - hero split + services-style sections. */
 export function SolutionsHomePageSkeleton() {
   return (
     <div
@@ -1433,7 +1433,7 @@ export function SolutionsHomePageSkeleton() {
   );
 }
 
-/** `/solutions/book-a-meet`, `/pricing`, `/process`, `/faq`, `/thank-you` — hero + content column. */
+/** `/solutions/book-a-meet`, `/pricing`, `/process`, `/faq`, `/thank-you` - hero + content column. */
 export function SolutionsSubPageSkeleton() {
   return (
     <div
@@ -1472,7 +1472,7 @@ export function SolutionsSubPageSkeleton() {
   );
 }
 
-/** `/solutions/:serviceSlug` service detail — matches ServicePageTemplate sections. */
+/** `/solutions/:serviceSlug` service detail - matches ServicePageTemplate sections. */
 export function SolutionsServiceDetailSkeleton() {
   return (
     <div

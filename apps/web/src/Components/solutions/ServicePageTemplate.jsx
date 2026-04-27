@@ -58,7 +58,7 @@ export default function ServicePageTemplate({ service }) {
         {/* What we deliver */}
         <section className="border-b border-slate-200/70 py-16 sm:py-20">
           <h2 className={sectionTitle}>What we deliver</h2>
-          <p className={`mt-3 max-w-2xl ${body}`}>Concrete deliverables your team can adopt — not a vague “transformation.”</p>
+          <p className={`mt-3 max-w-2xl ${body}`}>Concrete deliverables your team can adopt - not a vague “transformation.”</p>
           <ul className={`${list} mt-8 max-w-3xl`}>
             {service.includes.map((item) => (
               <li key={item} className="flex gap-3 border-l-2 border-violet-400/40 pl-4">
@@ -111,7 +111,7 @@ export default function ServicePageTemplate({ service }) {
           <p className="mt-6 max-w-2xl rounded-2xl border border-violet-200/80 bg-white p-6 text-base leading-relaxed text-slate-800 shadow-lg ring-1 ring-violet-100 sm:text-lg">
             <span className="font-semibold text-slate-900">Band: </span>
             {service.pricingStart}
-            <span className="mt-3 block text-slate-600">Final quote follows a short scope conversation — always before you commit.</span>
+            <span className="mt-3 block text-slate-600">Final quote follows a short scope conversation - always before you commit.</span>
           </p>
         </section>
 

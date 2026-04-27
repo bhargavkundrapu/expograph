@@ -382,7 +382,7 @@ export function PresentationSection({ section }: { section: DeckSection }) {
           <div>
             <h2 className="font-display max-w-2xl text-3xl font-bold text-slate-900 md:text-5xl">{section.title}</h2>
             <p className="mt-4 max-w-2xl text-slate-600">
-              Tracks are designed to reduce confusion and increase output — with AI-native workflows built in.
+              Tracks are designed to reduce confusion and increase output - with AI-native workflows built in.
             </p>
           </div>
           <Link to="/courses" className="inline-flex items-center gap-2 text-sm font-semibold text-violet-700">

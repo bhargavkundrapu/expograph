@@ -141,8 +141,8 @@ REFINED REQUEST (v2):
 
 REVIEW of v2 output:
 - Fixed error messages âœ“
-- Still allows consecutive dots âœ—
-- Missing type hints âœ—
+- Still allows consecutive dots âœ-
+- Missing type hints âœ-
 
 REFINED REQUEST (v3):
 "Fix consecutive dots and add type hints + docstring + 3 test cases."

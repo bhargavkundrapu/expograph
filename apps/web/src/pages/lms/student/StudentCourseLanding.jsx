@@ -46,7 +46,7 @@ const TOOL_ICONS = {
   react: "⚛️", javascript: "🟨", typescript: "🔷", python: "🐍", "node.js": "🟢",
   html: "🌐", css: "🎨", git: "📦", github: "🐙", docker: "🐳", mongodb: "🍃",
   postgresql: "🐘", firebase: "🔥", aws: "☁️", figma: "🎨", "next.js": "▲",
-  "tailwind css": "💨", redux: "💜", graphql: "◈", vscode: "💻", linux: "🐧",
+  "tailwind css": "💨", redux: "💜", graphql: "�-�", vscode: "💻", linux: "🐧",
   express: "🟢", vercel: "▲", render: "🌐", vite: "⚡", prisma: "💎",
   jwt: "🔐", stripe: "💳", "socket.io": "🔌", redis: "🔴", playwright: "🎭",
   sentry: "🐛", "neon postgresql": "🐘", bcrypt: "🔒", zod: "✅",
@@ -54,7 +54,7 @@ const TOOL_ICONS = {
   eslint: "🧹", prettier: "✨", postman: "📮", "ci/cd": "🔄", https: "🔒",
   chatgpt: "🤖", "gpt-4": "🤖", claude: "🤖", gemini: "🤖",
   "ai": "🤖", "prompt engineering": "🤖", "cursor ai": "🤖",
-  "problem solving": "🧩", "critical thinking": "💡", "api integration": "🔗",
+  "problem solving": "🧩", "critical thinking": "💡", "api integration": "�-",
   default: "🔧",
 };
 

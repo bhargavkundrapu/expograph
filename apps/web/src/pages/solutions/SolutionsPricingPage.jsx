@@ -13,7 +13,7 @@ export default function SolutionsPricingPage() {
           <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-violet-700">Pricing</p>
           <h1 className="sol-display mt-3 max-w-3xl text-3xl leading-tight text-slate-900 sm:text-4xl md:text-5xl">Starting ranges, not guesswork</h1>
           <p className="mt-5 max-w-2xl text-lg leading-relaxed text-slate-600">
-            Use the table to plan. Your firm quote follows a short scope pass — integrations, depth, and timeline all matter.
+            Use the table to plan. Your firm quote follows a short scope pass - integrations, depth, and timeline all matter.
           </p>
         </div>
       </section>
@@ -52,7 +52,7 @@ export default function SolutionsPricingPage() {
         <div className={shell}>
           <h2 className="sol-display text-2xl text-slate-900 sm:text-3xl">Common first bundles</h2>
           <p className="mt-3 max-w-2xl text-base leading-relaxed text-slate-600">
-            Starting points teams often combine — we adjust inclusions to match how you work.
+            Starting points teams often combine - we adjust inclusions to match how you work.
           </p>
           <div className="mt-10 grid gap-5 md:grid-cols-3">
             {SOLUTIONS_BUNDLE_PRICING.map((bundle) => (

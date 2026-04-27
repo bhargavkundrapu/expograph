@@ -80,7 +80,7 @@ node scripts/test-connection.js
 
 This will show:
 - ✓ Connection successful (then proceed with migrate/seed)
-- ✗ Connection failed with specific error and troubleshooting steps
+- �- Connection failed with specific error and troubleshooting steps
 
 **Common fixes:**
 - **PostgreSQL not running:** Start it (Windows: Services → PostgreSQL; Docker: `docker compose up -d`; Mac: `brew services start postgresql`)

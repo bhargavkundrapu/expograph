@@ -63,7 +63,7 @@ async function test() {
   }
   
   try {
-    console.error('âœ— Connection failed:', err.message);
+    console.error('âœ- Connection failed:', err.message);
     console.error('Error code:', err.code);
     
     if (err.code === 'ETIMEDOUT' || err.message?.includes('timeout')) {
@@ -93,7 +93,7 @@ async function test() {
     await pool.end().catch(() => {});
     process.exit(1);
   } catch (err) {
-    console.error('âœ— Connection failed after retries:', lastError?.message || err.message);
+    console.error('âœ- Connection failed after retries:', lastError?.message || err.message);
     if (dbUrl.includes('neon.tech') && (lastError?.code === 'ECONNRESET' || err.code === 'ECONNRESET')) {
       console.error('\nðŸ’¡ For Neon: Use DIRECT connection URL (not pooler) in DATABASE_URL');
     }

@@ -368,7 +368,7 @@ export function PresentationSection({ section }: { section: DeckSection }) {
             <BrowserFrame
               src={shot}
               alt={shotAlt}
-              slotLabel="Jobs Search Hub — replace with capture"
+              slotLabel="Jobs Search Hub - replace with capture"
               className="max-w-4xl"
             />
           </div>
@@ -383,7 +383,7 @@ export function PresentationSection({ section }: { section: DeckSection }) {
         <Eyebrow>{section.eyebrow}</Eyebrow>
         <h2 className="font-display max-w-2xl text-3xl font-bold text-white md:text-5xl">{section.title}</h2>
         <p className="mt-4 max-w-2xl text-sm text-white/45">
-          Wording follows how trust is presented on ExpoGraph Academy — verify legal claims independently for
+          Wording follows how trust is presented on ExpoGraph Academy - verify legal claims independently for
           external decks.
         </p>
         <div className="mt-12 grid gap-4 md:grid-cols-2">
@@ -403,7 +403,7 @@ export function PresentationSection({ section }: { section: DeckSection }) {
         </div>
         {shot && (
           <div className="mt-12 max-w-4xl">
-            <BrowserFrame src={shot} alt={shotAlt} slotLabel="Certificates — replace with product capture" />
+            <BrowserFrame src={shot} alt={shotAlt} slotLabel="Certificates - replace with product capture" />
           </div>
         )}
       </SectionShell>
@@ -438,7 +438,7 @@ export function PresentationSection({ section }: { section: DeckSection }) {
         </div>
         {shot && (
           <div className="mt-12">
-            <BrowserFrame src={shot} alt={shotAlt} slotLabel="Pricing / courses UI — replace with capture" />
+            <BrowserFrame src={shot} alt={shotAlt} slotLabel="Pricing / courses UI - replace with capture" />
           </div>
         )}
       </SectionShell>
@@ -479,7 +479,7 @@ export function PresentationSection({ section }: { section: DeckSection }) {
                 src={shot}
                 alt={shotAlt}
                 className="mx-auto max-w-4xl opacity-90"
-                slotLabel="Closing visual — optional hero collage"
+                slotLabel="Closing visual - optional hero collage"
               />
             </div>
           )}

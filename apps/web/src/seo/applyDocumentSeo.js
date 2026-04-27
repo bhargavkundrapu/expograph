@@ -80,7 +80,7 @@ export function applyCourseDetailSeo({ slug, title, description, isCourse }) {
   const canonicalPath = `/courses/${slug}`;
   const pageTitle = `${title} | ExpoGraph Academy`;
   const raw = String(description || "").replace(/\s+/g, " ").trim();
-  const fallback = `Learn ${title} at ExpoGraph Academy — hands-on lessons, projects, and certificates.`;
+  const fallback = `Learn ${title} at ExpoGraph Academy - hands-on lessons, projects, and certificates.`;
   const metaDesc = (raw || fallback).slice(0, 160);
 
   const baseProvider = {
@@ -117,7 +117,7 @@ export function applyCourseDetailSeo({ slug, title, description, isCourse }) {
   });
 }
 
-/** SPA navigation — GA4 page view (gtag must be loaded from index.html). */
+/** SPA navigation - GA4 page view (gtag must be loaded from index.html). */
 export function sendGtagPageView(pathnameWithSearch) {
   if (typeof window === "undefined" || typeof window.gtag !== "function") return;
   try {

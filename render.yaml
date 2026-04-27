@@ -1,4 +1,4 @@
-# ExpoGraph Next.js deck — Web Service (not Static Site).
+# ExpoGraph Next.js deck - Web Service (not Static Site).
 # In Render: New → Blueprint → connect repo, or create Web Service manually with same settings.
 services:
   - type: web

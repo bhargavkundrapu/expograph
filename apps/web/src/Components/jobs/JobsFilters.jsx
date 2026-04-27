@@ -149,7 +149,7 @@ export default function JobsFilters({
         <Field label="Custom role / keywords">
           <textarea
             className={`${inputClass} min-h-[88px] resize-y py-2.5`}
-            placeholder="e.g. Blockchain developer — or comma-separated: rust, backend engineer, systems"
+            placeholder="e.g. Blockchain developer - or comma-separated: rust, backend engineer, systems"
             value={filters.customSubRoleText ?? ""}
             onChange={(e) => onCustomSubRoleTextChange(e.target.value)}
             rows={3}

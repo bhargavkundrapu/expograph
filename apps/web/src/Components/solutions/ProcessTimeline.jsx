@@ -1,5 +1,5 @@
 /**
- * Process steps — `lean` for service pages (less copy), default for homepage-style grids.
+ * Process steps - `lean` for service pages (less copy), default for homepage-style grids.
  */
 export default function ProcessTimeline({ steps, lean = false }) {
   return (

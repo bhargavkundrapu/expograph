@@ -100,7 +100,7 @@ Question: What is the capital of France?
 <!-- SEC-09 -->
 ## 🛠️ Guided Practice
 
-1. Open your AI tool. Ask: "What is 12 × 8? Show only the final answer. No explanation."
+1. Open your AI tool. Ask: "What is 12 �- 8? Show only the final answer. No explanation."
 2. Confirm you get a single number with no extra text.
 3. Now ask: "Explain why 0.1 + 0.2 ≠ 0.3 in programming. Show full working with each step labeled."
 

@@ -1,4 +1,4 @@
-/** Five-step delivery model — short labels for scan; detail on process page. */
+/** Five-step delivery model - short labels for scan; detail on process page. */
 export const SOLUTIONS_PROCESS_STEPS = [
   {
     step: "01",
@@ -10,7 +10,7 @@ export const SOLUTIONS_PROCESS_STEPS = [
   {
     step: "02",
     title: "Solution mapping",
-    whatYouGet: "A practical recommendation of what to build first — and what can wait.",
+    whatYouGet: "A practical recommendation of what to build first - and what can wait.",
     whatWeHandle: "Scope options, sequencing, and a realistic view of effort.",
     whyItWorks: "You see the path before time or budget is committed.",
   },
@@ -26,7 +26,7 @@ export const SOLUTIONS_PROCESS_STEPS = [
     title: "Build & test",
     whatYouGet: "Working software with review cycles you can participate in.",
     whatWeHandle: "Build, integration, QA, and fixes before go-live.",
-    whyItWorks: "You launch with confidence — not surprises.",
+    whyItWorks: "You launch with confidence - not surprises.",
   },
   {
     step: "05",

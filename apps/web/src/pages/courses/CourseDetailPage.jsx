@@ -55,7 +55,7 @@ export default function CourseDetailPage() {
     if (slug) fetchData();
   }, [slug]);
 
-  /** API-driven SEO (title, meta, canonical, OG/Twitter, JSON-LD) — no UI change. */
+  /** API-driven SEO (title, meta, canonical, OG/Twitter, JSON-LD) - no UI change. */
   useEffect(() => {
     if (!slug || loading || error) return;
     if (!course && !pack) return;

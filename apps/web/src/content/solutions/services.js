@@ -11,7 +11,7 @@ export const SOLUTIONS_SERVICES = [
       "Improve response speed across leads and operations",
       "Create automation flows your team can actually use",
     ],
-    heroDescription: "AI-ready automation for SMB operations — routing, reminders, and visibility.",
+    heroDescription: "AI-ready automation for SMB operations - routing, reminders, and visibility.",
     problem:
       "Many teams run critical workflows across spreadsheets, WhatsApp chats, and manual reminders. Work gets delayed, follow-up slips, and management has low visibility.",
     includes: [
@@ -56,7 +56,7 @@ export const SOLUTIONS_SERVICES = [
     image: "https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=1600&q=80&auto=format&fit=crop",
     imageAlt: "Laptop on a desk showing a modern website layout",
     title: "Lead-Generation Websites",
-    shortValue: "Sites built to turn visits into conversations — not vanity traffic.",
+    shortValue: "Sites built to turn visits into conversations - not vanity traffic.",
     outcomes: [
       "Increase inquiry quality with clearer offer pages",
       "Capture and route leads with minimal drop-off",
@@ -105,9 +105,9 @@ export const SOLUTIONS_SERVICES = [
     slug: "whatsapp-sales-support-systems",
     category: "Growth",
     image: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=1600&q=80&auto=format&fit=crop",
-    imageAlt: "Smartphone on a desk — messaging and business communication",
+    imageAlt: "Smartphone on a desk - messaging and business communication",
     title: "WhatsApp Sales + Support Systems",
-    shortValue: "Treat WhatsApp like a channel — qualify, route, and follow up.",
+    shortValue: "Treat WhatsApp like a channel - qualify, route, and follow up.",
     outcomes: [
       "Respond faster with structured chat flows",
       "Reduce missed inquiries and manual follow-up",
@@ -156,7 +156,7 @@ export const SOLUTIONS_SERVICES = [
     slug: "ai-customer-support-assistants",
     category: "Automation",
     image: "https://images.unsplash.com/photo-1556740758-90de374c12ad?w=1600&q=80&auto=format&fit=crop",
-    imageAlt: "Customer and staff at a service counter — helpful support",
+    imageAlt: "Customer and staff at a service counter - helpful support",
     title: "AI Customer Support Assistants",
     shortValue: "Deflect repeat questions; keep humans for what needs judgment.",
     outcomes: [
@@ -215,7 +215,7 @@ export const SOLUTIONS_SERVICES = [
       "Standardize follow-up and deal movement",
       "Improve sales visibility for founders and managers",
     ],
-    heroDescription: "CRM and sales workflow setup — visibility from lead to close.",
+    heroDescription: "CRM and sales workflow setup - visibility from lead to close.",
     problem:
       "When sales operations run in scattered sheets and chats, pipeline visibility is weak, follow-up gets missed, and conversions become unpredictable.",
     includes: [
@@ -311,13 +311,13 @@ export const SOLUTIONS_SERVICES = [
     image: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1600&q=80&auto=format&fit=crop",
     imageAlt: "Founders discussing product ideas around a table",
     title: "MVP Build Sprints for Founders",
-    shortValue: "From idea to working MVP — tight scope, visible milestones.",
+    shortValue: "From idea to working MVP - tight scope, visible milestones.",
     outcomes: [
       "Launch faster with clear MVP scope",
       "Avoid overbuilding early product versions",
       "Create a usable foundation for growth and fundraising",
     ],
-    heroDescription: "MVP build sprints for founders — ship, learn, then extend.",
+    heroDescription: "MVP build sprints for founders - ship, learn, then extend.",
     problem:
       "Founders often get stuck between idea and execution due to unclear scope, tech uncertainty, and lack of practical build support.",
     includes: [

@@ -76,7 +76,7 @@ Step 1: Convert the percentage to a decimal.
         23% = 23 / 100 = 0.23
 
 Step 2: Multiply the decimal by the number.
-        0.23 Ã— 847 = 194.81
+        0.23 Ã- 847 = 194.81
 
 Answer: 23% of 847 is 194.81.
 ```

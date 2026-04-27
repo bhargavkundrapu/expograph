@@ -1,4 +1,4 @@
-/** ExpoGraph Solutions — homepage copy. Tone: direct, calm, B2B. */
+/** ExpoGraph Solutions - homepage copy. Tone: direct, calm, B2B. */
 
 export const SOLUTIONS_HERO = {
   title: "Software, AI automation, and growth systems for modern businesses",
@@ -17,7 +17,7 @@ export const SOLUTIONS_WHAT_WE_HELP = [
   },
   {
     title: "Less manual glue work",
-    body: "Automation where it saves hours every week — not novelty for its own sake.",
+    body: "Automation where it saves hours every week - not novelty for its own sake.",
   },
   {
     title: "Visibility for sales and operations",
@@ -31,7 +31,7 @@ export const SOLUTIONS_WHAT_WE_HELP = [
 
 export const SOLUTIONS_WHY_EXPOGRAPH = [
   "We optimize for weekly use, not slide screenshots.",
-  "We sequence work around your bottleneck — not a generic playbook.",
+  "We sequence work around your bottleneck - not a generic playbook.",
   "Handover and documentation so you are not locked to opaque knowledge.",
   "Starting bands for planning; a firm quote after a short scope conversation.",
 ];
@@ -39,7 +39,7 @@ export const SOLUTIONS_WHY_EXPOGRAPH = [
 export const SOLUTIONS_SECTION_INTROS = {
   whatWeHelp: {
     title: "What we help businesses do",
-    body: "When growth or speed feels stuck, it is usually routing, visibility, or repeat work — not a lack of effort.",
+    body: "When growth or speed feels stuck, it is usually routing, visibility, or repeat work - not a lack of effort.",
   },
   services: {
     title: "Core services",
@@ -47,7 +47,7 @@ export const SOLUTIONS_SECTION_INTROS = {
   },
   industries: {
     title: "Where we fit well",
-    body: "Teams asked to do more with the same headcount — and tired of duct-taped tools.",
+    body: "Teams asked to do more with the same headcount - and tired of duct-taped tools.",
   },
   whyUs: {
     title: "Why ExpoGraph Solutions",
@@ -67,6 +67,6 @@ export const SOLUTIONS_SECTION_INTROS = {
   },
   bookPreview: {
     title: "Book a meet",
-    body: "Share context in a few lines. We reply with next steps — usually within one business day.",
+    body: "Share context in a few lines. We reply with next steps - usually within one business day.",
   },
 };

@@ -19,7 +19,7 @@ export default function SolutionsProcessPreviewSection() {
             </h2>
             <p className="mt-3 text-base leading-relaxed text-slate-600 sm:text-lg">{body}</p>
             <p className="mt-6 rounded-xl border border-violet-100 bg-violet-50/60 p-4 text-sm leading-relaxed text-violet-950">
-              Same five steps for a landing page or a full internal tool — only the depth changes.
+              Same five steps for a landing page or a full internal tool - only the depth changes.
             </p>
             <Link
               to="/solutions/process"

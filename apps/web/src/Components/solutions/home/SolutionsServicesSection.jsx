@@ -26,7 +26,7 @@ export default function SolutionsServicesSection({ servicesByCategory }) {
               <div key={row.label} className="flex items-center gap-2 text-xs text-slate-600 sm:text-sm">
                 <span className={`h-2 w-2 shrink-0 rounded-full ${row.color}`} aria-hidden />
                 <span className="font-semibold text-slate-800">{row.label}</span>
-                <span className="hidden text-slate-500 sm:inline">— {row.hint}</span>
+                <span className="hidden text-slate-500 sm:inline">- {row.hint}</span>
               </div>
             ))}
           </div>

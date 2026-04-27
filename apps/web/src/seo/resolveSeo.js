@@ -1,17 +1,17 @@
 import { COURSE_EXPLORE_DATA } from "../data/courseExploreData";
 import { getSiteOrigin } from "./siteOrigin";
 
-/** Default from index.html — used when no route-specific copy exists */
-export const DEFAULT_SITE_TITLE = "ExpoGraph | AI Academy — Vibe Coding, Prompt Engineering & AI Automations";
+/** Default from index.html - used when no route-specific copy exists */
+export const DEFAULT_SITE_TITLE = "ExpoGraph | AI Academy - Vibe Coding, Prompt Engineering & AI Automations";
 export const DEFAULT_SITE_DESCRIPTION =
   "Master AI Automations, Vibe Coding & Prompt Engineering with hands-on courses, real client projects and career-ready skills at ExpoGraph Academy.";
 
-/** Feature detail pages — titles & descriptions aligned with FeatureDetailPage hero copy (SEO-only; no UI). */
+/** Feature detail pages - titles & descriptions aligned with FeatureDetailPage hero copy (SEO-only; no UI). */
 const FEATURE_SEO = {
   "smart-prompts": {
     title: "Smart Prompt Library | ExpoGraph",
     description:
-      "Copy-ready prompts, error-fix snippets, and command reference boxes for every lesson—HTML, CSS, JavaScript, React, Node.js, and more.",
+      "Copy-ready prompts, error-fix snippets, and command reference boxes for every lesson-HTML, CSS, JavaScript, React, Node.js, and more.",
   },
   "resume-builder": {
     title: "Resume Builder | ExpoGraph",
@@ -26,12 +26,12 @@ const FEATURE_SEO = {
   "learning-portal": {
     title: "Learning Portal | ExpoGraph",
     description:
-      "Track progress, browse courses, and learn from one learner-friendly LMS dashboard—mobile-friendly and built for focus.",
+      "Track progress, browse courses, and learn from one learner-friendly LMS dashboard-mobile-friendly and built for focus.",
   },
   "structured-lessons": {
     title: "Structured Lessons | ExpoGraph",
     description:
-      "Every lesson follows Goal, Video, Setup, Prompts, Presentation, and Success Checkpoint—clear structure for hands-on learning.",
+      "Every lesson follows Goal, Video, Setup, Prompts, Presentation, and Success Checkpoint-clear structure for hands-on learning.",
   },
   "jobs-search-hub": {
     title: "Jobs Search Hub | ExpoGraph",
@@ -41,7 +41,7 @@ const FEATURE_SEO = {
   "startup-launchpad": {
     title: "Startup LaunchPad | ExpoGraph",
     description:
-      "Guided founder journey from idea to MVP, launch, legal setup, and growth—inside the ExpoGraph student LMS.",
+      "Guided founder journey from idea to MVP, launch, legal setup, and growth-inside the ExpoGraph student LMS.",
   },
 };
 
@@ -108,9 +108,9 @@ export function resolveSeo(pathname) {
 
   if (path === "/solutions") {
     return {
-      title: "ExpoGraph Solutions — Software, AI Automation & Growth Systems",
+      title: "ExpoGraph Solutions - Software, AI Automation & Growth Systems",
       description:
-        "Lead-focused websites, WhatsApp sales and support flows, AI automation, CRM setup, internal dashboards, and MVP sprints — built for businesses that need clarity and speed.",
+        "Lead-focused websites, WhatsApp sales and support flows, AI automation, CRM setup, internal dashboards, and MVP sprints - built for businesses that need clarity and speed.",
       robots,
       canonicalPath: path,
       jsonLd: null,
@@ -126,12 +126,12 @@ export function resolveSeo(pathname) {
     "/solutions/pricing": {
       title: "Pricing | ExpoGraph Solutions",
       description:
-        "Starter pricing bands for automation, websites, WhatsApp systems, AI support, CRM workflows, internal tools, and MVP sprints — final quotes follow scope.",
+        "Starter pricing bands for automation, websites, WhatsApp systems, AI support, CRM workflows, internal tools, and MVP sprints - final quotes follow scope.",
     },
     "/solutions/process": {
       title: "Process | ExpoGraph Solutions",
       description:
-        "Discovery, solution mapping, scope and plan, build and test, then support and improve — the same five-step delivery model on every engagement.",
+        "Discovery, solution mapping, scope and plan, build and test, then support and improve - the same five-step delivery model on every engagement.",
     },
     "/solutions/faq": {
       title: "FAQ | ExpoGraph Solutions",
@@ -185,7 +185,7 @@ export function resolveSeo(pathname) {
     return {
       title: "Courses | ExpoGraph Academy",
       description:
-        "Browse Vibe Coding, Prompt Engineering, AI Automations, and more—affordable courses with certificates and real-world practice.",
+        "Browse Vibe Coding, Prompt Engineering, AI Automations, and more-affordable courses with certificates and real-world practice.",
       robots,
       canonicalPath: path,
       jsonLd: null,
@@ -228,7 +228,7 @@ export function resolveSeo(pathname) {
     const data = COURSE_EXPLORE_DATA[slug];
     if (data) {
       return {
-        title: `${data.title} — Explore | ExpoGraph Academy`,
+        title: `${data.title} - Explore | ExpoGraph Academy`,
         description: data.description.slice(0, 160),
         robots,
         canonicalPath: `/courses/explore/${slug}`,

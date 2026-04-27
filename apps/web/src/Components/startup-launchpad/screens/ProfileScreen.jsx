@@ -162,7 +162,7 @@ export default function ProfileScreen() {
 
       <div className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4 text-sm text-slate-600 shadow-sm">
         <p>
-          Active stage: <span className="text-slate-900 font-medium">{activeSlug ? STAGES[activeSlug]?.shortLabel : "—"}</span>
+          Active stage: <span className="text-slate-900 font-medium">{activeSlug ? STAGES[activeSlug]?.shortLabel : "-"}</span>
         </p>
         <p className="mt-1">
           Completed steps: {completedSlugs.length} / {STAGE_SLUGS.length}

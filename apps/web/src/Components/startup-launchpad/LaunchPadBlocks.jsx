@@ -127,9 +127,9 @@ export function ExpectedOutputBlock({ items }) {
 export function FounderProfileCard({ profile }) {
   const rows = [
     ["Stage", profile.stage],
-    ["Startup Type", profile.startupType || "—"],
+    ["Startup Type", profile.startupType || "-"],
     ["Team", profile.team],
-    ["Market", profile.market || "—"],
+    ["Market", profile.market || "-"],
     ["Revenue", profile.revenue],
     ["Registration Status", profile.registration],
   ];
@@ -161,7 +161,7 @@ export function LegalReadinessCard({ highlighted, onCompare, showRegistrationPri
         <div className="mt-4 rounded-xl border border-emerald-200/90 bg-white/90 p-3 sm:p-4">
           <p className="text-sm font-semibold text-emerald-900">
             {REGISTRATION_SUPPORT_OFFER.priceLabel}{" "}
-            <span className="tabular-nums text-emerald-700">— {REGISTRATION_SUPPORT_OFFER.price}</span>
+            <span className="tabular-nums text-emerald-700">- {REGISTRATION_SUPPORT_OFFER.price}</span>
           </p>
           <p className="mt-1.5 text-xs sm:text-sm text-emerald-900/90 leading-relaxed">{REGISTRATION_SUPPORT_OFFER.blurb}</p>
           <p className="mt-2 text-[11px] font-medium uppercase tracking-wide text-emerald-800/80">Included in this package only</p>
