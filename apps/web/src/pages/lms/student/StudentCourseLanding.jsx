@@ -30,10 +30,10 @@ import CourseFeedbackCard from "../../../Components/student/CourseFeedbackCard";
 import { getCourseCardCover } from "../../../data/courseCardMedia";
 
 const COURSE_HIGHLIGHTS = [
-  { icon: "🛠️", title: "Real-World Projects", desc: "Build portfolio-worthy projects with hands-on guidance" },
-  { icon: "🧠", title: "Deep Understanding", desc: "Go beyond tutorials-master the concepts that matter" },
-  { icon: "🎯", title: "Industry-Ready Skills", desc: "Learn what top companies actually look for" },
-  { icon: "🚀", title: "Career Growth", desc: "Skills that open doors to new opportunities" },
+  { icon: "ðŸ› ï¸", title: "Real-World Projects", desc: "Build portfolio-worthy projects with hands-on guidance" },
+  { icon: "ðŸ§ ", title: "Deep Understanding", desc: "Go beyond tutorials-master the concepts that matter" },
+  { icon: "ðŸŽ¯", title: "Industry-Ready Skills", desc: "Learn what top companies actually look for" },
+  { icon: "ðŸš€", title: "Career Growth", desc: "Skills that open doors to new opportunities" },
 ];
 
 const TESTIMONIALS = [
@@ -43,19 +43,19 @@ const TESTIMONIALS = [
 ];
 
 const TOOL_ICONS = {
-  react: "⚛️", javascript: "🟨", typescript: "🔷", python: "🐍", "node.js": "🟢",
-  html: "🌐", css: "🎨", git: "📦", github: "🐙", docker: "🐳", mongodb: "🍃",
-  postgresql: "🐘", firebase: "🔥", aws: "☁️", figma: "🎨", "next.js": "▲",
-  "tailwind css": "💨", redux: "💜", graphql: "�-�", vscode: "💻", linux: "🐧",
-  express: "🟢", vercel: "▲", render: "🌐", vite: "⚡", prisma: "💎",
-  jwt: "🔐", stripe: "💳", "socket.io": "🔌", redis: "🔴", playwright: "🎭",
-  sentry: "🐛", "neon postgresql": "🐘", bcrypt: "🔒", zod: "✅",
-  multer: "📁", sendgrid: "📧", resend: "📨", bullmq: "📋", sharp: "🖼️",
-  eslint: "🧹", prettier: "✨", postman: "📮", "ci/cd": "🔄", https: "🔒",
-  chatgpt: "🤖", "gpt-4": "🤖", claude: "🤖", gemini: "🤖",
-  "ai": "🤖", "prompt engineering": "🤖", "cursor ai": "🤖",
-  "problem solving": "🧩", "critical thinking": "💡", "api integration": "�-",
-  default: "🔧",
+  react: "âš›ï¸", javascript: "ðŸŸ¨", typescript: "ðŸ”·", python: "ðŸ", "node.js": "ðŸŸ¢",
+  html: "ðŸŒ", css: "ðŸŽ¨", git: "ðŸ“¦", github: "ðŸ™", docker: "ðŸ³", mongodb: "ðŸƒ",
+  postgresql: "ðŸ˜", firebase: "ðŸ”¥", aws: "â˜ï¸", figma: "ðŸŽ¨", "next.js": "â–²",
+  "tailwind css": "ðŸ’¨", redux: "ðŸ’œ", graphql: "â-ˆ", vscode: "ðŸ’»", linux: "ðŸ§",
+  express: "ðŸŸ¢", vercel: "â–²", render: "ðŸŒ", vite: "âš¡", prisma: "ðŸ’Ž",
+  jwt: "ðŸ”", stripe: "ðŸ’³", "socket.io": "ðŸ”Œ", redis: "ðŸ”´", playwright: "ðŸŽ­",
+  sentry: "ðŸ›", "neon postgresql": "ðŸ˜", bcrypt: "ðŸ”’", zod: "âœ…",
+  multer: "ðŸ“", sendgrid: "ðŸ“§", resend: "ðŸ“¨", bullmq: "ðŸ“‹", sharp: "ðŸ–¼ï¸",
+  eslint: "ðŸ§¹", prettier: "âœ¨", postman: "ðŸ“®", "ci/cd": "ðŸ”„", https: "ðŸ”’",
+  chatgpt: "ðŸ¤–", "gpt-4": "ðŸ¤–", claude: "ðŸ¤–", gemini: "ðŸ¤–",
+  "ai": "ðŸ¤–", "prompt engineering": "ðŸ¤–", "cursor ai": "ðŸ¤–",
+  "problem solving": "ðŸ§©", "critical thinking": "ðŸ’¡", "api integration": "ðŸ”-",
+  default: "ðŸ”§",
 };
 
 function getToolIcon(name) {
@@ -144,7 +144,7 @@ export default function StudentCourseLanding() {
   const [isEnrolled, setIsEnrolled] = useState(false);
   const [courseMissing, setCourseMissing] = useState(false);
 
-  // Redirect: old bonus-courses/ai-automations → courses/ai-automations; deprecated ai-agents → courses/ai-automations
+  // Redirect: old bonus-courses/ai-automations â†’ courses/ai-automations; deprecated ai-agents â†’ courses/ai-automations
   useEffect(() => {
     const normalized = (courseSlug || "").toLowerCase().replace(/_/g, "-");
     const isAiAutomations = normalized === "ai-automations" || normalized.includes("ai-automation");
@@ -385,7 +385,7 @@ export default function StudentCourseLanding() {
                   className="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl transition-all text-base shadow-lg hover:shadow-xl flex items-center gap-2.5"
                 >
                   <FiLock className="w-5 h-5" />
-                  Enroll Now {priceRupees > 0 && `-₹${priceRupees}`}
+                  Enroll Now {priceRupees > 0 && `-â‚¹${priceRupees}`}
                 </button>
               ) : (
                 <button
@@ -558,7 +558,7 @@ export default function StudentCourseLanding() {
                             {mod.title || mod.name || `Module ${mi + 1}`}
                           </p>
                           <p className={`text-[11px] ${isDark ? "text-slate-400" : "text-slate-500"}`}>
-                            {total} lesson{total !== 1 ? "s" : ""} {modProgress > 0 && `• ${completed}/${total} done`}
+                            {total} lesson{total !== 1 ? "s" : ""} {modProgress > 0 && `â€¢ ${completed}/${total} done`}
                           </p>
                         </div>
                         {modProgress > 0 && modProgress < 100 && (
@@ -611,7 +611,7 @@ export default function StudentCourseLanding() {
             <div className="max-w-5xl mx-auto text-center">
               <FiTarget className={`w-8 h-8 mx-auto mb-3 ${isDark ? "text-purple-400" : "text-purple-600"}`} />
               <h2 className={`text-xl font-bold mb-2 ${isDark ? "text-white" : "text-slate-900"}`}>
-                {course.modules_count || 10} Modules • {course.total_lessons || totalLessons} Lessons
+                {course.modules_count || 10} Modules â€¢ {course.total_lessons || totalLessons} Lessons
               </h2>
               <p className={`text-sm mb-6 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
                 Enroll to unlock the full course roadmap with detailed lesson progress
@@ -621,7 +621,7 @@ export default function StudentCourseLanding() {
                 className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all inline-flex items-center gap-2"
               >
                 <FiLock className="w-4 h-4" />
-                Unlock Course {priceRupees > 0 && `-₹${priceRupees}`}
+                Unlock Course {priceRupees > 0 && `-â‚¹${priceRupees}`}
               </button>
             </div>
           </div>
@@ -645,7 +645,7 @@ export default function StudentCourseLanding() {
                 className="px-8 py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl transition-all shadow-lg inline-flex items-center gap-2"
               >
                 <FiLock className="w-5 h-5" />
-                Enroll Now {priceRupees > 0 && `-₹${priceRupees}`}
+                Enroll Now {priceRupees > 0 && `-â‚¹${priceRupees}`}
               </button>
             ) : (
               <button

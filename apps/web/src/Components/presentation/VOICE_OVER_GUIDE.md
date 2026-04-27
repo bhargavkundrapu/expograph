@@ -2,7 +2,7 @@
 
 The presentation module supports **multiple ways** to add and edit voice-overs for your slides. Here's a comprehensive guide to all available options:
 
-## 🎤 Voice-Over Methods
+## ðŸŽ¤ Voice-Over Methods
 
 ### 1. **Text-to-Speech (TTS)** - Browser Built-in
 **Best for:** Quick narration, consistent voice, no recording needed
@@ -84,7 +84,7 @@ The presentation module supports **multiple ways** to add and edit voice-overs f
 - Microphone access permission
 - Modern browser (Chrome, Firefox, Edge, Safari)
 
-## 🎛️ Voice Editing Options
+## ðŸŽ›ï¸ Voice Editing Options
 
 ### For Text-to-Speech:
 
@@ -118,7 +118,7 @@ The presentation module supports **multiple ways** to add and edit voice-overs f
    - Enable to play automatically when slide appears
    - Disable for manual playback
 
-## 🔧 Advanced Features
+## ðŸ”§ Advanced Features
 
 ### Auto-Play Configuration
 - **Per-slide control:** Each slide can have its own auto-play setting
@@ -136,7 +136,7 @@ The presentation module supports **multiple ways** to add and edit voice-overs f
 - **Edit:** Modify settings anytime
 - **Replace:** Switch between TTS, Upload, or Record modes
 
-## 📊 Comparison Table
+## ðŸ“Š Comparison Table
 
 | Feature | TTS | Upload | Record |
 |---------|-----|--------|--------|
@@ -149,7 +149,7 @@ The presentation module supports **multiple ways** to add and edit voice-overs f
 | Offline | Yes | Yes | Yes |
 | Multi-language | Yes | Yes | Yes |
 
-## 💡 Best Practices
+## ðŸ’¡ Best Practices
 
 ### Text-to-Speech:
 - Keep sentences short and clear
@@ -172,7 +172,7 @@ The presentation module supports **multiple ways** to add and edit voice-overs f
 - Test recording levels before starting
 - Keep recordings concise (under 2 minutes per slide)
 
-## 🎯 Use Cases
+## ðŸŽ¯ Use Cases
 
 ### Educational Presentations:
 - **TTS:** Quick explanations, consistent narration
@@ -189,7 +189,7 @@ The presentation module supports **multiple ways** to add and edit voice-overs f
 - **Upload:** High-quality technical narration
 - **Record:** Live coding explanations
 
-## 🔄 Switching Between Methods
+## ðŸ”„ Switching Between Methods
 
 You can easily switch between methods:
 1. Select different mode (TTS/Upload/Record)
@@ -197,7 +197,7 @@ You can easily switch between methods:
 3. New method replaces old one
 4. Settings are saved automatically
 
-## 🚀 Tips & Tricks
+## ðŸš€ Tips & Tricks
 
 1. **Mix Methods:** Use TTS for quick slides, Upload for important ones
 2. **Consistent Volume:** Normalize all audio files to similar levels
@@ -207,7 +207,7 @@ You can easily switch between methods:
 6. **Multi-language:** Use different voices for different languages
 7. **Pacing:** Adjust speed based on audience (slower for beginners)
 
-## 🐛 Troubleshooting
+## ðŸ› Troubleshooting
 
 ### TTS Not Working:
 - Check browser compatibility (Chrome, Firefox, Edge work best)
@@ -233,7 +233,7 @@ You can easily switch between methods:
 - Check browser audio settings
 - Ensure audio file is valid
 
-## 📝 Technical Details
+## ðŸ“ Technical Details
 
 ### Browser Support:
 - **TTS:** Chrome 33+, Firefox 49+, Safari 7+, Edge 14+
@@ -250,32 +250,32 @@ You can easily switch between methods:
 - **Upload:** Depends on source file quality
 - **Record:** Depends on microphone quality
 
-## 🎨 Customization Options Summary
+## ðŸŽ¨ Customization Options Summary
 
 **Text-to-Speech:**
-- ✅ Voice selection (multiple options)
-- ✅ Speed control (0.5x - 2.0x)
-- ✅ Pitch control (0 - 2.0)
-- ✅ Volume control (0% - 100%)
-- ✅ Real-time preview
-- ✅ Auto-play option
+- âœ… Voice selection (multiple options)
+- âœ… Speed control (0.5x - 2.0x)
+- âœ… Pitch control (0 - 2.0)
+- âœ… Volume control (0% - 100%)
+- âœ… Real-time preview
+- âœ… Auto-play option
 
 **Upload Audio:**
-- ✅ File format selection
-- ✅ Volume control
-- ✅ Auto-play option
-- ✅ Preview playback
+- âœ… File format selection
+- âœ… Volume control
+- âœ… Auto-play option
+- âœ… Preview playback
 
 **Record Audio:**
-- ✅ Real-time recording
-- ✅ Recording timer
-- ✅ Re-record option
-- ✅ Volume control
-- ✅ Auto-play option
-- ✅ Preview playback
+- âœ… Real-time recording
+- âœ… Recording timer
+- âœ… Re-record option
+- âœ… Volume control
+- âœ… Auto-play option
+- âœ… Preview playback
 
 ---
 
-**Total Voice-Over Options: 3 Methods �- Multiple Settings = Comprehensive Voice Control**
+**Total Voice-Over Options: 3 Methods Ã- Multiple Settings = Comprehensive Voice Control**
 
 Choose the method that best fits your needs, or mix and match for different slides!

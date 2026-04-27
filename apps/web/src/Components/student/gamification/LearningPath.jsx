@@ -27,7 +27,7 @@ export default function LearningPath({ modules = [], courseSlug, onNavigate }) {
     <div className={`rounded-2xl border p-4 sm:p-6 ${isDark ? "bg-slate-800 border-slate-700" : "bg-white border-slate-200"}`}>
       <div className="flex items-center justify-between mb-4">
         <h3 className={`text-sm font-bold flex items-center gap-2 ${isDark ? "text-white" : "text-slate-900"}`}>
-          �-�️ Learning Journey
+          ðŸ-ºï¸ Learning Journey
         </h3>
         <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${isDark ? "bg-green-500/15 text-green-400" : "bg-green-50 text-green-600"}`}>
           {totalDone}/{flatLessons.length} done

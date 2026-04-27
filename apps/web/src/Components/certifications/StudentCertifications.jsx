@@ -130,7 +130,7 @@ function Toast({ message, type, onDismiss }) {
         className="ml-2 opacity-80 hover:opacity-100"
         aria-label="Dismiss"
       >
-        �-
+        Ã-
       </button>
     </motion.div>
   );
@@ -251,7 +251,7 @@ function CourseCard({
           >
             {loading ? (
               <>
-                <FiClock className="w-4 h-4 animate-spin" /> Requesting…
+                <FiClock className="w-4 h-4 animate-spin" /> Requestingâ€¦
               </>
             ) : (
               <>Request Certificate</>

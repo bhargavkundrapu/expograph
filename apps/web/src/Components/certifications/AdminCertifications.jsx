@@ -21,7 +21,7 @@ function Toast({ message, type, onDismiss }) {
     >
       {message}
       <button type="button" onClick={onDismiss} className="ml-2 opacity-80 hover:opacity-100" aria-label="Dismiss">
-        �-
+        Ã-
       </button>
     </motion.div>
   );
@@ -53,7 +53,7 @@ function RejectModal({ open, onClose, onConfirm, loading, row }) {
           <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">Reject certificate request</h3>
           {row && (
             <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
-              {row.student_name} – {row.course_title}
+              {row.student_name} â€“ {row.course_title}
             </p>
           )}
           <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Reason (optional)</label>
@@ -78,7 +78,7 @@ function RejectModal({ open, onClose, onConfirm, loading, row }) {
               onClick={() => onConfirm(reason)}
               className="px-4 py-2 rounded-xl bg-red-600 text-white hover:bg-red-700 disabled:opacity-60"
             >
-              {loading ? "Rejecting…" : "Reject"}
+              {loading ? "Rejectingâ€¦" : "Reject"}
             </button>
           </div>
         </motion.div>
@@ -292,7 +292,7 @@ export default function AdminCertifications() {
                               className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-emerald-600 text-white hover:bg-emerald-700 disabled:opacity-60"
                             >
                               {actionId === row.id ? (
-                                "…"
+                                "â€¦"
                               ) : (
                                 <>
                                   <FiCheckCircle className="w-4 h-4" /> Approve

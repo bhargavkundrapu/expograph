@@ -28,7 +28,7 @@ const BG_CERTS =
 const NOT_PACK_SLIDES: Slide[] = [
   {
     id: "s1",
-    title: "Upgrade to Pack ₹199",
+    title: "Upgrade to Pack â‚¹199",
     subtitle: "All 3 courses + certificates + client slots eligibility.",
     ctaLabel: "Unlock Pack",
     route: "/courses",
@@ -46,8 +46,8 @@ const NOT_PACK_SLIDES: Slide[] = [
   },
   {
     id: "s3",
-    title: "Finish faster (3�-)",
-    subtitle: "Pack path is structured: Vibe Coding → Prompt Engg → Prompt-to-Profit.",
+    title: "Finish faster (3Ã-)",
+    subtitle: "Pack path is structured: Vibe Coding â†’ Prompt Engg â†’ Prompt-to-Profit.",
     ctaLabel: "Upgrade Now",
     route: "/courses",
     variant: "not-pack",
@@ -85,7 +85,7 @@ const NOT_PACK_SLIDES: Slide[] = [
 const PACK_SLIDES: Slide[] = [
   {
     id: "p1",
-    title: "You have Pack ✅",
+    title: "You have Pack âœ…",
     subtitle: "Complete courses to unlock certificates + client projects.",
     ctaLabel: "Continue",
     route: "/lms/student/courses",
@@ -104,7 +104,7 @@ const PACK_SLIDES: Slide[] = [
   {
     id: "p3",
     title: "Certificates",
-    subtitle: "Finish → Request → Download (QR verified).",
+    subtitle: "Finish â†’ Request â†’ Download (QR verified).",
     ctaLabel: "Open Certifications",
     route: "/lms/student/certificates",
     variant: "pack",
