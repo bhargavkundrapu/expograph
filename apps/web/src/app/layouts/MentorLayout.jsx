@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate, Outlet } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../providers/AuthProvider";
+import BrandLogo from "../../Components/ui/BrandLogo";
 import {
   FiHome,
   FiUsers,
@@ -112,7 +113,7 @@ export default function MentorLayout() {
                   exit={{ opacity: 0, x: -20 }}
                   className="flex items-center"
                 >
-                  <img src="/1.png" alt="ExpoGraph Mentor" className="h-10 w-44 object-contain object-left" />
+                  <BrandLogo alt="ExpoGraph Mentor" className="h-11 w-48 object-contain object-left" />
                 </motion.div>
               ) : (
                 <motion.div
@@ -121,7 +122,7 @@ export default function MentorLayout() {
                   exit={{ opacity: 0 }}
                   className="flex items-center justify-center"
                 >
-                  <img src="/e^x.png" alt="ExpoGraph" className="h-9 w-9 object-contain" />
+                  <BrandLogo variant="icon" alt="ExpoGraph" className="h-10 w-10 object-contain" />
                 </motion.div>
               )}
             </AnimatePresence>

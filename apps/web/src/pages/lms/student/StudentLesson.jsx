@@ -946,7 +946,11 @@ export default function StudentLesson() {
         <nav className="hidden md:block flex-shrink-0 bg-white border-b border-slate-200 shadow-sm px-6 py-3">
           <div className="flex items-center justify-between gap-4">
             <button onClick={() => navigate("/lms/student")} className="flex items-center gap-2 flex-shrink-0 cursor-pointer hover:opacity-80 transition-opacity">
-              <img src="/2.png" alt="ExpoGraph" className="h-13 w-64 ml-8 object-contain object-left" />
+              <img
+                src="https://res.cloudinary.com/da2wrgabu/image/upload/v1776428629/Screenshot_2026-04-08_205030_r0cq4r.png"
+                alt="ExpoGraph"
+                className="h-11 w-48 ml-2 object-contain object-left"
+              />
             </button>
             <div className="flex items-center gap-6 mr-16">
               <BookmarkButton lessonPath={lessonPath} lessonTitle={lessonDisplayTitle} />

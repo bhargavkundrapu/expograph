@@ -5,6 +5,7 @@ import { useAuth } from "../providers/AuthProvider";
 import { useTheme } from "../providers/ThemeProvider";
 import StudentSearchModal from "../../Components/student/StudentSearchModal";
 import KeyboardShortcutsModal from "../../Components/student/KeyboardShortcutsModal";
+import BrandLogo from "../../Components/ui/BrandLogo";
 import { useKeyboardShortcuts } from "../../hooks/useKeyboardShortcuts";
 import IdleReengagement from "../../Components/student/gamification/IdleReengagement";
 
@@ -168,7 +169,7 @@ export default function StudentLayout() {
         {/* ── Mobile Top Bar ── */}
       <header className="sticky top-0 z-50 md:hidden bg-slate-900/95 backdrop-blur-md">
         <div className="flex items-center gap-3 px-4 py-3">
-          <Link to="/lms/student"><img src="/1.png" alt="ExpoGraph" className="h-7 w-auto object-contain flex-shrink-0 max-w-[100px]" /></Link>
+          <Link to="/lms/student"><BrandLogo alt="ExpoGraph" className="h-8 w-auto object-contain flex-shrink-0 max-w-[112px]" /></Link>
 
           <button
             type="button"
@@ -300,11 +301,11 @@ export default function StudentLayout() {
             <AnimatePresence mode="wait">
               {!sidebarCollapsed ? (
                 <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="flex items-center">
-                  <img src="/1.png" alt="ExpoGraph" className="h-18 m-4 mt-8 w-64 object-contain object-left" />
+                  <BrandLogo alt="ExpoGraph" className="h-11 m-4 mt-8 w-48 object-contain object-left" />
                 </motion.div>
               ) : (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center justify-center">
-                  <img src="/e^x.png" alt="ExpoGraph" className="h-9 w-9 object-contain" />
+                  <BrandLogo variant="icon" alt="ExpoGraph" className="h-10 w-10 object-contain" />
                 </motion.div>
               )}
             </AnimatePresence>

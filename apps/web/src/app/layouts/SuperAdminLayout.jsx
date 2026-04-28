@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo, useRef } from "react";
 import { Link, useLocation, useNavigate, Outlet } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../providers/AuthProvider";
+import BrandLogo from "../../Components/ui/BrandLogo";
 import {
   FiHome,
   FiUsers,
@@ -115,7 +116,7 @@ export default function SuperAdminLayout() {
           </button>
 
           <Link to="/lms/superadmin" className="flex-shrink-0">
-            <img src="/1.png" alt="ExpoGraph" className="h-7 w-auto object-contain max-w-[100px]" />
+            <BrandLogo alt="ExpoGraph" className="h-8 w-auto object-contain max-w-[112px]" />
           </Link>
 
           <div className="flex-1" />
@@ -212,7 +213,7 @@ export default function SuperAdminLayout() {
                   exit={{ opacity: 0, x: -20 }}
                   className="flex items-center"
                 >
-                  <img src="/1.png" alt="ExpoGraph" className="h-10 w-44 object-contain object-left" />
+                  <BrandLogo alt="ExpoGraph" className="h-11 w-48 object-contain object-left" />
                 </motion.div>
               ) : (
                 <motion.div
@@ -221,7 +222,7 @@ export default function SuperAdminLayout() {
                   exit={{ opacity: 0 }}
                   className="flex items-center justify-center"
                 >
-                  <img src="/e^x.png" alt="ExpoGraph" className="h-9 w-9 object-contain" />
+                  <BrandLogo variant="icon" alt="ExpoGraph" className="h-10 w-10 object-contain" />
                 </motion.div>
               )}
             </AnimatePresence>
