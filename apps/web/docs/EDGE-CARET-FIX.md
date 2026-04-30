@@ -12,7 +12,7 @@
 | **.focus() calls** | **Only on search input.** Both calls in `StudentLayout.jsx` are `searchInputRef.current?.focus()` where `searchInputRef` is attached to an `<input>`. No focus() on text nodes. |
 | **CSS focus/caret** | No existing global `caret-color` or rules that would force a caret on text. Many components use `focus:outline-none` and `focus:ring-*` on **inputs** only. |
 
-**Conclusion:** There are no code bugs (no contentEditable, no tabindex on text, no wrong focus() or autoFocus). The blinking cursor in Edge is due to **browser behavior**: Edge can show a caret at the end of text inside non-editable elements (e.g. after clicking or when the element gets focus). This is a known Edge quirk and is addressed with global CSS.
+**Conclusion:** There are no code bugs (no contentEditable, no tabindex on text, no wrong focus() or autoFocus). The blinking cursor in Edge is due to **browser behavior**: Edge can show a caret at the end of text inside non-editable elements (e.g. after clicking or when the element gets focus). This is a known Edge quirk and is  with global CSS.
 
 ---
 
