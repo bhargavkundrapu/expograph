@@ -26,7 +26,11 @@ interface HeroSectionProps {
   titleClassName?: string;
 }
 
-const isMobileHero = typeof window !== "undefined" && window.innerWidth < 768;
+const IMAGE_ALTS = [
+  "Student learning",
+  "Tutor assisting",
+  "Collaborative discussion",
+] as const;
 
 const HeroSection = ({
   title,
@@ -99,56 +103,55 @@ const HeroSection = ({
           </div>
         </div>
 
-        {!isMobileHero && (
-          <div className="relative h-[360px] w-full min-h-0 sm:h-[400px] md:h-[450px] lg:h-[500px] mt-6 lg:mt-0">
-            <div
-              className="absolute -top-2 left-1/4 h-10 w-10 sm:h-12 sm:w-12 md:h-16 md:w-16 rounded-full bg-blue-200/50 dark:bg-blue-800/30"
-              style={{ animation: "heroFloat 3s ease-in-out infinite" }}
-            />
-            <div
-              className="absolute bottom-0 right-1/4 h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 rounded-lg bg-purple-200/50 dark:bg-purple-800/30"
-              style={{ animation: "heroFloat 3s ease-in-out 0.5s infinite" }}
-            />
-            <div
-              className="absolute bottom-1/4 left-2 sm:left-4 h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 rounded-full bg-green-200/50 dark:bg-green-800/30"
-              style={{ animation: "heroFloat 3s ease-in-out 1s infinite" }}
-            />
+        {/* Same overlapping collage layout on all breakpoints; slightly tighter sizing below sm */}
+        <div className="relative mx-auto mt-6 h-[300px] w-full max-w-[22rem] min-h-0 sm:mt-8 sm:h-[400px] sm:max-w-none md:h-[450px] lg:mx-0 lg:mt-0 lg:h-[500px]">
+          <div
+            className="absolute -top-2 left-1/4 h-8 w-8 rounded-full bg-blue-200/50 sm:h-10 sm:w-10 md:h-14 md:w-14 lg:h-16 lg:w-16 dark:bg-blue-800/30"
+            style={{ animation: "heroFloat 3s ease-in-out infinite" }}
+          />
+          <div
+            className="absolute bottom-0 right-1/4 h-6 w-6 rounded-lg bg-purple-200/50 sm:h-8 sm:w-8 md:h-10 md:w-10 lg:h-12 lg:w-12 dark:bg-purple-800/30"
+            style={{ animation: "heroFloat 3s ease-in-out 0.5s infinite" }}
+          />
+          <div
+            className="absolute bottom-1/4 left-2 h-3 w-3 rounded-full bg-green-200/50 sm:left-4 sm:h-4 sm:w-4 md:h-5 md:w-5 lg:h-6 lg:w-6 dark:bg-green-800/30"
+            style={{ animation: "heroFloat 3s ease-in-out 1s infinite" }}
+          />
 
-            <div
-              className="absolute left-1/2 top-0 h-40 w-40 sm:h-44 sm:w-44 md:h-48 md:w-48 lg:h-52 lg:w-52 xl:h-64 xl:w-64 -translate-x-1/2 rounded-xl bg-muted p-1.5 sm:p-2 shadow-lg"
-            >
-              <img
-                src={images[0]}
-                alt="Student learning"
-                className="h-full w-full rounded-lg object-cover"
-                loading="lazy"
-                decoding="async"
-              />
-            </div>
-            <div
-              className="absolute right-0 top-[28%] sm:top-1/3 h-36 w-36 sm:h-40 sm:w-40 md:h-44 md:w-44 lg:h-56 lg:w-56 rounded-xl bg-muted p-1.5 sm:p-2 shadow-lg"
-            >
-              <img
-                src={images[1]}
-                alt="Tutor assisting"
-                className="h-full w-full rounded-lg object-cover"
-                loading="lazy"
-                decoding="async"
-              />
-            </div>
-            <div
-              className="absolute bottom-0 left-0 h-32 w-32 sm:h-36 sm:w-36 md:h-40 md:w-40 lg:h-48 lg:w-48 rounded-xl bg-muted p-1.5 sm:p-2 shadow-lg"
-            >
-              <img
-                src={images[2]}
-                alt="Collaborative discussion"
-                className="h-full w-full rounded-lg object-cover"
-                loading="lazy"
-                decoding="async"
-              />
-            </div>
+          <div
+            className="absolute left-1/2 top-0 h-32 w-32 -translate-x-1/2 rounded-xl bg-muted p-1 shadow-lg sm:h-40 sm:w-40 sm:p-1.5 md:h-48 md:w-48 md:p-2 lg:h-52 lg:w-52 xl:h-64 xl:w-64"
+          >
+            <img
+              src={images[0]}
+              alt={IMAGE_ALTS[0]}
+              className="h-full w-full rounded-lg object-cover"
+              loading="lazy"
+              decoding="async"
+            />
           </div>
-        )}
+          <div
+            className="absolute right-0 top-[28%] h-[7.25rem] w-[7.25rem] rounded-xl bg-muted p-1 shadow-lg sm:top-1/3 sm:h-36 sm:w-36 sm:p-1.5 md:h-44 md:w-44 md:p-2 lg:h-56 lg:w-56"
+          >
+            <img
+              src={images[1]}
+              alt={IMAGE_ALTS[1]}
+              className="h-full w-full rounded-lg object-cover"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+          <div
+            className="absolute bottom-0 left-0 h-28 w-28 rounded-xl bg-muted p-1 shadow-lg sm:h-32 sm:w-32 sm:p-1.5 md:h-40 md:w-40 md:p-2 lg:h-48 lg:w-48"
+          >
+            <img
+              src={images[2]}
+              alt={IMAGE_ALTS[2]}
+              className="h-full w-full rounded-lg object-cover"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+        </div>
       </div>
     </section>
   );

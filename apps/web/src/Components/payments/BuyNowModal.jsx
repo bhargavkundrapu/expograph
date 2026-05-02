@@ -286,6 +286,9 @@ export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill, 
   const [emailTouched, setEmailTouched] = useState(false);
   const [priceBreakdown, setPriceBreakdown] = useState(null);
   const [priceLoading, setPriceLoading] = useState(false);
+  const baseAmountInPaise = Number(priceBreakdown?.base_amount ?? 0);
+  const platformFeeInPaise = Number(priceBreakdown?.platform_fee_amount ?? 0);
+  const totalAmountInPaise = Number(priceBreakdown?.total_amount ?? baseAmountInPaise + platformFeeInPaise);
 
   // Email verification state
   const [emailVerified, setEmailVerified] = useState(false);
@@ -415,10 +418,19 @@ export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill, 
     setOtpLoading(true);
     setOtpError("");
     try {
-      await apiFetch("/api/v1/payments/verify-email/send", {
+      const res = await apiFetch("/api/v1/payments/verify-email/send", {
         method: "POST",
         body: { email },
       });
+      const data = res?.data ?? res;
+      if (data?.alreadyVerified) {
+        setEmailVerified(true);
+        setOtpSent(false);
+        setOtpValue("");
+        setOtpError("");
+        verifiedEmailRef.current = email;
+        return;
+      }
       setOtpSent(true);
       setOtpValue("");
       startCooldown();
@@ -546,12 +558,18 @@ export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill, 
             setError(e?.message || "Could not complete registration. Please go to login and contact support.");
           }
         },
-        modal: { ondismiss: () => setLoading(false) },
+        modal: {
+          ondismiss: () => {
+            setLoading(false);
+            submittingRef.current = false;
+          },
+        },
         redirect: false,
       });
 
       rzp.on("payment.failed", () => {
         setLoading(false);
+        submittingRef.current = false;
         onError?.();
         const params = new URLSearchParams();
         if (item?.title) params.set("title", item.title);
@@ -818,10 +836,16 @@ export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill, 
                         <span className="text-slate-600">Course / Pack price</span>
                         <span className="font-medium text-slate-900">{formatRupees(priceBreakdown.base_amount)}</span>
                       </div>
-                      {priceBreakdown.platform_fee > 0 && (
+                      {baseAmountInPaise > 0 && platformFeeInPaise > 0 && (
                         <div className="flex justify-between text-sm">
-                          <span className="text-slate-600">Platform fee ({priceBreakdown.platform_fee_percent}%)</span>
-                          <span className="font-medium text-slate-900">{formatRupees(priceBreakdown.platform_fee)}</span>
+                          <span className="text-slate-600">Platform fee</span>
+                          <span className="font-medium text-slate-900">{formatRupees(platformFeeInPaise)}</span>
+                        </div>
+                      )}
+                      {baseAmountInPaise > 0 && (
+                        <div className="border-t border-slate-200 pt-2 mt-2 flex justify-between text-sm">
+                          <span className="font-semibold text-slate-900">Total</span>
+                          <span className="font-bold text-slate-900">{formatRupees(totalAmountInPaise)}</span>
                         </div>
                       )}
                     </div>
@@ -933,16 +957,16 @@ export function BuyNowModal({ open, onClose, item, onSuccess, onError, prefill, 
                       <span className="text-slate-600">Course / Pack price</span>
                       <span className="font-medium text-slate-900">{formatRupees(priceBreakdown.base_amount)}</span>
                     </div>
-                    {priceBreakdown.platform_fee > 0 && (
+                    {baseAmountInPaise > 0 && platformFeeInPaise > 0 && (
                       <div className="flex justify-between text-sm">
-                        <span className="text-slate-600">Platform fee ({priceBreakdown.platform_fee_percent}%)</span>
-                        <span className="font-medium text-slate-900">{formatRupees(priceBreakdown.platform_fee)}</span>
+                        <span className="text-slate-600">Platform fee</span>
+                        <span className="font-medium text-slate-900">{formatRupees(platformFeeInPaise)}</span>
                       </div>
                     )}
                     <div className="border-t border-slate-200 pt-2 mt-2 flex justify-between text-sm">
                       <span className="font-semibold text-slate-900">Total</span>
                       <span className="font-bold text-slate-900">
-                        {formatRupees((priceBreakdown.base_amount || 0) + (priceBreakdown.platform_fee || 0))}
+                        {formatRupees(totalAmountInPaise)}
                       </span>
                     </div>
                   </div>

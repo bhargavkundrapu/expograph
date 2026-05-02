@@ -41,6 +41,16 @@ function verifyWebhookSignature(body, signature) {
   return crypto.timingSafeEqual(Buffer.from(signature, "utf8"), Buffer.from(expected, "utf8"));
 }
 
+/** Fixed platform fee in paise (added to Razorpay order amount). */
+const PLATFORM_FEE_COURSE_PAISE = 700; // ₹7 per course
+const PLATFORM_FEE_PACK_PAISE = 1400; // ₹14 for full pack
+
+function platformFeePaiseForItemType(item_type) {
+  if (item_type === "course") return PLATFORM_FEE_COURSE_PAISE;
+  if (item_type === "pack") return PLATFORM_FEE_PACK_PAISE;
+  return 0;
+}
+
 function normalizeSlug(slug) {
   if (!slug) return "";
   return String(slug).toLowerCase().replace(/_/g, "-").trim();
@@ -63,13 +73,11 @@ async function getPriceBreakdown({ tenant, item_type, item_id }) {
   if (!baseAmount || baseAmount < 100) {
     throw new HttpError(400, "Invalid price");
   }
-  const platformFeePercent = Number(process.env.PLATFORM_FEE_PERCENT) || 7;
-  const platformFeePaise = Math.round(baseAmount * (platformFeePercent / 100));
+  const platformFeePaise = platformFeePaiseForItemType(item_type);
   const totalAmount = baseAmount + platformFeePaise;
   return {
     base_amount: baseAmount,
-    platform_fee_percent: platformFeePercent,
-    platform_fee: platformFeePaise,
+    platform_fee_amount: platformFeePaise,
     total_amount: totalAmount,
     currency: "INR",
   };
@@ -100,9 +108,7 @@ async function createOrder({ tenant, body }) {
     throw new HttpError(400, "Invalid price. Minimum amount is ₹1.00");
   }
 
-  // Platform fee: 7% added to checkout amount
-  const platformFeePercent = Number(process.env.PLATFORM_FEE_PERCENT) || 7;
-  const platformFeePaise = Math.round(amount * (platformFeePercent / 100));
+  const platformFeePaise = platformFeePaiseForItemType(item_type);
   const amountWithFee = amount + platformFeePaise;
 
   const rzp = getRazorpayInstance();
