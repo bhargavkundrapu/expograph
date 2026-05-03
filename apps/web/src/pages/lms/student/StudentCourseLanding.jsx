@@ -30,10 +30,10 @@ import CourseFeedbackCard from "../../../Components/student/CourseFeedbackCard";
 import { getCourseCardCover } from "../../../data/courseCardMedia";
 
 const COURSE_HIGHLIGHTS = [
-  { icon: "ðŸ› ï¸", title: "Real-World Projects", desc: "Build portfolio-worthy projects with hands-on guidance" },
-  { icon: "ðŸ§ ", title: "Deep Understanding", desc: "Go beyond tutorials-master the concepts that matter" },
-  { icon: "ðŸŽ¯", title: "Industry-Ready Skills", desc: "Learn what top companies actually look for" },
-  { icon: "ðŸš€", title: "Career Growth", desc: "Skills that open doors to new opportunities" },
+  { icon: "\u{1F6E0}\u{FE0F}", title: "Real-World Projects", desc: "Build portfolio-worthy projects with hands-on guidance" },
+  { icon: "\u{1F9E0}", title: "Deep Understanding", desc: "Go beyond tutorials-master the concepts that matter" },
+  { icon: "\u{1F3AF}", title: "Industry-Ready Skills", desc: "Learn what top companies actually look for" },
+  { icon: "\u{1F680}", title: "Career Growth", desc: "Skills that open doors to new opportunities" },
 ];
 
 const TESTIMONIALS = [
@@ -43,19 +43,62 @@ const TESTIMONIALS = [
 ];
 
 const TOOL_ICONS = {
-  react: "âš›ï¸", javascript: "ðŸŸ¨", typescript: "ðŸ”·", python: "ðŸ", "node.js": "ðŸŸ¢",
-  html: "ðŸŒ", css: "ðŸŽ¨", git: "ðŸ“¦", github: "ðŸ™", docker: "ðŸ³", mongodb: "ðŸƒ",
-  postgresql: "ðŸ˜", firebase: "ðŸ”¥", aws: "â˜ï¸", figma: "ðŸŽ¨", "next.js": "â–²",
-  "tailwind css": "ðŸ’¨", redux: "ðŸ’œ", graphql: "â-ˆ", vscode: "ðŸ’»", linux: "ðŸ§",
-  express: "ðŸŸ¢", vercel: "â–²", render: "ðŸŒ", vite: "âš¡", prisma: "ðŸ’Ž",
-  jwt: "ðŸ”", stripe: "ðŸ’³", "socket.io": "ðŸ”Œ", redis: "ðŸ”´", playwright: "ðŸŽ­",
-  sentry: "ðŸ›", "neon postgresql": "ðŸ˜", bcrypt: "ðŸ”’", zod: "âœ…",
-  multer: "ðŸ“", sendgrid: "ðŸ“§", resend: "ðŸ“¨", bullmq: "ðŸ“‹", sharp: "ðŸ–¼ï¸",
-  eslint: "ðŸ§¹", prettier: "âœ¨", postman: "ðŸ“®", "ci/cd": "ðŸ”„", https: "ðŸ”’",
-  chatgpt: "ðŸ¤–", "gpt-4": "ðŸ¤–", claude: "ðŸ¤–", gemini: "ðŸ¤–",
-  "ai": "ðŸ¤–", "prompt engineering": "ðŸ¤–", "cursor ai": "ðŸ¤–",
-  "problem solving": "ðŸ§©", "critical thinking": "ðŸ’¡", "api integration": "ðŸ”-",
-  default: "ðŸ”§",
+  react: "\u{269B}\u{FE0F}",
+  javascript: "\u{1F7E8}",
+  typescript: "\u{1F537}",
+  python: "\u{1F40D}",
+  "node.js": "\u{1F7E2}",
+  html: "\u{1F310}",
+  css: "\u{1F3A8}",
+  git: "\u{1F4E6}",
+  github: "\u{1F419}",
+  docker: "\u{1F433}",
+  mongodb: "\u{1F343}",
+  postgresql: "\u{1F418}",
+  firebase: "\u{1F525}",
+  aws: "\u{2601}\u{FE0F}",
+  figma: "\u{1F3A8}",
+  "next.js": "\u{25B2}",
+  "tailwind css": "\u{1F4A8}",
+  redux: "\u{1F49C}",
+  graphql: "\u{25C6}",
+  vscode: "\u{1F4BB}",
+  linux: "\u{1F427}",
+  express: "\u{1F7E2}",
+  vercel: "\u{25B2}",
+  render: "\u{1F310}",
+  vite: "\u{26A1}",
+  prisma: "\u{1F48E}",
+  jwt: "\u{1F510}",
+  stripe: "\u{1F4B3}",
+  "socket.io": "\u{1F50C}",
+  redis: "\u{1F534}",
+  playwright: "\u{1F3AD}",
+  sentry: "\u{1F41B}",
+  "neon postgresql": "\u{1F418}",
+  bcrypt: "\u{1F512}",
+  zod: "\u{2705}",
+  multer: "\u{1F4C1}",
+  sendgrid: "\u{1F4E7}",
+  resend: "\u{1F4E8}",
+  bullmq: "\u{1F4CB}",
+  sharp: "\u{1F5BC}\u{FE0F}",
+  eslint: "\u{1F9F9}",
+  prettier: "\u{2728}",
+  postman: "\u{1F4EE}",
+  "ci/cd": "\u{1F504}",
+  https: "\u{1F512}",
+  chatgpt: "\u{1F916}",
+  "gpt-4": "\u{1F916}",
+  claude: "\u{1F916}",
+  gemini: "\u{1F916}",
+  ai: "\u{1F916}",
+  "prompt engineering": "\u{1F916}",
+  "cursor ai": "\u{1F916}",
+  "problem solving": "\u{1F9E9}",
+  "critical thinking": "\u{1F4A1}",
+  "api integration": "\u{1F517}",
+  default: "\u{1F527}",
 };
 
 function getToolIcon(name) {
@@ -144,7 +187,7 @@ export default function StudentCourseLanding() {
   const [isEnrolled, setIsEnrolled] = useState(false);
   const [courseMissing, setCourseMissing] = useState(false);
 
-  // Redirect: old bonus-courses/ai-automations â†’ courses/ai-automations; deprecated ai-agents â†’ courses/ai-automations
+  // Redirect: old bonus-courses/ai-automations -> courses/ai-automations; deprecated ai-agents -> courses/ai-automations
   useEffect(() => {
     const normalized = (courseSlug || "").toLowerCase().replace(/_/g, "-");
     const isAiAutomations = normalized === "ai-automations" || normalized.includes("ai-automation");
@@ -558,7 +601,8 @@ export default function StudentCourseLanding() {
                             {mod.title || mod.name || `Module ${mi + 1}`}
                           </p>
                           <p className={`text-[11px] ${isDark ? "text-slate-400" : "text-slate-500"}`}>
-                            {total} lesson{total !== 1 ? "s" : ""} {modProgress > 0 && `â€¢ ${completed}/${total} done`}
+                            {total} lesson{total !== 1 ? "s" : ""}
+                            {modProgress > 0 ? ` \u2022 ${completed}/${total} done` : ""}
                           </p>
                         </div>
                         {modProgress > 0 && modProgress < 100 && (
@@ -611,7 +655,8 @@ export default function StudentCourseLanding() {
             <div className="max-w-5xl mx-auto text-center">
               <FiTarget className={`w-8 h-8 mx-auto mb-3 ${isDark ? "text-purple-400" : "text-purple-600"}`} />
               <h2 className={`text-xl font-bold mb-2 ${isDark ? "text-white" : "text-slate-900"}`}>
-                {course.modules_count || 10} Modules â€¢ {course.total_lessons || totalLessons} Lessons
+                {course.modules_count || 10} Modules{" \u2022 "}
+                {course.total_lessons || totalLessons} Lessons
               </h2>
               <p className={`text-sm mb-6 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
                 Enroll to unlock the full course roadmap with detailed lesson progress

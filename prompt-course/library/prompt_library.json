@@ -14,7 +14,7 @@
     "module": "M1_Foundations",
     "use_case": "study",
     "prompt_title": "Context Layering for Deep Understanding",
-    "prompt_text": "Goal: Explain how DNS resolution works step by step. Context Layer 1 â€” Who I am: A second-year IT student who understands what IP addresses are but not how domain names get translated. Context Layer 2 â€” What I already know: I know browsers send HTTP requests and servers respond. Context Layer 3 â€” Why I need this: I have a computer networks viva tomorrow and need to explain the full process clearly. Constraints: Use a numbered step-by-step walkthrough. Include what happens at each server (recursive resolver, root, TLD, authoritative). Max 250 words. Format: Numbered steps, one sentence per step, with a short analogy at the end comparing DNS to something from daily life.",
+    "prompt_text": "Goal: Explain how DNS resolution works step by step. Context Layer 1 — Who I am: A second-year IT student who understands what IP addresses are but not how domain names get translated. Context Layer 2 — What I already know: I know browsers send HTTP requests and servers respond. Context Layer 3 — Why I need this: I have a computer networks viva tomorrow and need to explain the full process clearly. Constraints: Use a numbered step-by-step walkthrough. Include what happens at each server (recursive resolver, root, TLD, authoritative). Max 250 words. Format: Numbered steps, one sentence per step, with a short analogy at the end comparing DNS to something from daily life.",
     "expected_output_format": "structured text",
     "difficulty": "medium",
     "customization_notes": "Replace DNS resolution with any process you need to understand. Update all three context layers honestly."
@@ -24,7 +24,7 @@
     "module": "M1_Foundations",
     "use_case": "study",
     "prompt_title": "Ambiguity-Free Definition Request",
-    "prompt_text": "Goal: Define the term 'polymorphism' in programming. Constraints: 1. Give exactly one definition in one sentence. 2. Then give exactly one real code-level example in Python showing polymorphism in action (under 10 lines). 3. Then list exactly 2 common mistakes students make when explaining polymorphism in exams. 4. Do not use analogies. 5. Do not write more than 150 words total. Format: Definition â†’ Code block â†’ Numbered mistake list.",
+    "prompt_text": "Goal: Define the term 'polymorphism' in programming. Constraints: 1. Give exactly one definition in one sentence. 2. Then give exactly one real code-level example in Python showing polymorphism in action (under 10 lines). 3. Then list exactly 2 common mistakes students make when explaining polymorphism in exams. 4. Do not use analogies. 5. Do not write more than 150 words total. Format: Definition → Code block → Numbered mistake list.",
     "expected_output_format": "definition + code + list",
     "difficulty": "easy",
     "customization_notes": "Replace polymorphism with any technical term. Adjust the word limit and number of mistakes."
@@ -54,7 +54,7 @@
     "module": "M1_Foundations",
     "use_case": "study",
     "prompt_title": "Ask Before Answering",
-    "prompt_text": "I need help understanding a topic for my exam. Before answering, ask me exactly 4 clarifying questions to give me the most useful explanation. Questions should cover: 1. What specific topic or subtopic I need help with, 2. What I already know about it, 3. How deep I need the explanation (surface-level overview or exam-detail), 4. What format would help me most (analogy, steps, diagram description, or code). After I answer all 4 questions, then give me your explanation. My topic: Data Structures. Do not answer yet â€” only ask the 4 questions.",
+    "prompt_text": "I need help understanding a topic for my exam. Before answering, ask me exactly 4 clarifying questions to give me the most useful explanation. Questions should cover: 1. What specific topic or subtopic I need help with, 2. What I already know about it, 3. How deep I need the explanation (surface-level overview or exam-detail), 4. What format would help me most (analogy, steps, diagram description, or code). After I answer all 4 questions, then give me your explanation. My topic: Data Structures. Do not answer yet — only ask the 4 questions.",
     "expected_output_format": "questions then answer",
     "difficulty": "easy",
     "customization_notes": "Replace Data Structures with any broad topic where you need a tailored explanation."
@@ -64,7 +64,7 @@
     "module": "M1_Foundations",
     "use_case": "study",
     "prompt_title": "Constraint-Driven Simplification",
-    "prompt_text": "Goal: Explain how the Internet works. Constraints: 1. Explain it so a 10-year-old would understand. 2. Use only everyday words â€” no technical terms at all. 3. Use exactly one analogy involving sending a letter through the postal system. 4. Keep it to exactly 5 sentences. 5. Each sentence must be under 15 words. Format: 5 numbered sentences.",
+    "prompt_text": "Goal: Explain how the Internet works. Constraints: 1. Explain it so a 10-year-old would understand. 2. Use only everyday words — no technical terms at all. 3. Use exactly one analogy involving sending a letter through the postal system. 4. Keep it to exactly 5 sentences. 5. Each sentence must be under 15 words. Format: 5 numbered sentences.",
     "expected_output_format": "simplified explanation",
     "difficulty": "easy",
     "customization_notes": "Replace the topic. Adjust the analogy and sentence limits. Great for breaking down any complex concept."
@@ -84,7 +84,7 @@
     "module": "M1_Foundations",
     "use_case": "study",
     "prompt_title": "Goal Precision Drill",
-    "prompt_text": "I will give you a vague study goal. Your job is to rewrite it as a precise GCCF prompt. Show: 1. The original vague goal. 2. What is wrong with it (list 3 problems). 3. The rewritten prompt using full GCCF structure (Goal, Context, Constraints, Format â€” each labeled). 4. Why the rewritten version will produce better output (2 sentences). Vague goal: Tell me about sorting.",
+    "prompt_text": "I will give you a vague study goal. Your job is to rewrite it as a precise GCCF prompt. Show: 1. The original vague goal. 2. What is wrong with it (list 3 problems). 3. The rewritten prompt using full GCCF structure (Goal, Context, Constraints, Format — each labeled). 4. Why the rewritten version will produce better output (2 sentences). Vague goal: Tell me about sorting.",
     "expected_output_format": "analysis + rewrite",
     "difficulty": "medium",
     "customization_notes": "Replace the vague goal with any weak prompt you have written. Use this to practice making your prompts precise."
@@ -144,7 +144,7 @@
     "module": "M2_Output_Control",
     "use_case": "study",
     "prompt_title": "Three Versions One Concept",
-    "prompt_text": "Explain the concept of API (Application Programming Interface) in 3 different versions. Version 1 â€” For a 10-year-old: Use an analogy. Max 2 sentences. Version 2 â€” For a college student: Technical but clear. Max 4 sentences. Version 3 â€” For a job interview: Professional, impressive, shows depth. Max 3 sentences. Label each version clearly. No text between versions.",
+    "prompt_text": "Explain the concept of API (Application Programming Interface) in 3 different versions. Version 1 — For a 10-year-old: Use an analogy. Max 2 sentences. Version 2 — For a college student: Technical but clear. Max 4 sentences. Version 3 — For a job interview: Professional, impressive, shows depth. Max 3 sentences. Label each version clearly. No text between versions.",
     "expected_output_format": "multi-version text",
     "difficulty": "medium",
     "customization_notes": "Replace API with any concept. Adjust the audience for each version to match your needs."
@@ -164,7 +164,7 @@
     "module": "M2_Output_Control",
     "use_case": "study",
     "prompt_title": "Markdown Section Controller",
-    "prompt_text": "Write a summary of the topic Machine Learning for my notes. Use this exact Markdown structure â€” no deviations: ## Definition (2 sentences), ## Types (bullet list of 3 types with one-line description each), ## Real-World Examples (numbered list of 3 examples), ## Key Takeaway (exactly 1 sentence). Do not add any sections beyond these four. Do not add introductory or closing text outside these sections.",
+    "prompt_text": "Write a summary of the topic Machine Learning for my notes. Use this exact Markdown structure — no deviations: ## Definition (2 sentences), ## Types (bullet list of 3 types with one-line description each), ## Real-World Examples (numbered list of 3 examples), ## Key Takeaway (exactly 1 sentence). Do not add any sections beyond these four. Do not add introductory or closing text outside these sections.",
     "expected_output_format": "markdown sections",
     "difficulty": "easy",
     "customization_notes": "Replace Machine Learning with any topic. Adjust section names and content rules."
@@ -174,7 +174,7 @@
     "module": "M2_Output_Control",
     "use_case": "coding",
     "prompt_title": "Code Plus Plain English",
-    "prompt_text": "Write a Python function that checks whether a given year is a leap year. Structure your output in exactly 2 parts: Part 1 â€” Code: The complete Python function with type hints. No comments inside the code. Part 2 â€” Explanation: Below the code, explain each line in plain English using a numbered list. Each numbered item must start with the line of code in backticks, followed by a dash and the explanation. No other text.",
+    "prompt_text": "Write a Python function that checks whether a given year is a leap year. Structure your output in exactly 2 parts: Part 1 — Code: The complete Python function with type hints. No comments inside the code. Part 2 — Explanation: Below the code, explain each line in plain English using a numbered list. Each numbered item must start with the line of code in backticks, followed by a dash and the explanation. No other text.",
     "expected_output_format": "code + explanation",
     "difficulty": "medium",
     "customization_notes": "Replace the coding task. Keep the two-part structure to understand any code you generate."
@@ -184,7 +184,7 @@
     "module": "M2_Output_Control",
     "use_case": "study",
     "prompt_title": "One Sentence Answer Mode",
-    "prompt_text": "Answer each of the following 5 questions in exactly one sentence. Each sentence must be a complete, self-contained answer. Do not number them â€” just output 5 lines, one answer per line. No bullet points. No blank lines between answers. Questions: 1. What is an operating system? 2. What is a compiler? 3. What is RAM? 4. What is an IP address? 5. What is a firewall?",
+    "prompt_text": "Answer each of the following 5 questions in exactly one sentence. Each sentence must be a complete, self-contained answer. Do not number them — just output 5 lines, one answer per line. No bullet points. No blank lines between answers. Questions: 1. What is an operating system? 2. What is a compiler? 3. What is RAM? 4. What is an IP address? 5. What is a firewall?",
     "expected_output_format": "one-line answers",
     "difficulty": "easy",
     "customization_notes": "Replace the questions. Adjust the count. Great for rapid revision of definitions."
@@ -194,7 +194,7 @@
     "module": "M2_Output_Control",
     "use_case": "coding",
     "prompt_title": "Actionable Checklist Generator",
-    "prompt_text": "Create a pre-submission checklist for a college coding assignment. Format as a checklist using this exact pattern: [ ] [action item]. Rules: 1. Exactly 10 items. 2. Group into 3 sections: Code Quality (4 items), Testing (3 items), Submission (3 items). 3. Each item must start with a verb. 4. Each item must be one line, under 12 words. 5. No numbering â€” use only the [ ] checkbox format.",
+    "prompt_text": "Create a pre-submission checklist for a college coding assignment. Format as a checklist using this exact pattern: [ ] [action item]. Rules: 1. Exactly 10 items. 2. Group into 3 sections: Code Quality (4 items), Testing (3 items), Submission (3 items). 3. Each item must start with a verb. 4. Each item must be one line, under 12 words. 5. No numbering — use only the [ ] checkbox format.",
     "expected_output_format": "checklist",
     "difficulty": "easy",
     "customization_notes": "Change the task context. Adjust sections and item counts. Useful for any recurring process."
@@ -214,7 +214,7 @@
     "module": "M3_Debugging_Refinement",
     "use_case": "study",
     "prompt_title": "3R Loop Practice Walkthrough",
-    "prompt_text": "Simulate a 3-round 3R Loop (Request, Review, Refine) for this task: getting AI to generate a study timetable for exam week. Round 1 â€” Request: Write a basic first-attempt prompt. Show the likely weak output (3-4 lines). Review: List 3 specific problems with the output. Round 2 â€” Refine: Write an improved prompt fixing those problems. Show better output. Review: List remaining issues. Round 3 â€” Refine: Write the final polished prompt and show the ideal output. Label each round clearly as Round 1, Round 2, Round 3.",
+    "prompt_text": "Simulate a 3-round 3R Loop (Request, Review, Refine) for this task: getting AI to generate a study timetable for exam week. Round 1 — Request: Write a basic first-attempt prompt. Show the likely weak output (3-4 lines). Review: List 3 specific problems with the output. Round 2 — Refine: Write an improved prompt fixing those problems. Show better output. Review: List remaining issues. Round 3 — Refine: Write the final polished prompt and show the ideal output. Label each round clearly as Round 1, Round 2, Round 3.",
     "expected_output_format": "3R simulation",
     "difficulty": "medium",
     "customization_notes": "Replace the task with anything you want to practice refining. Use this to build your 3R muscle."
@@ -274,7 +274,7 @@
     "module": "M3_Debugging_Refinement",
     "use_case": "coding",
     "prompt_title": "Iterative Code Improvement",
-    "prompt_text": "Write a Python function that finds the second largest number in a list. Then improve it through 3 rounds: Version 1: Write the simplest working solution. Version 2: Improve it â€” handle edge cases (empty list, all same numbers, list with one element). Version 3: Optimize it â€” achieve O(n) time complexity with a single pass. For each version, show the code and write one sentence explaining what changed. After Version 3, confirm the final time and space complexity.",
+    "prompt_text": "Write a Python function that finds the second largest number in a list. Then improve it through 3 rounds: Version 1: Write the simplest working solution. Version 2: Improve it — handle edge cases (empty list, all same numbers, list with one element). Version 3: Optimize it — achieve O(n) time complexity with a single pass. For each version, show the code and write one sentence explaining what changed. After Version 3, confirm the final time and space complexity.",
     "expected_output_format": "progressive code",
     "difficulty": "medium",
     "customization_notes": "Replace the coding task. Keep the 3-version improvement cycle to practice iterative refinement."
@@ -324,7 +324,7 @@
     "module": "M4_Truthfulness_Reliability",
     "use_case": "research",
     "prompt_title": "Text-Only Answering Mode",
-    "prompt_text": "I will paste a text below. Answer my question using ONLY the information in the provided text. Rules: 1. Do not use any outside knowledge. 2. If the answer is not in the text, say exactly: \"This information is not present in the provided text.\" 3. Quote the relevant sentence from the text that supports your answer. 4. Do not paraphrase the text â€” use exact quotes. 5. Do not add interpretation or opinions. Question: [WRITE YOUR QUESTION HERE]. Text: [PASTE YOUR TEXT HERE]",
+    "prompt_text": "I will paste a text below. Answer my question using ONLY the information in the provided text. Rules: 1. Do not use any outside knowledge. 2. If the answer is not in the text, say exactly: \"This information is not present in the provided text.\" 3. Quote the relevant sentence from the text that supports your answer. 4. Do not paraphrase the text — use exact quotes. 5. Do not add interpretation or opinions. Question: [WRITE YOUR QUESTION HERE]. Text: [PASTE YOUR TEXT HERE]",
     "expected_output_format": "quoted answer",
     "difficulty": "easy",
     "customization_notes": "Paste any article or textbook passage. Ask specific questions to test AI's ability to stick to the source."
@@ -344,7 +344,7 @@
     "module": "M4_Truthfulness_Reliability",
     "use_case": "research",
     "prompt_title": "Five-Point Anti-Hallucination Check",
-    "prompt_text": "Answer the following question. Then immediately run a 5-point Anti-Hallucination self-check on your own answer: Check 1 â€” Did I state any specific numbers or statistics? If yes, flag each one and rate confidence: High/Medium/Low. Check 2 â€” Did I mention any specific names, dates, or events? Verify each one. Check 3 â€” Did I make any cause-and-effect claims? Are they well-supported? Check 4 â€” Did I generalize from limited examples? Flag any overgeneralizations. Check 5 â€” Is anything in my answer something I am not confident about? Mark it clearly. Show results as a checklist with [CLEAN] or [FLAGGED] per check. Question: What are the main differences between Python 2 and Python 3?",
+    "prompt_text": "Answer the following question. Then immediately run a 5-point Anti-Hallucination self-check on your own answer: Check 1 — Did I state any specific numbers or statistics? If yes, flag each one and rate confidence: High/Medium/Low. Check 2 — Did I mention any specific names, dates, or events? Verify each one. Check 3 — Did I make any cause-and-effect claims? Are they well-supported? Check 4 — Did I generalize from limited examples? Flag any overgeneralizations. Check 5 — Is anything in my answer something I am not confident about? Mark it clearly. Show results as a checklist with [CLEAN] or [FLAGGED] per check. Question: What are the main differences between Python 2 and Python 3?",
     "expected_output_format": "answer + self-check",
     "difficulty": "medium",
     "customization_notes": "Replace the question. Use this whenever you need high-confidence factual output."
@@ -364,7 +364,7 @@
     "module": "M4_Truthfulness_Reliability",
     "use_case": "research",
     "prompt_title": "Fact vs Opinion Separator",
-    "prompt_text": "Read the following text and separate every statement into one of two categories: FACTS (verifiable, objective claims) and OPINIONS (subjective, interpretive, or value-based claims). Format: ## Facts (numbered list with exact quotes from the text). ## Opinions (numbered list with exact quotes from the text). ## Mixed (any statement that blends fact and opinion â€” split it into its fact and opinion components). After listing all statements, give a ratio: X facts, Y opinions, Z mixed. Text: [PASTE YOUR TEXT HERE]",
+    "prompt_text": "Read the following text and separate every statement into one of two categories: FACTS (verifiable, objective claims) and OPINIONS (subjective, interpretive, or value-based claims). Format: ## Facts (numbered list with exact quotes from the text). ## Opinions (numbered list with exact quotes from the text). ## Mixed (any statement that blends fact and opinion — split it into its fact and opinion components). After listing all statements, give a ratio: X facts, Y opinions, Z mixed. Text: [PASTE YOUR TEXT HERE]",
     "expected_output_format": "categorized analysis",
     "difficulty": "easy",
     "customization_notes": "Paste any article, editorial, or AI-generated text. Great for research and critical thinking."
@@ -374,7 +374,7 @@
     "module": "M4_Truthfulness_Reliability",
     "use_case": "research",
     "prompt_title": "Verify Then Answer",
-    "prompt_text": "Before answering my question, perform a pre-answer verification: Step 1 â€” Restate my question in your own words to confirm understanding. Step 2 â€” List 3 things you are confident you know about this topic. Step 3 â€” List 1-2 things you are unsure about or might get wrong. Step 4 â€” Now answer the question fully. Step 5 â€” After answering, flag any part of your answer where a textbook might disagree with you. Question: Explain the differences between processes and threads in operating systems.",
+    "prompt_text": "Before answering my question, perform a pre-answer verification: Step 1 — Restate my question in your own words to confirm understanding. Step 2 — List 3 things you are confident you know about this topic. Step 3 — List 1-2 things you are unsure about or might get wrong. Step 4 — Now answer the question fully. Step 5 — After answering, flag any part of your answer where a textbook might disagree with you. Question: Explain the differences between processes and threads in operating systems.",
     "expected_output_format": "verified answer",
     "difficulty": "medium",
     "customization_notes": "Replace the question. Use this structure for any topic where accuracy is critical."
@@ -504,7 +504,7 @@
     "module": "M6_Video_Scripts",
     "use_case": "video",
     "prompt_title": "30-Second Hook Script",
-    "prompt_text": "Write a 30-second Instagram Reel script about why most students fail at time management. Structure: Hook (3 sec â€” a bold, controversial opening statement that stops the scroll), Problem (8 sec â€” describe the mistake most students make), Solution (12 sec â€” give one specific, actionable technique), Proof (5 sec â€” one quick result or stat), CTA (2 sec â€” follow for more). For each section, write: [TIME], exact voiceover text, [TEXT ON SCREEN], [VISUAL DESCRIPTION]. Keep sentences punchy â€” max 8 words each.",
+    "prompt_text": "Write a 30-second Instagram Reel script about why most students fail at time management. Structure: Hook (3 sec — a bold, controversial opening statement that stops the scroll), Problem (8 sec — describe the mistake most students make), Solution (12 sec — give one specific, actionable technique), Proof (5 sec — one quick result or stat), CTA (2 sec — follow for more). For each section, write: [TIME], exact voiceover text, [TEXT ON SCREEN], [VISUAL DESCRIPTION]. Keep sentences punchy — max 8 words each.",
     "expected_output_format": "short-form script",
     "difficulty": "easy",
     "customization_notes": "Replace the topic. Keep the 5-section structure for any 30-second educational content."
@@ -514,7 +514,7 @@
     "module": "M6_Video_Scripts",
     "use_case": "content",
     "prompt_title": "Educational Explainer Outline",
-    "prompt_text": "Create a detailed outline for a 2-minute animated explainer video on how blockchain works. Structure: Hook question (5 sec), Analogy setup â€” compare to a shared Google Doc (15 sec), Core concept explained in 4 simple steps (60 sec, 15 sec each), Real-world use case â€” one non-crypto example (15 sec), Common misconception debunked (10 sec), One-line takeaway (5 sec), Subscribe CTA (10 sec). For each section, provide: voiceover script, [ANIMATION NOTES] describing what the viewer sees, [TEXT ON SCREEN] for key terms.",
+    "prompt_text": "Create a detailed outline for a 2-minute animated explainer video on how blockchain works. Structure: Hook question (5 sec), Analogy setup — compare to a shared Google Doc (15 sec), Core concept explained in 4 simple steps (60 sec, 15 sec each), Real-world use case — one non-crypto example (15 sec), Common misconception debunked (10 sec), One-line takeaway (5 sec), Subscribe CTA (10 sec). For each section, provide: voiceover script, [ANIMATION NOTES] describing what the viewer sees, [TEXT ON SCREEN] for key terms.",
     "expected_output_format": "explainer outline",
     "difficulty": "medium",
     "customization_notes": "Replace blockchain with any concept. Adjust timing per section. Works for any animated explainer."
@@ -544,7 +544,7 @@
     "module": "M6_Video_Scripts",
     "use_case": "content",
     "prompt_title": "Caption and Overlay Planner",
-    "prompt_text": "I have a 60-second motivational video for engineering students during exam season. Generate all the text elements needed. Provide: 1. Captions â€” full subtitle text synced to 4 segments (0-15s, 15-30s, 30-45s, 45-60s). 2. On-screen text â€” 3 key phrases that appear as bold animated text overlays with exact timing. 3. Lower third â€” what text appears at the bottom (name, title, social handle) and when. 4. End screen text â€” what to display in the last 5 seconds. Format each element with [TIMESTAMP] and exact text.",
+    "prompt_text": "I have a 60-second motivational video for engineering students during exam season. Generate all the text elements needed. Provide: 1. Captions — full subtitle text synced to 4 segments (0-15s, 15-30s, 30-45s, 45-60s). 2. On-screen text — 3 key phrases that appear as bold animated text overlays with exact timing. 3. Lower third — what text appears at the bottom (name, title, social handle) and when. 4. End screen text — what to display in the last 5 seconds. Format each element with [TIMESTAMP] and exact text.",
     "expected_output_format": "caption + overlay plan",
     "difficulty": "easy",
     "customization_notes": "Change the video topic and duration. Adjust the number of text overlay elements."
@@ -554,7 +554,7 @@
     "module": "M6_Video_Scripts",
     "use_case": "video",
     "prompt_title": "60-Second Product Demo Script",
-    "prompt_text": "Write a 60-second product demo video script for a student-built task management mobile app called FocusMate. Structure: Problem hook â€” show the chaos of managing deadlines (8 sec), App intro â€” name and one-line value proposition (5 sec), Feature 1 â€” Smart task prioritization (12 sec), Feature 2 â€” Pomodoro timer integration (12 sec), Feature 3 â€” Weekly progress dashboard (12 sec), Social proof â€” user quote (5 sec), Download CTA (6 sec). For each section: voiceover text, [SCREEN RECORDING] description, [TRANSITION] type.",
+    "prompt_text": "Write a 60-second product demo video script for a student-built task management mobile app called FocusMate. Structure: Problem hook — show the chaos of managing deadlines (8 sec), App intro — name and one-line value proposition (5 sec), Feature 1 — Smart task prioritization (12 sec), Feature 2 — Pomodoro timer integration (12 sec), Feature 3 — Weekly progress dashboard (12 sec), Social proof — user quote (5 sec), Download CTA (6 sec). For each section: voiceover text, [SCREEN RECORDING] description, [TRANSITION] type.",
     "expected_output_format": "product demo script",
     "difficulty": "medium",
     "customization_notes": "Replace the app. Adjust features and demo structure for your own product showcase."
@@ -574,7 +574,7 @@
     "module": "M6_Video_Scripts",
     "use_case": "video",
     "prompt_title": "Social Media Short Script",
-    "prompt_text": "Write a 15-second TikTok/Reel script using the trending 'POV' format. Topic: POV â€” You finally understand recursion. Structure: Setup text on screen (2 sec), Reaction/skit (8 sec â€” describe the acting, facial expressions, and movements), Punchline or twist (3 sec), End tag or hashtag text (2 sec). Write the exact on-screen text, describe all physical actions and expressions, and suggest a trending audio style. Keep it humorous and relatable for CS students.",
+    "prompt_text": "Write a 15-second TikTok/Reel script using the trending 'POV' format. Topic: POV — You finally understand recursion. Structure: Setup text on screen (2 sec), Reaction/skit (8 sec — describe the acting, facial expressions, and movements), Punchline or twist (3 sec), End tag or hashtag text (2 sec). Write the exact on-screen text, describe all physical actions and expressions, and suggest a trending audio style. Keep it humorous and relatable for CS students.",
     "expected_output_format": "short-form script",
     "difficulty": "easy",
     "customization_notes": "Change the POV topic. Adjust the format: POV, storytime, get ready with me, expectation vs reality."
@@ -604,7 +604,7 @@
     "module": "M7_Coding_With_AI",
     "use_case": "coding",
     "prompt_title": "Function Spec from Description",
-    "prompt_text": "I want to write a Python function but I need a clear specification first. Turn this vague idea into a precise function spec. Idea: Something that cleans up messy user input text. Provide: 1. Function name (descriptive, snake_case). 2. Docstring (what it does in 2 sentences). 3. Parameters (name, type, description for each â€” at least 2 parameters). 4. Return type and description. 5. Edge cases to handle (list at least 5). 6. Example usage with expected input/output (at least 3 examples). Do not write the function itself â€” only the spec.",
+    "prompt_text": "I want to write a Python function but I need a clear specification first. Turn this vague idea into a precise function spec. Idea: Something that cleans up messy user input text. Provide: 1. Function name (descriptive, snake_case). 2. Docstring (what it does in 2 sentences). 3. Parameters (name, type, description for each — at least 2 parameters). 4. Return type and description. 5. Edge cases to handle (list at least 5). 6. Example usage with expected input/output (at least 3 examples). Do not write the function itself — only the spec.",
     "expected_output_format": "function specification",
     "difficulty": "easy",
     "customization_notes": "Replace the vague idea with your own. Use this spec to then generate the actual code in a follow-up prompt."
@@ -614,7 +614,7 @@
     "module": "M7_Coding_With_AI",
     "use_case": "coding",
     "prompt_title": "Bug Report Prompt Template",
-    "prompt_text": "I have a bug in my code. Help me fix it using this structured format. Bug Description: My function is supposed to return the nth Fibonacci number, but it returns the wrong value for n=0 and n=1. Language: Python 3.11. Code: [PASTE YOUR CODE HERE]. Expected Behavior: fib(0) should return 0 and fib(1) should return 1. Actual Behavior: fib(0) returns 1 and fib(1) returns 1. Error Message: No error â€” just wrong output. What I Already Tried: I checked the base case but it looks correct to me. Steps to fix: 1. Reproduce the bug mentally by tracing through the code. 2. Identify the root cause. 3. Show before and after code. 4. Explain how to prevent this type of bug in the future.",
+    "prompt_text": "I have a bug in my code. Help me fix it using this structured format. Bug Description: My function is supposed to return the nth Fibonacci number, but it returns the wrong value for n=0 and n=1. Language: Python 3.11. Code: [PASTE YOUR CODE HERE]. Expected Behavior: fib(0) should return 0 and fib(1) should return 1. Actual Behavior: fib(0) returns 1 and fib(1) returns 1. Error Message: No error — just wrong output. What I Already Tried: I checked the base case but it looks correct to me. Steps to fix: 1. Reproduce the bug mentally by tracing through the code. 2. Identify the root cause. 3. Show before and after code. 4. Explain how to prevent this type of bug in the future.",
     "expected_output_format": "bug fix + explanation",
     "difficulty": "easy",
     "customization_notes": "Replace with your actual bug details. Fill in every section for the most accurate fix."
@@ -624,7 +624,7 @@
     "module": "M7_Coding_With_AI",
     "use_case": "coding",
     "prompt_title": "Refactoring Request with Rules",
-    "prompt_text": "Refactor the following Python code to improve readability and maintainability. Refactoring rules: 1. Extract any function longer than 15 lines into smaller functions. 2. Replace magic numbers with named constants. 3. Add type hints to all function signatures. 4. Rename vague variable names (like x, temp, data) to descriptive names. 5. Remove dead code and unused imports. 6. Do not change the external behavior â€” all inputs and outputs must remain the same. Show the refactored code, then list every change you made in a numbered changelog. Code: [PASTE YOUR CODE HERE]",
+    "prompt_text": "Refactor the following Python code to improve readability and maintainability. Refactoring rules: 1. Extract any function longer than 15 lines into smaller functions. 2. Replace magic numbers with named constants. 3. Add type hints to all function signatures. 4. Rename vague variable names (like x, temp, data) to descriptive names. 5. Remove dead code and unused imports. 6. Do not change the external behavior — all inputs and outputs must remain the same. Show the refactored code, then list every change you made in a numbered changelog. Code: [PASTE YOUR CODE HERE]",
     "expected_output_format": "refactored code + changelog",
     "difficulty": "medium",
     "customization_notes": "Paste your own code. Add or remove refactoring rules based on your coding standards."
@@ -644,7 +644,7 @@
     "module": "M7_Coding_With_AI",
     "use_case": "coding",
     "prompt_title": "API Endpoint Designer",
-    "prompt_text": "Design a single REST API endpoint for user registration. Provide all of the following: 1. HTTP Method and URL path. 2. Request headers (list required headers). 3. Request body JSON schema with field validations (email format, password minimum length, required fields). 4. Success response (status code + JSON body). 5. Error responses â€” show at least 4 different error scenarios with status codes and error message JSON. 6. Rate limiting recommendation. 7. A curl command example for testing this endpoint. Format each section with a clear heading.",
+    "prompt_text": "Design a single REST API endpoint for user registration. Provide all of the following: 1. HTTP Method and URL path. 2. Request headers (list required headers). 3. Request body JSON schema with field validations (email format, password minimum length, required fields). 4. Success response (status code + JSON body). 5. Error responses — show at least 4 different error scenarios with status codes and error message JSON. 6. Rate limiting recommendation. 7. A curl command example for testing this endpoint. Format each section with a clear heading.",
     "expected_output_format": "API endpoint design",
     "difficulty": "medium",
     "customization_notes": "Replace user registration with any endpoint. Adjust validations and error scenarios for your API."
@@ -654,7 +654,7 @@
     "module": "M7_Coding_With_AI",
     "use_case": "coding",
     "prompt_title": "README Generator from Code",
-    "prompt_text": "Generate a README.md for my Python project based on the following information. Project: A command-line tool that converts CSV files to JSON format. Include these sections in this exact order: # Project Name (creative name), ## Description (3 sentences), ## Features (bullet list of 5 features), ## Installation (numbered steps using pip), ## Usage (3 example commands with explanations), ## Options/Flags (table with columns: Flag, Description, Default), ## Contributing (3 bullet points), ## License (one line â€” MIT). Output as raw Markdown. No commentary.",
+    "prompt_text": "Generate a README.md for my Python project based on the following information. Project: A command-line tool that converts CSV files to JSON format. Include these sections in this exact order: # Project Name (creative name), ## Description (3 sentences), ## Features (bullet list of 5 features), ## Installation (numbered steps using pip), ## Usage (3 example commands with explanations), ## Options/Flags (table with columns: Flag, Description, Default), ## Contributing (3 bullet points), ## License (one line — MIT). Output as raw Markdown. No commentary.",
     "expected_output_format": "README markdown",
     "difficulty": "easy",
     "customization_notes": "Replace the project description. Adjust sections to match your project and contribution guidelines."
@@ -674,7 +674,7 @@
     "module": "M7_Coding_With_AI",
     "use_case": "coding",
     "prompt_title": "Error Message Debugger",
-    "prompt_text": "I got this error message and I cannot figure out what it means. Help me understand and fix it. Error: [PASTE YOUR ERROR MESSAGE HERE]. Context: Language and version: Python 3.10. What I was trying to do: [DESCRIBE YOUR GOAL]. The line of code that caused it: [PASTE THE LINE]. Provide: 1. What this error means in plain English (2 sentences). 2. The most common causes of this error (list 3). 3. Which cause applies to my case and why. 4. The fix â€” show corrected code. 5. How to prevent this error in the future (1 tip).",
+    "prompt_text": "I got this error message and I cannot figure out what it means. Help me understand and fix it. Error: [PASTE YOUR ERROR MESSAGE HERE]. Context: Language and version: Python 3.10. What I was trying to do: [DESCRIBE YOUR GOAL]. The line of code that caused it: [PASTE THE LINE]. Provide: 1. What this error means in plain English (2 sentences). 2. The most common causes of this error (list 3). 3. Which cause applies to my case and why. 4. The fix — show corrected code. 5. How to prevent this error in the future (1 tip).",
     "expected_output_format": "debugging walkthrough",
     "difficulty": "easy",
     "customization_notes": "Paste any error message. Fill in all context fields for the most accurate debugging help."
@@ -694,7 +694,7 @@
     "module": "M7_Coding_With_AI",
     "use_case": "coding",
     "prompt_title": "Language Conversion Prompt",
-    "prompt_text": "Convert the following Python code to JavaScript (ES6+). Rules: 1. Use idiomatic JavaScript â€” do not write Python-style JS. 2. Replace Python-specific constructs with JS equivalents (list comprehensions to map/filter, f-strings to template literals, etc.). 3. Add JSDoc comments for the function. 4. Keep the same function name and logic. 5. After the converted code, show a comparison table: Feature, Python Syntax, JavaScript Syntax â€” for every construct you changed. Python code: [PASTE YOUR PYTHON CODE HERE]",
+    "prompt_text": "Convert the following Python code to JavaScript (ES6+). Rules: 1. Use idiomatic JavaScript — do not write Python-style JS. 2. Replace Python-specific constructs with JS equivalents (list comprehensions to map/filter, f-strings to template literals, etc.). 3. Add JSDoc comments for the function. 4. Keep the same function name and logic. 5. After the converted code, show a comparison table: Feature, Python Syntax, JavaScript Syntax — for every construct you changed. Python code: [PASTE YOUR PYTHON CODE HERE]",
     "expected_output_format": "converted code + comparison",
     "difficulty": "medium",
     "customization_notes": "Change the source and target languages. Adjust the conversion rules for the specific language pair."
@@ -724,7 +724,7 @@
     "module": "M8_Extraction_Notes_Research",
     "use_case": "study",
     "prompt_title": "Three-Level Summary",
-    "prompt_text": "Summarize the following text at 3 levels of detail. Level 1 â€” One-Liner (max 20 words): The absolute core idea in one sentence. Level 2 â€” Paragraph (exactly 5 sentences): A complete but concise summary. Level 3 â€” Detailed Notes (8-12 bullet points grouped by subtopic): Comprehensive coverage of all major points, arguments, examples, and conclusions. After all 3 levels, add: Key Terms (list 5 important terms with 1-line definitions from the text), Quick Quiz (generate 3 short-answer questions based on this text). Text: [PASTE YOUR TEXT HERE]",
+    "prompt_text": "Summarize the following text at 3 levels of detail. Level 1 — One-Liner (max 20 words): The absolute core idea in one sentence. Level 2 — Paragraph (exactly 5 sentences): A complete but concise summary. Level 3 — Detailed Notes (8-12 bullet points grouped by subtopic): Comprehensive coverage of all major points, arguments, examples, and conclusions. After all 3 levels, add: Key Terms (list 5 important terms with 1-line definitions from the text), Quick Quiz (generate 3 short-answer questions based on this text). Text: [PASTE YOUR TEXT HERE]",
     "expected_output_format": "multi-level summary",
     "difficulty": "medium",
     "customization_notes": "Paste any long text. Adjust the detail requirements per level for your revision style."
@@ -744,7 +744,7 @@
     "module": "M8_Extraction_Notes_Research",
     "use_case": "research",
     "prompt_title": "Side-by-Side Document Comparison",
-    "prompt_text": "I will paste two texts on the same topic. Compare them systematically. Structure your analysis as: 1. Summary of Text 1 (3 sentences). 2. Summary of Text 2 (3 sentences). 3. Agreements â€” points both texts agree on (bullet list). 4. Disagreements â€” points where they contradict (table: Point, Text 1 Says, Text 2 Says). 5. Unique to Text 1 â€” information only in the first text (bullet list). 6. Unique to Text 2 â€” information only in the second text (bullet list). 7. Which text is more reliable and why (2 sentences). Text 1: [PASTE TEXT 1]. Text 2: [PASTE TEXT 2].",
+    "prompt_text": "I will paste two texts on the same topic. Compare them systematically. Structure your analysis as: 1. Summary of Text 1 (3 sentences). 2. Summary of Text 2 (3 sentences). 3. Agreements — points both texts agree on (bullet list). 4. Disagreements — points where they contradict (table: Point, Text 1 Says, Text 2 Says). 5. Unique to Text 1 — information only in the first text (bullet list). 6. Unique to Text 2 — information only in the second text (bullet list). 7. Which text is more reliable and why (2 sentences). Text 1: [PASTE TEXT 1]. Text 2: [PASTE TEXT 2].",
     "expected_output_format": "comparison report",
     "difficulty": "medium",
     "customization_notes": "Paste any two articles, textbook explanations, or AI outputs on the same topic."
@@ -774,7 +774,7 @@
     "module": "M8_Extraction_Notes_Research",
     "use_case": "research",
     "prompt_title": "Argument Mapper",
-    "prompt_text": "Analyze the following argumentative or opinion text. Map its argument structure: 1. Main Claim (1 sentence â€” what the author is arguing). 2. Supporting Arguments (numbered list â€” each argument on its own line). 3. Evidence Used (for each argument: what evidence is given â€” data, example, analogy, authority). 4. Counter-Arguments Addressed (did the author address opposing views? List them). 5. Counter-Arguments NOT Addressed (what opposing views are missing?). 6. Logical Fallacies (any weak reasoning? Name the fallacy if applicable). 7. Strength Rating: Strong / Moderate / Weak with 1-sentence justification. Text: [PASTE TEXT HERE]",
+    "prompt_text": "Analyze the following argumentative or opinion text. Map its argument structure: 1. Main Claim (1 sentence — what the author is arguing). 2. Supporting Arguments (numbered list — each argument on its own line). 3. Evidence Used (for each argument: what evidence is given — data, example, analogy, authority). 4. Counter-Arguments Addressed (did the author address opposing views? List them). 5. Counter-Arguments NOT Addressed (what opposing views are missing?). 6. Logical Fallacies (any weak reasoning? Name the fallacy if applicable). 7. Strength Rating: Strong / Moderate / Weak with 1-sentence justification. Text: [PASTE TEXT HERE]",
     "expected_output_format": "argument analysis",
     "difficulty": "medium",
     "customization_notes": "Paste any editorial, essay, or persuasive text. Great for critical thinking and debate prep."
@@ -784,7 +784,7 @@
     "module": "M8_Extraction_Notes_Research",
     "use_case": "research",
     "prompt_title": "Data Cleaning Prompt",
-    "prompt_text": "I have messy raw data pasted below. Clean it and structure it. Steps: 1. Identify the data type (table, list, key-value pairs, etc.). 2. Standardize formatting: consistent capitalization, consistent date format (YYYY-MM-DD), remove extra whitespace, fix obvious typos. 3. Flag any ambiguous or missing values with [CHECK]. 4. Output the cleaned data in a format I specify: [CSV / JSON / TABLE â€” pick one]. 5. After the cleaned data, list all changes you made in a numbered changelog. Raw data: [PASTE YOUR MESSY DATA HERE]. Output format: CSV.",
+    "prompt_text": "I have messy raw data pasted below. Clean it and structure it. Steps: 1. Identify the data type (table, list, key-value pairs, etc.). 2. Standardize formatting: consistent capitalization, consistent date format (YYYY-MM-DD), remove extra whitespace, fix obvious typos. 3. Flag any ambiguous or missing values with [CHECK]. 4. Output the cleaned data in a format I specify: [CSV / JSON / TABLE — pick one]. 5. After the cleaned data, list all changes you made in a numbered changelog. Raw data: [PASTE YOUR MESSY DATA HERE]. Output format: CSV.",
     "expected_output_format": "cleaned data + changelog",
     "difficulty": "easy",
     "customization_notes": "Paste any messy data: copied from a PDF, email, or web page. Specify your preferred output format."
@@ -794,7 +794,7 @@
     "module": "M8_Extraction_Notes_Research",
     "use_case": "study",
     "prompt_title": "Study Guide Builder",
-    "prompt_text": "Create a complete study guide from the following text. Structure: ## Topic Overview (3 sentences). ## Key Concepts (numbered list of 6-8 concepts with one-line explanations). ## Important Formulas or Rules (if applicable, in a table: Name, Formula, When to Use). ## Common Exam Questions (5 questions a professor would likely ask). ## Quick Revision Cheat Sheet (fit everything on one imaginary page â€” ultra-condensed bullet points, max 15 lines). ## What to Study Next (2 related topics not in this text). Rules: Only use information from the provided text for the first 4 sections. Text: [PASTE YOUR STUDY MATERIAL HERE]",
+    "prompt_text": "Create a complete study guide from the following text. Structure: ## Topic Overview (3 sentences). ## Key Concepts (numbered list of 6-8 concepts with one-line explanations). ## Important Formulas or Rules (if applicable, in a table: Name, Formula, When to Use). ## Common Exam Questions (5 questions a professor would likely ask). ## Quick Revision Cheat Sheet (fit everything on one imaginary page — ultra-condensed bullet points, max 15 lines). ## What to Study Next (2 related topics not in this text). Rules: Only use information from the provided text for the first 4 sections. Text: [PASTE YOUR STUDY MATERIAL HERE]",
     "expected_output_format": "study guide",
     "difficulty": "medium",
     "customization_notes": "Paste any chapter or lecture notes. Adjust sections based on your exam format."
@@ -804,7 +804,7 @@
     "module": "M9_Reasoning_Math_QA_Interviews",
     "use_case": "math",
     "prompt_title": "Step-by-Step Math Solver",
-    "prompt_text": "Solve the following math problem showing every single step. Structure your solution as: Step 1 â€” Understand: Restate what is given and what is asked. Step 2 â€” Plan: State the approach or formula you will use and why. Step 3 â€” Solve: Show every calculation on its own line. No skipping steps. Step 4 â€” Verify: Check your answer using a different method or by substituting back. Step 5 â€” State: Write the final answer in a complete sentence with units if applicable. Problem: Find the derivative of f(x) = 3x^4 - 2x^3 + 7x - 5 and evaluate it at x = 2.",
+    "prompt_text": "Solve the following math problem showing every single step. Structure your solution as: Step 1 — Understand: Restate what is given and what is asked. Step 2 — Plan: State the approach or formula you will use and why. Step 3 — Solve: Show every calculation on its own line. No skipping steps. Step 4 — Verify: Check your answer using a different method or by substituting back. Step 5 — State: Write the final answer in a complete sentence with units if applicable. Problem: Find the derivative of f(x) = 3x^4 - 2x^3 + 7x - 5 and evaluate it at x = 2.",
     "expected_output_format": "step-by-step solution",
     "difficulty": "easy",
     "customization_notes": "Replace with any math problem. Keep the 5-step structure for consistent problem solving."
@@ -814,7 +814,7 @@
     "module": "M9_Reasoning_Math_QA_Interviews",
     "use_case": "math",
     "prompt_title": "Show Work vs Final Only",
-    "prompt_text": "I will give you 3 math problems. For each one, provide two versions of the answer: Version A â€” FINAL ONLY: Just the answer, nothing else, in one line. Version B â€” SHOW WORK: Full step-by-step solution with reasoning. Problem 1: What is the integral of 2x dx? Problem 2: Solve for x: 3x + 7 = 22. Problem 3: What is 15% of 240? Label each problem and each version clearly. This helps me practice checking my own work against the final answer first.",
+    "prompt_text": "I will give you 3 math problems. For each one, provide two versions of the answer: Version A — FINAL ONLY: Just the answer, nothing else, in one line. Version B — SHOW WORK: Full step-by-step solution with reasoning. Problem 1: What is the integral of 2x dx? Problem 2: Solve for x: 3x + 7 = 22. Problem 3: What is 15% of 240? Label each problem and each version clearly. This helps me practice checking my own work against the final answer first.",
     "expected_output_format": "dual-format solutions",
     "difficulty": "easy",
     "customization_notes": "Replace with your own problems. Use Version A to test yourself before revealing Version B."
@@ -884,7 +884,7 @@
     "module": "M9_Reasoning_Math_QA_Interviews",
     "use_case": "interview",
     "prompt_title": "HR Interview Question Prep",
-    "prompt_text": "Generate the 10 most commonly asked HR interview questions for fresh engineering graduates. For each question: 1. The question exactly as an HR manager would phrase it. 2. What they are actually evaluating (1 sentence). 3. A strong sample answer using the STAR method (Situation, Task, Action, Result) where applicable, or a structured response for non-behavioral questions. 4. A red flag answer (what NOT to say â€” 1 sentence). 5. Pro tip for delivery (tone, body language, timing â€” 1 sentence). Cover: introduction, strengths, weaknesses, teamwork, conflict, motivation, salary expectations, failure, why this company, 5-year plan.",
+    "prompt_text": "Generate the 10 most commonly asked HR interview questions for fresh engineering graduates. For each question: 1. The question exactly as an HR manager would phrase it. 2. What they are actually evaluating (1 sentence). 3. A strong sample answer using the STAR method (Situation, Task, Action, Result) where applicable, or a structured response for non-behavioral questions. 4. A red flag answer (what NOT to say — 1 sentence). 5. Pro tip for delivery (tone, body language, timing — 1 sentence). Cover: introduction, strengths, weaknesses, teamwork, conflict, motivation, salary expectations, failure, why this company, 5-year plan.",
     "expected_output_format": "HR interview guide",
     "difficulty": "easy",
     "customization_notes": "Add or remove questions based on your target company. Adjust sample answers to match your actual experiences."
@@ -894,7 +894,7 @@
     "module": "M9_Reasoning_Math_QA_Interviews",
     "use_case": "interview",
     "prompt_title": "Technical Concept Explainer",
-    "prompt_text": "I am preparing for a technical interview. Help me explain the following concept as if the interviewer asked: Can you explain how indexing works in databases? Provide 3 levels of answer: Level 1 â€” 30-second answer (for when the interviewer wants a quick response): 3 sentences max. Level 2 â€” 2-minute deep dive (for when they say 'tell me more'): Cover how it works internally (B-tree), when to use it, when NOT to use it, and the trade-off with write performance. Level 3 â€” Follow-up defense (anticipate 3 follow-up questions the interviewer might ask, and write concise answers for each). Label each level clearly.",
+    "prompt_text": "I am preparing for a technical interview. Help me explain the following concept as if the interviewer asked: Can you explain how indexing works in databases? Provide 3 levels of answer: Level 1 — 30-second answer (for when the interviewer wants a quick response): 3 sentences max. Level 2 — 2-minute deep dive (for when they say 'tell me more'): Cover how it works internally (B-tree), when to use it, when NOT to use it, and the trade-off with write performance. Level 3 — Follow-up defense (anticipate 3 follow-up questions the interviewer might ask, and write concise answers for each). Label each level clearly.",
     "expected_output_format": "tiered interview answer",
     "difficulty": "medium",
     "customization_notes": "Replace the concept. Use this 3-level prep for any technical concept you might be asked about."
@@ -924,7 +924,7 @@
     "module": "M10_Placement_Toolkit",
     "use_case": "interview",
     "prompt_title": "STAR Method Answer Writer",
-    "prompt_text": "Write a STAR-format answer for this common interview question: Tell me about a time you worked under a tight deadline. Structure: Situation (2-3 sentences â€” set the scene with specific details): When, where, what project, who was involved. Task (1-2 sentences â€” your specific responsibility): What was expected of you specifically. Action (3-4 sentences â€” what YOU did, not the team): Specific steps you took, tools you used, decisions you made. Result (2-3 sentences â€” measurable outcome): What happened, what you learned, what changed. After the STAR answer, add: Common Mistakes for this question (3 bullets), How to customize this template (2 sentences). Use [BRACKETS] for parts I should personalize with my own experience.",
+    "prompt_text": "Write a STAR-format answer for this common interview question: Tell me about a time you worked under a tight deadline. Structure: Situation (2-3 sentences — set the scene with specific details): When, where, what project, who was involved. Task (1-2 sentences — your specific responsibility): What was expected of you specifically. Action (3-4 sentences — what YOU did, not the team): Specific steps you took, tools you used, decisions you made. Result (2-3 sentences — measurable outcome): What happened, what you learned, what changed. After the STAR answer, add: Common Mistakes for this question (3 bullets), How to customize this template (2 sentences). Use [BRACKETS] for parts I should personalize with my own experience.",
     "expected_output_format": "STAR answer + tips",
     "difficulty": "easy",
     "customization_notes": "Replace the question. Fill in [BRACKETS] with your real experiences for authentic answers."
@@ -934,7 +934,7 @@
     "module": "M10_Placement_Toolkit",
     "use_case": "interview",
     "prompt_title": "Technical Interview Cheat Sheet",
-    "prompt_text": "Create a one-page technical interview cheat sheet for a Python backend developer interview. Cover: 1. Data Structures â€” top 5 with when to use each (1 sentence each). 2. Algorithms â€” top 5 patterns (sliding window, two pointer, etc.) with one-line descriptions. 3. Python Specifics â€” 5 things interviewers love to ask about Python (generators, GIL, decorators, etc.) with 1-sentence answers. 4. System Design Basics â€” 5 key concepts (load balancing, caching, etc.) with 1-sentence definitions. 5. Complexity Cheat Sheet â€” table of common operations and their Big O. Keep everything ultra-concise. This should fit on one printed page.",
+    "prompt_text": "Create a one-page technical interview cheat sheet for a Python backend developer interview. Cover: 1. Data Structures — top 5 with when to use each (1 sentence each). 2. Algorithms — top 5 patterns (sliding window, two pointer, etc.) with one-line descriptions. 3. Python Specifics — 5 things interviewers love to ask about Python (generators, GIL, decorators, etc.) with 1-sentence answers. 4. System Design Basics — 5 key concepts (load balancing, caching, etc.) with 1-sentence definitions. 5. Complexity Cheat Sheet — table of common operations and their Big O. Keep everything ultra-concise. This should fit on one printed page.",
     "expected_output_format": "cheat sheet",
     "difficulty": "medium",
     "customization_notes": "Change the role and language. Adjust sections based on your target company interview format."
@@ -944,7 +944,7 @@
     "module": "M10_Placement_Toolkit",
     "use_case": "resume",
     "prompt_title": "Project Description Power-Up",
-    "prompt_text": "Rewrite my project description to impress recruiters. Transform this raw description into a polished portfolio entry. Structure: Project Title: [make it sound professional]. One-Liner: What it does and its impact (under 15 words). Problem: What problem it solves (2 sentences). Solution: What I built and how (3 sentences â€” weave in the tech stack naturally). Key Features: (4 bullet points, each starting with an action verb). My Role: What I specifically contributed (2 sentences). Impact: Measurable results or metrics (2 sentences â€” use numbers). Tech Stack: Listed as tags. My raw description: Built a website for my college fest using HTML CSS and JavaScript. It shows events list and registration form. Worked in a team of 3.",
+    "prompt_text": "Rewrite my project description to impress recruiters. Transform this raw description into a polished portfolio entry. Structure: Project Title: [make it sound professional]. One-Liner: What it does and its impact (under 15 words). Problem: What problem it solves (2 sentences). Solution: What I built and how (3 sentences — weave in the tech stack naturally). Key Features: (4 bullet points, each starting with an action verb). My Role: What I specifically contributed (2 sentences). Impact: Measurable results or metrics (2 sentences — use numbers). Tech Stack: Listed as tags. My raw description: Built a website for my college fest using HTML CSS and JavaScript. It shows events list and registration form. Worked in a team of 3.",
     "expected_output_format": "portfolio project entry",
     "difficulty": "easy",
     "customization_notes": "Replace the raw description with your own project. Be honest about your contributions for authentic results."
@@ -964,7 +964,7 @@
     "module": "M10_Placement_Toolkit",
     "use_case": "resume",
     "prompt_title": "Cover Letter Generator",
-    "prompt_text": "Write a cover letter for a software engineering internship at a product-based company. Structure: Opening paragraph (3 sentences â€” why this specific company, mention a recent product or value that impressed you, state the role you are applying for). Middle paragraph (4 sentences â€” your strongest technical project, one relevant skill, one soft skill demonstrated through a specific example). Closing paragraph (2 sentences â€” enthusiastic but professional close, mention availability). Constraints: Under 250 words. No generic praise. No buzzwords. Sound like a real human, not a template. Use [COMPANY_NAME], [ROLE], [PROJECT_NAME], and [SKILL] as placeholders I can fill in.",
+    "prompt_text": "Write a cover letter for a software engineering internship at a product-based company. Structure: Opening paragraph (3 sentences — why this specific company, mention a recent product or value that impressed you, state the role you are applying for). Middle paragraph (4 sentences — your strongest technical project, one relevant skill, one soft skill demonstrated through a specific example). Closing paragraph (2 sentences — enthusiastic but professional close, mention availability). Constraints: Under 250 words. No generic praise. No buzzwords. Sound like a real human, not a template. Use [COMPANY_NAME], [ROLE], [PROJECT_NAME], and [SKILL] as placeholders I can fill in.",
     "expected_output_format": "cover letter",
     "difficulty": "medium",
     "customization_notes": "Fill in the placeholders. Research the company to make the opening paragraph specific and genuine."
@@ -974,17 +974,17 @@
     "module": "M10_Placement_Toolkit",
     "use_case": "interview",
     "prompt_title": "Elevator Pitch Creator",
-    "prompt_text": "Create a 30-second elevator pitch for me to use at career fairs and networking events. Structure: Hook (1 sentence â€” something interesting about me or my work that makes people want to listen), Who I am (1 sentence â€” name, year, major), What I do (1 sentence â€” my key skill or project), My value (1 sentence â€” what I can bring to a team or company), The ask (1 sentence â€” what I am looking for). Rules: Conversational tone, not rehearsed-sounding. Under 80 words. No jargon. Must sound natural when spoken out loud. Generate 2 versions: one for a tech company recruiter and one for a startup founder. My details: Final year CSE student, built 3 full-stack projects, strong in Python and React, looking for full-time SDE roles.",
+    "prompt_text": "Create a 30-second elevator pitch for me to use at career fairs and networking events. Structure: Hook (1 sentence — something interesting about me or my work that makes people want to listen), Who I am (1 sentence — name, year, major), What I do (1 sentence — my key skill or project), My value (1 sentence — what I can bring to a team or company), The ask (1 sentence — what I am looking for). Rules: Conversational tone, not rehearsed-sounding. Under 80 words. No jargon. Must sound natural when spoken out loud. Generate 2 versions: one for a tech company recruiter and one for a startup founder. My details: Final year CSE student, built 3 full-stack projects, strong in Python and React, looking for full-time SDE roles.",
     "expected_output_format": "2 elevator pitches",
     "difficulty": "easy",
-    "customization_notes": "Replace with your own details. Practice saying it out loud â€” if it sounds stiff, ask for a more conversational rewrite."
+    "customization_notes": "Replace with your own details. Practice saying it out loud — if it sounds stiff, ask for a more conversational rewrite."
   },
   {
     "id": "P099",
     "module": "M10_Placement_Toolkit",
     "use_case": "interview",
     "prompt_title": "Weakness Question Handler",
-    "prompt_text": "Help me prepare for the dreaded interview question: What is your greatest weakness? Generate 5 different honest but strategic answers suitable for a fresh engineering graduate. For each answer: 1. The weakness stated honestly (1 sentence). 2. What you are doing to improve (2 sentences â€” must be specific and believable). 3. How it has actually helped you grow (1 sentence â€” the silver lining). Rules: No cliches (perfectionism, working too hard). No fake weaknesses. No weaknesses that are deal-breakers for the role. Each weakness should be genuinely relatable for a fresh graduate. After the 5 options, add a 3-point delivery checklist: how to say it confidently.",
+    "prompt_text": "Help me prepare for the dreaded interview question: What is your greatest weakness? Generate 5 different honest but strategic answers suitable for a fresh engineering graduate. For each answer: 1. The weakness stated honestly (1 sentence). 2. What you are doing to improve (2 sentences — must be specific and believable). 3. How it has actually helped you grow (1 sentence — the silver lining). Rules: No cliches (perfectionism, working too hard). No fake weaknesses. No weaknesses that are deal-breakers for the role. Each weakness should be genuinely relatable for a fresh graduate. After the 5 options, add a 3-point delivery checklist: how to say it confidently.",
     "expected_output_format": "5 weakness answers + tips",
     "difficulty": "easy",
     "customization_notes": "Pick the answer closest to your real experience and customize it. Authenticity is more important than the perfect answer."
@@ -1014,7 +1014,7 @@
     "module": "M1_Foundations",
     "use_case": "study",
     "prompt_title": "Multi-Layer Context Setting",
-    "prompt_text": "Goal: Explain how neural networks learn using backpropagation. Context Layer 1 â€” Who I am: A third-year CSE student who understands basic calculus (derivatives and the chain rule). Context Layer 2 â€” What I already know: I know what forward propagation is and how loss functions work. Context Layer 3 â€” Why I need this: I have a deep learning exam in 3 days and need intuition, not just formulas. Constraints: No jargon without explanation. Use a concrete numeric example. Max 300 words. Format: Step-by-step walkthrough using a simple 2-layer network with actual numbers.",
+    "prompt_text": "Goal: Explain how neural networks learn using backpropagation. Context Layer 1 — Who I am: A third-year CSE student who understands basic calculus (derivatives and the chain rule). Context Layer 2 — What I already know: I know what forward propagation is and how loss functions work. Context Layer 3 — Why I need this: I have a deep learning exam in 3 days and need intuition, not just formulas. Constraints: No jargon without explanation. Use a concrete numeric example. Max 300 words. Format: Step-by-step walkthrough using a simple 2-layer network with actual numbers.",
     "expected_output_format": "structured text",
     "difficulty": "medium",
     "customization_notes": "Replace the topic with any concept you need to study. Update all three context layers to match your situation."
@@ -1054,7 +1054,7 @@
     "module": "M1_Foundations",
     "use_case": "study",
     "prompt_title": "Few-Shot with Edge Cases",
-    "prompt_text": "I want you to generate flashcards from my study notes. Here is the format I want: Front: [Question] | Back: [Answer â€” max 2 sentences]. Here are 3 examples: Front: What is polymorphism? | Back: Polymorphism lets objects of different classes respond to the same method call. It enables code reuse through method overriding and overloading. Front: What is the difference between stack and heap? | Back: Stack stores local variables and function calls with LIFO order. Heap stores dynamically allocated memory that persists until freed. Front: What is Big O notation? | Back: Big O describes the upper bound of an algorithm's time or space complexity. It tells you how performance scales as input size grows. Now generate 10 flashcards from these notes: [PASTE YOUR NOTES HERE]",
+    "prompt_text": "I want you to generate flashcards from my study notes. Here is the format I want: Front: [Question] | Back: [Answer — max 2 sentences]. Here are 3 examples: Front: What is polymorphism? | Back: Polymorphism lets objects of different classes respond to the same method call. It enables code reuse through method overriding and overloading. Front: What is the difference between stack and heap? | Back: Stack stores local variables and function calls with LIFO order. Heap stores dynamically allocated memory that persists until freed. Front: What is Big O notation? | Back: Big O describes the upper bound of an algorithm's time or space complexity. It tells you how performance scales as input size grows. Now generate 10 flashcards from these notes: [PASTE YOUR NOTES HERE]",
     "expected_output_format": "flashcards",
     "difficulty": "easy",
     "customization_notes": "Replace the example flashcards with ones from your subject. Paste your actual notes where indicated."
@@ -1064,7 +1064,7 @@
     "module": "M1_Foundations",
     "use_case": "study",
     "prompt_title": "Clarifying Questions Chain",
-    "prompt_text": "Before answering my question, ask me exactly 5 clarifying questions that will help you give me the best possible answer. Number each question. After I answer all 5, then provide your response. My question is: Help me prepare for my campus placement interviews. Do not answer yet â€” just ask the 5 questions first.",
+    "prompt_text": "Before answering my question, ask me exactly 5 clarifying questions that will help you give me the best possible answer. Number each question. After I answer all 5, then provide your response. My question is: Help me prepare for my campus placement interviews. Do not answer yet — just ask the 5 questions first.",
     "expected_output_format": "questions then answer",
     "difficulty": "easy",
     "customization_notes": "Replace the main question with any topic where you need tailored advice."
@@ -1124,7 +1124,7 @@
     "module": "M2_Output_Control",
     "use_case": "research",
     "prompt_title": "Markdown Report Formatter",
-    "prompt_text": "Generate a research summary on the topic of \"Edge Computing vs Cloud Computing\" formatted exactly as follows: # Title, ## Executive Summary (3 sentences max), ## Key Findings (5 bullet points), ## Comparison Table (3 columns: Aspect, Edge Computing, Cloud Computing â€” 5 rows), ## Conclusion (2 sentences), ## References (list 3 real or plausible sources in APA format). Follow this structure exactly. Do not add any extra sections.",
+    "prompt_text": "Generate a research summary on the topic of \"Edge Computing vs Cloud Computing\" formatted exactly as follows: # Title, ## Executive Summary (3 sentences max), ## Key Findings (5 bullet points), ## Comparison Table (3 columns: Aspect, Edge Computing, Cloud Computing — 5 rows), ## Conclusion (2 sentences), ## References (list 3 real or plausible sources in APA format). Follow this structure exactly. Do not add any extra sections.",
     "expected_output_format": "markdown report",
     "difficulty": "medium",
     "customization_notes": "Replace the topic. Adjust section requirements to match your report format."
@@ -1184,7 +1184,7 @@
     "module": "M2_Output_Control",
     "use_case": "research",
     "prompt_title": "CSV Data Transformation",
-    "prompt_text": "I have the following raw data about Indian cities. Convert it into a clean CSV format with these exact column headers: City, State, Population_Millions, Known_For, Tech_Hub (Yes/No). Data: Mumbai is in Maharashtra with about 20 million people, known for Bollywood and finance, and is a major tech hub. Bangalore is in Karnataka with about 12 million people, known for IT industry, and is the biggest tech hub. Jaipur is in Rajasthan with about 3 million people, known for tourism and handicrafts, and is not really a tech hub. Chennai is in Tamil Nadu with about 10 million people, known for auto industry and IT, and is a growing tech hub. Output only the CSV. No explanation. No markdown formatting â€” raw CSV only.",
+    "prompt_text": "I have the following raw data about Indian cities. Convert it into a clean CSV format with these exact column headers: City, State, Population_Millions, Known_For, Tech_Hub (Yes/No). Data: Mumbai is in Maharashtra with about 20 million people, known for Bollywood and finance, and is a major tech hub. Bangalore is in Karnataka with about 12 million people, known for IT industry, and is the biggest tech hub. Jaipur is in Rajasthan with about 3 million people, known for tourism and handicrafts, and is not really a tech hub. Chennai is in Tamil Nadu with about 10 million people, known for auto industry and IT, and is a growing tech hub. Output only the CSV. No explanation. No markdown formatting — raw CSV only.",
     "expected_output_format": "CSV",
     "difficulty": "easy",
     "customization_notes": "Replace with your own raw data. Adjust column headers to match your needs."
@@ -1194,7 +1194,7 @@
     "module": "M2_Output_Control",
     "use_case": "coding",
     "prompt_title": "Layered Output Structure",
-    "prompt_text": "Explain how HTTPS works. Structure your answer in exactly 3 layers of depth: Layer 1 â€” ELI5 (Explain Like I'm 5): 2 sentences max, use an analogy. Layer 2 â€” Student Level: 1 paragraph (5 sentences) covering the key technical steps. Layer 3 â€” Interview Ready: A detailed explanation covering TLS handshake, certificate verification, symmetric vs asymmetric encryption, with proper technical terms. Label each layer clearly. No text outside the three layers.",
+    "prompt_text": "Explain how HTTPS works. Structure your answer in exactly 3 layers of depth: Layer 1 — ELI5 (Explain Like I'm 5): 2 sentences max, use an analogy. Layer 2 — Student Level: 1 paragraph (5 sentences) covering the key technical steps. Layer 3 — Interview Ready: A detailed explanation covering TLS handshake, certificate verification, symmetric vs asymmetric encryption, with proper technical terms. Label each layer clearly. No text outside the three layers.",
     "expected_output_format": "layered explanation",
     "difficulty": "medium",
     "customization_notes": "Replace HTTPS with any technical concept. Adjust the number of layers or depth levels."
@@ -1214,7 +1214,7 @@
     "module": "M3_Debugging_Refinement",
     "use_case": "study",
     "prompt_title": "Deep 3R Loop Practice",
-    "prompt_text": "I want to practice the 3R Loop (Request, Review, Refine). Simulate a 3-round 3R loop for this task: \"Get AI to explain the concept of deadlocks in operating systems for exam prep.\" Round 1 â€” Request: Write a basic first-attempt prompt. Then show the likely output problems. Round 2 â€” Review: List what went wrong. Refine: Write an improved prompt. Show better output. Round 3 â€” Review: List remaining issues. Refine: Write the final polished prompt and show the ideal output. Label each round clearly.",
+    "prompt_text": "I want to practice the 3R Loop (Request, Review, Refine). Simulate a 3-round 3R loop for this task: \"Get AI to explain the concept of deadlocks in operating systems for exam prep.\" Round 1 — Request: Write a basic first-attempt prompt. Then show the likely output problems. Round 2 — Review: List what went wrong. Refine: Write an improved prompt. Show better output. Round 3 — Review: List remaining issues. Refine: Write the final polished prompt and show the ideal output. Label each round clearly.",
     "expected_output_format": "3R simulation",
     "difficulty": "medium",
     "customization_notes": "Replace deadlocks with any concept. Use this to practice refining prompts."
@@ -1264,7 +1264,7 @@
     "module": "M3_Debugging_Refinement",
     "use_case": "study",
     "prompt_title": "Output Validation Checklist",
-    "prompt_text": "You are a strict output quality reviewer. I will give you an AI-generated output. Check it against this 7-point validation checklist: 1. Accuracy â€” Are all facts correct? 2. Completeness â€” Does it answer the full question? 3. Format Compliance â€” Does it match the requested format? 4. Length Compliance â€” Is it within the word/sentence limit? 5. Relevance â€” Is everything relevant, no filler? 6. Consistency â€” No contradictions within the output? 7. Actionability â€” Can the user directly use this output? For each item, mark [PASS] or [FAIL] with a one-sentence reason. Give an overall score out of 7. Output to validate: [PASTE AI OUTPUT HERE]",
+    "prompt_text": "You are a strict output quality reviewer. I will give you an AI-generated output. Check it against this 7-point validation checklist: 1. Accuracy — Are all facts correct? 2. Completeness — Does it answer the full question? 3. Format Compliance — Does it match the requested format? 4. Length Compliance — Is it within the word/sentence limit? 5. Relevance — Is everything relevant, no filler? 6. Consistency — No contradictions within the output? 7. Actionability — Can the user directly use this output? For each item, mark [PASS] or [FAIL] with a one-sentence reason. Give an overall score out of 7. Output to validate: [PASTE AI OUTPUT HERE]",
     "expected_output_format": "validation checklist",
     "difficulty": "easy",
     "customization_notes": "Paste any AI output you want to quality-check. Adjust checklist items as needed."
@@ -1274,7 +1274,7 @@
     "module": "M3_Debugging_Refinement",
     "use_case": "coding",
     "prompt_title": "Progressive Refinement Prompt",
-    "prompt_text": "I want to build a responsive navigation bar in HTML and CSS. Start with the simplest possible version (Version 1 â€” just a horizontal list of links). Then progressively improve it through 4 versions: Version 1: Basic horizontal nav. Version 2: Add hover effects and active state styling. Version 3: Make it responsive with a hamburger menu for mobile. Version 4: Add a dropdown submenu for one of the links. Show complete code for each version. Explain what changed between each version in one sentence.",
+    "prompt_text": "I want to build a responsive navigation bar in HTML and CSS. Start with the simplest possible version (Version 1 — just a horizontal list of links). Then progressively improve it through 4 versions: Version 1: Basic horizontal nav. Version 2: Add hover effects and active state styling. Version 3: Make it responsive with a hamburger menu for mobile. Version 4: Add a dropdown submenu for one of the links. Show complete code for each version. Explain what changed between each version in one sentence.",
     "expected_output_format": "progressive code",
     "difficulty": "medium",
     "customization_notes": "Replace the component. Keep the 4-version progressive improvement format."
@@ -1284,7 +1284,7 @@
     "module": "M3_Debugging_Refinement",
     "use_case": "study",
     "prompt_title": "Prompt Autopsy",
-    "prompt_text": "I sent this prompt to ChatGPT and got a completely useless answer. Perform a full autopsy. Step 1 â€” Quote the prompt. Step 2 â€” List every problem (minimum 3). Step 3 â€” For each problem, explain why it caused bad output. Step 4 â€” Write the fixed version of the prompt. Step 5 â€” Predict what the improved output would look like in 2-3 sentences. The failed prompt: \"Tell me everything about data structures and give me code and examples and make it short but detailed and also compare them.\"",
+    "prompt_text": "I sent this prompt to ChatGPT and got a completely useless answer. Perform a full autopsy. Step 1 — Quote the prompt. Step 2 — List every problem (minimum 3). Step 3 — For each problem, explain why it caused bad output. Step 4 — Write the fixed version of the prompt. Step 5 — Predict what the improved output would look like in 2-3 sentences. The failed prompt: \"Tell me everything about data structures and give me code and examples and make it short but detailed and also compare them.\"",
     "expected_output_format": "autopsy report",
     "difficulty": "medium",
     "customization_notes": "Replace with any prompt that gave you poor results."
@@ -1304,7 +1304,7 @@
     "module": "M4_Truthfulness_Reliability",
     "use_case": "research",
     "prompt_title": "Source-Grounded Summary",
-    "prompt_text": "I will paste a text below. Summarize it in exactly 5 bullet points. Rules: 1. Every bullet point must be directly supported by the text â€” no outside knowledge. 2. After each bullet point, add [Source: paragraph X] indicating which paragraph the information came from. 3. Do not add any information that is not in the text. 4. If the text does not cover a subtopic I ask about, write \"Not covered in provided text.\" 5. Do not use phrases like \"The text discusses...\" â€” just state the facts directly. Text: [PASTE YOUR TEXT HERE]",
+    "prompt_text": "I will paste a text below. Summarize it in exactly 5 bullet points. Rules: 1. Every bullet point must be directly supported by the text — no outside knowledge. 2. After each bullet point, add [Source: paragraph X] indicating which paragraph the information came from. 3. Do not add any information that is not in the text. 4. If the text does not cover a subtopic I ask about, write \"Not covered in provided text.\" 5. Do not use phrases like \"The text discusses...\" — just state the facts directly. Text: [PASTE YOUR TEXT HERE]",
     "expected_output_format": "sourced bullet points",
     "difficulty": "easy",
     "customization_notes": "Paste any article or document. This forces AI to stay grounded in your text."
@@ -1334,7 +1334,7 @@
     "module": "M4_Truthfulness_Reliability",
     "use_case": "study",
     "prompt_title": "Confidence Score Assignment",
-    "prompt_text": "Answer the following question. After your answer, assign a confidence score using this format: [Confidence: X/10] where 10 means absolutely certain and 1 means pure guess. Then explain your confidence level in exactly one sentence. If your confidence is below 6/10, add a disclaimer: \"Low confidence â€” please verify this independently.\" Question: What is the time complexity of Dijkstra's algorithm with a binary heap?",
+    "prompt_text": "Answer the following question. After your answer, assign a confidence score using this format: [Confidence: X/10] where 10 means absolutely certain and 1 means pure guess. Then explain your confidence level in exactly one sentence. If your confidence is below 6/10, add a disclaimer: \"Low confidence — please verify this independently.\" Question: What is the time complexity of Dijkstra's algorithm with a binary heap?",
     "expected_output_format": "answer + confidence",
     "difficulty": "easy",
     "customization_notes": "Use this pattern with any factual question to get AI to self-assess its certainty."
@@ -1344,7 +1344,7 @@
     "module": "M4_Truthfulness_Reliability",
     "use_case": "research",
     "prompt_title": "Evidence-Only Mode",
-    "prompt_text": "You are in EVIDENCE-ONLY mode. Rules: 1. You may only make statements that are widely documented and verifiable. 2. For every claim you make, add a [Source type] tag: [Textbook], [Documentation], [Research Paper], [Common Knowledge], or [Uncertain]. 3. If you are not sure about something, say \"I am not confident about this claim\" instead of guessing. 4. Do not use hedging language like \"probably\" or \"might be\" â€” either state it with a source tag or flag it as uncertain. Now answer: What are the ACID properties in database systems? Explain each one.",
+    "prompt_text": "You are in EVIDENCE-ONLY mode. Rules: 1. You may only make statements that are widely documented and verifiable. 2. For every claim you make, add a [Source type] tag: [Textbook], [Documentation], [Research Paper], [Common Knowledge], or [Uncertain]. 3. If you are not sure about something, say \"I am not confident about this claim\" instead of guessing. 4. Do not use hedging language like \"probably\" or \"might be\" — either state it with a source tag or flag it as uncertain. Now answer: What are the ACID properties in database systems? Explain each one.",
     "expected_output_format": "sourced explanation",
     "difficulty": "medium",
     "customization_notes": "Replace the question. Keep the EVIDENCE-ONLY rules for any research task."
@@ -1354,7 +1354,7 @@
     "module": "M4_Truthfulness_Reliability",
     "use_case": "study",
     "prompt_title": "Knowledge Boundary Mapping",
-    "prompt_text": "For the topic \"Quantum Computing,\" map out your knowledge boundaries honestly. Create 3 lists: 1. CONFIDENT â€” Things you can explain accurately with high confidence (list 5-7 items). 2. PARTIAL â€” Things you know about but might have outdated or incomplete info on (list 3-5 items). 3. BEYOND MY KNOWLEDGE â€” Things you genuinely cannot answer reliably (list 2-3 items). For each item in the PARTIAL and BEYOND lists, suggest where I should look for reliable information instead.",
+    "prompt_text": "For the topic \"Quantum Computing,\" map out your knowledge boundaries honestly. Create 3 lists: 1. CONFIDENT — Things you can explain accurately with high confidence (list 5-7 items). 2. PARTIAL — Things you know about but might have outdated or incomplete info on (list 3-5 items). 3. BEYOND MY KNOWLEDGE — Things you genuinely cannot answer reliably (list 2-3 items). For each item in the PARTIAL and BEYOND lists, suggest where I should look for reliable information instead.",
     "expected_output_format": "knowledge map",
     "difficulty": "medium",
     "customization_notes": "Replace the topic with any subject to understand where AI knowledge is reliable."
@@ -1374,7 +1374,7 @@
     "module": "M4_Truthfulness_Reliability",
     "use_case": "study",
     "prompt_title": "Bias Detection Prompt",
-    "prompt_text": "Analyze the following text for potential biases. Check for these 6 types: 1. Selection Bias â€” Does it cherry-pick examples? 2. Confirmation Bias â€” Does it only present one viewpoint? 3. Authority Bias â€” Does it rely on appeals to authority instead of evidence? 4. Recency Bias â€” Does it overweight recent events? 5. Cultural Bias â€” Does it assume one cultural perspective? 6. Survivorship Bias â€” Does it only highlight successes? For each bias type, mark [DETECTED] or [NOT DETECTED] and quote the relevant sentence if detected. End with a 2-sentence overall assessment. Text: [PASTE TEXT HERE]",
+    "prompt_text": "Analyze the following text for potential biases. Check for these 6 types: 1. Selection Bias — Does it cherry-pick examples? 2. Confirmation Bias — Does it only present one viewpoint? 3. Authority Bias — Does it rely on appeals to authority instead of evidence? 4. Recency Bias — Does it overweight recent events? 5. Cultural Bias — Does it assume one cultural perspective? 6. Survivorship Bias — Does it only highlight successes? For each bias type, mark [DETECTED] or [NOT DETECTED] and quote the relevant sentence if detected. End with a 2-sentence overall assessment. Text: [PASTE TEXT HERE]",
     "expected_output_format": "bias analysis",
     "difficulty": "medium",
     "customization_notes": "Use on any article, argument, or AI output to detect hidden biases."
@@ -1474,7 +1474,7 @@
     "module": "M5_Image_Prompting",
     "use_case": "image",
     "prompt_title": "Infographic Visual Banner",
-    "prompt_text": "A visual banner for a tech meetup event. Clean, flat design illustration showing 5 diverse developers sitting around a circular table with laptops, code symbols floating above them. Isometric perspective. Color palette: dark navy background with neon green, cyan, and white accents. Modern tech startup aesthetic. No text â€” illustration only. Suitable as a 1920x1080 banner. Clean vector style.",
+    "prompt_text": "A visual banner for a tech meetup event. Clean, flat design illustration showing 5 diverse developers sitting around a circular table with laptops, code symbols floating above them. Isometric perspective. Color palette: dark navy background with neon green, cyan, and white accents. Modern tech startup aesthetic. No text — illustration only. Suitable as a 1920x1080 banner. Clean vector style.",
     "expected_output_format": "image",
     "difficulty": "medium",
     "customization_notes": "Change the event type, illustration style, color palette, and dimensions."
@@ -1504,7 +1504,7 @@
     "module": "M5_Image_Prompting",
     "use_case": "image",
     "prompt_title": "Book Cover Illustration",
-    "prompt_text": "Book cover illustration for a tech thriller titled \"Zero Day.\" Dark, moody atmosphere. A glowing green terminal cursor blinking on a black screen, reflected in a pair of glasses worn by a shadowy figure. Digital rain (matrix-style) falling softly in the background. Color palette: black, dark gray, neon green. Cinematic lighting from the screen illuminating the face partially. Dramatic and mysterious mood. No text â€” illustration only.",
+    "prompt_text": "Book cover illustration for a tech thriller titled \"Zero Day.\" Dark, moody atmosphere. A glowing green terminal cursor blinking on a black screen, reflected in a pair of glasses worn by a shadowy figure. Digital rain (matrix-style) falling softly in the background. Color palette: black, dark gray, neon green. Cinematic lighting from the screen illuminating the face partially. Dramatic and mysterious mood. No text — illustration only.",
     "expected_output_format": "image",
     "difficulty": "medium",
     "customization_notes": "Change the genre, mood, central imagery, and color palette."
@@ -1524,7 +1524,7 @@
     "module": "M5_Image_Prompting",
     "use_case": "image",
     "prompt_title": "Event Poster Illustration",
-    "prompt_text": "Illustration for a college hackathon poster. Isometric view of a futuristic workspace: holographic screens, floating code blocks, robotic arms assembling circuits, diverse students collaborating. Cyberpunk color palette: dark purple background with neon pink, electric blue, and bright yellow accents. Clean digital illustration style with bold outlines. Dynamic, energetic composition. No text â€” illustration only.",
+    "prompt_text": "Illustration for a college hackathon poster. Isometric view of a futuristic workspace: holographic screens, floating code blocks, robotic arms assembling circuits, diverse students collaborating. Cyberpunk color palette: dark purple background with neon pink, electric blue, and bright yellow accents. Clean digital illustration style with bold outlines. Dynamic, energetic composition. No text — illustration only.",
     "expected_output_format": "image",
     "difficulty": "medium",
     "customization_notes": "Change the event type, visual theme, color palette, and composition style."
@@ -1554,7 +1554,7 @@
     "module": "M6_Video_Scripts",
     "use_case": "video",
     "prompt_title": "Tutorial Video Script",
-    "prompt_text": "Write a script for a 90-second tutorial video teaching beginners how to use Git for the first time. Structure: Hook (5 seconds â€” a surprising fact or pain point), Intro (10 seconds â€” what they will learn), Step-by-step tutorial (60 seconds â€” 4 clear steps with voiceover text and screen action descriptions), Recap (10 seconds), CTA (5 seconds â€” subscribe and comment). For each section, write the exact voiceover text and describe the screen visuals in [brackets].",
+    "prompt_text": "Write a script for a 90-second tutorial video teaching beginners how to use Git for the first time. Structure: Hook (5 seconds — a surprising fact or pain point), Intro (10 seconds — what they will learn), Step-by-step tutorial (60 seconds — 4 clear steps with voiceover text and screen action descriptions), Recap (10 seconds), CTA (5 seconds — subscribe and comment). For each section, write the exact voiceover text and describe the screen visuals in [brackets].",
     "expected_output_format": "video script",
     "difficulty": "medium",
     "customization_notes": "Replace Git with any tool or skill. Adjust video length and number of steps."
@@ -1564,7 +1564,7 @@
     "module": "M6_Video_Scripts",
     "use_case": "content",
     "prompt_title": "Product Review Script",
-    "prompt_text": "Write a 60-second product review script for a budget mechanical keyboard (under Rs 3000). Structure: Hook (3 seconds â€” bold claim), Unboxing highlights (10 seconds), 3 Pros (15 seconds), 2 Cons (10 seconds), Typing test description (10 seconds), Final verdict and rating out of 10 (7 seconds), CTA (5 seconds). Write the voiceover text for each section. Add [B-ROLL] tags describing what footage to show during each section.",
+    "prompt_text": "Write a 60-second product review script for a budget mechanical keyboard (under Rs 3000). Structure: Hook (3 seconds — bold claim), Unboxing highlights (10 seconds), 3 Pros (15 seconds), 2 Cons (10 seconds), Typing test description (10 seconds), Final verdict and rating out of 10 (7 seconds), CTA (5 seconds). Write the voiceover text for each section. Add [B-ROLL] tags describing what footage to show during each section.",
     "expected_output_format": "video script",
     "difficulty": "easy",
     "customization_notes": "Replace the product. Adjust the structure for different review styles."
@@ -1604,7 +1604,7 @@
     "module": "M6_Video_Scripts",
     "use_case": "content",
     "prompt_title": "Before/After Transformation Video",
-    "prompt_text": "Write a 60-second before/after transformation video script showing \"My Code Before vs After Learning Clean Code Principles.\" Structure: BEFORE section (25 sec) â€” show messy code with commentary on what is wrong. TRANSITION (5 sec) â€” dramatic reveal moment. AFTER section (25 sec) â€” show clean code with commentary on what improved. CTA (5 sec). For each section, write the voiceover and describe [SCREEN RECORDING] content.",
+    "prompt_text": "Write a 60-second before/after transformation video script showing \"My Code Before vs After Learning Clean Code Principles.\" Structure: BEFORE section (25 sec) — show messy code with commentary on what is wrong. TRANSITION (5 sec) — dramatic reveal moment. AFTER section (25 sec) — show clean code with commentary on what improved. CTA (5 sec). For each section, write the voiceover and describe [SCREEN RECORDING] content.",
     "expected_output_format": "transformation script",
     "difficulty": "easy",
     "customization_notes": "Change the before/after subject: resume, portfolio, prompt, design, etc."
@@ -1624,7 +1624,7 @@
     "module": "M6_Video_Scripts",
     "use_case": "content",
     "prompt_title": "Reaction Video Framework",
-    "prompt_text": "Write a framework script for a \"Developer Reacts to Beginner Code\" video. Duration: 3 minutes. Structure: Intro + setup (15 sec), Code Sample 1 â€” show code, react, explain fix (40 sec), Code Sample 2 â€” show code, react with humor, explain fix (40 sec), Code Sample 3 â€” show surprisingly good beginner code, praise it (30 sec), Tips for beginners (20 sec), CTA (15 sec). Write voiceover/dialogue. Mark [REACTION SHOT] and [CODE ON SCREEN] cues.",
+    "prompt_text": "Write a framework script for a \"Developer Reacts to Beginner Code\" video. Duration: 3 minutes. Structure: Intro + setup (15 sec), Code Sample 1 — show code, react, explain fix (40 sec), Code Sample 2 — show code, react with humor, explain fix (40 sec), Code Sample 3 — show surprisingly good beginner code, praise it (30 sec), Tips for beginners (20 sec), CTA (15 sec). Write voiceover/dialogue. Mark [REACTION SHOT] and [CODE ON SCREEN] cues.",
     "expected_output_format": "reaction script",
     "difficulty": "medium",
     "customization_notes": "Change the reaction topic. Adjust number of samples and reaction style."
@@ -1634,7 +1634,7 @@
     "module": "M6_Video_Scripts",
     "use_case": "video",
     "prompt_title": "Interview Format Script",
-    "prompt_text": "Write a script for a mock interview-style video: \"I Asked a Senior Developer 5 Questions About Getting Hired.\" Duration: 3 minutes. Structure: Intro (15 sec â€” who, why, what), 5 Q&A segments (each 30 sec: question on screen, answer as spoken dialogue), Rapid fire round â€” 3 quick questions (15 sec), Outro with key takeaway (10 sec). Write both interviewer and interviewee dialogue. Add [SHOT TYPE] for each segment.",
+    "prompt_text": "Write a script for a mock interview-style video: \"I Asked a Senior Developer 5 Questions About Getting Hired.\" Duration: 3 minutes. Structure: Intro (15 sec — who, why, what), 5 Q&A segments (each 30 sec: question on screen, answer as spoken dialogue), Rapid fire round — 3 quick questions (15 sec), Outro with key takeaway (10 sec). Write both interviewer and interviewee dialogue. Add [SHOT TYPE] for each segment.",
     "expected_output_format": "interview script",
     "difficulty": "medium",
     "customization_notes": "Change the interviewee persona and questions. Adjust number of Q&A segments."
@@ -1644,7 +1644,7 @@
     "module": "M6_Video_Scripts",
     "use_case": "content",
     "prompt_title": "Behind-the-Scenes Script",
-    "prompt_text": "Write a 90-second behind-the-scenes video script showing \"How I Built My Portfolio Website in a Weekend.\" Structure: Opening hook â€” the finished product reveal (5 sec), Rewind to Day 1 â€” planning and wireframes (20 sec), Day 1 coding montage with voiceover tips (25 sec), Day 2 â€” design and deployment (25 sec), Problems I faced and how I fixed them (10 sec), Final reveal again with features walkthrough (10 sec). Add [TIME-LAPSE], [SCREEN RECORDING], and [TALKING HEAD] cues.",
+    "prompt_text": "Write a 90-second behind-the-scenes video script showing \"How I Built My Portfolio Website in a Weekend.\" Structure: Opening hook — the finished product reveal (5 sec), Rewind to Day 1 — planning and wireframes (20 sec), Day 1 coding montage with voiceover tips (25 sec), Day 2 — design and deployment (25 sec), Problems I faced and how I fixed them (10 sec), Final reveal again with features walkthrough (10 sec). Add [TIME-LAPSE], [SCREEN RECORDING], and [TALKING HEAD] cues.",
     "expected_output_format": "BTS script",
     "difficulty": "medium",
     "customization_notes": "Change the project. Adjust the timeline and production cues."
@@ -1654,7 +1654,7 @@
     "module": "M6_Video_Scripts",
     "use_case": "video",
     "prompt_title": "Challenge Video Script",
-    "prompt_text": "Write a script for a \"Can AI Build a Full App in 30 Minutes?\" challenge video. Duration: 2 minutes (highlights from the 30-min session). Structure: Challenge statement and rules (15 sec), Timer starts â€” Phase 1: AI generates the spec (20 sec), Phase 2: AI writes the code (30 sec), Phase 3: Testing and fixing bugs (25 sec), Timer ends â€” results reveal (15 sec), My honest review and score out of 10 (10 sec), CTA (5 sec). Write voiceover text. Mark [TIMER OVERLAY], [SCREEN RECORDING], [FACE CAM] cues.",
+    "prompt_text": "Write a script for a \"Can AI Build a Full App in 30 Minutes?\" challenge video. Duration: 2 minutes (highlights from the 30-min session). Structure: Challenge statement and rules (15 sec), Timer starts — Phase 1: AI generates the spec (20 sec), Phase 2: AI writes the code (30 sec), Phase 3: Testing and fixing bugs (25 sec), Timer ends — results reveal (15 sec), My honest review and score out of 10 (10 sec), CTA (5 sec). Write voiceover text. Mark [TIMER OVERLAY], [SCREEN RECORDING], [FACE CAM] cues.",
     "expected_output_format": "challenge script",
     "difficulty": "medium",
     "customization_notes": "Change the challenge task and time limit. Adjust phases."
@@ -1664,7 +1664,7 @@
     "module": "M6_Video_Scripts",
     "use_case": "content",
     "prompt_title": "Comparison Review Script",
-    "prompt_text": "Write a script for a VS comparison video: \"GitHub Copilot vs ChatGPT for Coding â€” Which Is Better?\" Duration: 2 minutes. Structure: Hook with a bold opinion (5 sec), Brief intro of both tools (15 sec), Round 1: Code generation (20 sec), Round 2: Debugging (20 sec), Round 3: Code explanation (20 sec), Round 4: Learning new concepts (20 sec), Scorecard reveal (10 sec), Final verdict (10 sec). For each round, describe the [SPLIT SCREEN] demo.",
+    "prompt_text": "Write a script for a VS comparison video: \"GitHub Copilot vs ChatGPT for Coding — Which Is Better?\" Duration: 2 minutes. Structure: Hook with a bold opinion (5 sec), Brief intro of both tools (15 sec), Round 1: Code generation (20 sec), Round 2: Debugging (20 sec), Round 3: Code explanation (20 sec), Round 4: Learning new concepts (20 sec), Scorecard reveal (10 sec), Final verdict (10 sec). For each round, describe the [SPLIT SCREEN] demo.",
     "expected_output_format": "comparison script",
     "difficulty": "medium",
     "customization_notes": "Replace the two tools. Adjust the comparison rounds and criteria."
@@ -1674,7 +1674,7 @@
     "module": "M6_Video_Scripts",
     "use_case": "video",
     "prompt_title": "Story-Driven Brand Video",
-    "prompt_text": "Write a 60-second story-driven video script for a coding bootcamp targeted at college students. Structure: Open with a relatable struggle scene (10 sec â€” student frustrated with job rejections), Turning point â€” discovering the bootcamp (10 sec), Montage of learning moments (15 sec â€” classes, projects, community), Achievement moment â€” getting the offer letter (10 sec), Testimonial line from the student (10 sec), Brand message and CTA (5 sec). Write voiceover/dialogue. Add [EMOTION] tags and [MUSIC MOOD] for each segment.",
+    "prompt_text": "Write a 60-second story-driven video script for a coding bootcamp targeted at college students. Structure: Open with a relatable struggle scene (10 sec — student frustrated with job rejections), Turning point — discovering the bootcamp (10 sec), Montage of learning moments (15 sec — classes, projects, community), Achievement moment — getting the offer letter (10 sec), Testimonial line from the student (10 sec), Brand message and CTA (5 sec). Write voiceover/dialogue. Add [EMOTION] tags and [MUSIC MOOD] for each segment.",
     "expected_output_format": "brand story script",
     "difficulty": "medium",
     "customization_notes": "Change the brand or product. Adjust the story arc and emotional beats."
@@ -1684,7 +1684,7 @@
     "module": "M6_Video_Scripts",
     "use_case": "content",
     "prompt_title": "Launch Announcement Script",
-    "prompt_text": "Write a 30-second launch announcement video script for a new mobile app that helps students track their placement preparation progress. Structure: Problem statement hook (7 sec), App name reveal with logo animation (3 sec), 3 key features â€” quick visual demos (12 sec â€” 4 sec each), Social proof line (3 sec), Download CTA (5 sec). Write punchy, fast-paced voiceover. Each sentence should be under 10 words. Add [MOTION GRAPHICS] cues.",
+    "prompt_text": "Write a 30-second launch announcement video script for a new mobile app that helps students track their placement preparation progress. Structure: Problem statement hook (7 sec), App name reveal with logo animation (3 sec), 3 key features — quick visual demos (12 sec — 4 sec each), Social proof line (3 sec), Download CTA (5 sec). Write punchy, fast-paced voiceover. Each sentence should be under 10 words. Add [MOTION GRAPHICS] cues.",
     "expected_output_format": "launch script",
     "difficulty": "easy",
     "customization_notes": "Change the product. Adjust features and pacing for different durations."
@@ -1694,7 +1694,7 @@
     "module": "M6_Video_Scripts",
     "use_case": "video",
     "prompt_title": "Motivational Short Script",
-    "prompt_text": "Write a 30-second motivational Reel/Short script for students preparing for placement season. Structure: Open with a tough question or fear (5 sec), Acknowledge the struggle honestly (8 sec), Pivot to practical advice â€” one specific action they can take today (10 sec), Powerful closing line (5 sec), Text on screen CTA (2 sec). Tone: real, no toxic positivity. Write voiceover text. Add [TEXT ON SCREEN] and [MUSIC: building/inspirational] cues.",
+    "prompt_text": "Write a 30-second motivational Reel/Short script for students preparing for placement season. Structure: Open with a tough question or fear (5 sec), Acknowledge the struggle honestly (8 sec), Pivot to practical advice — one specific action they can take today (10 sec), Powerful closing line (5 sec), Text on screen CTA (2 sec). Tone: real, no toxic positivity. Write voiceover text. Add [TEXT ON SCREEN] and [MUSIC: building/inspirational] cues.",
     "expected_output_format": "short-form script",
     "difficulty": "easy",
     "customization_notes": "Change the audience and topic. Keep the emotional arc: fear to empathy to action."
@@ -1754,7 +1754,7 @@
     "module": "M7_Coding_With_AI",
     "use_case": "coding",
     "prompt_title": "Testing Strategy Planner",
-    "prompt_text": "I have a Python function that processes user registration: validates email, checks password strength, creates user in database, and sends a welcome email. Plan a complete testing strategy. Provide: 1. Unit tests â€” list every test case with description and expected result (at least 8 tests), 2. Integration tests â€” 3 test scenarios, 3. Edge case tests â€” 5 edge cases, 4. Mock strategy â€” what to mock and why, 5. Write the actual pytest code for all unit tests.",
+    "prompt_text": "I have a Python function that processes user registration: validates email, checks password strength, creates user in database, and sends a welcome email. Plan a complete testing strategy. Provide: 1. Unit tests — list every test case with description and expected result (at least 8 tests), 2. Integration tests — 3 test scenarios, 3. Edge case tests — 5 edge cases, 4. Mock strategy — what to mock and why, 5. Write the actual pytest code for all unit tests.",
     "expected_output_format": "test plan + code",
     "difficulty": "medium",
     "customization_notes": "Replace with your function description. Adjust the number of tests per category."
@@ -1794,7 +1794,7 @@
     "module": "M7_Coding_With_AI",
     "use_case": "coding",
     "prompt_title": "Microservices Architecture Design",
-    "prompt_text": "Design a microservices architecture for a food delivery app like Swiggy. Provide: 1. Service decomposition â€” list each microservice with its responsibility (at least 6 services), 2. Communication patterns â€” which services talk to which and how (REST, gRPC, message queue), 3. Database strategy â€” separate DB per service or shared, 4. A simple architecture diagram in text/ASCII format, 5. How to handle failures (circuit breaker, retry). Keep each section concise â€” max 5 sentences per service.",
+    "prompt_text": "Design a microservices architecture for a food delivery app like Swiggy. Provide: 1. Service decomposition — list each microservice with its responsibility (at least 6 services), 2. Communication patterns — which services talk to which and how (REST, gRPC, message queue), 3. Database strategy — separate DB per service or shared, 4. A simple architecture diagram in text/ASCII format, 5. How to handle failures (circuit breaker, retry). Keep each section concise — max 5 sentences per service.",
     "expected_output_format": "architecture document",
     "difficulty": "medium",
     "customization_notes": "Change the app domain. Adjust the number of services and communication patterns."
@@ -1824,7 +1824,7 @@
     "module": "M7_Coding_With_AI",
     "use_case": "coding",
     "prompt_title": "Algorithm Design Helper",
-    "prompt_text": "I need to solve this problem: Given an array of integers, find two numbers that add up to a target sum. Walk me through the solution process: 1. Understand â€” restate the problem and clarify edge cases. 2. Plan â€” describe 2-3 possible approaches with trade-offs (brute force, optimized). 3. Code â€” implement the optimal solution in Python with comments. 4. Test â€” trace through 3 test cases manually (including an edge case). 5. Analyze â€” state time and space complexity. 6. Optimize â€” is there anything better? If not, explain why this is optimal.",
+    "prompt_text": "I need to solve this problem: Given an array of integers, find two numbers that add up to a target sum. Walk me through the solution process: 1. Understand — restate the problem and clarify edge cases. 2. Plan — describe 2-3 possible approaches with trade-offs (brute force, optimized). 3. Code — implement the optimal solution in Python with comments. 4. Test — trace through 3 test cases manually (including an edge case). 5. Analyze — state time and space complexity. 6. Optimize — is there anything better? If not, explain why this is optimal.",
     "expected_output_format": "algorithm walkthrough",
     "difficulty": "easy",
     "customization_notes": "Replace with any coding problem. Keep the 6-step problem-solving structure."
@@ -1894,7 +1894,7 @@
     "module": "M8_Extraction_Notes_Research",
     "use_case": "study",
     "prompt_title": "Technical Spec Extractor",
-    "prompt_text": "Extract the technical specifications from the following product description or documentation. Organize into: ## Core Specs (table: Spec Name, Value, Notes), ## Requirements (bullet list: hardware, software, dependencies), ## Limitations (bullet list: what it cannot do), ## Compatibility (what it works with). Rules: 1. Only include information explicitly stated in the text. 2. If a spec seems implied but not stated, mark it as [Implied â€” verify]. 3. Do not make up specifications. Document: [PASTE TECHNICAL TEXT HERE]",
+    "prompt_text": "Extract the technical specifications from the following product description or documentation. Organize into: ## Core Specs (table: Spec Name, Value, Notes), ## Requirements (bullet list: hardware, software, dependencies), ## Limitations (bullet list: what it cannot do), ## Compatibility (what it works with). Rules: 1. Only include information explicitly stated in the text. 2. If a spec seems implied but not stated, mark it as [Implied — verify]. 3. Do not make up specifications. Document: [PASTE TECHNICAL TEXT HERE]",
     "expected_output_format": "spec sheet",
     "difficulty": "easy",
     "customization_notes": "Paste any product page, documentation, or technical article."
@@ -1904,7 +1904,7 @@
     "module": "M8_Extraction_Notes_Research",
     "use_case": "study",
     "prompt_title": "Book Chapter Summarizer",
-    "prompt_text": "Summarize the following book chapter or long text at 3 levels of detail. Level 1 â€” Tweet (max 280 characters): The core idea in one sentence. Level 2 â€” Executive Summary (exactly 5 bullet points): The key takeaways. Level 3 â€” Detailed Notes (10-15 bullet points grouped by subtopic): Comprehensive notes covering all major points, examples, and arguments. After all 3 levels, add: Key Vocabulary (list important terms with 1-line definitions), Exam Questions (generate 3 potential exam questions from this content). Text: [PASTE CHAPTER TEXT]",
+    "prompt_text": "Summarize the following book chapter or long text at 3 levels of detail. Level 1 — Tweet (max 280 characters): The core idea in one sentence. Level 2 — Executive Summary (exactly 5 bullet points): The key takeaways. Level 3 — Detailed Notes (10-15 bullet points grouped by subtopic): Comprehensive notes covering all major points, examples, and arguments. After all 3 levels, add: Key Vocabulary (list important terms with 1-line definitions), Exam Questions (generate 3 potential exam questions from this content). Text: [PASTE CHAPTER TEXT]",
     "expected_output_format": "multi-level summary",
     "difficulty": "medium",
     "customization_notes": "Paste any long text. Adjust the detail levels and extras as needed."
@@ -1917,14 +1917,14 @@
     "prompt_text": "Extract the key insights from the following podcast transcript. Structure: ## Episode Overview (2 sentences), ## Key Insights (numbered, at least 5, each as: Insight + Speaker + Timestamp if available), ## Quotable Moments (3 best quotes, exact words), ## Action Items for Listener (3 practical takeaways), ## Topics for Further Research (3 topics mentioned that deserve deeper exploration), ## People/Resources Mentioned (list with brief description). Rules: Attribute insights to specific speakers when possible. Transcript: [PASTE TRANSCRIPT]",
     "expected_output_format": "structured extraction",
     "difficulty": "medium",
-    "customization_notes": "Paste any transcript â€” podcast, interview, YouTube video, or lecture."
+    "customization_notes": "Paste any transcript — podcast, interview, YouTube video, or lecture."
   },
   {
     "id": "P193",
     "module": "M8_Extraction_Notes_Research",
     "use_case": "study",
     "prompt_title": "Comparative Analysis Builder",
-    "prompt_text": "Create a detailed comparison between [ITEM 1] and [ITEM 2] on the topic of [TOPIC]. Structure: 1. Overview of each (2 sentences each), 2. Comparison Table (at least 7 rows of dimensions, items as columns, add a Winner column per row), 3. Strengths unique to Item 1 (3 bullets), 4. Strengths unique to Item 2 (3 bullets), 5. Common ground (2 bullets), 6. Verdict â€” which to choose and when (3 sentences covering different scenarios). Fill in: Item 1 = [X], Item 2 = [Y], Topic = [Z].",
+    "prompt_text": "Create a detailed comparison between [ITEM 1] and [ITEM 2] on the topic of [TOPIC]. Structure: 1. Overview of each (2 sentences each), 2. Comparison Table (at least 7 rows of dimensions, items as columns, add a Winner column per row), 3. Strengths unique to Item 1 (3 bullets), 4. Strengths unique to Item 2 (3 bullets), 5. Common ground (2 bullets), 6. Verdict — which to choose and when (3 sentences covering different scenarios). Fill in: Item 1 = [X], Item 2 = [Y], Topic = [Z].",
     "expected_output_format": "comparison report",
     "difficulty": "medium",
     "customization_notes": "Replace items and topic. Works for technologies, frameworks, theories, or products."
@@ -1944,7 +1944,7 @@
     "module": "M8_Extraction_Notes_Research",
     "use_case": "study",
     "prompt_title": "Literature Review Compiler",
-    "prompt_text": "I will paste abstracts or summaries of 3-5 research papers on the same topic. Compile them into a mini literature review. Structure: ## Research Question (infer the common theme), ## Paper-by-Paper Summary (for each: citation, objective, method, key finding â€” 3 lines max), ## Cross-Paper Comparison Table (columns: Paper, Method, Sample Size, Key Finding, Limitation), ## Agreements (what most papers agree on), ## Contradictions (where they disagree), ## Gaps (what has no one studied yet), ## Suggested Next Steps (2 sentences). Papers: [PASTE ABSTRACTS]",
+    "prompt_text": "I will paste abstracts or summaries of 3-5 research papers on the same topic. Compile them into a mini literature review. Structure: ## Research Question (infer the common theme), ## Paper-by-Paper Summary (for each: citation, objective, method, key finding — 3 lines max), ## Cross-Paper Comparison Table (columns: Paper, Method, Sample Size, Key Finding, Limitation), ## Agreements (what most papers agree on), ## Contradictions (where they disagree), ## Gaps (what has no one studied yet), ## Suggested Next Steps (2 sentences). Papers: [PASTE ABSTRACTS]",
     "expected_output_format": "literature review",
     "difficulty": "medium",
     "customization_notes": "Paste 3-5 abstracts on any topic. Adjust the structure for your assignment format."
@@ -1964,7 +1964,7 @@
     "module": "M9_Reasoning_Math_QA_Interviews",
     "use_case": "math",
     "prompt_title": "Word Problem Solver",
-    "prompt_text": "Solve the following word problem step by step. Use this exact structure: Step 1 â€” Understand: Restate the problem in simple words. Identify what is given and what is asked. Step 2 â€” Variables: Define variables for unknowns. Step 3 â€” Equations: Set up the mathematical equations. Step 4 â€” Solve: Solve step by step showing every calculation. Step 5 â€” Verify: Plug the answer back into the original problem to check. Step 6 â€” Answer: State the final answer in a complete sentence. Problem: A train leaves Station A at 9:00 AM traveling at 60 km/h. Another train leaves Station B (300 km away) at 10:00 AM traveling toward Station A at 90 km/h. At what time do they meet?",
+    "prompt_text": "Solve the following word problem step by step. Use this exact structure: Step 1 — Understand: Restate the problem in simple words. Identify what is given and what is asked. Step 2 — Variables: Define variables for unknowns. Step 3 — Equations: Set up the mathematical equations. Step 4 — Solve: Solve step by step showing every calculation. Step 5 — Verify: Plug the answer back into the original problem to check. Step 6 — Answer: State the final answer in a complete sentence. Problem: A train leaves Station A at 9:00 AM traveling at 60 km/h. Another train leaves Station B (300 km away) at 10:00 AM traveling toward Station A at 90 km/h. At what time do they meet?",
     "expected_output_format": "step-by-step solution",
     "difficulty": "easy",
     "customization_notes": "Replace with any word problem. Keep the 6-step solving structure."
@@ -1994,7 +1994,7 @@
     "module": "M9_Reasoning_Math_QA_Interviews",
     "use_case": "math",
     "prompt_title": "Optimization Problem Solver",
-    "prompt_text": "Solve this optimization problem with full reasoning: A farmer has 200 meters of fencing and wants to enclose the largest rectangular area against a river (no fence needed on the river side). Find the dimensions. Structure: 1. Problem Setup â€” Define the objective function and constraints. 2. Method Selection â€” Which optimization technique to use and why. 3. Solution â€” Show every mathematical step. 4. Verification â€” Prove this is a maximum (second derivative test, boundary check). 5. Interpretation â€” What does the answer mean in real-world terms?",
+    "prompt_text": "Solve this optimization problem with full reasoning: A farmer has 200 meters of fencing and wants to enclose the largest rectangular area against a river (no fence needed on the river side). Find the dimensions. Structure: 1. Problem Setup — Define the objective function and constraints. 2. Method Selection — Which optimization technique to use and why. 3. Solution — Show every mathematical step. 4. Verification — Prove this is a maximum (second derivative test, boundary check). 5. Interpretation — What does the answer mean in real-world terms?",
     "expected_output_format": "optimization solution",
     "difficulty": "medium",
     "customization_notes": "Replace with any optimization problem. Keep the 5-step solution structure."
@@ -2014,7 +2014,7 @@
     "module": "M9_Reasoning_Math_QA_Interviews",
     "use_case": "interview",
     "prompt_title": "Case Study Analyzer",
-    "prompt_text": "Analyze the following business or technical case study using structured reasoning. Step 1 â€” Summarize the situation in 3 sentences. Step 2 â€” Identify the core problem or decision to be made. Step 3 â€” List 3 possible approaches with pros and cons for each. Step 4 â€” Recommend one approach with clear justification. Step 5 â€” Identify 2 risks with your recommendation and how to mitigate them. Step 6 â€” Propose success metrics (how would you measure if your solution worked?). Case: [PASTE CASE STUDY OR DESCRIBE THE SCENARIO]",
+    "prompt_text": "Analyze the following business or technical case study using structured reasoning. Step 1 — Summarize the situation in 3 sentences. Step 2 — Identify the core problem or decision to be made. Step 3 — List 3 possible approaches with pros and cons for each. Step 4 — Recommend one approach with clear justification. Step 5 — Identify 2 risks with your recommendation and how to mitigate them. Step 6 — Propose success metrics (how would you measure if your solution worked?). Case: [PASTE CASE STUDY OR DESCRIBE THE SCENARIO]",
     "expected_output_format": "structured analysis",
     "difficulty": "medium",
     "customization_notes": "Paste any case study from consulting prep, MBA coursework, or technical decisions."
@@ -2024,7 +2024,7 @@
     "module": "M9_Reasoning_Math_QA_Interviews",
     "use_case": "interview",
     "prompt_title": "Behavioral Interview Coach",
-    "prompt_text": "Act as a strict but supportive interview coach. I will give you a behavioral interview question. Provide: 1. The question restated, 2. What the interviewer is really testing (2 sentences), 3. A strong STAR-format answer template: Situation (2 sentences), Task (1 sentence), Action (3-4 sentences with specific details), Result (2 sentences with measurable outcome), 4. A weak answer example (what NOT to say â€” 2 sentences), 5. Pro tips for this specific question type (2 bullets). Question: Tell me about a time you failed and what you learned from it.",
+    "prompt_text": "Act as a strict but supportive interview coach. I will give you a behavioral interview question. Provide: 1. The question restated, 2. What the interviewer is really testing (2 sentences), 3. A strong STAR-format answer template: Situation (2 sentences), Task (1 sentence), Action (3-4 sentences with specific details), Result (2 sentences with measurable outcome), 4. A weak answer example (what NOT to say — 2 sentences), 5. Pro tips for this specific question type (2 bullets). Question: Tell me about a time you failed and what you learned from it.",
     "expected_output_format": "STAR answer template",
     "difficulty": "easy",
     "customization_notes": "Replace the question. Works for any behavioral or HR interview question."
@@ -2034,7 +2034,7 @@
     "module": "M9_Reasoning_Math_QA_Interviews",
     "use_case": "interview",
     "prompt_title": "System Design Walkthrough",
-    "prompt_text": "Walk me through designing a URL shortener like bit.ly as if I am in a system design interview. Use this structure: 1. Clarifying Questions â€” List 5 questions I should ask the interviewer (with assumed answers). 2. Requirements â€” Functional (5 items) and Non-functional (3 items). 3. Capacity Estimation â€” Back-of-envelope calculations for storage and bandwidth. 4. High-Level Design â€” Describe the architecture with component names and connections. 5. Database Design â€” Key tables/collections with fields. 6. API Design â€” 3-4 main endpoints. 7. Scaling â€” How to handle 10x and 100x growth. 8. Trade-offs â€” 2 key design decisions and why you chose one over the other.",
+    "prompt_text": "Walk me through designing a URL shortener like bit.ly as if I am in a system design interview. Use this structure: 1. Clarifying Questions — List 5 questions I should ask the interviewer (with assumed answers). 2. Requirements — Functional (5 items) and Non-functional (3 items). 3. Capacity Estimation — Back-of-envelope calculations for storage and bandwidth. 4. High-Level Design — Describe the architecture with component names and connections. 5. Database Design — Key tables/collections with fields. 6. API Design — 3-4 main endpoints. 7. Scaling — How to handle 10x and 100x growth. 8. Trade-offs — 2 key design decisions and why you chose one over the other.",
     "expected_output_format": "system design document",
     "difficulty": "medium",
     "customization_notes": "Replace the system. Examples: chat app, notification service, Twitter feed, parking lot."
@@ -2044,7 +2044,7 @@
     "module": "M9_Reasoning_Math_QA_Interviews",
     "use_case": "interview",
     "prompt_title": "Fermi Estimation Practice",
-    "prompt_text": "Solve this Fermi estimation problem showing your reasoning at every step. Structure: 1. Restate the question. 2. Break it into smaller, estimable sub-questions (at least 4). 3. For each sub-question, state your assumption and justify it in one sentence. 4. Calculate step by step, showing all multiplication and division. 5. Sanity check â€” does the final number make sense? Compare to a known reference point. 6. State your final estimate as a range (low to high). Problem: How many tennis balls can fit inside a standard classroom?",
+    "prompt_text": "Solve this Fermi estimation problem showing your reasoning at every step. Structure: 1. Restate the question. 2. Break it into smaller, estimable sub-questions (at least 4). 3. For each sub-question, state your assumption and justify it in one sentence. 4. Calculate step by step, showing all multiplication and division. 5. Sanity check — does the final number make sense? Compare to a known reference point. 6. State your final estimate as a range (low to high). Problem: How many tennis balls can fit inside a standard classroom?",
     "expected_output_format": "estimation walkthrough",
     "difficulty": "easy",
     "customization_notes": "Replace with any Fermi question: piano tuners, golf balls, gas stations, etc."
@@ -2064,7 +2064,7 @@
     "module": "M10_Placement_Toolkit",
     "use_case": "interview",
     "prompt_title": "Salary Negotiation Script",
-    "prompt_text": "Write a salary negotiation script for a fresh graduate who received an offer of 6 LPA for a software developer role but wants to negotiate to 8 LPA. Provide: 1. Research talking points â€” 3 data points to support the higher number (market rate, skills, competing offers). 2. Opening line â€” how to start the conversation. 3. Counter-offer statement â€” the exact words to say. 4. Response to \"This is our final offer\" â€” how to handle pushback. 5. Response to \"We can offer a smaller raise but better benefits\" â€” how to negotiate non-salary perks. 6. Closing line â€” how to end gracefully regardless of outcome. Tone: confident, respectful, professional.",
+    "prompt_text": "Write a salary negotiation script for a fresh graduate who received an offer of 6 LPA for a software developer role but wants to negotiate to 8 LPA. Provide: 1. Research talking points — 3 data points to support the higher number (market rate, skills, competing offers). 2. Opening line — how to start the conversation. 3. Counter-offer statement — the exact words to say. 4. Response to \"This is our final offer\" — how to handle pushback. 5. Response to \"We can offer a smaller raise but better benefits\" — how to negotiate non-salary perks. 6. Closing line — how to end gracefully regardless of outcome. Tone: confident, respectful, professional.",
     "expected_output_format": "negotiation script",
     "difficulty": "medium",
     "customization_notes": "Change the offer amount, target amount, and role. Adjust for your country and industry."
@@ -2084,7 +2084,7 @@
     "module": "M10_Placement_Toolkit",
     "use_case": "resume",
     "prompt_title": "Portfolio Project Storyteller",
-    "prompt_text": "Rewrite my project description to impress recruiters and hiring managers. Transform it using this structure: Project Title: [catchy, professional name], One-Line Summary: What it does + impact (under 15 words), Problem: What problem did it solve? (2 sentences), Solution: What I built and how (3 sentences â€” mention tech stack naturally), My Role: What I specifically did (2 sentences â€” use action verbs), Results: Measurable outcomes (2 sentences â€” numbers and metrics), Tech Stack: Listed as tags. My raw project details: [PASTE YOUR PROJECT DESCRIPTION HERE]",
+    "prompt_text": "Rewrite my project description to impress recruiters and hiring managers. Transform it using this structure: Project Title: [catchy, professional name], One-Line Summary: What it does + impact (under 15 words), Problem: What problem did it solve? (2 sentences), Solution: What I built and how (3 sentences — mention tech stack naturally), My Role: What I specifically did (2 sentences — use action verbs), Results: Measurable outcomes (2 sentences — numbers and metrics), Tech Stack: Listed as tags. My raw project details: [PASTE YOUR PROJECT DESCRIPTION HERE]",
     "expected_output_format": "portfolio description",
     "difficulty": "easy",
     "customization_notes": "Paste your raw project notes. Works for resume, LinkedIn, or portfolio website."
@@ -2094,7 +2094,7 @@
     "module": "M10_Placement_Toolkit",
     "use_case": "resume",
     "prompt_title": "Career Pivot Narrative",
-    "prompt_text": "Help me write a compelling career pivot story. I am transitioning from [CURRENT FIELD] to [TARGET FIELD]. Structure: 1. The Bridge â€” Connect my current experience to the new field (3 sentences showing transferable skills). 2. The Why â€” A genuine, specific reason for the switch (2 sentences, avoid cliches). 3. The Proof â€” What I have already done to prepare (3 bullet points: courses, projects, certifications). 4. The Value â€” Why hiring me is an advantage, not a risk (2 sentences). 5. The Ask â€” A confident closing statement (1 sentence). Output 3 versions: Resume Summary (3 lines), LinkedIn About (1 paragraph), Interview Answer (spoken style, 30 seconds). Constraints: Avoid cliches. Be specific. Sound confident but not arrogant.",
+    "prompt_text": "Help me write a compelling career pivot story. I am transitioning from [CURRENT FIELD] to [TARGET FIELD]. Structure: 1. The Bridge — Connect my current experience to the new field (3 sentences showing transferable skills). 2. The Why — A genuine, specific reason for the switch (2 sentences, avoid cliches). 3. The Proof — What I have already done to prepare (3 bullet points: courses, projects, certifications). 4. The Value — Why hiring me is an advantage, not a risk (2 sentences). 5. The Ask — A confident closing statement (1 sentence). Output 3 versions: Resume Summary (3 lines), LinkedIn About (1 paragraph), Interview Answer (spoken style, 30 seconds). Constraints: Avoid cliches. Be specific. Sound confident but not arrogant.",
     "expected_output_format": "3 format versions",
     "difficulty": "medium",
     "customization_notes": "Fill in current and target fields. List your preparation steps for better results."

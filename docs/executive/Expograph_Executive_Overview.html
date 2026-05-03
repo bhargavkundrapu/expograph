@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Expograph — Institutional overview (5 pages)</title>
+  <style>
+    @page {
+      
+      size: A4;
+      margin: 0;
+    }
+
+    :root {
+      --void: #0c0f14;
+      --deep: #121826;
+      --paper: #f4f6fa;
+      --card: #ffffff;
+      --ink: #161d2e;
+      --muted: #5f6b86;
+      --line-w: rgba(255, 255, 255, 0.14);
+      --hair: rgba(22, 29, 46, 0.1);
+      --glow: #3effd4;
+      --violet: #8b7cff;
+      --gutter-x: 16mm;
+      --gutter-y: 13mm;
+    }
+
+    * { box-sizing: border-box; }
+    html {
+      font-size: 10pt;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      color: var(--ink);
+      background: #cfcfd6;
+      line-height: 1.4;
+    }
+
+    /* ---------- Page shell ---------- */
+    .page {
+      width: 210mm;
+      height: 297mm;
+      margin: 0 auto;
+      background: var(--paper);
+      page-break-after: always;
+      break-after: page;
+      page-break-inside: avoid;
+      break-inside: avoid;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .page:last-child {
+      page-break-after: avoid;
+      break-after: avoid;
+    }
+
+    /* Running footer (premium index) */
+    .page-index {
+      position: absolute;
+      bottom: var(--gutter-y);
+      right: var(--gutter-x);
+      font-size: 28pt;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      color: rgba(22, 29, 46, 0.07);
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    .page--dark .page-index {
+      color: rgba(255, 255, 255, 0.08);
+    }
+
+    /* Light pages: masthead strip */
+    .run-head {
+      position: absolute;
+      top: var(--gutter-y);
+      left: var(--gutter-x);
+      right: var(--gutter-x);
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: end;
+      gap: 4mm;
+      padding-bottom: 3mm;
+      border-bottom: 1px solid var(--hair);
+    }
+
+    .run-head strong {
+      font-size: 7.5pt;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--muted);
+    }
+
+    .run-head span {
+      font-size: 7pt;
+      color: var(--muted);
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+
+    .light-body {
+      position: absolute;
+      top: calc(var(--gutter-y) + 11mm);
+      left: var(--gutter-x);
+      right: var(--gutter-x);
+      bottom: calc(var(--gutter-y) + 10mm);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .section-kicker {
+      font-size: 7.5pt;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--muted);
+      margin: 0 0 5mm;
+    }
+
+    /* ========== PAGE 1 — Cover ========== */
+    .page--cover {
+      background: var(--void);
+      color: #fff;
+    }
+
+    .cover-frame {
+      position: absolute;
+      inset: 5mm;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 1mm;
+      pointer-events: none;
+    }
+
+    .cover-inner {
+      position: absolute;
+      inset: var(--gutter-x);
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr) auto auto;
+      z-index: 2;
+      height: calc(297mm - 2 * var(--gutter-x));
+    }
+
+    .cover-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(145deg, #0c0f14 0%, #15102a 45%, #121826 100%);
+    }
+
+    .cover-bg::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 90% 50% at 92% -5%, rgba(139,124,255,0.38) 0%, transparent 55%),
+        radial-gradient(ellipse 60% 45% at 5% 95%, rgba(62,255,212,0.11) 0%, transparent 55%);
+      pointer-events: none;
+    }
+
+    .cover-top {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: start;
+      gap: 6mm;
+    }
+
+    .cover-brandline {
+      display: flex;
+      align-items: center;
+      gap: 4mm;
+    }
+
+    .cover-brandline .bar {
+      width: 18mm;
+      height: 2px;
+      background: linear-gradient(90deg, var(--glow), var(--violet));
+      border-radius: 2px;
+    }
+
+    .cover-brandline span {
+      font-size: 7.5pt;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      opacity: 0.78;
+      font-weight: 600;
+    }
+
+    .cover-meta {
+      text-align: right;
+      font-size: 7.5pt;
+      line-height: 1.55;
+      opacity: 0.72;
+      font-weight: 500;
+    }
+
+    .cover-meta span { display: block; }
+
+    .cover-hero-title {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 4mm 0 12mm;
+    }
+
+    .cover-hero-title h1 {
+      margin: 0;
+      font-weight: 800;
+      font-size: 46pt;
+      letter-spacing: -0.038em;
+      line-height: 0.94;
+      max-width: 168mm;
+    }
+
+    .cover-hero-title h1 span {
+      display: inline-block;
+      background: linear-gradient(105deg, #fff 18%, #9ff8e8 52%, #c4b8ff 88%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .cover-lead {
+      margin: 10mm 0 0;
+      font-size: 14pt;
+      font-weight: 500;
+      line-height: 1.42;
+      max-width: 132mm;
+      opacity: 0.9;
+    }
+
+    /* Intent ribbon — aligned equal heights */
+    .intent-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 5mm;
+      align-items: stretch;
+      border-top: 1px solid var(--line-w);
+      padding-top: 8mm;
+    }
+
+    .intent-card {
+      display: flex;
+      flex-direction: column;
+      min-height: 28mm;
+      padding: 0 0 0 4mm;
+      border-left: 2px solid var(--glow);
+    }
+
+    .intent-card b {
+      font-size: 7.5pt;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      opacity: 0.65;
+      margin-bottom: 2.5mm;
+      font-weight: 700;
+    }
+
+    .intent-card p {
+      margin: 0;
+      font-size: 10pt;
+      font-weight: 500;
+      line-height: 1.32;
+      opacity: 0.94;
+      flex: 1;
+    }
+
+    .cover-tagline-footer {
+      text-align: center;
+      padding-top: 7mm;
+      border-top: 1px solid var(--line-w);
+      font-size: 8pt;
+      letter-spacing: 0.45em;
+      text-transform: uppercase;
+      opacity: 0.55;
+      font-weight: 700;
+    }
+
+    /* ========== PAGE 2 — Scope (magazine grid) ========== */
+    .scope-layout {
+      display: grid;
+      grid-template-columns: 1fr 52mm;
+      gap: 8mm;
+      flex: 1;
+      align-content: start;
+      min-height: 0;
+    }
+
+    .pillar-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 4.5mm;
+      align-content: stretch;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .pillar-card {
+      background: var(--card);
+      border: 1px solid var(--hair);
+      border-radius: 3mm;
+      padding: 5mm;
+      box-shadow: 0 12px 40px rgba(18,24,38,0.06);
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      height: 100%;
+    }
+
+    .pillar-card .accent {
+      height: 3px;
+      border-radius: 2px;
+      margin-bottom: 4mm;
+    }
+
+    .pillar-card:nth-child(1) .accent { background: linear-gradient(90deg, #3dffc8, #2cbb9e); }
+    .pillar-card:nth-child(2) .accent { background: linear-gradient(90deg, #8b7cff, #4f63e9); }
+    .pillar-card:nth-child(3) .accent { background: linear-gradient(90deg, #ffb347, #ff6b35); }
+    .pillar-card:nth-child(4) .accent { background: linear-gradient(90deg, #94a3b8, #475569); }
+
+    .pillar-card h3 {
+      margin: 0 0 3mm;
+      font-size: 11pt;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .pillar-card p {
+      margin: 0;
+      font-size: 9pt;
+      color: var(--muted);
+      line-height: 1.42;
+      font-weight: 500;
+      flex: 1;
+    }
+
+    .scope-rail {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      gap: 4mm;
+    }
+
+    .scope-rail h4 {
+      margin: 0 0 1mm;
+      font-size: 7.5pt;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .scope-rail ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .scope-rail li {
+      font-size: 8.5pt;
+      font-weight: 600;
+      padding: 2.8mm 0;
+      border-bottom: 1px solid var(--hair);
+      display: grid;
+      grid-template-columns: 6mm 1fr;
+      gap: 2mm;
+      align-items: start;
+      line-height: 1.35;
+      color: var(--ink);
+    }
+
+    .scope-rail li::before {
+      content: "";
+      width: 4mm;
+      height: 4mm;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--glow), var(--violet));
+      margin-top: 0.8mm;
+      opacity: 0.85;
+    }
+
+    .scope-note {
+      margin-top: auto;
+      font-size: 8pt;
+      color: var(--muted);
+      line-height: 1.48;
+      padding-top: 4mm;
+    }
+
+    /* ========== PAGE 3 — Journey ========== */
+    .journey-stack {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 0;
+      padding-top: 2mm;
+    }
+
+    .timeline {
+      display: grid;
+      grid-template-columns: 22mm 1fr 22mm 1fr 22mm 1fr;
+      gap: 0;
+      align-items: stretch;
+      background: var(--card);
+      border: 1px solid var(--hair);
+      border-radius: 3mm;
+      overflow: hidden;
+      box-shadow: 0 10px 36px rgba(18,24,38,0.05);
+      min-height: 52mm;
+    }
+
+    .timeline .n {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20pt;
+      font-weight: 800;
+      color: rgba(22,29,46,0.08);
+      background: var(--paper);
+      border-right: 1px solid var(--hair);
+      writing-mode: horizontal-tb;
+    }
+
+    .timeline .slot {
+      padding: 6mm 5mm;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      border-right: 1px solid var(--hair);
+    }
+
+    .timeline .slot:last-child {
+      border-right: none;
+    }
+
+    .timeline .slot strong {
+      font-size: 10pt;
+      font-weight: 800;
+      margin-bottom: 2mm;
+    }
+
+    .timeline .slot p {
+      margin: 0;
+      font-size: 9pt;
+      color: var(--muted);
+      line-height: 1.4;
+      font-weight: 500;
+    }
+
+    .keyword-row {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 3mm;
+      margin-top: 8mm;
+    }
+
+    .keyword {
+      text-align: center;
+      padding: 4mm 2mm;
+      background: var(--card);
+      border: 1px solid var(--hair);
+      border-radius: 3mm;
+      font-size: 8pt;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .dual-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6mm;
+      margin-top: 9mm;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--hair);
+      border-radius: 3mm;
+      padding: 6mm;
+      box-shadow: 0 8px 28px rgba(18,24,38,0.04);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .panel h4 {
+      margin: 0 0 5mm;
+      font-size: 10pt;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+    }
+
+    .check-rows {
+      display: flex;
+      flex-direction: column;
+      gap: 3mm;
+      flex: 1;
+    }
+
+    .check-row {
+      display: grid;
+      grid-template-columns: 14mm 1fr;
+      gap: 4mm;
+      align-items: start;
+      padding-bottom: 3mm;
+      border-bottom: 1px solid var(--hair);
+    }
+
+    .check-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .check-row .lbl {
+      font-size: 7.5pt;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding-top: 0.3mm;
+    }
+
+    .check-row .txt {
+      font-size: 9pt;
+      color: var(--ink);
+      line-height: 1.42;
+      font-weight: 500;
+    }
+
+    /* ========== PAGE 4 — Curriculum + roles ========== */
+    .curriculum-hero {
+      background: linear-gradient(135deg, #12101f 0%, #1e1940 55%, #162032 100%);
+      color: #fff;
+      border-radius: 3mm;
+      padding: 8mm;
+      position: relative;
+      overflow: hidden;
+      flex: 1;
+      min-height: 64mm;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+
+    .curriculum-hero::before {
+      content: "";
+      position: absolute;
+      right: -20%;
+      top: -30%;
+      width: 65%;
+      height: 140%;
+      background: radial-gradient(circle at 70% 30%, rgba(139,124,255,0.35) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .curriculum-inner {
+      position: relative;
+      z-index: 1;
+      max-width: 135mm;
+    }
+
+    .curriculum-hero .k {
+      font-size: 7.5pt;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      opacity: 0.5;
+      margin-bottom: 3mm;
+    }
+
+    .curriculum-hero h2 {
+      margin: 0 0 4mm;
+      font-size: 18pt;
+      font-weight: 800;
+      line-height: 1.14;
+      letter-spacing: -0.03em;
+    }
+
+    .curriculum-hero p {
+      margin: 0;
+      font-size: 10pt;
+      opacity: 0.86;
+      line-height: 1.45;
+      font-weight: 500;
+      max-width: 118mm;
+    }
+
+    .stat-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 3mm;
+      margin-top: 7mm;
+    }
+
+    .stat-pill {
+      border: 1px solid rgba(255,255,255,0.22);
+      border-radius: 2mm;
+      padding: 2mm 3.8mm;
+      font-size: 8.5pt;
+      font-weight: 700;
+    }
+
+    .role-matrix {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 4mm;
+      margin-top: 7mm;
+    }
+
+    .role-cell {
+      background: var(--card);
+      border: 1px solid var(--hair);
+      border-radius: 3mm;
+      padding: 5mm 4mm;
+      text-align: left;
+      min-height: 38mm;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 6px 22px rgba(18,24,38,0.05);
+    }
+
+    .role-cell .num {
+      font-size: 18pt;
+      font-weight: 800;
+      color: rgba(22,29,46,0.08);
+      line-height: 1;
+      margin-bottom: 3mm;
+    }
+
+    .role-cell strong {
+      font-size: 9.5pt;
+      font-weight: 800;
+      margin-bottom: 2mm;
+    }
+
+    .role-cell span {
+      font-size: 8.5pt;
+      color: var(--muted);
+      line-height: 1.42;
+      font-weight: 500;
+    }
+
+    /* ========== PAGE 5 — Rollout ========== */
+    .rollout-steps {
+      display: grid;
+      grid-template-rows: repeat(4, 1fr);
+      gap: 5mm;
+      flex: 1;
+      margin-top: 2mm;
+      min-height: 0;
+    }
+
+    .step-row {
+      display: grid;
+      grid-template-columns: 28mm 1fr;
+      gap: 6mm;
+      align-items: center;
+      background: var(--card);
+      border: 1px solid var(--hair);
+      border-radius: 3mm;
+      padding: 5mm 6mm;
+      box-shadow: 0 4px 18px rgba(18,24,38,0.04);
+    }
+
+    .step-row .badge {
+      width: 100%;
+      height: 22mm;
+      border-radius: 2mm;
+      background: linear-gradient(135deg, var(--deep), #251840);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16pt;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+    }
+
+    .step-row .copy strong {
+      display: block;
+      font-size: 10pt;
+      font-weight: 800;
+      margin-bottom: 1.5mm;
+    }
+
+    .step-row .copy p {
+      margin: 0;
+      font-size: 9pt;
+      color: var(--muted);
+      line-height: 1.4;
+      font-weight: 500;
+    }
+
+    .tech-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4mm;
+      margin-top: 7mm;
+    }
+
+    .tech-cell {
+      background: var(--paper);
+      border: 1px dashed rgba(22,29,46,0.15);
+      border-radius: 2mm;
+      padding: 3.5mm 4mm;
+      font-size: 8pt;
+      color: var(--muted);
+      line-height: 1.42;
+      font-weight: 500;
+    }
+
+    .tech-cell b {
+      display: block;
+      color: var(--ink);
+      font-size: 8.5pt;
+      margin-bottom: 1mm;
+      font-weight: 800;
+    }
+
+    .close-block {
+      margin-top: auto;
+      padding-top: 6mm;
+      border-top: 1px solid var(--hair);
+    }
+
+    .close-block q {
+      display: block;
+      font-size: 11pt;
+      font-weight: 700;
+      line-height: 1.42;
+      color: var(--ink);
+      font-style: italic;
+      margin: 0 0 3mm;
+      quotes: "“" "”";
+    }
+
+    .fine-print {
+      font-size: 7.5pt;
+      color: var(--muted);
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    @media print {
+      body { background: #fff; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- PAGE 1 -->
+  <section class="page page--cover page--dark" aria-label="Cover">
+    <div class="cover-bg" aria-hidden="true"></div>
+    <div class="cover-frame" aria-hidden="true"></div>
+    <div class="cover-inner">
+      <div class="cover-top">
+        <div class="cover-brandline">
+          <span class="bar" aria-hidden="true"></span>
+          <span>Institutional overview</span>
+        </div>
+        <div class="cover-meta">
+          <span>Principal · Dean · Council</span>
+          <span>IQAC · Training &amp; Placement</span>
+        </div>
+      </div>
+      <div class="cover-hero-title">
+        <h1><span>Expograph</span></h1>
+        <p class="cover-lead">One governed platform—structured teaching, mentor accountability, career outcomes—all visible to leadership.</p>
+      </div>
+      <div class="intent-grid">
+        <article class="intent-card">
+          <b>Intent</b>
+          <p>Elevate academics with clear learner paths, progress signals, and rich formats—not passive links.</p>
+        </article>
+        <article class="intent-card">
+          <b>Intent</b>
+          <p>Lift placement readiness: resumes, workshops, internships, client-style labs—you enable what fits.</p>
+        </article>
+        <article class="intent-card">
+          <b>Intent</b>
+          <p>Stay in command: phased adoption, granular roles, and feature controls aligned to college policy.</p>
+        </article>
+      </div>
+      <p class="cover-tagline-footer">Learn · Mentor · Credential · Scale</p>
+    </div>
+    <span class="page-index" aria-hidden="true">01</span>
+  </section>
+
+  <!-- PAGE 2 -->
+  <section class="page" aria-label="Platform scope">
+    <header class="run-head">
+      <strong>Expograph</strong>
+      <span>Five-page briefing · May 2026</span>
+    </header>
+    <div class="light-body">
+      <p class="section-kicker">Platform scope</p>
+      <div class="scope-layout">
+        <div class="pillar-grid">
+          <article class="pillar-card"><div class="accent" aria-hidden="true"></div><h3>Learn</h3><p>Courses, lessons, video, quizzes, progress tracking—and optional motivation layers for sustained engagement.</p></article>
+          <article class="pillar-card"><div class="accent" aria-hidden="true"></div><h3>Teach</h3><p>Slides that match faculty ambition: live code, math, charts, Mermaid diagrams, quizzes, presenter notes.</p></article>
+          <article class="pillar-card"><div class="accent" aria-hidden="true"></div><h3>Launch</h3><p>Certificates, ATS-ready resumes (streamed PDFs), podcasts, referrals—employability artefacts in one system.</p></article>
+          <article class="pillar-card"><div class="accent" aria-hidden="true"></div><h3>Govern</h3><p>Student, mentor, college admin, platform operator—with feature flags designed for phased, low-risk rollout.</p></article>
+        </div>
+        <aside class="scope-rail">
+          <div>
+            <h4>Built for</h4>
+            <ul>
+              <li>Credits, electives &amp; bridge programs</li>
+              <li>Finishing school &amp; co-curricular hours</li>
+              <li>Department pilots before campus-wide adoption</li>
+            </ul>
+          </div>
+          <p class="scope-note">Every module respects the same premise: measurable outcomes without forcing one rigid teaching model.</p>
+        </aside>
+      </div>
+    </div>
+    <span class="page-index" aria-hidden="true">02</span>
+  </section>
+
+  <!-- PAGE 3 -->
+  <section class="page" aria-label="Operating model">
+    <header class="run-head">
+      <strong>Expograph</strong>
+      <span>Operating model</span>
+    </header>
+    <div class="light-body">
+      <p class="section-kicker">How it runs inside your institution</p>
+      <div class="journey-stack">
+        <div class="timeline" role="list">
+          <div class="n" aria-hidden="true">01</div>
+          <div class="slot" role="listitem">
+            <strong>Structured delivery</strong>
+            <p>Sequences that read as a curriculum—progress is visible across cohorts.</p>
+          </div>
+          <div class="n" aria-hidden="true">02</div>
+          <div class="slot" role="listitem">
+            <strong>Mentor-reviewed work</strong>
+            <p>Faculty intervene where credibility matters—submissions, labs, internships.</p>
+          </div>
+          <div class="n" aria-hidden="true">03</div>
+          <div class="slot" role="listitem">
+            <strong>Career artefacts</strong>
+            <p>Portable proof employers trust: certs, portfolios, calibrated resumes.</p>
+          </div>
+        </div>
+        <div class="keyword-row" aria-hidden="true">
+          <div class="keyword">LMS</div>
+          <div class="keyword">Slides</div>
+          <div class="keyword">Assess</div>
+          <div class="keyword">Certs</div>
+          <div class="keyword">Labs</div>
+        </div>
+        <div class="dual-col">
+          <div class="panel">
+            <h4>For academic leadership</h4>
+            <div class="check-rows">
+              <div class="check-row"><span class="lbl">Clarity</span><span class="txt">Unified view of learner progress—not scattered tools.</span></div>
+              <div class="check-row"><span class="lbl">Quality</span><span class="txt">Evidence of completion and review—not vanity metrics.</span></div>
+              <div class="check-row"><span class="lbl">Control</span><span class="txt">Pilot in one wing; expand campus-wide once proven.</span></div>
+            </div>
+          </div>
+          <div class="panel">
+            <h4>For placement &amp; skill cells</h4>
+            <div class="check-rows">
+              <div class="check-row"><span class="lbl">Throughput</span><span class="txt">Résumé tooling that scales cohort after cohort.</span></div>
+              <div class="check-row"><span class="lbl">Depth</span><span class="txt">Labs &amp; micro-internships when you activate them.</span></div>
+              <div class="check-row"><span class="lbl">Signal</span><span class="txt">Industry-aligned AI fluency—beyond generic chat hype.</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <span class="page-index" aria-hidden="true">03</span>
+  </section>
+
+  <!-- PAGE 4 -->
+  <section class="page" aria-label="Curriculum and roles">
+    <header class="run-head">
+      <strong>Expograph</strong>
+      <span>Flagship pathway · Roles</span>
+    </header>
+    <div class="light-body">
+      <p class="section-kicker">Flagship pathway</p>
+      <div style="flex:1;display:flex;flex-direction:column;min-height:0;gap:6mm;">
+        <div class="curriculum-hero" style="min-height:68mm;">
+          <div class="curriculum-inner">
+            <div class="k">Prompt Engineering program</div>
+            <h2>AI literacy that lands on transcripts—and on résumés.</h2>
+            <p>Intermediate track: disciplined frameworks (GCCF and beyond), hallucination-aware practice, multimodal prompts, coding with AI, placement-facing assets—included ready for elective or finishing-school delivery.</p>
+            <div class="stat-row">
+              <span class="stat-pill">10 modules</span>
+              <span class="stat-pill">50 lessons</span>
+              <span class="stat-pill">200+ prompts</span>
+              <span class="stat-pill">8–12 hrs</span>
+            </div>
+          </div>
+        </div>
+        <div>
+          <p class="section-kicker" style="margin-bottom:4mm;">Who activates what</p>
+          <div class="role-matrix">
+            <div class="role-cell"><span class="num">01</span><strong>Students</strong><span>Courses, practice, labs, resumes, certs—as enabled.</span></div>
+            <div class="role-cell"><span class="num">02</span><strong>Mentors</strong><span>Review pipelines for submissions &amp; experiential work.</span></div>
+            <div class="role-cell"><span class="num">03</span><strong>College admin</strong><span>Tenant governance: settings and users.</span></div>
+            <div class="role-cell"><span class="num">04</span><strong>Platform</strong><span>Content hubs, analytics, orchestration flags.</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <span class="page-index" aria-hidden="true">04</span>
+  </section>
+
+  <!-- PAGE 5 -->
+  <section class="page" aria-label="Adoption">
+    <header class="run-head">
+      <strong>Expograph</strong>
+      <span>Campus rollout</span>
+    </header>
+    <div class="light-body">
+      <p class="section-kicker">Adoption you can defend in council</p>
+      <div class="rollout-steps">
+        <div class="step-row"><div class="badge">01</div><div class="copy"><strong>Align outcomes</strong><p>Tie Expograph pillars to IQAC goals, placements, AI policy—explicitly named in approvals.</p></div></div>
+        <div class="step-row"><div class="badge">02</div><div class="copy"><strong>Pilot cleanly</strong><p>One programme or cohort; core LMS plus one placement lever—flags keep scope disciplined.</p></div></div>
+        <div class="step-row"><div class="badge">03</div><div class="copy"><strong>Enable reviewers</strong><p>Brief mentors on queues; workloads stay predictable.</p></div></div>
+        <div class="step-row"><div class="badge">04</div><div class="copy"><strong>Scale deliberately</strong><p>Unflag modules cohort by cohort; dashboards close the loop.</p></div></div>
+      </div>
+      <div class="tech-strip">
+        <div class="tech-cell"><b>Experience</b> Responsive web shell with role-aware navigation.</div>
+        <div class="tech-cell"><b>Platform core</b> Modular API routes for learning, payouts, artefacts, auditing.</div>
+        <div class="tech-cell"><b>Privacy note</b> Résumé PDFs stream outward—minimal central retention by design.</div>
+      </div>
+      <footer class="close-block">
+        <q>Leadership-visible learning. Mentor-credible outcomes. Placement-ready artefacts.</q>
+        <p class="fine-print">Printed from institutional HTML source: <code>docs/executive/Expograph_Executive_Overview.html</code>. Commercial terms and deployments follow your institutional agreement.</p>
+      </footer>
+    </div>
+    <span class="page-index" aria-hidden="true">05</span>
+  </section>
+
+</body>
+</html>

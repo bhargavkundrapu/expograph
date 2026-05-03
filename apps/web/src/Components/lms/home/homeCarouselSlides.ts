@@ -46,8 +46,8 @@ const NOT_PACK_SLIDES: Slide[] = [
   },
   {
     id: "s3",
-    title: "Finish faster (3Ã-)",
-    subtitle: "Pack path is structured: Vibe Coding â†’ Prompt Engg â†’ Prompt-to-Profit.",
+    title: "Finish faster (3 courses)",
+    subtitle: "Pack path is structured: Vibe Coding \u2192 Prompt Engg \u2192 Prompt-to-Profit.",
     ctaLabel: "Upgrade Now",
     route: "/courses",
     variant: "not-pack",
@@ -64,7 +64,7 @@ const NOT_PACK_SLIDES: Slide[] = [
   },
   {
     id: "s5",
-    title: "You already started-don't stop",
+    title: "You already started\u2014don\u2019t stop",
     subtitle: "Continue today and unlock pack-level perks.",
     ctaLabel: "Continue Learning",
     route: "/lms/student/courses",
@@ -85,7 +85,7 @@ const NOT_PACK_SLIDES: Slide[] = [
 const PACK_SLIDES: Slide[] = [
   {
     id: "p1",
-    title: "You have Pack âœ…",
+    title: "You have Pack 🎁",
     subtitle: "Complete courses to unlock certificates + client projects.",
     ctaLabel: "Continue",
     route: "/lms/student/courses",
@@ -104,7 +104,7 @@ const PACK_SLIDES: Slide[] = [
   {
     id: "p3",
     title: "Certificates",
-    subtitle: "Finish â†’ Request â†’ Download (QR verified).",
+    subtitle: "Finish \u2192 Request \u2192 Download (QR verified).",
     ctaLabel: "Open Certifications",
     route: "/lms/student/certificates",
     variant: "pack",

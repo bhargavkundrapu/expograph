@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { createPortal } from "react-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion as Motion, AnimatePresence } from "framer-motion";
 import { FiX, FiSmartphone, FiDownload } from "react-icons/fi";
 
 const STORAGE_KEY_REFRESH_COUNT = "expograph-install-refresh-count";
@@ -50,20 +50,23 @@ function useShouldShowPrompt() {
   const countedRef = useRef(false);
 
   useEffect(() => {
+    const apply = (next) => {
+      queueMicrotask(() => setShow(next));
+    };
     // Never show after installation (standalone) - not even once
     if (isStandalone()) {
-      setShow(false);
+      apply(false);
       return;
     }
     if (!isMobile) {
-      setShow(false);
+      apply(false);
       return;
     }
     // Count each page load only once; show every 4th refresh
     if (!countedRef.current) {
       countedRef.current = true;
       if (!shouldShowThisTime()) {
-        setShow(false);
+        apply(false);
         return;
       }
     }
@@ -94,15 +97,13 @@ function isLikelySafari() {
 
 export function InstallAppPrompt() {
   const shouldShow = useShouldShowPrompt();
-  const [visible, setVisible] = useState(false);
+  const [dismissed, setDismissed] = useState(false);
   const [expanded, setExpanded] = useState(false);
 
-  useEffect(() => {
-    if (shouldShow) setVisible(true);
-  }, [shouldShow]);
+  const visible = shouldShow && !dismissed;
 
   const handleDismiss = useCallback(() => {
-    setVisible(false);
+    setDismissed(true);
   }, []);
 
   const handleGotIt = useCallback(() => {
@@ -116,7 +117,7 @@ export function InstallAppPrompt() {
 
   const content = (
     <AnimatePresence>
-      <motion.div
+      <Motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -130,7 +131,7 @@ export function InstallAppPrompt() {
         />
         <div className="relative pointer-events-none w-full flex justify-center px-3 pb-6 pt-2 safe-area-pb">
           <div className="pointer-events-auto w-full max-w-lg">
-          <motion.div
+          <Motion.div
             initial={{ y: 120, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 120, opacity: 0 }}
@@ -206,10 +207,10 @@ export function InstallAppPrompt() {
                 </div>
               )}
             </div>
-          </motion.div>
+          </Motion.div>
           </div>
         </div>
-      </motion.div>
+      </Motion.div>
     </AnimatePresence>
   );
 

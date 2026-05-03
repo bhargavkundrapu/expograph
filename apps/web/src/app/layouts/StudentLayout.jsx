@@ -13,6 +13,7 @@ import IdleReengagement from "../../Components/student/gamification/IdleReengage
 const preloadProfile = () => import("../../pages/lms/student/StudentProfile");
 const preloadMap = {
   "/lms/student": () => import("../../pages/lms/student/StudentHome"),
+  "/lms/student/program-journey": () => import("../../pages/lms/student/StudentProgramJourney"),
   "/lms/student/courses": () => import("../../pages/lms/student/StudentCourses"),
   "/lms/student/bonus-courses": () => import("../../pages/lms/student/StudentCourses"),
   "/lms/student/bookmarks": () => import("../../pages/lms/student/StudentBookmarks"),
@@ -55,6 +56,7 @@ import {
   FiTrendingUp,
   FiZap,
   FiLock,
+  FiNavigation,
 } from "react-icons/fi";
 
 export default function StudentLayout() {
@@ -81,6 +83,7 @@ export default function StudentLayout() {
 
   const allMenuItems = [
     { path: "/lms/student", label: "Home", icon: FiHome },
+    { path: "/lms/student/program-journey", label: "Program map", icon: FiNavigation },
     { path: "/lms/student/courses", label: "Courses", icon: FiBookOpen },
     { path: "/lms/student/bonus-courses", label: "Bonus Courses", icon: FiFileText },
     { path: "/lms/student/client-lab", label: "Real Client Lab", icon: FiBriefcase },
@@ -94,6 +97,7 @@ export default function StudentLayout() {
 
   const mobileBottomItems = [
     { path: "/lms/student", label: "Home", icon: FiHome },
+    { path: "/lms/student/program-journey", label: "Map", icon: FiNavigation, title: "Program map" },
     { path: "/lms/student/courses", label: "Courses", icon: FiBookOpen },
     // Below-medium responsive swap:
     // - Show Real Client Lab where "Resume" used to be
@@ -463,7 +467,7 @@ export default function StudentLayout() {
 
       {/* ── Mobile Bottom Navigation ── */}
       <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-slate-900/95 backdrop-blur-md safe-area-pb">
-        <div className="flex items-center justify-around px-0.5 py-1.5 gap-0.5">
+        <div className="grid grid-cols-6 items-stretch px-0.5 py-1.5 gap-0.5">
           {mobileBottomItems.map((item) => {
             const Icon = item.icon;
             const active = isActive(item.path);
@@ -474,7 +478,7 @@ export default function StudentLayout() {
                 title={item.title ?? item.label}
                 aria-label={item.title ?? item.label}
                 onTouchStart={() => preloadMap[item.path]?.()}
-                className={`flex flex-col items-center justify-center gap-0.5 py-1.5 px-1 sm:px-2 rounded-xl min-w-0 flex-1 max-w-[20%] transition-all duration-200 btn-press ${active ? "" : "text-slate-500 active:text-slate-300"}`}
+                className={`flex flex-col items-center justify-center gap-0.5 py-1.5 px-0.5 rounded-xl min-w-0 min-h-[52px] transition-all duration-200 btn-press ${active ? "" : "text-slate-500 active:text-slate-300"}`}
                 style={active ? { color: accent.value } : undefined}
               >
                 <div className="relative">

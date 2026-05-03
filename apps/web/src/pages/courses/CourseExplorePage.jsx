@@ -1,7 +1,8 @@
 import { useEffect } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { Header } from "../../Components/ui/header-2";
 import { TubesBackground } from "../../Components/ui/neon-flow";
+import FlowTubesFooterInner from "../../Components/ui/FlowTubesFooterInner";
 import { COURSE_EXPLORE_DATA } from "../../data/courseExploreData";
 import { COURSE_CARD_COVER, COURSE_CARD_FALLBACK } from "../../data/courseCardMedia";
 import { FiCheck, FiArrowLeft, FiBookOpen, FiZap, FiTarget, FiTool, FiAward, FiHeart, FiCompass } from "react-icons/fi";
@@ -299,25 +300,7 @@ export default function CourseExplorePage() {
 
       <footer className="w-full min-h-[560px] sm:min-h-[70vh] border-t border-black mt-12">
         <TubesBackground className="min-h-[560px] sm:min-h-[70vh] bg-[#0a0a0a]" enableClickInteraction={true}>
-          <div className="flex flex-col items-center justify-center w-full min-h-[560px] sm:min-h-[70vh] gap-6 text-center px-4">
-            <div className="space-y-2 pointer-events-auto cursor-default select-none">
-              <h2 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tighter text-white drop-shadow-[0_0_20px_rgba(0,0,0,1)]">
-                ExpoGraph flow
-              </h2>
-            </div>
-            <div className="absolute bottom-8 left-0 right-0 flex flex-col items-center gap-2 text-white/50 pointer-events-none">
-              <span className="text-xs uppercase tracking-widest">Move the cursor around to interact and Click to randomize.</span>
-              <span className="text-xs text-white/40">© 2025 ExpoGraph Academy</span>
-            </div>
-            <div className="absolute bottom-3 left-0 right-0 flex items-center justify-center gap-4 text-white/55 pointer-events-auto sm:bottom-8 sm:left-auto sm:right-6 sm:justify-end">
-              <Link to="/privacy-policy" className="text-xs hover:text-white/80 underline underline-offset-2">
-                Privacy Policy
-              </Link>
-              <Link to="/terms-and-conditions" className="text-xs hover:text-white/80 underline underline-offset-2">
-                Terms &amp; Conditions
-              </Link>
-            </div>
-          </div>
+          <FlowTubesFooterInner shellClassName="min-h-[560px] sm:min-h-[70vh]" />
         </TubesBackground>
       </footer>
     </div>

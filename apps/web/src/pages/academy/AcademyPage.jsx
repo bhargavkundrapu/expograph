@@ -10,8 +10,10 @@ import { AcademyFeaturesGrid } from "../../Components/ui/academy-features-grid";
 import { AcademyFeaturesGridLite } from "../../Components/ui/academy-features-grid-lite";
 import { AcademyCourseCardsSection } from "../../Components/ui/AcademyCourseCardsSection";
 import { TubesBackground } from "../../Components/ui/neon-flow";
+import FlowTubesFooterInner from "../../Components/ui/FlowTubesFooterInner";
 import { LazyMount } from "../../Components/LazyMount";
 import { GlowingEffect } from "../../Components/ui/glowing-effect";
+import { MCA_LOGO_URL, MSME_LOGO_URL } from "../../constants/trustLogos";
 
 const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
 
@@ -48,7 +50,7 @@ const reviewsRow1 = [
   { name: "Arjun S.", role: "Vibe Coding Student", text: "The Vibe Coding course taught me to build full apps using smart prompts. I shipped my first SaaS in 2 weeks-at ₹99, this is unreal.", rating: 5, highlight: "Vibe Coding" },
   { name: "Priya M.", role: "AI Automations Student", text: "The AI Automations course is next level. I automated my entire workflow and landed a freelance gig through Real Client Lab in 3 weeks.", rating: 5, highlight: "AI Automations" },
   { name: "Rahul K.", role: "CS Student, 3rd Year", text: "Paid ₹15,000 elsewhere for worse content. Vibe Coding + Prompt Engineering at ₹99 each? ExpoGraph is honestly criminal-in a good way.", rating: 5, highlight: "Unbeatable Value" },
-  { name: "Sneha D.", role: "Prompt Engineering Student", text: "Prompt Engineering taught me how to think like a 10x developer. The resume builder + MCA certificate helped me crack 3 interviews.", rating: 5, highlight: "Prompt Engineering" },
+  { name: "Sneha D.", role: "Prompt Engineering Student", text: "Prompt Engineering taught me how to think like a 10x developer. The resume builder + MCA & MSME-recognised certificate helped me crack 3 interviews.", rating: 5, highlight: "Prompt Engineering" },
   { name: "Karthik V.", role: "Startup Founder", text: "I built my entire MVP using Vibe Coding techniques from ExpoGraph. Saved me lakhs in hiring costs-all from a ₹99 course.", rating: 5, highlight: "Vibe Coding" },
   { name: "Meera J.", role: "B.Tech Student", text: "Took all 3 courses-Vibe Coding, Prompt Engineering, and AI Automations. Other platforms make you watch. ExpoGraph makes you BUILD.", rating: 5, highlight: "All 3 Courses" },
 ];
@@ -57,7 +59,7 @@ const reviewsRow2 = [
   { name: "Vikram T.", role: "Freelancer", text: "AI Automations + Real Client Lab = real portfolio pieces. Clients don't care about tutorials-they care about real work you've shipped.", rating: 5, highlight: "Real Client Lab" },
   { name: "Ananya R.", role: "BCA Student", text: "Started with Prompt Engineering, then Vibe Coding-went from zero to building full apps in 8 weeks. The structured lessons are brilliant.", rating: 5, highlight: "Zero to Builder" },
   { name: "Deepak P.", role: "Working Professional", text: "The Vibe Coding course respects your time. No fluff-just pure, actionable skills I use at my job daily. Worth every paisa.", rating: 5, highlight: "No Filler" },
-  { name: "Riya G.", role: "MCA Student", text: "The MCA-recognised certificate with a unique ID got me 2 interview calls in a week. Employers were genuinely impressed.", rating: 5, highlight: "Verified Certificate" },
+  { name: "Riya G.", role: "MCA Student", text: "The MCA & MSME-recognised certificate with a unique ID got me 2 interview calls in a week. Employers were genuinely impressed.", rating: 5, highlight: "Verified Certificate" },
   { name: "Aditya N.", role: "All-Access Pack User", text: "₹199 for all 3 courses-Vibe Coding, Prompt Engineering, AI Automations + Real Client Lab + Resume Builder. Best investment of my life.", rating: 5, highlight: "All-Access Pack" },
   { name: "Pooja S.", role: "Prompt Engineering Student", text: "Prompt Engineering changed everything. I'm 3x faster, building AI-powered tools, and charging premium freelance rates now.", rating: 5, highlight: "Prompt Engineering" },
 ];
@@ -113,7 +115,7 @@ const faqData = [
   { q: "What is the Real Client Lab?", a: "The Real Client Lab connects you with actual clients and real-world projects. You build, deliver, and grow your portfolio with work that matters-not just tutorials." },
   { q: "Do I get a Resume Builder?", a: "Yes! Our built-in Resume Builder helps you create a professional resume using your completed courses, projects, and Real Client Lab work-ready for employers." },
   { q: "How much does it cost?", a: "Each course (Vibe Coding, Prompt Engineering, AI Automations) starts at just ₹99 and our all-access course pack is only ₹199-that's all 3 courses + Real Client Lab + Resume Builder for less than a coffee." },
-  { q: "Do I get certificates?", a: "Absolutely. Every course you complete earns you a verifiable certificate with a unique ID-issued by ExpoGraph, a company recognised by MCA, Government of India." },
+  { q: "Do I get certificates?", a: "Absolutely. Every course you complete earns you a verifiable certificate with a unique ID-issued by ExpoGraph, a company recognised by MCA and MSME, Government of India." },
   { q: "Is there community support?", a: "Yes! Join our community on Instagram, YouTube, and LinkedIn. Connect with fellow users, get tips, and stay updated on new courses and opportunities." },
   { q: "How is ExpoGraph different from other platforms?", a: "Unlike generic platforms, ExpoGraph focuses on 3 cutting-edge courses-Vibe Coding, Prompt Engineering & AI Automations-with real client projects, smart AI prompts, and a resume builder. Everything you need to actually get hired, not just learn theory." },
 ];
@@ -295,6 +297,21 @@ export default function AcademyPage() {
                 <span className="text-white/50 text-[10px] sm:text-xs">• Courses from ₹99 | Packs from ₹199</span>
               </button>
             </div>
+            <div className="mt-4 flex flex-wrap items-center justify-center md:justify-start gap-x-4 gap-y-2 pointer-events-auto text-xs sm:text-sm">
+              <Link
+                to="/academy/college-overview"
+                className="text-white/70 hover:text-violet-300 underline-offset-4 hover:underline font-medium"
+              >
+                For colleges &amp; faculty · overview
+              </Link>
+              <a
+                href="/downloads/ExpoGraph-College-Overview.pdf"
+                download
+                className="text-cyan-400/90 hover:text-cyan-300 font-medium underline-offset-4 hover:underline"
+              >
+                Download college overview PDF
+              </a>
+            </div>
           </div>
         </div>
       </section>
@@ -358,29 +375,52 @@ export default function AcademyPage() {
         </div>
       </section>
 
-      {/* Officially Recognised-MCA */}
+      {/* Officially Recognised — MCA & MSME */}
       <section
         className="py-8 sm:py-10 md:py-12 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24"
         style={{ backgroundColor: "#000000" }}
       >
         <div className="max-w-4xl mx-auto flex flex-col items-center text-center gap-4 sm:gap-5">
           <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white">Officially Recognised</h2>
-          <div className="flex flex-col sm:flex-row items-center gap-5 sm:gap-8 rounded-2xl border border-white/[0.06] bg-white/[0.02] px-10 sm:px-14 py-6 sm:py-8 w-full sm:w-auto">
-            <div className="shrink-0 rounded-xl bg-white p-3 sm:p-4">
-              <img
-                src="https://res.cloudinary.com/da2wrgabu/image/upload/v1772184237/MCA_Logo_3_1_wdhccw.svg"
-                alt="Ministry of Corporate Affairs - Government of India"
-                className="h-14 sm:h-16 md:h-20 w-auto"
-              />
+          <p className="text-sm sm:text-base text-white/55 max-w-2xl leading-relaxed">
+            ExpoGraph is recognised by{" "}
+            <span className="text-white/90 font-medium">MCA</span> (Ministry of Corporate Affairs) and{" "}
+            <span className="text-white/90 font-medium">MSME</span> (Ministry of Micro, Small &amp; Medium Enterprises), Government of India.
+          </p>
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-6 sm:gap-10 rounded-2xl border border-white/[0.06] bg-white/[0.02] px-8 sm:px-12 py-8 sm:py-10 w-full">
+            <div className="flex flex-col items-center gap-3 flex-1 min-w-0">
+              <div className="shrink-0 rounded-xl bg-white p-3 sm:p-4 shadow-sm shadow-black/20">
+                <img
+                  src={MCA_LOGO_URL}
+                  alt="Ministry of Corporate Affairs — Government of India"
+                  className="h-14 sm:h-16 md:h-20 w-auto max-w-[200px] object-contain"
+                  referrerPolicy="no-referrer"
+                  loading="eager"
+                  decoding="async"
+                />
+              </div>
+              <div>
+                <p className="text-base sm:text-lg font-semibold text-amber-400">MCA</p>
+                <p className="text-xs sm:text-sm text-white/55 mt-0.5">Ministry of Corporate Affairs</p>
+              </div>
             </div>
-            <div className="text-center sm:text-left">
-              <p className="text-base sm:text-lg md:text-xl font-semibold text-white">
-                Recognised by{" "}
-                <span className="text-amber-400">MCA</span>
-              </p>
-              <p className="text-sm sm:text-base text-white/60 mt-1">
-                Ministry of Corporate Affairs &middot; Government of India
-              </p>
+            <div className="hidden sm:block w-px self-stretch min-h-[140px] bg-white/10 shrink-0" aria-hidden />
+            <div className="sm:hidden h-px w-full max-w-[200px] mx-auto bg-white/10 shrink-0" aria-hidden />
+            <div className="flex flex-col items-center gap-3 flex-1 min-w-0">
+              <div className="shrink-0 rounded-xl bg-white p-3 sm:p-4 shadow-sm shadow-black/20">
+                <img
+                  src={MSME_LOGO_URL}
+                  alt="Ministry of Micro, Small and Medium Enterprises — Government of India"
+                  className="h-14 sm:h-16 md:h-20 w-auto max-w-[200px] object-contain"
+                  referrerPolicy="no-referrer"
+                  loading="eager"
+                  decoding="async"
+                />
+              </div>
+              <div>
+                <p className="text-base sm:text-lg font-semibold text-emerald-400">MSME</p>
+                <p className="text-xs sm:text-sm text-white/55 mt-0.5">Micro, Small &amp; Medium Enterprises</p>
+              </div>
             </div>
           </div>
         </div>
@@ -504,7 +544,8 @@ export default function AcademyPage() {
             </span>
           </h2>
           <p className="mt-3 sm:mt-4 text-sm sm:text-base md:text-lg text-white/60 max-w-2xl mx-auto">
-            Every course you complete comes with a verifiable certificate recognised by MCA-yours for just <span className="text-amber-400 font-semibold">₹99</span>
+            Every course you complete comes with a verifiable certificate recognised by MCA &amp; MSME-yours for just{" "}
+            <span className="text-amber-400 font-semibold">₹99</span>
           </p>
         </div>
 
@@ -551,16 +592,38 @@ export default function AcademyPage() {
 
             {/* Trust signals */}
             <div className="flex flex-col gap-4">
-              <div className="flex-1 rounded-2xl border border-white/[0.06] bg-white/[0.02] p-5 sm:p-6 flex items-start gap-4">
-                <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center shrink-0">
-                  <svg className="w-5 h-5 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M12 2L6 6v3c0 5.25 2.55 10.15 6 12 3.45-1.85 6-6.75 6-12V6l-6-4z" />
-                    <path d="M9 12l2 2 4-4" />
-                  </svg>
-                </div>
-                <div>
-                  <h4 className="text-sm sm:text-base font-semibold text-white mb-1">Recognised by MCA</h4>
-                  <p className="text-xs sm:text-sm text-white/60 leading-relaxed">ExpoGraph is recognised by the MCA (Ministry of Corporate Affairs), Government of India-your certificates carry weight.</p>
+              <div className="flex-1 rounded-2xl border border-white/[0.06] bg-white/[0.02] p-5 sm:p-6 flex flex-col gap-4">
+                <div className="flex items-start gap-4">
+                  <div className="flex shrink-0 items-center gap-2">
+                    <div className="rounded-lg bg-white p-1 shadow-md ring-2 ring-black/40">
+                      <img
+                        src={MCA_LOGO_URL}
+                        alt=""
+                        width={72}
+                        height={28}
+                        className="h-7 w-auto max-w-[80px] object-contain"
+                        referrerPolicy="no-referrer"
+                        decoding="async"
+                      />
+                    </div>
+                    <div className="rounded-lg bg-white p-1 shadow-md ring-2 ring-black/40">
+                      <img
+                        src={MSME_LOGO_URL}
+                        alt=""
+                        width={72}
+                        height={28}
+                        className="h-7 w-auto max-w-[88px] object-contain"
+                        referrerPolicy="no-referrer"
+                        decoding="async"
+                      />
+                    </div>
+                  </div>
+                  <div className="min-w-0">
+                    <h4 className="text-sm sm:text-base font-semibold text-white mb-1">Recognised by MCA &amp; MSME</h4>
+                    <p className="text-xs sm:text-sm text-white/60 leading-relaxed">
+                      ExpoGraph is recognised by MCA (Corporate Affairs) and MSME (Micro, Small &amp; Medium Enterprises), Government of India-your certificates carry institutional trust.
+                    </p>
+                  </div>
                 </div>
               </div>
 
@@ -613,7 +676,7 @@ export default function AcademyPage() {
                   </span>
                 </h2>
                 <p className="mt-3 sm:mt-4 text-sm sm:text-base text-white/60 max-w-lg mx-auto md:mx-0 leading-relaxed">
-                  Other platforms charge ₹5,000–₹50,000 for generic tutorials. At ExpoGraph, you get Vibe Coding, Prompt Engineering & AI Automations-structured courses with smart prompts, a resume builder, MCA-recognised certificates & real client projects-all for a price anyone can afford.
+                  Other platforms charge ₹5,000–₹50,000 for generic tutorials. At ExpoGraph, you get Vibe Coding, Prompt Engineering & AI Automations-structured courses with smart prompts, a resume builder, MCA- &amp; MSME-recognised certificates &amp; real client projects-all for a price anyone can afford.
                 </p>
               </div>
               <div className="flex flex-row md:flex-col items-center gap-4 sm:gap-5 shrink-0">
@@ -788,7 +851,7 @@ export default function AcademyPage() {
             <span className="text-white/30">·</span>
             <span>3 courses + pack</span>
             <span className="text-white/30">·</span>
-            <span>MCA certificates</span>
+            <span>MCA &amp; MSME certificates</span>
             <span className="text-white/30">·</span>
             <span>Resume builder</span>
           </div>
@@ -905,25 +968,7 @@ export default function AcademyPage() {
           }
         >
           <TubesBackground className="min-h-[560px] sm:min-h-[70vh] bg-[#0a0a0a]" enableClickInteraction={true}>
-            <div className="flex flex-col items-center justify-center w-full min-h-[560px] sm:min-h-[70vh] gap-6 text-center px-4">
-              <div className="space-y-2 pointer-events-auto cursor-default select-none">
-                <h2 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tighter text-white drop-shadow-[0_0_20px_rgba(0,0,0,1)]">
-                  ExpoGraph flow
-                </h2>
-              </div>
-              <div className="absolute bottom-8 left-0 right-0 flex flex-col items-center gap-2 text-white/50 pointer-events-none">
-                <span className="text-xs uppercase tracking-widest">Move the cursor around to interact and Click to randomize.</span>
-                <span className="text-xs text-white/40">© 2025 ExpoGraph Academy</span>
-              </div>
-              <div className="absolute bottom-8 right-6 flex items-center gap-4 text-white/55 pointer-events-auto">
-                <Link to="/privacy-policy" className="text-xs hover:text-white/80 underline underline-offset-2">
-                  Privacy Policy
-                </Link>
-                <Link to="/terms-and-conditions" className="text-xs hover:text-white/80 underline underline-offset-2">
-                  Terms &amp; Conditions
-                </Link>
-              </div>
-            </div>
+            <FlowTubesFooterInner shellClassName="min-h-[560px] sm:min-h-[70vh]" />
           </TubesBackground>
         </LazyMount>
       </footer>

@@ -55,6 +55,44 @@ function buildEnrollmentStudentQuery(enrolledItem) {
   return qs;
 }
 
+/** Course/pack enrollment filter (server-backed list). Used on the list toolbar and in Advanced Filters. */
+function EnrollmentCoursePackSelect({ id, value, onChange, catalogOptions, selectClassName = "" }) {
+  return (
+    <div className="relative">
+      <FiLayers className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none z-10" />
+      <select
+        id={id}
+        aria-label="Filter students by course or pack"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className={`w-full pl-9 pr-3 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 transition-all appearance-none cursor-pointer ${selectClassName}`}
+      >
+        <option value="">All courses and packs</option>
+        <optgroup label="Courses (includes students on a pack that contains this course)">
+          {[...(catalogOptions.courses || [])]
+            .sort((a, b) => (a.title || "").localeCompare(b.title || ""))
+            .map((c) => (
+              <option key={c.id} value={`course:${c.id}`}>
+                {c.title}
+                {c.slug ? ` (${c.slug})` : ""}
+              </option>
+            ))}
+        </optgroup>
+        <optgroup label="Packs only">
+          {[...(catalogOptions.packs || [])]
+            .sort((a, b) => (a.title || "").localeCompare(b.title || ""))
+            .map((p) => (
+              <option key={p.id} value={`pack:${p.id}`}>
+                {p.title}
+                {p.slug ? ` (${p.slug})` : ""}
+              </option>
+            ))}
+        </optgroup>
+      </select>
+    </div>
+  );
+}
+
 export default function SuperAdminStudents() {
   const { token } = useAuth();
   const navigate = useNavigate();
@@ -734,7 +772,7 @@ export default function SuperAdminStudents() {
                 <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                 <input
                   type="text"
-                  placeholder="Quick search by name, email, phone, college, user ID (use Filters for course or pack)…"
+                  placeholder="Quick search by name, email, phone, college, user ID…"
                   value={searchQuery}
                   maxLength={QUICK_SEARCH_MAX}
                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -758,6 +796,28 @@ export default function SuperAdminStudents() {
                 )}
                 {showFilters ? <FiChevronUp className="w-4 h-4" /> : <FiChevronDown className="w-4 h-4" />}
               </button>
+            </div>
+
+            <div className="mt-3 flex flex-col lg:flex-row lg:items-end gap-3 lg:gap-4">
+              <div className="w-full lg:max-w-md shrink-0">
+                <label
+                  htmlFor="student-list-enrollment-filter"
+                  className="block text-xs font-medium text-slate-600 mb-1"
+                >
+                  Only students in this course or pack
+                </label>
+                <EnrollmentCoursePackSelect
+                  id="student-list-enrollment-filter"
+                  value={filters.enrolledItem}
+                  onChange={(v) => setFilters((f) => ({ ...f, enrolledItem: v }))}
+                  catalogOptions={catalogOptions}
+                  selectClassName="bg-white"
+                />
+              </div>
+              <p className="text-xs text-slate-500 lg:pb-2 lg:flex-1">
+                Pick a <strong>course</strong> to see everyone with that product (single-course or through a bundle), or
+                a <strong>pack</strong> for that bundle only. Matches active enrollments.
+              </p>
             </div>
 
             {/* Advanced Filters Panel */}
@@ -853,45 +913,20 @@ export default function SuperAdminStudents() {
                           />
                         </div>
                       </div>
-                      {/* Course / pack (server-side enrollment filter) */}
+                      {/* Course / pack (same control as toolbar; server-side enrollment filter) */}
                       <div className="sm:col-span-2 lg:col-span-3">
-                        <label className="block text-xs font-medium text-slate-600 mb-1.5">
-                          Enrolled in course or pack
+                        <label className="block text-xs font-medium text-slate-600 mb-1.5" htmlFor="student-adv-enrollment-filter">
+                          Only students in this course or pack
                         </label>
-                        <div className="relative">
-                          <FiLayers className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none z-10" />
-                          <select
-                            value={filters.enrolledItem}
-                            onChange={(e) => setFilters((f) => ({ ...f, enrolledItem: e.target.value }))}
-                            className="w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 transition-all appearance-none cursor-pointer"
-                          >
-                            <option value="">Any course or pack</option>
-                            <optgroup label="Courses (includes pack enrollments)">
-                              {[...catalogOptions.courses]
-                                .sort((a, b) => (a.title || "").localeCompare(b.title || ""))
-                                .map((c) => (
-                                  <option key={c.id} value={`course:${c.id}`}>
-                                    {c.title}
-                                    {c.slug ? ` (${c.slug})` : ""}
-                                  </option>
-                                ))}
-                            </optgroup>
-                            <optgroup label="Packs only">
-                              {[...catalogOptions.packs]
-                                .sort((a, b) => (a.title || "").localeCompare(b.title || ""))
-                                .map((p) => (
-                                  <option key={p.id} value={`pack:${p.id}`}>
-                                    {p.title}
-                                    {p.slug ? ` (${p.slug})` : ""}
-                                  </option>
-                                ))}
-                            </optgroup>
-                          </select>
-                        </div>
+                        <EnrollmentCoursePackSelect
+                          id="student-adv-enrollment-filter"
+                          value={filters.enrolledItem}
+                          onChange={(v) => setFilters((f) => ({ ...f, enrolledItem: v }))}
+                          catalogOptions={catalogOptions}
+                          selectClassName="bg-slate-50"
+                        />
                         <p className="text-xs text-slate-500 mt-1.5">
-                          Choosing a <strong>course</strong> lists students enrolled in that course or in any pack that
-                          includes it. Choosing a <strong>pack</strong> lists students enrolled in that pack only.
-                          Inactive enrollments are excluded.
+                          Same as the dropdown above the list. Inactive enrollments are excluded.
                         </p>
                       </div>
                       {/* Date From */}

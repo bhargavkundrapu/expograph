@@ -2,6 +2,6 @@
 export const MCA_LOGO_URL =
   "https://res.cloudinary.com/da2wrgabu/image/upload/v1772184237/MCA_Logo_3_1_wdhccw.svg";
 
-/** Ministry of Micro, Small & Medium Enterprises (colour), Wikimedia Commons (Government of India). */
+/** Ministry of Micro, Small & Medium Enterprises — PNG delivery for reliable rendering (WebP can be blocked or fail decode in some contexts). */
 export const MSME_LOGO_URL =
-  "https://upload.wikimedia.org/wikipedia/commons/e/ef/MSME_logo_%28colour%29.svg";
+  "https://res.cloudinary.com/da2wrgabu/image/upload/f_png,q_auto/v1777818387/msme-logo_mjz1on.webp";

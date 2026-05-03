@@ -26,7 +26,7 @@ export default function SolutionsHeroSection() {
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-relaxed text-slate-600 md:text-xl">{SOLUTIONS_HERO.lead}</p>
             <p className="mt-4 max-w-xl border-l-2 border-violet-300/80 pl-4 text-sm leading-relaxed text-slate-500">{SOLUTIONS_HERO.note}</p>
-            <div className="mt-10 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
+            <div className="mt-10 flex flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:items-center">
               <Link
                 to="/solutions/book-a-meet"
                 className="inline-flex min-h-[48px] items-center justify-center rounded-full bg-violet-600 px-8 py-3 text-sm font-semibold text-white shadow-xl transition hover:bg-violet-700"
@@ -38,6 +38,13 @@ export default function SolutionsHeroSection() {
                 className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-slate-300 bg-white px-8 py-3 text-center text-sm font-medium text-slate-700 transition hover:bg-slate-50"
               >
                 See all services
+              </a>
+              <a
+                href="/downloads/ExpoGraph-College-Overview.pdf"
+                download
+                className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-slate-300/80 bg-slate-900 px-8 py-3 text-center text-sm font-semibold text-white transition hover:bg-slate-800"
+              >
+                Download college overview PDF
               </a>
             </div>
           </motion.div>

@@ -49,6 +49,7 @@ const CourseDetailPage = lazy(() => import("../pages/courses/CourseDetailPage"))
 const CourseExplorePage = lazy(() => import("../pages/courses/CourseExplorePage"));
 const FeatureDetailPage = lazy(() => import("../pages/features/FeatureDetailPage"));
 const ContactPage = lazy(() => import("../pages/contact/ContactPage"));
+const CollegeOverviewPage = lazy(() => import("../pages/academy/CollegeOverviewPage"));
 const AccountPendingPage = lazy(() => import("../pages/payment/AccountPendingPage"));
 const PaymentFailurePage = lazy(() => import("../pages/payment/PaymentFailurePage"));
 const PrivacyPolicyPage = lazy(() => import("../pages/legal/PrivacyPolicyPage"));
@@ -89,6 +90,7 @@ const StudentCourseLanding = lazy(() => import("../pages/lms/student/StudentCour
 const StudentContact = lazy(() => import("../pages/lms/student/StudentContact"));
 const StudentProfile = lazy(() => import("../pages/lms/student/StudentProfile"));
 const StudentJobsPage = lazy(() => import("../pages/lms/student/StudentJobsPage"));
+const StudentProgramJourney = lazy(() => import("../pages/lms/student/StudentProgramJourney"));
 const StartupLaunchPadShell = lazy(() => import("../Components/startup-launchpad/StartupLaunchPadShell"));
 const LaunchPadHomeScreen = lazy(() => import("../Components/startup-launchpad/screens/HomeScreen"));
 const LaunchPadReadinessScreen = lazy(() => import("../Components/startup-launchpad/screens/ReadinessScreen"));
@@ -268,6 +270,7 @@ export const router = createBrowserRouter([
         children: [
       { path: "/", element: <HomeOrRedirect /> },
       { path: "/academy", element: <HomeOrRedirect /> },
+      { path: "/academy/college-overview", element: <L><CollegeOverviewPage /></L> },
       { path: "/solutions", element: <L><SolutionsPage /></L> },
       { path: "/solutions/book-a-meet", element: <L><SolutionsBookMeetPage /></L> },
       { path: "/solutions/pricing", element: <L><SolutionsPricingPage /></L> },
@@ -522,7 +525,8 @@ export const router = createBrowserRouter([
         ),
         children: [
           { index: true, element: <StudentHome /> },
-          
+          { path: "program-journey", element: <L><StudentProgramJourney /></L> },
+
           // Progress
           { path: "progress", element: <L><StudentProgress /></L> },
           { path: "progress/overview", element: <L><StudentProgress /></L> },

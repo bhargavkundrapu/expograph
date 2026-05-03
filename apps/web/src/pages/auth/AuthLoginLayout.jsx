@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Header } from "../../Components/ui/header-2";
+import { MCA_LOGO_URL, MSME_LOGO_URL } from "../../constants/trustLogos";
 
 export const LOGO_URL = "https://res.cloudinary.com/da2wrgabu/image/upload/v1772253658/Graph_2_pbetc4.png";
 export const ICON_URL = "https://res.cloudinary.com/da2wrgabu/image/upload/v1772280495/e_x_1_m5jb9s.png";
@@ -100,12 +101,38 @@ export default function AuthLoginLayout({ cardTitle = "Welcome Back", cardSubtit
                 </motion.div>
               </div>
 
-              <div className="mt-8 flex items-center gap-2">
-                <svg className="w-4 h-4 text-amber-400/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M12 2L6 6v3c0 5.25 2.55 10.15 6 12 3.45-1.85 6-6.75 6-12V6l-6-4z" />
-                  <path d="M9 12l2 2 4-4" />
-                </svg>
-                <span className="text-xs text-white/30">Recognised by MCA &amp; MSME, Government of India</span>
+              <div className="mt-8 flex flex-col gap-3">
+                <div className="flex items-center justify-center lg:justify-start gap-3 flex-wrap">
+                  <div className="rounded-lg bg-white p-1.5 shadow-sm shadow-black/25">
+                    <img
+                      src={MCA_LOGO_URL}
+                      alt="Ministry of Corporate Affairs"
+                      className="h-8 sm:h-9 w-auto max-w-[120px] object-contain"
+                      referrerPolicy="no-referrer"
+                      loading="eager"
+                      decoding="async"
+                    />
+                  </div>
+                  <div className="rounded-lg bg-white p-1.5 shadow-sm shadow-black/25">
+                    <img
+                      src={MSME_LOGO_URL}
+                      alt="Ministry of Micro, Small and Medium Enterprises"
+                      className="h-8 sm:h-9 w-auto max-w-[130px] object-contain"
+                      referrerPolicy="no-referrer"
+                      loading="eager"
+                      decoding="async"
+                    />
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 justify-center lg:justify-start">
+                  <svg className="w-4 h-4 shrink-0 text-amber-400/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M12 2L6 6v3c0 5.25 2.55 10.15 6 12 3.45-1.85 6-6.75 6-12V6l-6-4z" />
+                    <path d="M9 12l2 2 4-4" />
+                  </svg>
+                  <span className="text-xs text-white/35 text-center lg:text-left leading-snug">
+                    Recognised by MCA &amp; MSME, Government of India
+                  </span>
+                </div>
               </div>
             </motion.div>
           </div>
@@ -174,13 +201,37 @@ export default function AuthLoginLayout({ cardTitle = "Welcome Back", cardSubtit
                 </div>
               </div>
 
-              <div className="lg:hidden mt-5 flex justify-center">
-                <div className="flex items-center gap-2 px-4 py-2 rounded-full border border-white/[0.06] bg-white/[0.02]">
-                  <svg className="w-3.5 h-3.5 text-amber-400/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <div className="lg:hidden mt-5 flex flex-col items-center gap-3">
+                <div className="flex items-center justify-center gap-3">
+                  <div className="rounded-md bg-white p-1">
+                    <img
+                      src={MCA_LOGO_URL}
+                      alt=""
+                      className="h-7 w-auto max-w-[100px] object-contain"
+                      referrerPolicy="no-referrer"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </div>
+                  <div className="rounded-md bg-white p-1">
+                    <img
+                      src={MSME_LOGO_URL}
+                      alt=""
+                      className="h-7 w-auto max-w-[110px] object-contain"
+                      referrerPolicy="no-referrer"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 px-4 py-2 rounded-full border border-white/[0.06] bg-white/[0.02] max-w-sm">
+                  <svg className="w-3.5 h-3.5 shrink-0 text-amber-400/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M12 2L6 6v3c0 5.25 2.55 10.15 6 12 3.45-1.85 6-6.75 6-12V6l-6-4z" />
                     <path d="M9 12l2 2 4-4" />
                   </svg>
-                  <span className="text-[11px] text-white/30">Recognised by MCA &amp; MSME, Government of India</span>
+                  <span className="text-[11px] text-white/35 text-center leading-snug">
+                    Recognised by MCA &amp; MSME, Government of India
+                  </span>
                 </div>
               </div>
             </motion.div>

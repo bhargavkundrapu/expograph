@@ -181,6 +181,17 @@ export function resolveSeo(pathname) {
     };
   }
 
+  if (path === "/academy/college-overview") {
+    return {
+      title: "College & Faculty Overview | ExpoGraph Academy",
+      description:
+        "A practical AI-era learning and campus transformation brief for principals, HODs, and TPOs—structured courses, labs, résumés, DTE, Talent Network, and a clear pilot path.",
+      robots,
+      canonicalPath: path,
+      jsonLd: null,
+    };
+  }
+
   if (path === "/courses") {
     return {
       title: "Courses | ExpoGraph Academy",

@@ -53,46 +53,28 @@ async function imageUrlToPngDataUrl(url) {
   });
 }
 
-/** Square PNG of `url`, cropped to a circle (cover). `outputDiameterPt` is on-PDF size; rasterised at 2x for sharpness. */
-async function imageUrlToCircularPngDataUrl(url, outputDiameterPt) {
-  const d = Math.max(28, Math.round(outputDiameterPt * 2));
-  const basePng = await imageUrlToPngDataUrl(url);
-  const img = new Image();
-  const loaded = new Promise((resolve, reject) => {
-    img.onload = resolve;
-    img.onerror = reject;
+/** Raster pixels → PDF points (same mapping as typical 96dpi CSS imagery). */
+const RASTER_PX_TO_PDF_PT = 72 / 96;
+
+function getDataUrlNaturalSizePx(dataUrl) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () =>
+      resolve({
+        w: Math.max(1, img.naturalWidth || img.width),
+        h: Math.max(1, img.naturalHeight || img.height),
+      });
+    img.onerror = () => reject(new Error("natural size failed"));
+    img.src = dataUrl;
   });
-  img.src = basePng;
-  await loaded;
+}
 
-  const canvas = document.createElement("canvas");
-  canvas.width = d;
-  canvas.height = d;
-  const ctx = canvas.getContext("2d");
-  if (!ctx) throw new Error("No canvas context");
-
-  ctx.clearRect(0, 0, d, d);
-  ctx.save();
-  ctx.beginPath();
-  ctx.arc(d / 2, d / 2, d / 2 - 1, 0, Math.PI * 2);
-  ctx.closePath();
-  ctx.clip();
-
-  const iw = img.naturalWidth || img.width || 1;
-  const ih = img.naturalHeight || img.height || 1;
-  const scale = Math.max(d / iw, d / ih);
-  const dw = iw * scale;
-  const dh = ih * scale;
-  ctx.drawImage(img, (d - dw) / 2, (d - dh) / 2, dw, dh);
-  ctx.restore();
-
-  ctx.beginPath();
-  ctx.arc(d / 2, d / 2, d / 2 - 0.5, 0, Math.PI * 2);
-  ctx.strokeStyle = "rgba(15, 23, 42, 0.14)";
-  ctx.lineWidth = 2;
-  ctx.stroke();
-
-  return canvas.toDataURL("image/png");
+/** MSME drawn at intrinsic aspect ratio; only scales down if it would spill past max width/height. */
+function msmePdfDrawSizePts(naturalWpx, naturalHpx, maxWPt, maxHPt) {
+  let w = naturalWpx * RASTER_PX_TO_PDF_PT;
+  let h = naturalHpx * RASTER_PX_TO_PDF_PT;
+  const down = Math.min(1, maxWPt / w, maxHPt / h);
+  return { w: w * down, h: h * down };
 }
 
 function createSignatureDataUrl() {
@@ -172,7 +154,7 @@ function Toast({ message, type, onDismiss }) {
         className="ml-2 opacity-80 hover:opacity-100"
         aria-label="Dismiss"
       >
-        Ã-
+        {"\u00D7"}
       </button>
     </motion.div>
   );
@@ -293,7 +275,7 @@ function CourseCard({
           >
             {loading ? (
               <>
-                <FiClock className="w-4 h-4 animate-spin" /> Requestingâ€¦
+                <FiClock className="w-4 h-4 animate-spin" /> Requesting{"\u2026"}
               </>
             ) : (
               <>Request Certificate</>
@@ -558,20 +540,23 @@ export default function StudentCertifications() {
       doc.setFontSize(12);
       doc.text("Director of Expograph", pageWidth / 2, signY + 18, { align: "center" });
 
-      // MSME (circular) above MCA — bottom-right stack, horizontally centred on MCA bar.
+      // MSME above MCA — bottom-right stack; intrinsic pixel aspect ratio → PDF pt (72/96), shrink-only to fit slot.
       const markY = pageHeight - 98;
       const mcaW = 192;
       const mcaH = 46;
       const mcaX = pageWidth - margin - 220;
-      const msmeCircleD = 56;
       const stackGap = 10;
-      // Left-align with MCA bar (same horizontal start as MCA logo).
-      const msmeCircleX = mcaX;
-      const msmeCircleY = markY - stackGap - msmeCircleD;
+      /** Room above MCA without crowding footer graphics (hex area ~118pt from bottom). */
+      const msmeMaxH = Math.max(48, Math.min(140, markY - stackGap - (pageHeight - 198)));
+      const msmeMaxW = Math.max(mcaW, Math.min(pageWidth - mcaX - margin, 320));
 
       try {
-        const msmeCirclePng = await imageUrlToCircularPngDataUrl(MSME_LOGO_URL, msmeCircleD);
-        doc.addImage(msmeCirclePng, "PNG", msmeCircleX, msmeCircleY, msmeCircleD, msmeCircleD);
+        const msmePngDataUrl = await imageUrlToPngDataUrl(MSME_LOGO_URL);
+        const { w: nw, h: nh } = await getDataUrlNaturalSizePx(msmePngDataUrl);
+        const { w: msmeW, h: msmeH } = msmePdfDrawSizePts(nw, nh, msmeMaxW, msmeMaxH);
+        const msmeX = mcaX;
+        const msmeY = markY - stackGap - msmeH;
+        doc.addImage(msmePngDataUrl, "PNG", msmeX, msmeY, msmeW, msmeH);
       } catch {
         // Ignore MSME mark if fetch/conversion fails.
       }

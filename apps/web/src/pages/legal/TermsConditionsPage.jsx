@@ -1,6 +1,6 @@
-import { Link } from "react-router-dom";
 import { Header } from "../../Components/ui/header-2";
 import { TubesBackground } from "../../Components/ui/neon-flow";
+import FlowTubesFooterInner from "../../Components/ui/FlowTubesFooterInner";
 
 const LAST_UPDATED = "March 30, 2026";
 
@@ -96,21 +96,11 @@ export default function TermsConditionsPage() {
 
       <footer className="w-full min-h-[420px] sm:min-h-[45vh] border-t border-black">
         <TubesBackground className="min-h-[420px] sm:min-h-[45vh] bg-[#0a0a0a]" enableClickInteraction={true}>
-          <div className="relative flex flex-col items-center justify-center w-full min-h-[420px] sm:min-h-[45vh] gap-6 text-center px-4">
-            <div className="absolute bottom-8 left-0 right-0 flex flex-col items-center gap-2 text-white/50 pointer-events-none">
-              <span className="text-xs uppercase tracking-widest">Move the cursor around to interact</span>
-              <span className="text-xs text-white/40">&copy; 2025 ExpoGraph Academy</span>
-            </div>
-
-            <div className="absolute bottom-3 left-0 right-0 flex items-center justify-center gap-4 text-white/55 pointer-events-auto sm:bottom-8 sm:left-auto sm:right-6 sm:justify-end">
-              <Link to="/privacy-policy" className="text-xs hover:text-white/80 underline underline-offset-2">
-                Privacy Policy
-              </Link>
-              <Link to="/terms-and-conditions" className="text-xs hover:text-white/80 underline underline-offset-2">
-                Terms &amp; Conditions
-              </Link>
-            </div>
-          </div>
+          <FlowTubesFooterInner
+            shellClassName="min-h-[420px] sm:min-h-[45vh]"
+            hideTitle
+            interactionHint="Move the cursor around to interact"
+          />
         </TubesBackground>
       </footer>
     </div>

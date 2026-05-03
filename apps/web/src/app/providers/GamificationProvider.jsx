@@ -30,30 +30,31 @@ const XP_REWARDS = {
   courseComplete: 500,
 };
 
+// Icons as Unicode escapes so literals stay correct regardless of editor/file encoding.
 const ACHIEVEMENT_DEFS = [
-  { id: "first_lesson", title: "First Steps", desc: "Complete your first lesson", icon: "ðŸŽ¯", rarity: "common", check: (s) => s.lessonsCompleted >= 1 },
-  { id: "five_lessons", title: "Getting Started", desc: "Complete 5 lessons", icon: "ðŸ“š", rarity: "common", check: (s) => s.lessonsCompleted >= 5 },
-  { id: "ten_lessons", title: "Dedicated Learner", desc: "Complete 10 lessons", icon: "ðŸ…", rarity: "rare", check: (s) => s.lessonsCompleted >= 10 },
-  { id: "twenty_five_lessons", title: "Knowledge Seeker", desc: "Complete 25 lessons", icon: "ðŸ§ ", rarity: "rare", check: (s) => s.lessonsCompleted >= 25 },
-  { id: "fifty_lessons", title: "Lesson Master", desc: "Complete 50 lessons", icon: "ðŸ‘‘", rarity: "epic", check: (s) => s.lessonsCompleted >= 50 },
-  { id: "streak_7", title: "Week Warrior", desc: "7-day learning streak", icon: "ðŸ”¥", rarity: "common", check: (s) => s.bestStreak >= 7 },
-  { id: "streak_30", title: "Monthly Champion", desc: "30-day learning streak", icon: "ðŸ’Ž", rarity: "epic", check: (s) => s.bestStreak >= 30 },
-  { id: "streak_100", title: "Unstoppable", desc: "100-day learning streak", icon: "âš¡", rarity: "legendary", check: (s) => s.bestStreak >= 100 },
-  { id: "first_course", title: "Course Conqueror", desc: "Complete your first course", icon: "ðŸ†", rarity: "rare", check: (s) => s.coursesCompleted >= 1 },
-  { id: "perfect_quiz", title: "Perfectionist", desc: "Score 100% on a quiz", icon: "â­", rarity: "rare", check: (s) => s.perfectQuizzes >= 1 },
-  { id: "xp_1000", title: "XP Hunter", desc: "Earn 1,000 XP", icon: "ðŸ’°", rarity: "common", check: (s) => s.totalXP >= 1000 },
-  { id: "xp_5000", title: "XP Master", desc: "Earn 5,000 XP", icon: "ðŸ’Ž", rarity: "epic", check: (s) => s.totalXP >= 5000 },
-  { id: "early_bird", title: "Early Bird", desc: "Login before 8 AM", icon: "ðŸŒ…", rarity: "common", check: (s) => s.earlyBirdLogins >= 1 },
-  { id: "night_owl", title: "Night Owl", desc: "Study after 10 PM", icon: "ðŸ¦‰", rarity: "common", check: (s) => s.nightOwlSessions >= 1 },
-  { id: "weekend_warrior", title: "Weekend Warrior", desc: "Study on a weekend", icon: "ðŸ-“ï¸", rarity: "common", check: (s) => s.weekendSessions >= 1 },
-  { id: "bookworm", title: "Bookworm", desc: "Bookmark 5 lessons", icon: "ðŸ“–", rarity: "common", check: (s) => s.bookmarksCount >= 5 },
-  { id: "daily_challenger", title: "Challenge Accepted", desc: "Answer 5 daily challenges", icon: "ðŸŽ²", rarity: "rare", check: (s) => s.dailyChallengesCompleted >= 5 },
-  { id: "note_taker", title: "Note Taker", desc: "Write 10 notes", icon: "ðŸ“", rarity: "common", check: (s) => s.notesCount >= 10 },
+  { id: "first_lesson", title: "First Steps", desc: "Complete your first lesson", icon: "\u{1F3AF}", rarity: "common", check: (s) => s.lessonsCompleted >= 1 }, // direct hit
+  { id: "five_lessons", title: "Getting Started", desc: "Complete 5 lessons", icon: "\u{1F4DA}", rarity: "common", check: (s) => s.lessonsCompleted >= 5 }, // books
+  { id: "ten_lessons", title: "Dedicated Learner", desc: "Complete 10 lessons", icon: "\u{1F393}", rarity: "rare", check: (s) => s.lessonsCompleted >= 10 }, // graduation cap
+  { id: "twenty_five_lessons", title: "Knowledge Seeker", desc: "Complete 25 lessons", icon: "\u{1F9E0}", rarity: "rare", check: (s) => s.lessonsCompleted >= 25 }, // brain
+  { id: "fifty_lessons", title: "Lesson Master", desc: "Complete 50 lessons", icon: "\u{1F451}", rarity: "epic", check: (s) => s.lessonsCompleted >= 50 }, // crown
+  { id: "streak_7", title: "Week Warrior", desc: "7-day learning streak", icon: "\u{1F525}", rarity: "common", check: (s) => s.bestStreak >= 7 }, // fire
+  { id: "streak_30", title: "Monthly Champion", desc: "30-day learning streak", icon: "\u{1F48E}", rarity: "epic", check: (s) => s.bestStreak >= 30 }, // gem
+  { id: "streak_100", title: "Unstoppable", desc: "100-day learning streak", icon: "\u{26A1}", rarity: "legendary", check: (s) => s.bestStreak >= 100 }, // lightning
+  { id: "first_course", title: "Course Conqueror", desc: "Complete your first course", icon: "\u{1F3C6}", rarity: "rare", check: (s) => s.coursesCompleted >= 1 }, // trophy
+  { id: "perfect_quiz", title: "Perfectionist", desc: "Score 100% on a quiz", icon: "\u{2B50}", rarity: "rare", check: (s) => s.perfectQuizzes >= 1 }, // star
+  { id: "xp_1000", title: "XP Hunter", desc: "Earn 1,000 XP", icon: "\u{1F4B0}", rarity: "common", check: (s) => s.totalXP >= 1000 }, // money bag
+  { id: "xp_5000", title: "XP Master", desc: "Earn 5,000 XP", icon: "\u{1F31F}", rarity: "epic", check: (s) => s.totalXP >= 5000 }, // glowing star (distinct from streak gem)
+  { id: "early_bird", title: "Early Bird", desc: "Login before 8 AM", icon: "\u{1F305}", rarity: "common", check: (s) => s.earlyBirdLogins >= 1 }, // sunrise
+  { id: "night_owl", title: "Night Owl", desc: "Study after 10 PM", icon: "\u{1F989}", rarity: "common", check: (s) => s.nightOwlSessions >= 1 }, // owl
+  { id: "weekend_warrior", title: "Weekend Warrior", desc: "Study on a weekend", icon: "\u{1F4C5}", rarity: "common", check: (s) => s.weekendSessions >= 1 }, // calendar
+  { id: "bookworm", title: "Bookworm", desc: "Bookmark 5 lessons", icon: "\u{1F4D6}", rarity: "common", check: (s) => s.bookmarksCount >= 5 }, // open book
+  { id: "daily_challenger", title: "Challenge Accepted", desc: "Answer 5 daily challenges", icon: "\u{1F3B2}", rarity: "rare", check: (s) => s.dailyChallengesCompleted >= 5 }, // game die
+  { id: "note_taker", title: "Note Taker", desc: "Write 10 notes", icon: "\u{1F4DD}", rarity: "common", check: (s) => s.notesCount >= 10 }, // memo
 ];
 
 // Daily Challenge questions aligned with ExpoGraph courses: Vibe Coding, Prompt Engineering, Prompt to Profit, AI Automations
 const DAILY_QUESTIONS = [
-  { id: "dq1", q: "In prompt engineering, what is 'few-shot' prompting?", options: ["Using very short prompts", "Giving the model 1â€“5 example inputs and outputs before the real task", "Asking the model to prompt the user", "A type of error message"], answer: 1, topic: "Prompt Engineering" },
+  { id: "dq1", q: "In prompt engineering, what is 'few-shot' prompting?", options: ["Using very short prompts", "Giving the model 1-5 example inputs and outputs before the real task", "Asking the model to prompt the user", "A type of error message"], answer: 1, topic: "Prompt Engineering" },
   { id: "dq2", q: "Which of these helps make AI outputs more consistent?", options: ["Using different models each time", "Being vague in your instructions", "Using clear instructions and examples", "Avoiding any context"], answer: 2, topic: "Prompt Engineering" },
   { id: "dq3", q: "What is 'vibe coding' in our course context?", options: ["Coding without a keyboard", "Building apps using natural language and AI-assisted tools", "Only writing comments", "Debugging by intuition"], answer: 1, topic: "Vibe Coding" },
   { id: "dq4", q: "Which practice is key in Prompt to Profit?", options: ["Ignoring user feedback", "Treating prompts as products: test, iterate, and improve", "Using the longest possible prompts", "Avoiding any automation"], answer: 1, topic: "Prompt to Profit" },

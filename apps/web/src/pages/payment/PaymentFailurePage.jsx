@@ -2,6 +2,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Header } from "../../Components/ui/header-2";
 import { TubesBackground } from "../../Components/ui/neon-flow";
+import FlowTubesFooterInner from "../../Components/ui/FlowTubesFooterInner";
 import { FiXCircle, FiRefreshCw, FiMessageCircle, FiArrowLeft } from "react-icons/fi";
 
 const WHATSAPP_NUMBER = "9014110638";
@@ -79,23 +80,12 @@ export default function PaymentFailurePage() {
 
         <footer className="w-full min-h-[320px] sm:min-h-[40vh] border-t border-white/5">
           <TubesBackground className="min-h-[320px] sm:min-h-[40vh] bg-[#0a0a0a]" enableClickInteraction={false}>
-            <div className="relative flex flex-col items-center justify-center w-full min-h-[320px] sm:min-h-[40vh] gap-4 text-center px-4">
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tighter text-white">
-                ExpoGraph
-              </h2>
-              <span className="text-xs text-white/40">© 2025 ExpoGraph Academy</span>
-              <div className="absolute bottom-3 left-0 right-0 flex items-center justify-center gap-4 text-white/55 pointer-events-auto sm:bottom-6 sm:left-auto sm:right-6 sm:justify-end">
-                <Link to="/privacy-policy" className="text-xs hover:text-white/80 underline underline-offset-2">
-                  Privacy Policy
-                </Link>
-                <Link
-                  to="/terms-and-conditions"
-                  className="text-xs hover:text-white/80 underline underline-offset-2"
-                >
-                  Terms &amp; Conditions
-                </Link>
-              </div>
-            </div>
+            <FlowTubesFooterInner
+              shellClassName="min-h-[320px] sm:min-h-[40vh]"
+              title="ExpoGraph"
+              titleClassName="text-3xl font-bold tracking-tighter text-white sm:text-4xl md:text-5xl"
+              showInteractionHint={false}
+            />
           </TubesBackground>
         </footer>
       </div>
