@@ -28,7 +28,7 @@ const BG_CERTS =
 const NOT_PACK_SLIDES: Slide[] = [
   {
     id: "s1",
-    title: "Upgrade to Pack â‚¹199",
+    title: "Upgrade to All Pack for ₹199",
     subtitle: "All 3 courses + certificates + client slots eligibility.",
     ctaLabel: "Unlock Pack",
     route: "/courses",

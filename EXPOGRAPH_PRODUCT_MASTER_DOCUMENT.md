@@ -1,6 +1,6 @@
 # ExpoGraph - Product & Website Master Document
 
-*Generated from repository inspection (`apps/web` primary customer-facing app, `apps/api` backend references). No code was modified. Where the UI or routing is ambiguous or inconsistent, this is called out explicitly.*
+*Generated from repository inspection (`apps/web` primary customer-facing app, `apps/api` backend references). Trust and certificate messaging includes **MCA and MSME** as implemented in the web app. Where the UI or routing is ambiguous or inconsistent, this is called out explicitly.*
 
 ---
 
@@ -12,7 +12,7 @@
 - A **student LMS** (logged-in “portal”) with **lessons, progress, gamification (XP, streaks, levels)**, **certificates**, **resume builder**, **Real Client Lab** (real project work with mentor review), **Jobs Search Hub** (India-first job search helpers opening external portals), and **Startup LaunchPad** (a guided founder path, gated by pack/course ownership).
 - **Mentor** and **Super Admin** consoles for operations, and a **Tenant Admin** (B2B/tenant) area that is largely placeholder in the UI.
 
-**Public-facing promise:** move users from “learning to code” to **building with AI**, with **low price points (₹99 / ₹199 messaging)**, **MCA-recognised company/certificate trust**, and **real portfolio outcomes** (client lab, resume, certificates).
+**Public-facing promise:** move users from “learning to code” to **building with AI**, with **low price points (₹99 / ₹199 messaging)**, **MCA- and MSME-recognised company/certificate trust**, and **real portfolio outcomes** (client lab, resume, certificates).
 
 ---
 
@@ -23,7 +23,7 @@
 | **Product name** | ExpoGraph; Academy positioning as **ExpoGraph Academy**; wordmark **ΣxpoGraph** (sigma suggests math/exponential “e^x” motif - logo assets include `e^x.png`). |
 | **Category** | EdTech / LMS + AI skills + career tools; adjacent **enterprise IT solutions** page (`/solutions`) presents a separate B2B services narrative. |
 | **Problem framed** | Generic courses are expensive or passive; learners need **build-first**, **AI-native** skills, **affordable** access, **proof** (certificates, real work). |
-| **Differentiation (as stated in code)** | **Vibe coding** + **smart prompts**, **Real Client Lab**, **MCA recognition**, **extreme price** (₹99 / ₹199), **Resume Builder**, **Jobs Hub**, **Startup LaunchPad** for founders. |
+| **Differentiation (as stated in code)** | **Vibe coding** + **smart prompts**, **Real Client Lab**, **MCA and MSME recognition**, **extreme price** (₹99 / ₹199), **Resume Builder**, **Jobs Hub**, **Startup LaunchPad** for founders. |
 | **Promise** | “Stop learning to code. Start building with AI.” + career growth via real projects, certificates, and job-search tooling. |
 
 ---
@@ -53,7 +53,7 @@
 
 | Route | Page name (source) | Purpose | Audience | Main sections / notes | Key CTAs | Public? |
 |-------|-------------------|---------|----------|------------------------|----------|---------|
-| `/`, `/academy` | `HomeOrRedirect` → `AcademyPage` | Marketing homepage | All | Hero → learn block → courses → trust → MCA → CTA → LaunchPad → features grid → certification → pricing banner → reviews → Jobs Hub → connect → FAQ → footer | Login / LMS Portal, Explore, Join family, course pricing, social | **Public** |
+| `/`, `/academy` | `HomeOrRedirect` → `AcademyPage` | Marketing homepage | All | Hero → learn block → courses → trust → MCA & MSME → CTA → LaunchPad → features grid → certification → pricing banner → reviews → Jobs Hub → connect → FAQ → footer | Login / LMS Portal, Explore, Join family, course pricing, social | **Public** |
 | `/solutions` | `SolutionsPage` | Enterprise IT services marketing | B2B | Hero, solutions grid, services, stats, FAQ, CTA | Get a Quote (non-linked flow in code - button), Explore Academy | **Public** |
 | `/courses` | `CoursesPage` | Pricing & catalog | Buyers | Bento pricing (`PricingWithChart`), footer | Buy / Explore per card, footer legal | **Public** |
 | `/courses/explore/:slug` | `CourseExplorePage` | Course exploration | Prospects | (lazy-loaded) | Explore CTAs from pricing | **Public** |
@@ -158,16 +158,16 @@ Order is **exact** as rendered.
 | 3 | **Learn - HeroSection** (`id="learn"`) | Value prop | “Where learning meets real-world doing” | **Join the Family** → `/courses`, **Connect with us** → `#connect` | Three courses + Real Client Lab + ₹99 | Aspirational | Conversion |
 | 4 | **Course cards** (`id="courses"`) | Product SKUs | From `AcademyCourseCardsSection` | - | Catalog | - | Sales |
 | 5 | **Built for the real world** | Trust | “Designed by top techies and IITians” | - | Quality signal | Credibility | Justify quality at low price |
-| 6 | **Officially Recognised** | Trust | “Officially Recognised” + MCA logo | - | Government/regulatory credibility | Safety | Reduce payment anxiety |
+| 6 | **Officially Recognised** | Trust | “Officially Recognised” + MCA & MSME logos | - | Government/regulatory credibility | Safety | Reduce payment anxiety |
 | 7 | **CTA - CallToAction1** (`id="cta"`) | Mid-page conversion | “Join 2K+ users who are Vibing”; “Unlock your next big opportunity.”; ₹99 / ₹199 pills | Primary visible button: **Real Client Lab** → `/features/real-client-lab` | Social proof (2K+) | Belonging | Feature education |
 | 8 | **Startup LaunchPad** (`id="startup-launchpad"`) | Founder product | “Startup LaunchPad”; “Your startup path, in the right order”; badge **All Pack or all three main courses** | Open LaunchPad / Login; See how it works; View All Pack | Founder journey + gating | Ambition | Upsell pack |
 | 9 | **Features grid** (`id="features"`) | Capability overview | “Everything you need to succeed” | Links to `/features/{slug}` | Full toolkit | Confidence | Education + SEO |
-| 10 | **Certification** (`id="certification"`) | Certificates | “Earn certificates that matter” | - | MCA + PDF + LinkedIn | Pride | Trust + completion |
+| 10 | **Certification** (`id="certification"`) | Certificates | “Earn certificates that matter” | - | MCA & MSME + PDF + LinkedIn | Pride | Trust + completion |
 | 11 | **Pricing advantage** | Price comparison | “Premium learning. Unbeatable price.”; compares to ₹5k–₹50k platforms | ₹99 / ₹199 tiles → `/courses` | Value framing | Relief | Conversion |
 | 12 | **Reviews** (`id="reviews"`) | Social proof | “2,000+ users are already building with us” | **Start Learning for ₹99** | Marquee testimonials | FOMO + trust | Conversion |
 | 13 | **Jobs Search Hub** (`id="jobs-hub"`) | LMS feature promo | “Jobs Search Hub - your India-first career command center” | Open Jobs Hub / Login / Get a course | Practical job search | Control | LMS adoption |
 | 14 | **Connect** (`id="connect"`) | Community | “Join the vibe”; Instagram, YouTube, LinkedIn | Social links | Belonging | - | Audience building |
-| 15 | **FAQ** (`id="faqs"`) | Objection handling | “We've got answers” | Accordion | Explains product, pricing, MCA, community | Reassurance | Reduce support load |
+| 15 | **FAQ** (`id="faqs"`) | Objection handling | “We've got answers” | Accordion | Explains product, pricing, MCA & MSME, community | Reassurance | Reduce support load |
 | 16 | **Footer** | Brand + legal | “ExpoGraph flow”; interactive WebGL | Privacy, Terms | Playful tech brand | - | Legal compliance |
 
 ---
@@ -193,7 +193,7 @@ Order is **exact** as rendered.
 
 **Trust**
 
-- “Recognised by MCA · Ministry of Corporate Affairs · Government of India”
+- “Recognised by MCA & MSME · Ministries of Corporate Affairs and of Micro, Small & Medium Enterprises · Government of India”
 - “Designed by top techies and IITians”
 - “2K” active users / “100+” tutors (HeroSection stats)
 - “2,000+ users are already building with us”
@@ -377,7 +377,7 @@ Order is **exact** as rendered.
 
 # 12. Trust / Credibility Signals
 
-- **MCA** logo and “Ministry of Corporate Affairs · Government of India”
+- **MCA & MSME** logos and ministry lines (Corporate Affairs; Micro, Small & Medium Enterprises · Government of India)
 - **Stats:** 2K users, 100+ tutors (hero secondary section), 2,000+ in reviews (marquee)
 - **Testimonials** (named personas - **marketing copy** in code, not verified third-party reviews)
 - **IITians / top techies** curriculum line
@@ -391,7 +391,7 @@ Order is **exact** as rendered.
 
 - **Voice:** Direct, energetic, Hinglish-adjacent idiom (“vibe”, “vibing”), **price-aggressive**, **student-first**.
 - **Warmth:** High in community section (“Join the vibe”, “family of builders”).
-- **Seriousness:** Mixed - playful “vibe” + serious MCA/legal trust.
+- **Seriousness:** Mixed - playful “vibe” + serious MCA/MSME/legal trust.
 - **Students:** Peer + coach; **institutions:** barely addressed on Academy (colleges exist in admin only).
 - **Overall:** **Product-led** edtech with **startup energy** (LaunchPad, build-first) and **premium visual treatment** (dark, gradients, 3D hero).
 
@@ -413,7 +413,7 @@ Order is **exact** as rendered.
 **Student-facing**
 
 - Build-first AI skills (Vibe Coding, prompts, automations)
-- ₹99 / ₹199 affordability + MCA certificate story
+- ₹99 / ₹199 affordability + MCA & MSME certificate story
 - Real Client Lab + Resume Builder + Jobs Hub
 - Startup LaunchPad for founders
 
@@ -463,7 +463,7 @@ Order is **exact** as rendered.
 
 **Institution value**
 
-- *Sparse in code - use Super Admin “Colleges” + MCA as a starting point only.*
+- *Sparse in code - use Super Admin “Colleges” + MCA/MSME trust context as a starting point only.*
 
 **Feature explanation**
 
@@ -476,7 +476,7 @@ Order is **exact** as rendered.
 
 **Trust / proof**
 
-- MCA recognition; verifiable certificate ID; 2K+ users (as stated)
+- MCA and MSME recognition; verifiable certificate ID; 2K+ users (as stated)
 
 **Emotional**
 
@@ -501,7 +501,7 @@ Order is **exact** as rendered.
 | Jobs Hub (presets + platforms) | India careers | Practical tool | Job seekers |
 | LaunchPad stage view | Founder | Gated journey | Founders |
 | Super Admin course builder | Operations | Scalable content | Investors |
-| MCA section | Trust | Regulatory | Institutions |
+| MCA & MSME section | Trust | Regulatory | Institutions |
 
 ---
 
@@ -511,7 +511,7 @@ Order is **exact** as rendered.
 - **Real** graduate outcomes (salary, placements) - testimonials are **static**
 - **Founder story** and **team** - not in code
 - **Partnership** details (colleges, employers)
-- **Legal** precision of “MCA recognition” (what exactly is recognised - company vs certificate - **seek legal confirmation** before investor deck)
+- **Legal** precision of “MCA and MSME recognition” (what exactly is recognised - company vs certificate - **seek legal confirmation** before investor deck)
 - **Live** screenshots of production vs staging
 - **Alignment** narrative between **Solutions** business and **Academy**
 
@@ -520,7 +520,7 @@ Order is **exact** as rendered.
 # 20. Final Summary for Presentation Preparation
 
 **Presentation type:**  
-**Product-led** story + **live LMS demo** + **pricing slide** + **trust (MCA)** + optional **founder (LaunchPad)** and **jobs** slides for India audience.
+**Product-led** story + **live LMS demo** + **pricing slide** + **trust (MCA & MSME)** + optional **founder (LaunchPad)** and **jobs** slides for India audience.
 
 **Audience versions**
 
@@ -544,13 +544,13 @@ Order is **exact** as rendered.
 *Copy for another AI or designer.*
 
 **Product summary**  
-ExpoGraph Academy is an affordable AI-skills learning platform (₹99/₹199 positioning) with courses in Vibe Coding, Prompt Engineering, Prompt to Profit, and AI Automations. It includes an LMS with smart prompts, gamification, certificates (MCA trust narrative), Real Client Lab, Resume Builder, Jobs Search Hub (India), and Startup LaunchPad (gated). OTP login. Separate `/solutions` page sells enterprise IT services.
+ExpoGraph Academy is an affordable AI-skills learning platform (₹99/₹199 positioning) with courses in Vibe Coding, Prompt Engineering, Prompt to Profit, and AI Automations. It includes an LMS with smart prompts, gamification, certificates (MCA & MSME trust narrative), Real Client Lab, Resume Builder, Jobs Search Hub (India), and Startup LaunchPad (gated). OTP login. Separate `/solutions` page sells enterprise IT services.
 
 **Audience summary**  
 Primary: Indian students and job seekers. Secondary: mentors, founders (LaunchPad), internal admins. Institutions: admin “Colleges” only - weak public story.
 
 **Key selling points**  
-Build-first AI; low price; MCA recognition; real client projects; resume + jobs tools; founder path in-product.
+Build-first AI; low price; MCA and MSME recognition; real client projects; resume + jobs tools; founder path in-product.
 
 **Best copy lines**  
 “Stop learning to code. Start building with AI.” | “Where learning meets real-world doing.” | “Premium learning. Unbeatable price.” | “India-first career command center” (Jobs Hub).
@@ -559,7 +559,7 @@ Build-first AI; low price; MCA recognition; real client projects; resume + jobs 
 Smart prompts, structured lessons, LMS dashboard, certificates, client lab, resume builder, jobs hub, LaunchPad, workshops/events, internships, referrals.
 
 **Trust summary**  
-MCA logo, certificate ID, IIT/top techies line, 2K+ user claims, social proof marquees (static copy).
+MCA & MSME logos, certificate ID, IIT/top techies line, 2K+ user claims, social proof marquees (static copy).
 
 **Pricing summary**  
 ₹99 per course; ₹199 all-access pack; AI Automations as bonus with pack; API-driven prices in app; countdown offer on course cards.
@@ -568,7 +568,7 @@ MCA logo, certificate ID, IIT/top techies line, 2K+ user claims, social proof ma
 Hero, pricing bento, student dashboard, lesson + prompts, client lab, jobs hub, LaunchPad, certificates, super admin courses.
 
 **Missing data checklist**  
-Real metrics; verified testimonials; team; legal wording for MCA; institutional deals; alignment between Solutions and Academy; product roadmap.
+Real metrics; verified testimonials; team; legal wording for MCA and MSME; institutional deals; alignment between Solutions and Academy; product roadmap.
 
 ---
 

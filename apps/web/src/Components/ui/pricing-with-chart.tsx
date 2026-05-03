@@ -119,8 +119,8 @@ export function PricingWithChart() {
   }) {
     const canBuy = !isBonus && !!course && (Number(course.price_in_paise) ?? 0) >= 100;
     const features = isBonus
-      ? ["Free when you buy All Pack", "12 modules • 62 lessons", "MCA-recognised certificate"]
-      : ["Self-paced learning", "MCA-recognised certificate on completion"];
+      ? ["Free when you buy All Pack", "12 modules • 62 lessons", "MCA- & MSME-recognised certificate"]
+      : ["Self-paced learning", "MCA- & MSME-recognised certificate on completion"];
     const coverSrc =
       COURSE_CARD_COVER[orderSlug as keyof typeof COURSE_CARD_COVER] ?? COURSE_CARD_FALLBACK;
     return (
@@ -421,7 +421,7 @@ export function PricingWithChart() {
               </li>
               <li className="flex items-center gap-3 pl-6">
                 <FilledCheck />
-                <span className="font-medium text-white/90">MCA-recognised certificates</span>
+                <span className="font-medium text-white/90">MCA- & MSME-recognised certificates</span>
               </li>
             </ul>
           </div>

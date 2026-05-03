@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useAuth } from "../../../app/providers/AuthProvider";
@@ -32,9 +32,28 @@ import {
   FiChevronsLeft,
   FiChevronsRight,
   FiBook,
+  FiAlertCircle,
+  FiLayers,
 } from "react-icons/fi";
 
 const PAGE_SIZES = [10, 25, 50, 100];
+
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const QUICK_SEARCH_MAX = 200;
+
+function buildEnrollmentStudentQuery(enrolledItem) {
+  const qs = new URLSearchParams();
+  const v = (enrolledItem || "").trim();
+  if (!v) return qs;
+  if (v.startsWith("course:")) {
+    const id = v.slice(7).trim();
+    if (UUID_RE.test(id)) qs.set("enrollment_course_id", id);
+  } else if (v.startsWith("pack:")) {
+    const id = v.slice(5).trim();
+    if (UUID_RE.test(id)) qs.set("enrollment_pack_id", id);
+  }
+  return qs;
+}
 
 export default function SuperAdminStudents() {
   const { token } = useAuth();
@@ -60,6 +79,7 @@ export default function SuperAdminStudents() {
   const [students, setStudents] = useState([]);
   const [filteredStudents, setFilteredStudents] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [studentsListError, setStudentsListError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [editForm, setEditForm] = useState({ fullName: "", email: "", phone: "" });
@@ -77,38 +97,173 @@ export default function SuperAdminStudents() {
     userId: "",
     dateFrom: "",
     dateTo: "",
+    enrolledItem: "",
   });
+  const [catalogOptions, setCatalogOptions] = useState({ courses: [], packs: [] });
+  const [catalogHydrated, setCatalogHydrated] = useState(false);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  const [detailRefreshBusy, setDetailRefreshBusy] = useState(false);
+  const lastVisibilityRefetchAt = useRef(0);
 
-  const activeFilterCount = Object.values(filters).filter((v) => v.trim()).length + (searchQuery.trim() ? 1 : 0);
+  const activeFilterCount = useMemo(() => {
+    const filterStrings = Object.values(filters).filter((v) => typeof v === "string" && v.trim());
+    return filterStrings.length + (searchQuery.trim() ? 1 : 0);
+  }, [filters, searchQuery]);
 
   const clearFilters = () => {
-    setFilters({ name: "", email: "", phone: "", college: "", userId: "", dateFrom: "", dateTo: "" });
+    setFilters({
+      name: "",
+      email: "",
+      phone: "",
+      college: "",
+      userId: "",
+      dateFrom: "",
+      dateTo: "",
+      enrolledItem: "",
+    });
     setSearchQuery("");
     setCurrentPage(1);
+    setStudentsListError(null);
   };
 
-  // Fetch students
+  // Load courses & packs for enrollment filter dropdown (admin content API)
   useEffect(() => {
     if (!token) return;
-    fetchStudents();
+    let cancelled = false;
+    setCatalogHydrated(false);
+    (async () => {
+      const settled = await Promise.allSettled([
+        apiFetch("/api/v1/admin/courses", { token }),
+        apiFetch("/api/v1/admin/packs", { token }),
+      ]);
+      if (cancelled) return;
+      const cRes = settled[0].status === "fulfilled" ? settled[0].value : null;
+      const pRes = settled[1].status === "fulfilled" ? settled[1].value : null;
+      setCatalogOptions({
+        courses: cRes?.ok && Array.isArray(cRes.data) ? cRes.data : [],
+        packs: pRes?.ok && Array.isArray(pRes.data) ? pRes.data : [],
+      });
+      setCatalogHydrated(true);
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, [token]);
 
-  // Load student details/edit when route has :id - fetch directly from API
+  const reloadStudentsList = useCallback(
+    async (signal) => {
+      if (!token) return;
+      const effectiveSignal = signal ?? new AbortController().signal;
+      try {
+        setLoading(true);
+        setStudentsListError(null);
+        const qs = buildEnrollmentStudentQuery(filters.enrolledItem);
+        const suffix = qs.toString() ? `?${qs.toString()}` : "";
+        const json = await apiFetch(`/api/v1/admin/students${suffix}`, {
+          token,
+          signal: effectiveSignal,
+        });
+        if (effectiveSignal.aborted) return;
+        setStudents(Array.isArray(json?.data) ? json.data : []);
+      } catch (error) {
+        const aborted =
+          error?.name === "AbortError" ||
+          (error?.message && /abort|signal\s+is\s+aborted/i.test(String(error.message)));
+        if (aborted) return;
+        console.error("Failed to fetch students:", error);
+        setStudents([]);
+        setStudentsListError(error?.message || "Could not load students.");
+      } finally {
+        if (!effectiveSignal.aborted) {
+          setLoading(false);
+        }
+      }
+    },
+    [token, filters.enrolledItem]
+  );
+
+  useEffect(() => {
+    if (!token) return undefined;
+    const ac = new AbortController();
+    reloadStudentsList(ac.signal);
+    return () => ac.abort();
+  }, [token, filters.enrolledItem, reloadStudentsList]);
+
+  useEffect(() => {
+    if (!token) setLoading(false);
+  }, [token]);
+
+  // After catalog loads: drop bad enrollment filter values (invalid id, removed course/pack, or no catalog access)
+  useEffect(() => {
+    if (!catalogHydrated) return;
+
+    const enrolled = filters.enrolledItem;
+    if (!enrolled?.trim()) return;
+
+    let kind;
+    let id;
+    if (enrolled.startsWith("course:")) {
+      kind = "course";
+      id = enrolled.slice(7).trim();
+    } else if (enrolled.startsWith("pack:")) {
+      kind = "pack";
+      id = enrolled.slice(5).trim();
+    } else {
+      setFilters((f) => ({ ...f, enrolledItem: "" }));
+      return;
+    }
+    if (!UUID_RE.test(id)) {
+      setFilters((f) => ({ ...f, enrolledItem: "" }));
+      return;
+    }
+
+    const hasCourses = catalogOptions.courses.length > 0;
+    const hasPacks = catalogOptions.packs.length > 0;
+    if (!hasCourses && !hasPacks) {
+      setFilters((f) => ({ ...f, enrolledItem: "" }));
+      return;
+    }
+
+    if (kind === "course" && !catalogOptions.courses.some((c) => String(c.id) === id)) {
+      setFilters((f) => ({ ...f, enrolledItem: "" }));
+      return;
+    }
+    if (kind === "pack" && !catalogOptions.packs.some((p) => String(p.id) === id)) {
+      setFilters((f) => ({ ...f, enrolledItem: "" }));
+    }
+  }, [catalogHydrated, catalogOptions.courses, catalogOptions.packs, filters.enrolledItem]);
+
+  const refetchStudentDetail = useCallback(async () => {
+    if (!token || !params.id) return;
+    setDetailRefreshBusy(true);
+    try {
+      const res = await apiFetch(`/api/v1/admin/students/${params.id}`, { token });
+      if (res?.ok) setSelectedStudent(res.data);
+    } catch (e) {
+      console.error("Failed to refresh student details:", e);
+    } finally {
+      setDetailRefreshBusy(false);
+    }
+  }, [token, params.id]);
+
+  // Load student details/edit when route has :id - details always refetched for up-to-date purchases/enrollments
   useEffect(() => {
     if (!token || !params.id) return;
-    
-    // Check if we already have the correct student loaded
-    if (selectedStudent && String(selectedStudent.id) === String(params.id)) {
-      return; // Already loaded, skip
+
+    if (view === "edit" && selectedStudent && String(selectedStudent.id) === String(params.id)) {
+      setEditForm({
+        fullName: selectedStudent.full_name || "",
+        email: selectedStudent.email || "",
+        phone: selectedStudent.phone || "",
+      });
+      return;
     }
-    
+
     const loadStudentData = async () => {
       try {
         if (view === "details") {
-          // Fetch full details from API
           const res = await apiFetch(`/api/v1/admin/students/${params.id}`, { token });
           if (res?.ok) {
             setSelectedStudent(res.data);
@@ -116,7 +271,6 @@ export default function SuperAdminStudents() {
             console.error("Failed to load student details from API");
           }
         } else if (view === "edit") {
-          // For edit, try list first, then API if needed
           const student = students.find((s) => String(s.id) === String(params.id));
           if (student) {
             setSelectedStudent(student);
@@ -126,7 +280,6 @@ export default function SuperAdminStudents() {
               phone: student.phone || "",
             });
           } else {
-            // Fallback: fetch from API
             const res = await apiFetch(`/api/v1/admin/students/${params.id}`, { token });
             if (res?.ok) {
               const studentData = res.data;
@@ -148,12 +301,36 @@ export default function SuperAdminStudents() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.id, view, token]);
 
+  // When returning to the tab, silently refresh student details (latest enrollments / approvals)
+  useEffect(() => {
+    if (!token || !params.id || view !== "details") return;
+
+    const silentRefetch = () => {
+      if (document.visibilityState !== "visible") return;
+      const now = Date.now();
+      if (now - lastVisibilityRefetchAt.current < 2500) return;
+      lastVisibilityRefetchAt.current = now;
+      apiFetch(`/api/v1/admin/students/${params.id}`, { token })
+        .then((res) => {
+          if (res?.ok) setSelectedStudent(res.data);
+        })
+        .catch(() => {});
+    };
+
+    document.addEventListener("visibilitychange", silentRefetch);
+    window.addEventListener("focus", silentRefetch);
+    return () => {
+      document.removeEventListener("visibilitychange", silentRefetch);
+      window.removeEventListener("focus", silentRefetch);
+    };
+  }, [token, params.id, view]);
+
   // Filter students
   useEffect(() => {
     let result = students;
 
-    // Global search
-    const q = searchQuery.trim().toLowerCase();
+    // Global search (bounded length so pathological paste does not freeze the UI)
+    const q = searchQuery.trim().toLowerCase().slice(0, QUICK_SEARCH_MAX);
     if (q) {
       result = result.filter(
         (s) =>
@@ -181,34 +358,25 @@ export default function SuperAdminStudents() {
     const fuid = filters.userId.trim().toLowerCase();
     if (fuid) result = result.filter((s) => s.id && String(s.id).toLowerCase().includes(fuid));
 
-    if (filters.dateFrom) {
-      const from = new Date(filters.dateFrom);
-      from.setHours(0, 0, 0, 0);
-      result = result.filter((s) => new Date(s.created_at) >= from);
+    let fromD = filters.dateFrom ? new Date(filters.dateFrom) : null;
+    let toD = filters.dateTo ? new Date(filters.dateTo) : null;
+    if (fromD && toD && fromD.getTime() > toD.getTime()) {
+      const swap = fromD;
+      fromD = toD;
+      toD = swap;
     }
-    if (filters.dateTo) {
-      const to = new Date(filters.dateTo);
-      to.setHours(23, 59, 59, 999);
-      result = result.filter((s) => new Date(s.created_at) <= to);
+    if (fromD) {
+      fromD.setHours(0, 0, 0, 0);
+      result = result.filter((s) => new Date(s.created_at) >= fromD);
+    }
+    if (toD) {
+      toD.setHours(23, 59, 59, 999);
+      result = result.filter((s) => new Date(s.created_at) <= toD);
     }
 
     setFilteredStudents(result);
     setCurrentPage(1);
   }, [searchQuery, students, filters]);
-
-  const fetchStudents = async () => {
-    try {
-      setLoading(true);
-      const res = await apiFetch("/api/v1/admin/students", { token });
-      if (res?.ok) {
-        setStudents(res.data || []);
-      }
-    } catch (error) {
-      console.error("Failed to fetch students:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   // Generate secure random password
   const generatePassword = () => {
@@ -263,7 +431,7 @@ export default function SuperAdminStudents() {
         });
         setShowCredentialsModal(true);
         
-        await fetchStudents();
+        await reloadStudentsList();
         setAddForm({ fullName: "", email: "", phone: "", password: "", generatePassword: true });
       }
     } catch (error) {
@@ -317,7 +485,7 @@ export default function SuperAdminStudents() {
       });
 
       if (res?.ok) {
-        await fetchStudents();
+        await reloadStudentsList();
         navigate("/lms/superadmin/students/list");
         setSelectedStudent(null);
       }
@@ -345,7 +513,7 @@ export default function SuperAdminStudents() {
             navigate("/lms/superadmin/students/list");
           }
         }
-        await fetchStudents();
+        await reloadStudentsList();
       }
     } catch (error) {
       alert(error?.message || "Failed to delete student. Ensure the API server is running.");
@@ -362,19 +530,8 @@ export default function SuperAdminStudents() {
     navigate(`/lms/superadmin/students/${student.id}/edit`);
   };
 
-  const openDetails = async (student) => {
-    try {
-      setLoading(true);
-      const res = await apiFetch(`/api/v1/admin/students/${student.id}`, { token });
-      if (res?.ok) {
-        setSelectedStudent(res.data);
-        navigate(`/lms/superadmin/students/${student.id}/details`);
-      }
-    } catch (error) {
-      alert("Failed to load student details");
-    } finally {
-      setLoading(false);
-    }
+  const openDetails = (student) => {
+    navigate(`/lms/superadmin/students/${student.id}/details`);
   };
 
   // Credentials Modal Component
@@ -577,8 +734,9 @@ export default function SuperAdminStudents() {
                 <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                 <input
                   type="text"
-                  placeholder="Quick search by name, email, phone, college, user ID..."
+                  placeholder="Quick search by name, email, phone, college, user ID (use Filters for course or pack)…"
                   value={searchQuery}
+                  maxLength={QUICK_SEARCH_MAX}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
                 />
@@ -695,6 +853,47 @@ export default function SuperAdminStudents() {
                           />
                         </div>
                       </div>
+                      {/* Course / pack (server-side enrollment filter) */}
+                      <div className="sm:col-span-2 lg:col-span-3">
+                        <label className="block text-xs font-medium text-slate-600 mb-1.5">
+                          Enrolled in course or pack
+                        </label>
+                        <div className="relative">
+                          <FiLayers className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none z-10" />
+                          <select
+                            value={filters.enrolledItem}
+                            onChange={(e) => setFilters((f) => ({ ...f, enrolledItem: e.target.value }))}
+                            className="w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 transition-all appearance-none cursor-pointer"
+                          >
+                            <option value="">Any course or pack</option>
+                            <optgroup label="Courses (includes pack enrollments)">
+                              {[...catalogOptions.courses]
+                                .sort((a, b) => (a.title || "").localeCompare(b.title || ""))
+                                .map((c) => (
+                                  <option key={c.id} value={`course:${c.id}`}>
+                                    {c.title}
+                                    {c.slug ? ` (${c.slug})` : ""}
+                                  </option>
+                                ))}
+                            </optgroup>
+                            <optgroup label="Packs only">
+                              {[...catalogOptions.packs]
+                                .sort((a, b) => (a.title || "").localeCompare(b.title || ""))
+                                .map((p) => (
+                                  <option key={p.id} value={`pack:${p.id}`}>
+                                    {p.title}
+                                    {p.slug ? ` (${p.slug})` : ""}
+                                  </option>
+                                ))}
+                            </optgroup>
+                          </select>
+                        </div>
+                        <p className="text-xs text-slate-500 mt-1.5">
+                          Choosing a <strong>course</strong> lists students enrolled in that course or in any pack that
+                          includes it. Choosing a <strong>pack</strong> lists students enrolled in that pack only.
+                          Inactive enrollments are excluded.
+                        </p>
+                      </div>
                       {/* Date From */}
                       <div>
                         <label className="block text-xs font-medium text-slate-600 mb-1.5">Joined From</label>
@@ -727,6 +926,22 @@ export default function SuperAdminStudents() {
               )}
             </AnimatePresence>
           </div>
+
+          {studentsListError && (
+            <div
+              className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800 flex flex-wrap items-center justify-between gap-3"
+              role="alert"
+            >
+              <span className="min-w-0">{studentsListError}</span>
+              <button
+                type="button"
+                onClick={() => reloadStudentsList()}
+                className="shrink-0 font-semibold text-red-900 underline hover:no-underline"
+              >
+                Retry
+              </button>
+            </div>
+          )}
 
           {/* Students Grid */}
           {(() => {
@@ -1113,12 +1328,41 @@ export default function SuperAdminStudents() {
     );
   }
 
+  const detailsDataMismatch =
+    view === "details" && params.id && (!selectedStudent || String(selectedStudent.id) !== String(params.id));
+
+  if (detailsDataMismatch) {
+    return (
+      <>
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 flex flex-col items-center justify-center p-8 gap-3">
+          <PageLoading />
+          <p className="text-sm text-slate-500">Loading student…</p>
+        </div>
+        <CredentialsModal />
+      </>
+    );
+  }
+
   // Student Details View
   if (view === "details" && selectedStudent) {
     const student = selectedStudent;
     const progress = student.progress || {};
     const streakDays = student.streak_days || 0;
     const totalProjects = student.total_projects || 0;
+    const enrollments = Array.isArray(student.enrollments) ? student.enrollments : [];
+    const paidPurchases = Array.isArray(student.paid_purchases) ? student.paid_purchases : [];
+    const purchaseApprovals = Array.isArray(student.purchase_approvals) ? student.purchase_approvals : [];
+    const formatMoney = (amount, currency) => {
+      if (amount == null) return "—";
+      const cur = (currency || "INR").toUpperCase();
+      const major = Number(amount) / 100;
+      try {
+        return new Intl.NumberFormat("en-IN", { style: "currency", currency: cur }).format(major);
+      } catch {
+        return `${cur} ${major.toFixed(2)}`;
+      }
+    };
+    const typeLabel = (t) => (t === "pack" ? "All courses pack" : "Single course");
 
     return (
       <>
@@ -1138,12 +1382,25 @@ export default function SuperAdminStudents() {
                   <p className="text-slate-600 text-sm sm:text-base truncate">{student.email}</p>
                 </div>
               </div>
-              <button
-                onClick={() => navigate("/lms/superadmin/students/list")}
-                className="p-2 rounded-lg hover:bg-slate-100 transition-colors flex-shrink-0"
-              >
-                <FiX className="w-6 h-6 text-slate-600" />
-              </button>
+              <div className="flex items-center gap-1 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => refetchStudentDetail()}
+                  disabled={detailRefreshBusy}
+                  className="p-2 rounded-lg hover:bg-slate-100 transition-colors disabled:opacity-50"
+                  title="Refresh from server"
+                >
+                  <FiRefreshCw className={`w-5 h-5 text-slate-600 ${detailRefreshBusy ? "animate-spin" : ""}`} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => navigate("/lms/superadmin/students/list")}
+                  className="p-2 rounded-lg hover:bg-slate-100 transition-colors"
+                  title="Close"
+                >
+                  <FiX className="w-6 h-6 text-slate-600" />
+                </button>
+              </div>
               </div>
 
               {/* Stats Grid */}
@@ -1239,6 +1496,190 @@ export default function SuperAdminStudents() {
                       {new Date(student.created_at).toLocaleDateString()}
                     </div>
                   </div>
+                </div>
+              </div>
+
+              {/* Courses & packs (enrollment + paid orders) */}
+              <div>
+                <h3 className="text-lg font-semibold text-slate-900 mb-2 flex items-center gap-2">
+                  <FiBook className="w-5 h-5 text-indigo-600" />
+                  Courses and purchases
+                </h3>
+                <p className="text-sm text-slate-600 mb-4">
+                  <strong>Current access</strong> comes from enrollments (manual or after payment).{" "}
+                  <strong>Paid checkout</strong> includes Razorpay orders linked by checkout email or by an approval
+                  record tied to this account (covers email changes after purchase).{" "}
+                  <strong>Approvals</strong> show pending access (paid, waiting on auto-approve or you), approved, or rejected flows.
+                </p>
+
+                <div className="mb-6">
+                  <h4 className="text-sm font-semibold text-slate-800 mb-2">Current access</h4>
+                  {enrollments.length === 0 ? (
+                    <div className="rounded-lg border border-dashed border-slate-200 bg-slate-50/80 px-4 py-3 text-sm text-slate-600">
+                      No enrollments yet. If checkout used a different email, check <strong>Paid checkout</strong> and{" "}
+                      <strong>Approvals</strong> below. Grant access from Approvals when pending.
+                    </div>
+                  ) : (
+                    <ul className="space-y-2">
+                      {enrollments.map((row, idx) => (
+                        <li
+                          key={`${row.item_type}-${row.item_id}-${idx}`}
+                          className="rounded-lg border border-slate-200 bg-white px-4 py-3"
+                        >
+                          <div className="flex flex-wrap items-center justify-between gap-2">
+                            <div className="min-w-0">
+                              <div className="font-medium text-slate-900 truncate">{row.item_title}</div>
+                              <div className="text-xs text-slate-500">
+                                {typeLabel(row.item_type)}
+                                {row.item_slug ? ` · ${row.item_slug}` : ""}
+                              </div>
+                            </div>
+                            <div className="flex flex-wrap items-center gap-2 shrink-0">
+                              <span
+                                className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
+                                  row.active ? "bg-emerald-100 text-emerald-800" : "bg-slate-100 text-slate-600"
+                                }`}
+                              >
+                                {row.active ? "Active" : "Inactive"}
+                              </span>
+                              {row.created_at && (
+                                <span className="text-xs text-slate-500">
+                                  From {new Date(row.created_at).toLocaleDateString()}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                          {row.item_type === "pack" && Array.isArray(row.included_courses) && row.included_courses.length > 0 && (
+                            <div className="mt-3 pt-3 border-t border-slate-100">
+                              <div className="text-xs font-semibold text-slate-500 mb-1.5">Courses in this pack</div>
+                              <ul className="flex flex-wrap gap-2">
+                                {row.included_courses.map((c) => (
+                                  <li
+                                    key={`${row.item_id}-${c.slug || c.title}`}
+                                    className="text-xs bg-indigo-50 text-indigo-800 px-2 py-1 rounded-md border border-indigo-100"
+                                  >
+                                    {c.title}
+                                    {c.slug ? <span className="text-indigo-500"> · {c.slug}</span> : null}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+
+                <div className="mb-6">
+                  <h4 className="text-sm font-semibold text-slate-800 mb-2">Purchase / approval timeline</h4>
+                  {purchaseApprovals.length === 0 ? (
+                    <div className="rounded-lg border border-dashed border-slate-200 bg-slate-50/80 px-4 py-3 text-sm text-slate-600">
+                      No approval rows for this email or user id (students created only in admin, with no checkout, look
+                      normal here).
+                    </div>
+                  ) : (
+                    <ul className="space-y-2">
+                      {purchaseApprovals.map((row) => {
+                        const statusClass =
+                          row.status === "pending"
+                            ? "bg-amber-100 text-amber-900"
+                            : row.status === "approved"
+                              ? "bg-emerald-100 text-emerald-800"
+                              : "bg-red-100 text-red-800";
+                        return (
+                          <li
+                            key={row.id}
+                            className="flex flex-wrap items-start justify-between gap-2 rounded-lg border border-slate-200 bg-white px-4 py-3"
+                          >
+                            <div className="min-w-0 flex-1">
+                              <div className="flex flex-wrap items-center gap-2 mb-1">
+                                <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${statusClass}`}>
+                                  {row.status === "pending"
+                                    ? "Pending approval"
+                                    : row.status === "approved"
+                                      ? "Approved"
+                                      : "Rejected"}
+                                </span>
+                                {row.payment_order_status && row.payment_order_status !== "paid" && (
+                                  <span className="text-xs text-slate-500">Payment: {row.payment_order_status}</span>
+                                )}
+                              </div>
+                              <div className="font-medium text-slate-900 truncate">{row.item_title}</div>
+                              <div className="text-xs text-slate-500">
+                                {typeLabel(row.item_type)}
+                                {row.item_slug ? ` · ${row.item_slug}` : ""}
+                              </div>
+                              {row.checkout_email && (
+                                <div className="text-xs text-slate-500 mt-1 flex items-center gap-1">
+                                  <FiMail className="w-3.5 h-3.5 shrink-0" />
+                                  <span className="truncate">Checkout: {row.checkout_email}</span>
+                                </div>
+                              )}
+                              {row.status === "rejected" && row.notes && (
+                                <div className="text-xs text-red-700 mt-2 flex items-start gap-1">
+                                  <FiAlertCircle className="w-3.5 h-3.5 shrink-0 mt-0.5" />
+                                  <span>{row.notes}</span>
+                                </div>
+                              )}
+                            </div>
+                            <div className="text-right shrink-0 text-xs text-slate-500 space-y-1">
+                              {row.amount != null && (
+                                <div className="text-sm font-semibold text-slate-900">
+                                  {formatMoney(row.amount, row.currency)}
+                                </div>
+                              )}
+                              <div>Created {row.created_at ? new Date(row.created_at).toLocaleString() : "—"}</div>
+                              {row.approved_at && (
+                                <div>Decided {new Date(row.approved_at).toLocaleString()}</div>
+                              )}
+                            </div>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  )}
+                </div>
+
+                <div>
+                  <h4 className="text-sm font-semibold text-slate-800 mb-2">Paid checkout history</h4>
+                  {paidPurchases.length === 0 ? (
+                    <div className="rounded-lg border border-dashed border-slate-200 bg-slate-50/80 px-4 py-3 text-sm text-slate-600">
+                      No paid orders linked to this profile (try matching checkout email, or approvals above). Free or
+                      admin-granted access can still appear under Current access.
+                    </div>
+                  ) : (
+                    <ul className="space-y-2">
+                      {paidPurchases.map((row) => (
+                        <li
+                          key={row.payment_order_id || `paid-${row.item_type}-${row.item_id}-${row.paid_at}`}
+                          className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-slate-200 bg-white px-4 py-3"
+                        >
+                          <div className="min-w-0">
+                            <div className="font-medium text-slate-900 truncate">{row.item_title}</div>
+                            <div className="text-xs text-slate-500">
+                              {typeLabel(row.item_type)}
+                              {row.item_slug ? ` · ${row.item_slug}` : ""}
+                            </div>
+                            {row.checkout_email && (
+                              <div className="text-xs text-slate-500 mt-1 flex items-center gap-1">
+                                <FiMail className="w-3.5 h-3.5 shrink-0" />
+                                <span className="truncate">{row.checkout_email}</span>
+                              </div>
+                            )}
+                          </div>
+                          <div className="text-right shrink-0">
+                            <div className="text-sm font-semibold text-slate-900">
+                              {formatMoney(row.amount, row.currency)}
+                            </div>
+                            {row.paid_at && (
+                              <div className="text-xs text-slate-500">{new Date(row.paid_at).toLocaleString()}</div>
+                            )}
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
               </div>
 

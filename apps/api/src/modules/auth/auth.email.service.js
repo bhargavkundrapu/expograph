@@ -66,7 +66,7 @@ async function sendOtpEmail({ to, name, otp, purpose, appName = "ExpoGraph" }) {
         text,
         headers: TRANSACTIONAL_HEADERS,
       };
-      if (resendReplyTo) opts.reply_to = resendReplyTo;
+      if (resendReplyTo) opts.replyTo = resendReplyTo;
       const { data, error } = await resend.emails.send(opts);
       if (error) {
         console.error("[Resend] OTP email failed:", JSON.stringify(error, null, 2));

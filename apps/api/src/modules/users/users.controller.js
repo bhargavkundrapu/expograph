@@ -27,6 +27,22 @@ const UpdateStudentSchema = z.object({
   password: z.string().min(8).optional(),
 });
 
+const ListStudentsQuerySchema = z.object({
+  search: z.string().trim().max(200).optional(),
+  enrollment_course_id: z.string().uuid().optional(),
+  enrollment_pack_id: z.string().uuid().optional(),
+});
+
+/** Express can surface duplicate keys as string[]; take first scalar for validation. */
+function firstQueryString(val) {
+  if (val == null) return undefined;
+  if (Array.isArray(val)) {
+    const first = val[0];
+    return typeof first === "string" ? first : undefined;
+  }
+  return typeof val === "string" ? val : undefined;
+}
+
 const CreateMentorSchema = z.object({
   email: z.string().email(),
   fullName: z.string().min(1),
@@ -119,9 +135,25 @@ const listTenantRoles = asyncHandler(async (req, res) => {
 // SuperAdmin: List all students
 const listStudents = asyncHandler(async (req, res) => {
   const tenantId = req.tenant.id;
-  const search = req.query.search || "";
-  
-  const students = await repo.listStudents({ tenantId, search });
+  const parsed = ListStudentsQuerySchema.safeParse({
+    search: firstQueryString(req.query.search),
+    enrollment_course_id: firstQueryString(req.query.enrollment_course_id) || undefined,
+    enrollment_pack_id: firstQueryString(req.query.enrollment_pack_id) || undefined,
+  });
+  if (!parsed.success) throw new HttpError(400, "Invalid query", parsed.error.flatten());
+
+  const { enrollment_course_id, enrollment_pack_id, search: searchRaw } = parsed.data;
+  const search = (searchRaw ?? "").trim();
+  const enrollmentCourseId = enrollment_course_id || undefined;
+  const enrollmentPackId =
+    enrollment_course_id ? undefined : enrollment_pack_id || undefined;
+
+  const students = await repo.listStudents({
+    tenantId,
+    search,
+    enrollmentCourseId,
+    enrollmentPackId,
+  });
   res.json({ ok: true, data: students });
 });
 

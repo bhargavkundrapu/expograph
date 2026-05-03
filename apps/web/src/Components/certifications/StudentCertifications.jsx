@@ -7,13 +7,13 @@ import { apiFetch, ApiError } from "../../services/api";
 import { GenericPageSkeleton } from "../common/SkeletonLoaders";
 import { Badge } from "../ui/badge";
 import { FiAward, FiDownload, FiLock, FiCheckCircle, FiClock } from "react-icons/fi";
+import { MCA_LOGO_URL, MSME_LOGO_URL } from "../../constants/trustLogos";
 
 const ELIGIBLE_URL = "/api/v1/certifications/eligible";
 const REQUEST_URL = "/api/v1/certifications/request";
 const MY_CERTIFICATES_URL = "/api/v1/lms/certificates/mine";
 const ENSURE_ISSUED_URL = "/api/v1/lms/certificates/ensure-issued";
 const CERTIFICATE_LOGO_URL = "/certificate-logo.png";
-const MCA_LOGO_URL = "https://res.cloudinary.com/da2wrgabu/image/upload/v1772184237/MCA_Logo_3_1_wdhccw.svg";
 
 async function imageUrlToPngDataUrl(url) {
   const response = await fetch(url);
@@ -51,6 +51,48 @@ async function imageUrlToPngDataUrl(url) {
     reader.onerror = reject;
     reader.readAsDataURL(imageBlob);
   });
+}
+
+/** Square PNG of `url`, cropped to a circle (cover). `outputDiameterPt` is on-PDF size; rasterised at 2x for sharpness. */
+async function imageUrlToCircularPngDataUrl(url, outputDiameterPt) {
+  const d = Math.max(28, Math.round(outputDiameterPt * 2));
+  const basePng = await imageUrlToPngDataUrl(url);
+  const img = new Image();
+  const loaded = new Promise((resolve, reject) => {
+    img.onload = resolve;
+    img.onerror = reject;
+  });
+  img.src = basePng;
+  await loaded;
+
+  const canvas = document.createElement("canvas");
+  canvas.width = d;
+  canvas.height = d;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) throw new Error("No canvas context");
+
+  ctx.clearRect(0, 0, d, d);
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(d / 2, d / 2, d / 2 - 1, 0, Math.PI * 2);
+  ctx.closePath();
+  ctx.clip();
+
+  const iw = img.naturalWidth || img.width || 1;
+  const ih = img.naturalHeight || img.height || 1;
+  const scale = Math.max(d / iw, d / ih);
+  const dw = iw * scale;
+  const dh = ih * scale;
+  ctx.drawImage(img, (d - dw) / 2, (d - dh) / 2, dw, dh);
+  ctx.restore();
+
+  ctx.beginPath();
+  ctx.arc(d / 2, d / 2, d / 2 - 0.5, 0, Math.PI * 2);
+  ctx.strokeStyle = "rgba(15, 23, 42, 0.14)";
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  return canvas.toDataURL("image/png");
 }
 
 function createSignatureDataUrl() {
@@ -516,11 +558,26 @@ export default function StudentCertifications() {
       doc.setFontSize(12);
       doc.text("Director of Expograph", pageWidth / 2, signY + 18, { align: "center" });
 
-      // MCA recognition mark at bottom-left.
+      // MSME (circular) above MCA — bottom-right stack, horizontally centred on MCA bar.
+      const markY = pageHeight - 98;
+      const mcaW = 192;
+      const mcaH = 46;
+      const mcaX = pageWidth - margin - 220;
+      const msmeCircleD = 56;
+      const stackGap = 10;
+      // Left-align with MCA bar (same horizontal start as MCA logo).
+      const msmeCircleX = mcaX;
+      const msmeCircleY = markY - stackGap - msmeCircleD;
+
+      try {
+        const msmeCirclePng = await imageUrlToCircularPngDataUrl(MSME_LOGO_URL, msmeCircleD);
+        doc.addImage(msmeCirclePng, "PNG", msmeCircleX, msmeCircleY, msmeCircleD, msmeCircleD);
+      } catch {
+        // Ignore MSME mark if fetch/conversion fails.
+      }
       try {
         const mcaPngDataUrl = await imageUrlToPngDataUrl(MCA_LOGO_URL);
-        // MCA mark placed bottom-right; increased size for clarity.
-        doc.addImage(mcaPngDataUrl, "PNG", pageWidth - margin - 220, pageHeight - 98, 192, 46);
+        doc.addImage(mcaPngDataUrl, "PNG", mcaX, markY, mcaW, mcaH);
       } catch {
         // Ignore image fetch failures to avoid blocking certificate download.
       }

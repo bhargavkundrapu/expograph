@@ -1,6 +1,14 @@
 // apps/api/src/modules/users/users.repo.js
 const { query } = require("../../db/query");
 
+/** Escape % and _ so ILIKE search is literal (user-supplied patterns cannot widen matches). */
+function escapeIlikeMetacharacters(value) {
+  return String(value ?? "")
+    .replace(/\\/g, "\\\\")
+    .replace(/%/g, "\\%")
+    .replace(/_/g, "\\_");
+}
+
 async function findUserByEmail(email) {
   const normalized = String(email || "").trim().toLowerCase();
   if (!normalized) return null;
@@ -149,7 +157,13 @@ async function listTenantRoles({ tenantId }) {
 }
 
 // SuperAdmin: List all students with filters (only active students)
-async function listStudents({ tenantId, search, roleName = "Student" }) {
+async function listStudents({
+  tenantId,
+  search,
+  roleName = "Student",
+  enrollmentCourseId,
+  enrollmentPackId,
+}) {
   let sql = `
     SELECT 
        u.id,
@@ -168,14 +182,43 @@ async function listStudents({ tenantId, search, roleName = "Student" }) {
      WHERE r.name = $2 AND u.is_active = true
   `;
   const params = [tenantId, roleName];
-  
+  let nextParam = 3;
+
   if (search) {
-    sql += ` AND (u.full_name ILIKE $3 OR u.email ILIKE $3 OR u.phone ILIKE $3)`;
-    params.push(`%${search}%`);
+    const like = `%${escapeIlikeMetacharacters(search)}%`;
+    sql += ` AND (u.full_name ILIKE $${nextParam} ESCAPE '\\' OR u.email ILIKE $${nextParam} ESCAPE '\\' OR u.phone ILIKE $${nextParam} ESCAPE '\\')`;
+    params.push(like);
+    nextParam += 1;
   }
-  
+
+  if (enrollmentCourseId) {
+    sql += ` AND EXISTS (
+      SELECT 1 FROM enrollments e
+      WHERE e.user_id = u.id AND e.tenant_id = $1 AND e.active = true
+      AND (
+        (e.item_type = 'course' AND e.item_id = $${nextParam}::uuid)
+        OR (
+          e.item_type = 'pack' AND EXISTS (
+            SELECT 1 FROM course_pack_courses cpc
+            WHERE cpc.pack_id = e.item_id AND cpc.course_id = $${nextParam}::uuid
+          )
+        )
+      )
+    )`;
+    params.push(enrollmentCourseId);
+    nextParam += 1;
+  } else if (enrollmentPackId) {
+    sql += ` AND EXISTS (
+      SELECT 1 FROM enrollments e
+      WHERE e.user_id = u.id AND e.tenant_id = $1 AND e.active = true
+      AND e.item_type = 'pack' AND e.item_id = $${nextParam}::uuid
+    )`;
+    params.push(enrollmentPackId);
+    nextParam += 1;
+  }
+
   sql += ` ORDER BY u.created_at DESC`;
-  
+
   const { rows } = await query(sql, params);
   return rows;
 }
@@ -256,12 +299,163 @@ async function getStudentWithStats({ tenantId, userId }) {
      AND updated_at >= NOW() - INTERVAL '30 days'`,
     [tenantId, userId]
   );
-  
+
+  let enrollments = [];
+  let paid_purchases = [];
+  let purchase_approvals = [];
+
+  try {
+    const enrollmentRows = await query(
+      `SELECT
+         e.item_type,
+         e.item_id,
+         e.active,
+         e.created_at,
+         COALESCE(c.title, p.title) AS item_title,
+         COALESCE(c.slug, p.slug) AS item_slug
+       FROM enrollments e
+       LEFT JOIN courses c
+         ON e.item_type = 'course' AND c.id = e.item_id AND c.tenant_id = e.tenant_id
+       LEFT JOIN course_packs p
+         ON e.item_type = 'pack' AND p.id = e.item_id AND p.tenant_id = e.tenant_id
+       WHERE e.user_id = $1 AND e.tenant_id = $2
+       ORDER BY e.created_at DESC`,
+      [userId, tenantId]
+    );
+
+    const packIds = enrollmentRows.rows.filter((r) => r.item_type === "pack").map((r) => r.item_id);
+    const packCoursesByPack = new Map();
+    if (packIds.length > 0) {
+      const packCourseRows = await query(
+        `SELECT cpc.pack_id, c.title, c.slug
+         FROM course_pack_courses cpc
+         JOIN courses c ON c.id = cpc.course_id AND c.tenant_id = $2
+         WHERE cpc.pack_id = ANY($1::uuid[])
+         ORDER BY c.title ASC`,
+        [packIds, tenantId]
+      );
+      for (const row of packCourseRows.rows) {
+        const list = packCoursesByPack.get(row.pack_id) || [];
+        list.push({ title: row.title, slug: row.slug });
+        packCoursesByPack.set(row.pack_id, list);
+      }
+    }
+
+    enrollments = enrollmentRows.rows.map((r) => ({
+      item_type: r.item_type,
+      item_id: r.item_id,
+      item_title:
+        r.item_title ||
+        `${r.item_type === "pack" ? "Pack" : "Course"} (catalog entry missing — id ${String(r.item_id).slice(0, 8)}…)`,
+      item_slug: r.item_slug,
+      active: r.active,
+      created_at: r.created_at,
+      included_courses: r.item_type === "pack" ? packCoursesByPack.get(r.item_id) || [] : [],
+    }));
+
+    const paidOrderRows = await query(
+      `SELECT DISTINCT ON (po.id)
+         po.id AS payment_order_id,
+         po.item_type,
+         po.item_id,
+         po.amount,
+         po.currency,
+         po.created_at,
+         po.customer_email AS checkout_email,
+         COALESCE(c.title, p.title) AS item_title,
+         COALESCE(c.slug, p.slug) AS item_slug
+       FROM payment_orders po
+       LEFT JOIN courses c
+         ON po.item_type = 'course' AND c.id = po.item_id AND c.tenant_id = po.tenant_id
+       LEFT JOIN course_packs p
+         ON po.item_type = 'pack' AND p.id = po.item_id AND p.tenant_id = po.tenant_id
+       WHERE po.tenant_id = $1
+         AND po.status = 'paid'
+         AND (
+           LOWER(TRIM(po.customer_email)) = LOWER(TRIM(COALESCE($2::text, '')))
+           OR EXISTS (
+             SELECT 1 FROM approvals a
+             WHERE a.payment_order_id = po.id AND a.user_id = $3::uuid
+           )
+         )
+       ORDER BY po.id, po.created_at DESC`,
+      [tenantId, user.email || "", userId]
+    );
+
+    paid_purchases = paidOrderRows.rows.map((r) => ({
+      payment_order_id: r.payment_order_id,
+      item_type: r.item_type,
+      item_id: r.item_id,
+      item_title:
+        r.item_title ||
+        `${r.item_type === "pack" ? "Pack" : "Course"} (catalog entry missing — id ${String(r.item_id).slice(0, 8)}…)`,
+      item_slug: r.item_slug,
+      amount: r.amount,
+      currency: r.currency,
+      paid_at: r.created_at,
+      checkout_email: r.checkout_email,
+    }));
+
+    const approvalRows = await query(
+      `SELECT
+         a.id,
+         a.status,
+         a.item_type,
+         a.item_id,
+         a.customer_email AS checkout_email,
+         a.created_at,
+         a.approved_at,
+         a.notes,
+         po.status AS payment_order_status,
+         po.amount,
+         po.currency,
+         COALESCE(c.title, p.title) AS item_title,
+         COALESCE(c.slug, p.slug) AS item_slug
+       FROM approvals a
+       LEFT JOIN payment_orders po ON po.id = a.payment_order_id
+       LEFT JOIN courses c
+         ON a.item_type = 'course' AND c.id = a.item_id AND c.tenant_id = a.tenant_id
+       LEFT JOIN course_packs p
+         ON a.item_type = 'pack' AND p.id = a.item_id AND p.tenant_id = a.tenant_id
+       WHERE a.tenant_id = $1
+         AND (
+           a.user_id = $2::uuid
+           OR LOWER(TRIM(a.customer_email)) = LOWER(TRIM(COALESCE($3::text, '')))
+         )
+       ORDER BY a.created_at DESC
+       LIMIT 40`,
+      [tenantId, userId, user.email || ""]
+    );
+
+    purchase_approvals = approvalRows.rows.map((r) => ({
+      id: r.id,
+      status: r.status,
+      item_type: r.item_type,
+      item_id: r.item_id,
+      item_title:
+        r.item_title ||
+        `${r.item_type === "pack" ? "Pack" : "Course"} (catalog entry missing — id ${String(r.item_id).slice(0, 8)}…)`,
+      item_slug: r.item_slug,
+      checkout_email: r.checkout_email,
+      created_at: r.created_at,
+      approved_at: r.approved_at,
+      notes: r.notes,
+      payment_order_status: r.payment_order_status,
+      amount: r.amount,
+      currency: r.currency,
+    }));
+  } catch (err) {
+    console.error("[getStudentWithStats] enrollments/purchases/approvals query failed:", err?.message || err);
+  }
+
   return {
     ...user,
     progress: progressRows.rows[0] || { completed_lessons: 0, in_progress_lessons: 0, total_watch_seconds: 0 },
     total_projects: projectRows.rows[0]?.total_projects || 0,
     streak_days: streakRows.rows[0]?.streak_days || 0,
+    enrollments,
+    paid_purchases,
+    purchase_approvals,
   };
 }
 

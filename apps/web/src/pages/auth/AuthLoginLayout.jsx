@@ -105,7 +105,7 @@ export default function AuthLoginLayout({ cardTitle = "Welcome Back", cardSubtit
                   <path d="M12 2L6 6v3c0 5.25 2.55 10.15 6 12 3.45-1.85 6-6.75 6-12V6l-6-4z" />
                   <path d="M9 12l2 2 4-4" />
                 </svg>
-                <span className="text-xs text-white/30">Recognised by MCA, Government of India</span>
+                <span className="text-xs text-white/30">Recognised by MCA &amp; MSME, Government of India</span>
               </div>
             </motion.div>
           </div>
@@ -180,7 +180,7 @@ export default function AuthLoginLayout({ cardTitle = "Welcome Back", cardSubtit
                     <path d="M12 2L6 6v3c0 5.25 2.55 10.15 6 12 3.45-1.85 6-6.75 6-12V6l-6-4z" />
                     <path d="M9 12l2 2 4-4" />
                   </svg>
-                  <span className="text-[11px] text-white/30">Recognised by MCA, Government of India</span>
+                  <span className="text-[11px] text-white/30">Recognised by MCA &amp; MSME, Government of India</span>
                 </div>
               </div>
             </motion.div>

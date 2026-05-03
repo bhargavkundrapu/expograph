@@ -5,6 +5,8 @@ const { env } = require("../../config/env");
 const { HttpError } = require("../../utils/httpError");
 const { z } = require("zod");
 const paymentsRepo = require("./payments.repo");
+const { platformFeePaiseForItemType } = require("./payments.pricing");
+const paymentInvoiceEmail = require("./paymentInvoice.email.service");
 const approvalsRepo = require("../approvals/approvals.repo");
 const approvalsService = require("../approvals/approvals.service");
 const { findRoleIdForTenant, upsertMembership } = require("../users/users.repo");
@@ -39,16 +41,6 @@ function verifyWebhookSignature(body, signature) {
   if (!env.RAZORPAY_WEBHOOK_SECRET) return false;
   const expected = crypto.createHmac("sha256", env.RAZORPAY_WEBHOOK_SECRET).update(body).digest("hex");
   return crypto.timingSafeEqual(Buffer.from(signature, "utf8"), Buffer.from(expected, "utf8"));
-}
-
-/** Fixed platform fee in paise (added to Razorpay order amount). */
-const PLATFORM_FEE_COURSE_PAISE = 700; // ₹7 per course
-const PLATFORM_FEE_PACK_PAISE = 1400; // ₹14 for full pack
-
-function platformFeePaiseForItemType(item_type) {
-  if (item_type === "course") return PLATFORM_FEE_COURSE_PAISE;
-  if (item_type === "pack") return PLATFORM_FEE_PACK_PAISE;
-  return 0;
 }
 
 function normalizeSlug(slug) {
@@ -172,12 +164,19 @@ async function handleCallback({ razorpay_payment_id, razorpay_order_id, razorpay
   }
 
   // Create payment record (idempotent - ON CONFLICT DO NOTHING)
-  await paymentsRepo.createPaymentRecord({
+  const paymentRow = await paymentsRepo.createPaymentRecord({
     paymentOrderId: order.id,
     razorpayPaymentId: razorpay_payment_id,
     status: "captured",
     rawPayload: null,
   });
+  if (paymentRow) {
+    void paymentInvoiceEmail.sendPurchaseInvoiceSafe({
+      order,
+      payment: paymentRow,
+      razorpayPaymentId: razorpay_payment_id,
+    });
+  }
 
   const normalizedEmail = String(order.customer_email || "").trim().toLowerCase();
   let existingUser = null;
@@ -260,12 +259,19 @@ async function handleWebhook({ rawBody, signature }) {
 
     const updated = await paymentsRepo.markOrderPaid(order.id);
     if (updated && paymentId) {
-      await paymentsRepo.createPaymentRecord({
+      const paymentRow = await paymentsRepo.createPaymentRecord({
         paymentOrderId: order.id,
         razorpayPaymentId: paymentId,
         status: "captured",
         rawPayload: payload,
       });
+      if (paymentRow) {
+        void paymentInvoiceEmail.sendPurchaseInvoiceSafe({
+          order,
+          payment: paymentRow,
+          razorpayPaymentId: paymentId,
+        });
+      }
       const approval = await approvalsRepo.createApproval({
         tenantId: order.tenant_id,
         paymentOrderId: order.id,
